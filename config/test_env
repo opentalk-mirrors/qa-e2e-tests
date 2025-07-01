@@ -1,0 +1,5 @@
+USERNAME=alice
+PASSWORD=alice
+USER_EMAIL=alice@example.com
+INSTANCE_URL=https://www.opentalk.test
+CONTROLLER_HOST=http://controller.opentalk.test

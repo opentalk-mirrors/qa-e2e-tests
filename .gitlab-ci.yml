@@ -1,0 +1,271 @@
+# SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
+#
+# SPDX-License-Identifier: EUPL-1.2
+---
+stages:
+  - smoke
+  - full
+  - testrail
+
+variables:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password123
+  POSTGRES_HOST_AUTH_METHOD: trust
+  FF_NETWORK_PER_BUILD: true
+  # CI_DEBUG_SERVICES: true
+  CONTROLLER_TAG:
+    description: "The controller version tag"
+    value: "dev"
+  FRONTEND_TAG:
+    description: "The frontend version tag"
+    value: "latest"
+  ETHERPAD_TAG:
+    description: "The etherpad version tag"
+    value: "latest"
+  WHITEBOARD_TAG:
+    description: "The whiteboard version tag"
+    value: "latest"
+  SMTP_MAILER_TAG:
+    description: "The smtp-mailer version tag"
+    value: "dev"
+  RECORDER_TAG:
+    description: "The recorder version tag"
+    value: "dev"
+  OBELISK_TAG:
+    description: "The obelisk version tag"
+    value: "dev"
+
+  
+
+
+.template_vars:
+  BROWSERS: [ chromium, webkit, firefox ]
+
+default:
+  image:
+    name: mcr.microsoft.com/playwright:v1.53.2-noble
+    pull_policy: if-not-present
+  services:
+    - name: git.opentalk.dev:5050/opentalk/frontend/web/web-app:$FRONTEND_TAG
+      # pull_policy: if-not-present
+      alias: webapp
+      variables:
+        PORT: 8080
+        LIVEKIT_SERVER_URL: http://livekit.opentalk.test
+        CONTROLLER_HOST: controller.opentalk.test
+        BASE_URL: https://www.opentalk.test
+        HELPDESK_URL: https://opentalk.eu
+        CONTACT_SUPPORT_URL: https://opentalk.eu
+        IMPRINT_URL: https://opentalk.eu
+        DATA_PROTECTION_URL: https://opentalk.eu
+        OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
+        SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
+        INSECURE: "true"
+        FEATURE_SHARED_FOLDER: "true"
+
+    - name: postgres:16-alpine
+      pull_policy: if-not-present
+      alias: db
+      entrypoint:
+        - /bin/bash
+        - -c
+        - |
+          until [ -f "/builds/j.eumann/e2e-tests/scripts/init-db.sh" ]; do true; done;
+          cp /builds/j.eumann/e2e-tests/scripts/init-db.sh /docker-entrypoint-initdb.d/;
+          /usr/local/bin/docker-entrypoint.sh postgres;
+
+    - name: livekit/livekit-server:v1.8
+      pull_policy: if-not-present
+      alias: livekit
+      variables:
+        LIVEKIT_HTTP_PORT: 7880
+        LIVEKIT_TCP_PORT: 7881
+        LIVEKIT_RTC_PORT_RANGE_START: 20000
+        LIVEKIT_RTC_PORT_RANGE_END: 39999
+        LIVEKIT_RTC_USE_EXTERNAL_IP: "false"
+        LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: "false"
+        LIVEKIT_KEYS_API_KEY: Controller
+        LIVEKIT_KEYS_API_SECRET: QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv
+        LIVEKIT_LOGGING_JSON: "false"
+        LIVEKIT_LOGGING_LEVEL: debug
+      entrypoint:
+        - /bin/sh
+        - -c
+        - |
+          until [ -f "/builds/j.eumann/e2e-tests/scripts/livekit-init.sh" ]; do true; done;
+          cp /builds/j.eumann/e2e-tests/scripts/livekit-init.sh /usr/local/bin;
+          livekit-init.sh;
+
+    - name: rabbitmq:4-management
+      pull_policy: if-not-present
+      alias: rabbitmq
+
+    - name: minio/minio:latest
+      pull_policy: if-not-present
+      alias: minio
+      variables:
+        MINIO_ROOT_USER: minioadmin
+        MINIO_ROOT_PASSWORD: minioadmin
+      entrypoint:
+        - /bin/bash
+        - -c
+        - |
+          mkdir -p /data/controller &&
+          /usr/bin/docker-entrypoint.sh server /data --address ":9000"
+
+    - name: git.opentalk.dev:5050/opentalk/backend/services/controller:$CONTROLLER_TAG
+      # pull_policy: if-not-present
+      alias: controller
+      entrypoint:
+        - /bin/bash
+        - -c
+        - |
+          while true; do
+            until [ -f "/builds/j.eumann/e2e-tests/config/controller-config.toml" ]; do true; done;
+            sleep 10;
+            /controller/opentalk-controller -c /builds/j.eumann/e2e-tests/config/controller-config.toml;
+          done;
+
+    # - name: git.opentalk.dev:5050/opentalk/backend/services/smtp-mailer:dev
+    #   pull_policy: if-not-present
+    #   alias: mailer
+
+    # - name: git.opentalk.dev:5050/opentalk/backend/services/obelisk:dev
+    #   pull_policy: if-not-present
+    #   alias: obelisk
+    #   entrypoint: ["/usr/bin/ls", "-lah", "/builds/j.eumann/e2e-tests/config/controller-config.toml"]
+
+    # - name: git.opentalk.dev:5050/opentalk/backend/services/recorder:dev
+    #   pull_policy: if-not-present
+    #   alias: recorder
+
+    - name: git.opentalk.dev:5050/opentalk/backend/containers/etherpad:$ETHERPAD_TAG
+      pull_policy: if-not-present
+      alias: pad
+      variables:
+        EP_APIKEY: pooWie1ooD8nie5eZophah6eih6Uo3ch
+        TRUST_PROXY: true
+        
+    - name: git.opentalk.dev:5050/opentalk/backend/containers/spacedeck:$WHITEBOARD_TAG
+      pull_policy: if-not-present
+      alias: whiteboard
+      variables:
+        SD_API_TOKEN: au0beiR3ki8ain0eihaiHae5ofei4soh
+        SD_INVITE_CODE: Ood6aeJoag9ahr8da2cai8on8ooCeeng
+      
+    - name: quay.io/keycloak/keycloak:26.1
+      pull_policy: if-not-present
+      alias: keycloak
+      variables:
+        KC_DB: postgres
+        KC_DB_URL: jdbc:postgresql://db/keycloak
+        KC_DB_USERNAME: postgres
+        KC_DB_PASSWORD: postgres123
+        KC_BOOTSTRAP_ADMIN_USERNAME: admin
+        KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+        KC_HTTP_RELATIVE_PATH: /auth
+        KC_HTTP_ENABLED: "true"
+        KC_HOSTNAME_PORT: 8080
+        KC_HOSTNAME_STRICT: 'false'
+        KC_HOSTNAME_STRICT_HTTPS: 'false'
+      entrypoint:
+        - /bin/bash
+        - -c
+        - |
+          until [ -f "/builds/j.eumann/e2e-tests/config/opentalk-realm.json" ]; do true; done;
+          mkdir -p /opt/keycloak/data/import;
+          cp /builds/j.eumann/e2e-tests/config/opentalk-realm.json /opt/keycloak/data/import;
+          /opt/keycloak/bin/kc.sh start-dev --import-realm
+
+    - name: nginx:stable
+      pull_policy: if-not-present
+      alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test
+      entrypoint:
+        - /bin/bash
+        - -c
+        - |
+          until [ -f "/builds/j.eumann/e2e-tests/config/nginx.conf" ]; do true; done
+          cp -r /builds/j.eumann/e2e-tests/certs /etc/nginx/;
+          mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
+          cp /builds/j.eumann/e2e-tests/config/nginx.conf /etc/nginx/conf.d/;
+          sleep 30;
+          /docker-entrypoint.sh nginx -g "daemon off;"
+
+e2e-smoke-tests:
+  parallel:
+    matrix:
+      - BROWSER: !reference [.template_vars, BROWSERS]
+  stage: smoke
+  before_script:
+    - npm install
+    - npx playwright install --with-deps
+    - cp config/test_env e2e/.env
+    - sleep 30
+  script:
+    - npx playwright test --project=smoke-$BROWSER
+  after_script:
+    - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
+    - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
+    - npx ts-node ./scripts/modifyJUnitReportForTestRail.ts
+  artifacts:
+    when: always
+    paths:
+      - junit
+      - html-report
+      - playwright-report
+      - test-results
+    expire_in: 1 days
+e2e-full-tests:
+  parallel:
+    matrix:
+      - BROWSER: !reference [.template_vars, BROWSERS]
+  stage: full
+  before_script:
+    - npm install
+    - npx playwright install --with-deps
+    - cp config/test_env e2e/.env
+    - sleep 30
+  script:
+    - npx playwright test --project=$BROWSER
+  after_script:
+    - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
+    - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
+    - npx ts-node ./scripts/modifyJUnitReportForTestRail.ts
+  artifacts:
+    when: always
+    paths:
+      - junit
+      - html-report
+      - playwright-report
+      - test-results
+    expire_in: 1 days
+
+merge-and-upload-test-results:
+  stage: testrail
+  image: python:latest
+  needs:
+    - e2e-full-tests
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+  before_script:
+    - pip install junitparser trcli
+  script: |
+    mkdir ./merged-reports
+    junitparser merge \
+      ./junit/junit-$CI_MERGE_REQUEST_IID-chromium.xml \
+      ./junit/junit-$CI_MERGE_REQUEST_IID-webkit.xml \
+      ./junit/junit-$CI_MERGE_REQUEST_IID-firefox.xml \
+      ./merged-reports/combined-report.xml
+    # trcli -y \
+    #   -h https://opentalk.testrail.com/ \
+    #   --project "Automated Tests" \
+    #   -u $TESTRAIL_EMAIL \
+    #   -p $TESTRAIL_PASSWORD \
+    #   parse_junit \
+    #   -f "./merged-reports/combined-report.xml" \
+    #   --run-description "URL: $CI_PIPELINE_URL" \
+    #   --title "Automated Nightly Tests from GitLab CI/CD"
+  artifacts:
+    paths:
+      - merged-reports
+    expire_in: 7 days

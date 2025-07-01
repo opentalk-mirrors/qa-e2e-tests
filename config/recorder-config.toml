@@ -1,0 +1,15 @@
+[auth]
+issuer = "http://localh:8080/auth/realms/OPENTALK"
+client_id = "Recorder"
+client_secret = "wcAlX5I26FdA76aJhFj9PyWd9LWNX9j0"
+
+[controller]
+domain = "localhost:8000"
+insecure = true
+
+[rabbitmq]
+uri = "amqp://guest:guest@localhost/%2F"
+queue = "opentalk_recorder"
+
+[recorder]
+clock_format = "%d.%m.%y %X %Z"
