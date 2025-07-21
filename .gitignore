@@ -8,3 +8,5 @@ node_modules/
 .gitlab-ci-local
 .ansible
 .auth
+.env
+e2e/.env

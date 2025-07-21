@@ -1,0 +1,184 @@
+services:
+  webapp:
+    image: git.opentalk.dev:5050/opentalk/frontend/web/web-app:latest
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.2
+    environment:
+        PORT: 8080
+        LIVEKIT_SERVER_URL: http://livekit.opentalk.test
+        CONTROLLER_HOST: controller.opentalk.test
+        BASE_URL: https://www.opentalk.test
+        HELPDESK_URL: https://opentalk.eu
+        CONTACT_SUPPORT_URL: https://opentalk.eu
+        IMPRINT_URL: https://opentalk.eu
+        DATA_PROTECTION_URL: https://opentalk.eu
+        OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
+        SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
+        INSECURE: "true"
+        FEATURE_SHARED_FOLDER: "true"
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - ./:/builds/
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_HOST_AUTH_METHOD: trust
+      
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        until [ -f "/builds/scripts/init-db.sh" ]; do true; done;
+        cp /builds//scripts/init-db.sh /docker-entrypoint-initdb.d/;
+        /usr/local/bin/docker-entrypoint.sh postgres;
+
+  livekit:
+    image: livekit/livekit-server:v1.8
+    volumes:
+      - ./:/builds/
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.4
+    environment:
+      LIVEKIT_HTTP_PORT: 7880
+      LIVEKIT_TCP_PORT: 7881
+      LIVEKIT_RTC_PORT_RANGE_START: 20000
+      LIVEKIT_RTC_PORT_RANGE_END: 39999
+      LIVEKIT_RTC_USE_EXTERNAL_IP: "false"
+      LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: "false"
+      LIVEKIT_KEYS_API_KEY: Controller
+      LIVEKIT_KEYS_API_SECRET: QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv
+      LIVEKIT_LOGGING_JSON: "false"
+      LIVEKIT_LOGGING_LEVEL: debug
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until [ -f "/builds/scripts/livekit-init.sh" ]; do true; done;
+        cp /builds//scripts/livekit-init.sh /usr/local/bin;
+        livekit-init.sh;
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.5
+
+  minio:
+    image: minio/minio:latest
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.6
+    volumes:
+      - ./:/builds/
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        mkdir -p /data/controller &&
+        /usr/bin/docker-entrypoint.sh server /data --address ":9000"
+
+  controller:
+    image: git.opentalk.dev:5050/opentalk/backend/services/controller:dev
+    volumes:
+      - ./:/builds/
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.7
+    extra_hosts:
+      - www.opentalk.test:10.5.0.11
+      - controller.opentalk.test:10.5.0.11
+      - livekit.opentalk.test:10.5.0.11
+      - accounts.opentalk.test:10.5.0.11      
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        while true; do
+          until [ -f "/builds/config/controller-config.toml" ]; do true; done;
+          sleep 10;
+          /controller/opentalk-controller -c /builds/config/controller-config.toml;
+        done;
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    volumes:
+      - ./:/builds/
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.8
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres123
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        until [ -f "/builds/config/opentalk-realm.json" ]; do true; done;
+        mkdir -p /opt/keycloak/data/import;
+        cp /builds/config/opentalk-realm.json /opt/keycloak/data/import;
+        /opt/keycloak/bin/kc.sh start-dev --import-realm
+
+  nginx:
+    image: nginx:stable
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.11
+    volumes:
+      - ./:/builds/
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        until [ -f "/builds/config/nginx.conf" ]; do true; done
+        cp /builds/config/test_env /builds/e2e/.env;
+        cp -r /builds/certs /etc/nginx/;
+        mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
+        cp /builds/config/nginx.conf /etc/nginx/conf.d/;
+        sleep 30;
+        /docker-entrypoint.sh nginx -g "daemon off;"
+
+  test-runner:
+    image: mcr.microsoft.com/playwright:v1.54.1-noble 
+    user: 1000:1000
+    ports:
+      - 9323:9323
+    extra_hosts:
+      - www.opentalk.test:10.5.0.11
+      - controller.opentalk.test:10.5.0.11
+      - livekit.opentalk.test:10.5.0.11
+      - accounts.opentalk.test:10.5.0.11      
+    networks:
+      e2e:
+        ipv4_address: 10.5.0.12
+    volumes:
+      - ./:/builds/
+    working_dir:  /builds
+    tty:  true
+    stdin_open: true 
+
+networks:
+  e2e:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/24
+          gateway: 10.5.0.1
