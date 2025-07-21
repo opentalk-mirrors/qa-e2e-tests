@@ -70,8 +70,8 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/j.eumann/e2e-tests/scripts/init-db.sh" ]; do true; done;
-          cp /builds/j.eumann/e2e-tests/scripts/init-db.sh /docker-entrypoint-initdb.d/;
+          until [ -f "/builds/$CI_PROJECT_PATH/scripts/init-db.sh" ]; do true; done;
+          cp /builds/$CI_PROJECT_PATH/scripts/init-db.sh /docker-entrypoint-initdb.d/;
           /usr/local/bin/docker-entrypoint.sh postgres;
 
     - name: livekit/livekit-server:v1.8
@@ -92,8 +92,8 @@ default:
         - /bin/sh
         - -c
         - |
-          until [ -f "/builds/j.eumann/e2e-tests/scripts/livekit-init.sh" ]; do true; done;
-          cp /builds/j.eumann/e2e-tests/scripts/livekit-init.sh /usr/local/bin;
+          until [ -f "/builds/$CI_PROJECT_PATH/scripts/livekit-init.sh" ]; do true; done;
+          cp /builds/$CI_PROJECT_PATH/scripts/livekit-init.sh /usr/local/bin;
           livekit-init.sh;
 
     - name: rabbitmq:4-management
@@ -121,9 +121,9 @@ default:
         - -c
         - |
           while true; do
-            until [ -f "/builds/j.eumann/e2e-tests/config/controller-config.toml" ]; do true; done;
+            until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do true; done;
             sleep 10;
-            /controller/opentalk-controller -c /builds/j.eumann/e2e-tests/config/controller-config.toml;
+            /controller/opentalk-controller -c /builds/$CI_PROJECT_PATH/config/controller-config.toml;
           done;
 
     # - name: git.opentalk.dev:5050/opentalk/backend/services/smtp-mailer:dev
@@ -133,7 +133,7 @@ default:
     # - name: git.opentalk.dev:5050/opentalk/backend/services/obelisk:dev
     #   pull_policy: if-not-present
     #   alias: obelisk
-    #   entrypoint: ["/usr/bin/ls", "-lah", "/builds/j.eumann/e2e-tests/config/controller-config.toml"]
+    #   entrypoint: ["/usr/bin/ls", "-lah", "/builds/$CI_PROJECT_PATH/config/controller-config.toml"]
 
     # - name: git.opentalk.dev:5050/opentalk/backend/services/recorder:dev
     #   pull_policy: if-not-present
@@ -172,9 +172,9 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/j.eumann/e2e-tests/config/opentalk-realm.json" ]; do true; done;
+          until [ -f "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json" ]; do true; done;
           mkdir -p /opt/keycloak/data/import;
-          cp /builds/j.eumann/e2e-tests/config/opentalk-realm.json /opt/keycloak/data/import;
+          cp /builds/$CI_PROJECT_PATH/config/opentalk-realm.json /opt/keycloak/data/import;
           /opt/keycloak/bin/kc.sh start-dev --import-realm
 
     - name: nginx:stable
@@ -184,10 +184,10 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/j.eumann/e2e-tests/config/nginx.conf" ]; do true; done
-          cp -r /builds/j.eumann/e2e-tests/certs /etc/nginx/;
+          until [ -f "/builds/$CI_PROJECT_PATH/config/nginx.conf" ]; do true; done
+          cp -r /builds/$CI_PROJECT_PATH/certs /etc/nginx/;
           mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
-          cp /builds/j.eumann/e2e-tests/config/nginx.conf /etc/nginx/conf.d/;
+          cp /builds/$CI_PROJECT_PATH/config/nginx.conf /etc/nginx/conf.d/;
           sleep 30;
           /docker-entrypoint.sh nginx -g "daemon off;"
 
