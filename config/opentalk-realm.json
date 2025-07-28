@@ -390,7 +390,7 @@
     "totp" : false,
     "emailVerified" : true,
     "firstName" : "alice",
-    "lastName" : "",
+    "lastName" : "alice",
     "email" : "alice@example.com",
     "credentials" : [ {
       "id" : "b6d64b24-26d4-4724-8442-8b0c15ecb8e1",

@@ -16,26 +16,23 @@ const isRoomIdValid = (url: string): boolean => {
   return splitPath.includes('room') && validate(roomId);
 };
 
-const getUserToInviteInMeeting = (browserName: 'chromium' | 'firefox' | 'webkit'): { invitedUserMail: string, inviteUser: string } => {
+const getUserToInviteInMeeting = (browserName: 'chromium' | 'firefox' | 'webkit'): { invitedUserMail: string, invitedUser: string } => {
   const parsedBaseUrl = new URL(process.env.INSTANCE_URL);
-  let inviteUser;
-  let invitedUserMail;
-  if (parsedBaseUrl.hostname === 'localhost') {
-    inviteUser = 'Alice Adams';
-    invitedUserMail = 'alice@example.com';
-  } else if (parsedBaseUrl.hostname.startsWith('testing')) {
+  let invitedUser, invitedUserMail;
+  if (parsedBaseUrl.hostname.startsWith('testing')) {
     // for testing setup
-    inviteUser = 'Time Limit';
+    invitedUser = 'Time Limit';
+    
   } else {
     // for ci setup
-    inviteUser = 'test-firefox test-firefox';
+    invitedUser = 'test-firefox test-firefox';
     invitedUserMail = 'test-firefox@example.org';
     if (browserName === 'firefox') {
-      inviteUser = 'test-webkit test-webkit';
+      invitedUser = 'test-webkit test-webkit';
       invitedUserMail = 'test-webkit@example.org';
     }
   }
-  return { inviteUser, invitedUserMail };
+  return {invitedUser, invitedUserMail};
 };
 
 test.beforeEach('Navigate to dashboard', async ({ page, browserName }) => {
@@ -84,9 +81,9 @@ test.describe('Dashboard_Home', () => {
     );
     await meetingInvitationPage.fillUserDetailForMeetingInvitation('nonexistentuser');
     await expect(await meetingInvitationPage.getUserFromUserInvitationDropDown()).toBe('No result');
-    const { inviteUser, invitedUserMail } = getUserToInviteInMeeting(browserName);
+    const {invitedUserMail, invitedUser } = getUserToInviteInMeeting(browserName);
     await meetingInvitationPage.fillUserDetailForMeetingInvitation(invitedUserMail);
-    await expect(await meetingInvitationPage.getUserFromUserInvitationDropDown()).toBe(inviteUser);
+    await expect(await meetingInvitationPage.getUserFromUserInvitationDropDown()).toBe(invitedUser);
 
     await meetingInvitationPage.selectUserFromInvitationDropDownToInviteToMeeting();
     await expect(await meetingInvitationPage.getInvitedParticipant(invitedUserMail)).toBeVisible();

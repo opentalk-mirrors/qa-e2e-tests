@@ -1,29 +1,27 @@
 services:
   webapp:
     image: git.opentalk.dev:5050/opentalk/frontend/web/web-app:latest
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.2
+    ports:
+      - 127.0.0.1:3000:3000
     environment:
-        PORT: 8080
-        LIVEKIT_SERVER_URL: http://livekit.opentalk.test
-        CONTROLLER_HOST: controller.opentalk.test
-        BASE_URL: https://www.opentalk.test
-        HELPDESK_URL: https://opentalk.eu
-        CONTACT_SUPPORT_URL: https://opentalk.eu
-        IMPRINT_URL: https://opentalk.eu
-        DATA_PROTECTION_URL: https://opentalk.eu
-        OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
-        SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
+        PORT: 3000
+        LIVEKIT_SERVER_URL: http://localhost:7080
+        CONTROLLER_HOST: localhost:11311
+        BASE_URL: "http://localhost:3000"
+        HELPDESK_URL: "https://opentalk.eu"
+        CONTACT_SUPPORT_URL: "https://opentalk.eu"
+        IMPRINT_URL: "https://opentalk.eu/en/terms-of-use"
+        DATA_PROTECTION_URL: "https://opentalk.eu/en/data-protection"
+        OIDC_ISSUER: "http://localhost:8080/auth/realms/OPENTALK"
+        SENTRY_DSN: "https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5"
         INSECURE: "true"
         FEATURE_SHARED_FOLDER: "true"
   db:
     image: postgres:16-alpine
+    ports:
+      - 127.0.0.1:5432:5432
     volumes:
-      - ./:/builds/
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.3
+      - ./:/builds/:rw,Z
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
@@ -34,23 +32,21 @@ services:
       - -c
       - |
         until [ -f "/builds/scripts/init-db.sh" ]; do true; done;
-        cp /builds//scripts/init-db.sh /docker-entrypoint-initdb.d/;
+        cp /builds/scripts/init-db.sh /docker-entrypoint-initdb.d/;
         /usr/local/bin/docker-entrypoint.sh postgres;
 
   livekit:
+    network_mode: host
     image: livekit/livekit-server:v1.8
     volumes:
-      - ./:/builds/
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.4
+      - ./:/builds/:rw,Z
     environment:
       LIVEKIT_HTTP_PORT: 7880
       LIVEKIT_TCP_PORT: 7881
       LIVEKIT_RTC_PORT_RANGE_START: 20000
       LIVEKIT_RTC_PORT_RANGE_END: 39999
       LIVEKIT_RTC_USE_EXTERNAL_IP: "false"
-      LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: "false"
+      LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: "true"
       LIVEKIT_KEYS_API_KEY: Controller
       LIVEKIT_KEYS_API_SECRET: QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv
       LIVEKIT_LOGGING_JSON: "false"
@@ -64,18 +60,16 @@ services:
         livekit-init.sh;
 
   rabbitmq:
+    ports:
+      - 127.0.0.1:5672:5672
     image: rabbitmq:4-management
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.5
 
   minio:
     image: minio/minio:latest
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.6
+    ports:
+      - 9000:9000
     volumes:
-      - ./:/builds/
+      - ./:/builds/:rw,Z
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -87,34 +81,34 @@ services:
         /usr/bin/docker-entrypoint.sh server /data --address ":9000"
 
   controller:
+    network_mode: host
     image: git.opentalk.dev:5050/opentalk/backend/services/controller:dev
     volumes:
-      - ./:/builds/
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.7
-    extra_hosts:
-      - www.opentalk.test:10.5.0.11
-      - controller.opentalk.test:10.5.0.11
-      - livekit.opentalk.test:10.5.0.11
-      - accounts.opentalk.test:10.5.0.11      
+      - ./:/builds/:rw,Z
     entrypoint:
       - /bin/bash
       - -c
       - |
         while true; do
+          echo "Wait for repo data";
           until [ -f "/builds/config/controller-config.toml" ]; do true; done;
           sleep 10;
-          /controller/opentalk-controller -c /builds/config/controller-config.toml;
+          cat /builds/config/controller-config.toml | sed 's/www\.opentalk\.test/webapp\:8080/g' > /tmp/controller-config.toml
+          sed -i 's/accounts\.opentalk\.test/localhost\:8080/g' /tmp/controller-config.toml
+          sed -i 's/livekit\.opentalk\.test/localhost\:7880/g' /tmp/controller-config.toml
+          sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
+          sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
+          sed -i 's/\/minio\:/\/localhost\:/g' /tmp/controller-config.toml
+          echo "Try to start controller";
+          /controller/opentalk-controller -c /tmp/controller-config.toml;
         done;
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1
+    ports:
+      - 127.0.0.1:8080:8080
     volumes:
-      - ./:/builds/
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.8
+      - ./:/builds/:rw,Z
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://db/keycloak
@@ -136,49 +130,23 @@ services:
         cp /builds/config/opentalk-realm.json /opt/keycloak/data/import;
         /opt/keycloak/bin/kc.sh start-dev --import-realm
 
-  nginx:
-    image: nginx:stable
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.11
+
+  test-runner:
+    image: mcr.microsoft.com/playwright:v1.54.1-noble
+    network_mode: host
+    environment:
+      NPM_CONFIG_LOG: /builds/.npm
     volumes:
-      - ./:/builds/
+      - ./:/builds/:rw,Z
+    working_dir:  /builds
+    tty:  true
+    stdin_open: true
     entrypoint:
       - /bin/bash
       - -c
       - |
-        until [ -f "/builds/config/nginx.conf" ]; do true; done
-        cp /builds/config/test_env /builds/e2e/.env;
-        cp -r /builds/certs /etc/nginx/;
-        mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
-        cp /builds/config/nginx.conf /etc/nginx/conf.d/;
-        sleep 30;
-        /docker-entrypoint.sh nginx -g "daemon off;"
-
-  test-runner:
-    image: mcr.microsoft.com/playwright:v1.54.1-noble 
-    user: 1000:1000
-    ports:
-      - 9323:9323
-    extra_hosts:
-      - www.opentalk.test:10.5.0.11
-      - controller.opentalk.test:10.5.0.11
-      - livekit.opentalk.test:10.5.0.11
-      - accounts.opentalk.test:10.5.0.11      
-    networks:
-      e2e:
-        ipv4_address: 10.5.0.12
-    volumes:
-      - ./:/builds/
-    working_dir:  /builds
-    tty:  true
-    stdin_open: true 
-
-networks:
-  e2e:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.5.0.0/24
-          gateway: 10.5.0.1
+        cat /builds/config/test_env | sed 's/https\:\/\/www\.opentalk\.test/http\:localhost\:3000/g' >  /builds/e2e/.env;
+        sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;⏎
+        npm ci
+        npx playwright install
+        bash

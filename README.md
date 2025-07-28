@@ -9,19 +9,20 @@ Start all needed containers:
 docker compose up -d
 ```
 
-Install testing dependencies:
-```
-docker compose exec test-runner npm ci
-docker compose exec test-runner npx playwright install
-```
+Immediately after starting the container, the tests may fail because some OpenTalk components take some time to start.
+You can access the webapp via http://localhost:3000.
 
-
-Run a test suit:
+Run a test suite:
 ```
 docker compose exec test-runner npx playwright test --project=chromium
 ```
 
-Visit test reports:
+Visit last test reports:
 ```
-docker compose exec test-runner npx playwright show-report --host 0.0.0.0
+docker compose exec test-runner npx playwright show-report
+```
+
+Update containers to the newest versions:
+```
+docker compose pull && docker compose up -d
 ```

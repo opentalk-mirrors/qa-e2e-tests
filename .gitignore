@@ -10,3 +10,4 @@ node_modules/
 .auth
 .env
 e2e/.env
+html-report/
