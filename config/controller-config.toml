@@ -240,9 +240,9 @@ directory = "opentalk/meetings"
 expiry = 1
 
 # Default/fallback values
-#[defaults]
+[defaults]
 # Default language of a new user
-#user_language = "en-US"
+user_language = "en-US"
 # Default presenter role for all users (defaults to false if not set)
 #screen_share_requires_permission = true
 # A list of disabled features in the controller. By default all features are enabled.
