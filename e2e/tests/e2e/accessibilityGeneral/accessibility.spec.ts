@@ -54,11 +54,6 @@ test.describe('Accessibility_General', () => {
     await expect(sidebarPage.settingButton).toBeFocused();
     await sidebarPage.page.keyboard.press('Tab');
 
-    // there is no legal options for the testing server
-    if (!process.env.INSTANCE_URL.startsWith('http://')) {
-      await expect(sidebarPage.legalButton).toBeFocused();
-      await sidebarPage.page.keyboard.press('Tab');
-    }
     await expect(sidebarPage.logoutButton).toBeFocused();
     await sidebarPage.page.keyboard.press('Tab');
     await expect(sidebarPage.closeNavigationButton).toBeFocused();
@@ -114,12 +109,6 @@ test.describe('Accessibility_General', () => {
     await lobbyRoomPage.page.keyboard.press('Tab');
     await expect(lobbyRoomPage.joinMeetingButton).toBeFocused();
     await lobbyRoomPage.page.keyboard.press('Tab');
-    // there is no imprint and dataprotection link for the testing server
-    if (!process.env.INSTANCE_URL.startsWith('http://')) {
-      await expect(lobbyRoomPage.imprintLink).toBeFocused();
-      await lobbyRoomPage.page.keyboard.press('Tab');
-      await expect(lobbyRoomPage.dataProtectionLink).toBeFocused();
-    }
   });
 
   test('TC_003_Meeting_Room', async ({ page, browserName }) => {
@@ -144,11 +133,6 @@ test.describe('Accessibility_General', () => {
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.viewOptionsButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
-    // secure tick icon doesn't appear if server is running on http
-    if (!process.env.INSTANCE_URL.startsWith('http://')) {
-      await expect(meetingRoomPage.securityMonitorButton).toBeFocused();
-      await meetingRoomPage.page.keyboard.press('Tab');
-    }
     await expect(meetingRoomPage.burgerMenuButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
 
@@ -170,10 +154,6 @@ test.describe('Accessibility_General', () => {
       meetingRoomPage.moderationTools.coffeeBreakButton,
       meetingRoomPage.moderationTools.debriefingButton,
     ];
-    // meeting notes & whiteboard are not available on local setup and thus need to be disabled for running this test locally
-    if (process.env.INSTANCE_URL.startsWith('http://')) {
-      moderationButtons.splice(6, 2);
-    }
 
     for (const button of moderationButtons) {
       await expect(button).toBeFocused();

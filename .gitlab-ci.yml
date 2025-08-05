@@ -56,8 +56,8 @@ default:
         BASE_URL: https://www.opentalk.test
         HELPDESK_URL: https://opentalk.eu
         CONTACT_SUPPORT_URL: https://opentalk.eu
-        IMPRINT_URL: https://opentalk.eu
-        DATA_PROTECTION_URL: https://opentalk.eu
+        IMPRINT_URL: https://opentalk.eu/en/terms-of-use
+        DATA_PROTECTION_URL: https://opentalk.eu/en/data-protection
         OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
         SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
         INSECURE: "true"
@@ -122,7 +122,7 @@ default:
         - |
           while true; do
             until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do true; done;
-            sleep 10;
+            sleep 5;
             /controller/opentalk-controller -c /builds/$CI_PROJECT_PATH/config/controller-config.toml;
           done;
 
@@ -177,7 +177,7 @@ default:
           cp /builds/$CI_PROJECT_PATH/config/opentalk-realm.json /opt/keycloak/data/import;
           /opt/keycloak/bin/kc.sh start-dev --import-realm
 
-    - name: nginx:stable
+    - name: nginx:1.29
       pull_policy: if-not-present
       alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test
       entrypoint:
@@ -188,7 +188,6 @@ default:
           cp -r /builds/$CI_PROJECT_PATH/certs /etc/nginx/;
           mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
           cp /builds/$CI_PROJECT_PATH/config/nginx.conf /etc/nginx/conf.d/;
-          sleep 30;
           /docker-entrypoint.sh nginx -g "daemon off;"
 
 e2e-smoke-tests:
@@ -200,8 +199,8 @@ e2e-smoke-tests:
     - npm install
     - npx playwright install --with-deps
     - cp config/test_env e2e/.env
-    - sleep 30
   script:
+    - sleep 10
     - npx playwright test --project=smoke-$BROWSER
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
@@ -224,7 +223,7 @@ e2e-full-tests:
     - npm install
     - npx playwright install --with-deps
     - cp config/test_env e2e/.env
-    - sleep 30
+    - sleep 10
   script:
     - npx playwright test --project=$BROWSER
   after_script:
