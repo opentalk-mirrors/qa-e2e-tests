@@ -62,6 +62,7 @@ export default defineConfig({
             '--guest',
             '--disable-web-security',
             '--allow-running-insecure-content',
+            '--use-file-for-fake-video-capture=./e2e/tests/e2e/filesForTesting/test.mjpeg',
           ],
         },
         contextOptions: {
