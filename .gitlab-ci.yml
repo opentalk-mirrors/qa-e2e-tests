@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 ---
 stages:
-  - smoke
-  - full
+  - e2e-tests
   - testrail
 
 variables:
@@ -34,9 +33,9 @@ variables:
   OBELISK_TAG:
     description: "The obelisk version tag"
     value: "dev"
-
-  
-
+  RUN_ONLY_SMOKE_TESTS:
+    description: "If only smoked tests should run set this variable to `true`"
+    value: "false"
 
 .template_vars:
   BROWSERS: [ chromium, webkit, firefox ]
@@ -190,42 +189,20 @@ default:
           cp /builds/$CI_PROJECT_PATH/config/nginx.conf /etc/nginx/conf.d/;
           /docker-entrypoint.sh nginx -g "daemon off;"
 
-e2e-smoke-tests:
+e2e-tests:
   parallel:
     matrix:
       - BROWSER: !reference [.template_vars, BROWSERS]
-  stage: smoke
-  before_script:
-    - npm install
-    - npx playwright install --with-deps
-    - cp config/test_env e2e/.env
-  script:
-    - sleep 10
-    - npx playwright test --project=smoke-$BROWSER
-  after_script:
-    - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
-    - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
-    - npx ts-node ./scripts/modifyJUnitReportForTestRail.ts
-  artifacts:
-    when: always
-    paths:
-      - junit
-      - html-report
-      - playwright-report
-      - test-results
-    expire_in: 1 days
-e2e-full-tests:
-  parallel:
-    matrix:
-      - BROWSER: !reference [.template_vars, BROWSERS]
-  stage: full
+  stage: e2e-tests
   before_script:
     - npm install
     - npx playwright install --with-deps
     - cp config/test_env e2e/.env
     - sleep 10
   script:
-    - npx playwright test --project=$BROWSER
+    - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "*$BROWSER")
+    - echo "RUNS $PROJECTS project"
+    - npx playwright test --project=$PROJECTS      
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
@@ -243,7 +220,7 @@ merge-and-upload-test-results:
   stage: testrail
   image: python:latest
   needs:
-    - e2e-full-tests
+    - e2e-tests
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
   before_script:
