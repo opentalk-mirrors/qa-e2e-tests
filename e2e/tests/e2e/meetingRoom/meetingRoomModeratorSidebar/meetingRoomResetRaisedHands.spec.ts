@@ -14,114 +14,174 @@ import { ResetRaisedHandsPage } from '../../../pages/MeetingRoom/ModeratorTools/
 import { ParticipantTilePage } from '../../../pages/MeetingRoom/ParticipantTilePage';
 import { NotificationPage } from '../../../pages/NotificationPage';
 
-test.describe('Meeting Room_Reset raised hands', () => {
-  const NUMBER_OF_GUESTS = 2;
-  const idleGuest = 'idleGuest';
-  const guest1 = 'guest1';
-  const guest2 = 'guest2';
+const NUMBER_OF_GUESTS = 2;
+const idleGuest = 'idleGuest';
+const guest1 = 'guest1';
+const guest2 = 'guest2';
+const resetRaisedHandsNotificationText = 'Your raised hand was reset by the moderator';
+
+let meetingRoomPage: MeetingRoomPage,
+  guestLink: string,
+  guestMeetingRoomPages: MeetingRoomPage[] = [],
+  idleGuestMeetingRoomPage: MeetingRoomPage,
+  resetRaisedHandsPage: ResetRaisedHandsPage;
+
+test.describe('Meeting Room_Reset raised hands selected button', () => {
   const guestName = [guest1, guest2];
-  const resetRaisedHandsNotificationText = 'Your raised hand was reset by the moderator';
 
-  let meetingRoomPage: MeetingRoomPage,
-    guestLink: string,
-    guestMeetingRoomPages: MeetingRoomPage[] = [],
-    idleGuestMeetingRoomPage: MeetingRoomPage,
-    guestTile: ParticipantTilePage,
-    moderatorTile: ParticipantTilePage,
-    idleGuestTile: ParticipantTilePage;
+  let guestTile: ParticipantTilePage, moderatorTile: ParticipantTilePage, idleGuestTile: ParticipantTilePage;
 
-  test.describe('Moderator resets raised hands for all and selected participants', () => {
-    test.beforeEach(async ({ page, context, browserName }) => {
-      ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-      await meetingRoomPage.page.bringToFront();
-      await meetingRoomPage.raiseYourHand();
-      guestMeetingRoomPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
-      for (const guestMeetingRoomPage of guestMeetingRoomPages) {
-        await guestMeetingRoomPage.page.bringToFront();
-        await guestMeetingRoomPage.raiseYourHand();
-      }
-      idleGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
-      // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
-    });
+  test.beforeEach(async ({ page, context, browserName }) => {
+    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
+    await meetingRoomPage.page.bringToFront();
+    await meetingRoomPage.raiseYourHand();
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+      await guestMeetingRoomPage.page.bringToFront();
+      await guestMeetingRoomPage.raiseYourHand();
+    }
+    idleGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
+  });
 
-    test('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
-      await expect(meetingRoomPage.toolBar.handLowerButton).toBeEnabled();
-      expect(await meetingRoomPage.isHandRaised()).toBeTruthy();
-      for (const guestMeetingRoomPage of guestMeetingRoomPages) {
-        await guestMeetingRoomPage.page.bringToFront();
-        await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
-        expect(await guestMeetingRoomPage.isHandRaised()).toBeTruthy();
-      }
-      await meetingRoomPage.page.bringToFront();
-      const resetRaisedHandsPage: ResetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
-      await expect(resetRaisedHandsPage.resetRaisedHandsTitle).toBeVisible();
-      await expect(resetRaisedHandsPage.allButton).toBeVisible();
-      await expect(resetRaisedHandsPage.selectedButton).toBeVisible();
-      await expect(resetRaisedHandsPage.searchParticipantTextbox).toBeVisible();
-      await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
+  test('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
+    await expect(meetingRoomPage.toolBar.handLowerButton).toBeEnabled();
+    expect(await meetingRoomPage.isHandRaised()).toBeTruthy();
+    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+      await guestMeetingRoomPage.page.bringToFront();
+      await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
+      expect(await guestMeetingRoomPage.isHandRaised()).toBeTruthy();
+    }
+    await meetingRoomPage.page.bringToFront();
+    resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
+    await expect(resetRaisedHandsPage.resetRaisedHandsTitle).toBeVisible();
+    await expect(resetRaisedHandsPage.allButton).toBeVisible();
+    await expect(resetRaisedHandsPage.selectedButton).toBeVisible();
+    await expect(resetRaisedHandsPage.searchParticipantTextbox).toBeVisible();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
 
-      for (const guest of guestName) {
-        guestTile = meetingRoomPage.getParticipantTileByName(guest);
-        expect(await guestTile.isHandRaised()).toBeTruthy();
-      }
-      idleGuestTile = meetingRoomPage.getParticipantTileByName(idleGuest);
-      expect(await idleGuestTile.isHandRaised()).toBeFalsy();
-      const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
-      const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
-      await firstGuestMeetingRoomPage.page.bringToFront();
-      moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USERNAME);
-      expect(await moderatorTile.isHandRaised()).toBeTruthy();
+    for (const guest of guestName) {
+      guestTile = meetingRoomPage.getParticipantTileByName(guest);
+      expect(await guestTile.isHandRaised()).toBeTruthy();
+    }
+    idleGuestTile = meetingRoomPage.getParticipantTileByName(idleGuest);
+    expect(await idleGuestTile.isHandRaised()).toBeFalsy();
+    const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
+    const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
+    await firstGuestMeetingRoomPage.page.bringToFront();
+    moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USERNAME);
+    expect(await moderatorTile.isHandRaised()).toBeTruthy();
 
-      await meetingRoomPage.page.bringToFront();
-      await resetRaisedHandsPage.resetAllRaisedHands();
-      const moderatorNotification = new NotificationPage({ page: page });
-      expect(await moderatorNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
-      await expect(meetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
-      await expect(meetingRoomPage.toolBar.handRaiseButton).toBeVisible();
-      await firstGuestMeetingRoomPage.page.bringToFront();
-      const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
-      expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
-      await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
-      await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
-      await secondGuestMeetingRoomPage.page.bringToFront();
-      const secondGuestNotification = new NotificationPage({ page: secondGuestMeetingRoomPage.page });
-      expect(await secondGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
-      await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
-      await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
-      await meetingRoomPage.page.bringToFront();
-      for (const guest of guestName) {
-        guestTile = meetingRoomPage.getParticipantTileByName(guest);
-        expect(await guestTile.isHandRaised()).toBeFalsy();
-      }
-      await firstGuestMeetingRoomPage.page.bringToFront();
-      expect(await moderatorTile.isHandRaised()).toBeFalsy();
-      await meetingRoomPage.page.bringToFront();
-      await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(0);
+    await meetingRoomPage.page.bringToFront();
+    await resetRaisedHandsPage.resetAllRaisedHands();
+    const moderatorNotification = new NotificationPage({ page: page });
+    expect(await moderatorNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    await expect(meetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(meetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await firstGuestMeetingRoomPage.page.bringToFront();
+    const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
+    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await secondGuestMeetingRoomPage.page.bringToFront();
+    const secondGuestNotification = new NotificationPage({ page: secondGuestMeetingRoomPage.page });
+    expect(await secondGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await meetingRoomPage.page.bringToFront();
+    for (const guest of guestName) {
+      guestTile = meetingRoomPage.getParticipantTileByName(guest);
+      expect(await guestTile.isHandRaised()).toBeFalsy();
+    }
+    await firstGuestMeetingRoomPage.page.bringToFront();
+    expect(await moderatorTile.isHandRaised()).toBeFalsy();
+    await meetingRoomPage.page.bringToFront();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(0);
 
-      await meetingRoomPage.raiseYourHand();
-      for (const guestMeetingRoomPage of guestMeetingRoomPages) {
-        await guestMeetingRoomPage.page.bringToFront();
-        await guestMeetingRoomPage.raiseYourHand();
-      }
-      await meetingRoomPage.page.bringToFront();
-      await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
+    await meetingRoomPage.raiseYourHand();
+    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+      await guestMeetingRoomPage.page.bringToFront();
+      await guestMeetingRoomPage.raiseYourHand();
+    }
+    await meetingRoomPage.page.bringToFront();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
 
-      await resetRaisedHandsPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
-      expect(await resetRaisedHandsPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
+    await resetRaisedHandsPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
+    expect(await resetRaisedHandsPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
 
-      await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
-      await firstGuestMeetingRoomPage.page.bringToFront();
-      expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
-      await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
-      await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
-      await secondGuestMeetingRoomPage.page.bringToFront();
-      await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
-      await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeVisible();
-      await idleGuestMeetingRoomPage.page.bringToFront();
-      await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
-      await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
-      await meetingRoomPage.page.bringToFront();
-      await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
-    });
+    await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
+    await firstGuestMeetingRoomPage.page.bringToFront();
+    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await secondGuestMeetingRoomPage.page.bringToFront();
+    await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
+    await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeVisible();
+    await idleGuestMeetingRoomPage.page.bringToFront();
+    await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await meetingRoomPage.page.bringToFront();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+  });
+});
+
+test.describe('Meeting Room_Reset raised hands search participant', () => {
+  test.beforeEach(async ({ page, context, browserName }) => {
+    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+      await guestMeetingRoomPage.page.bringToFront();
+      await guestMeetingRoomPage.raiseYourHand();
+    }
+    idleGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
+    resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
+  });
+
+  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async () => {
+    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+      await guestMeetingRoomPage.page.bringToFront();
+      await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
+      expect(await guestMeetingRoomPage.isHandRaised()).toBeTruthy();
+    }
+
+    await meetingRoomPage.page.bringToFront();
+    await resetRaisedHandsPage.selectSearchParticipantTextbox();
+    expect(await resetRaisedHandsPage.getPlaceholderValueOfSearchParticipantTextbox()).toBe('John Doe');
+
+    await resetRaisedHandsPage.searchParticipantInList(guest1.slice(-2)); //extracts t1 from guest1
+    await expect(resetRaisedHandsPage.getParticipantItemByName(guest1)).toBeVisible();
+    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).not.toBeVisible();
+    await expect(resetRaisedHandsPage.getParticipantItemByName(idleGuest)).not.toBeVisible();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+
+    await resetRaisedHandsPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
+    expect(await resetRaisedHandsPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
+
+    await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
+    const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
+    const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
+    await firstGuestMeetingRoomPage.page.bringToFront();
+    const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
+    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+    await secondGuestMeetingRoomPage.page.bringToFront();
+    await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
+    await expect(secondGuestMeetingRoomPage.toolBar.handLowerButton).toBeVisible();
+    await idleGuestMeetingRoomPage.page.bringToFront();
+    await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
+    await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
+
+    await meetingRoomPage.page.bringToFront();
+    await resetRaisedHandsPage.clearSearchedText();
+    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).toBeVisible();
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+
+    await resetRaisedHandsPage.searchParticipantInList('abc');
+    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(0);
+
+    await resetRaisedHandsPage.clearSearchedText();
+    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).toBeVisible();
   });
 });
