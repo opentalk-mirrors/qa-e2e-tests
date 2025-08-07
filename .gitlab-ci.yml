@@ -144,14 +144,14 @@ default:
       variables:
         EP_APIKEY: pooWie1ooD8nie5eZophah6eih6Uo3ch
         TRUST_PROXY: true
-        
+
     - name: git.opentalk.dev:5050/opentalk/backend/containers/spacedeck:$WHITEBOARD_TAG
       pull_policy: if-not-present
       alias: whiteboard
       variables:
         SD_API_TOKEN: au0beiR3ki8ain0eihaiHae5ofei4soh
         SD_INVITE_CODE: Ood6aeJoag9ahr8da2cai8on8ooCeeng
-      
+
     - name: quay.io/keycloak/keycloak:26.1
       pull_policy: if-not-present
       alias: keycloak
@@ -202,7 +202,7 @@ e2e-tests:
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "*$BROWSER")
     - echo "RUNS $PROJECTS project"
-    - npx playwright test --project=$PROJECTS      
+    - npx playwright test --project=$PROJECTS --workers=1
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
