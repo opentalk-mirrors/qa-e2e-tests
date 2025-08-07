@@ -1,6 +1,9 @@
 services:
   webapp:
     image: git.opentalk.dev:5050/opentalk/frontend/web/web-app:latest
+    depends_on:
+      controller:
+        condition: service_healthy
     ports:
       - 127.0.0.1:3000:3000
     environment:
@@ -16,6 +19,12 @@ services:
         SENTRY_DSN: "https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5"
         INSECURE: "true"
         FEATURE_SHARED_FOLDER: "true"
+    healthcheck:
+      test: "wget \"http://localhost:3000/manifest.json\" -O - | grep '\"short_name\": \"OpenTalk\"'"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   db:
     image: postgres:16-alpine
     ports:
@@ -26,7 +35,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
       POSTGRES_HOST_AUTH_METHOD: trust
-      
+
     entrypoint:
       - /bin/bash
       - -c
@@ -34,6 +43,11 @@ services:
         until [ -f "/builds/scripts/init-db.sh" ]; do true; done;
         cp /builds/scripts/init-db.sh /docker-entrypoint-initdb.d/;
         /usr/local/bin/docker-entrypoint.sh postgres;
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   livekit:
     network_mode: host
@@ -58,11 +72,18 @@ services:
         until [ -f "/builds/scripts/livekit-init.sh" ]; do true; done;
         cp /builds//scripts/livekit-init.sh /usr/local/bin;
         livekit-init.sh;
+    healthcheck:
+      test: "wget \"http://localhost:7880\" -O -"
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     ports:
       - 127.0.0.1:5672:5672
     image: rabbitmq:4-management
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
 
   minio:
     image: minio/minio:latest
@@ -79,9 +100,23 @@ services:
       - |
         mkdir -p /data/controller &&
         /usr/bin/docker-entrypoint.sh server /data --address ":9000"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   controller:
     network_mode: host
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      livekit:
+        condition: service_healthy
     image: git.opentalk.dev:5050/opentalk/backend/services/controller:dev
     volumes:
       - ./:/builds/:rw,Z
@@ -102,9 +137,17 @@ services:
           echo "Try to start controller";
           /controller/opentalk-controller -c /tmp/controller-config.toml;
         done;
+    healthcheck:
+      test: "/controller/opentalk-controller tenants list | grep OpenTalkDefaultTenant"
+      interval: 5s
+      timeout: 5s
+      retries: 30
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - 127.0.0.1:8080:8080
     volumes:
@@ -128,11 +171,20 @@ services:
         until [ -f "/builds/config/opentalk-realm.json" ]; do true; done;
         mkdir -p /opt/keycloak/data/import;
         cp /builds/config/opentalk-realm.json /opt/keycloak/data/import;
-        /opt/keycloak/bin/kc.sh start-dev --import-realm
-
+        /opt/keycloak/bin/kc.sh start-dev --import-realm --health-enabled=true
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
 
   test-runner:
     image: mcr.microsoft.com/playwright:v1.54.1-noble
+    depends_on:
+      controller:
+        condition: service_healthy
+      webapp:
+        condition: service_healthy
     network_mode: host
     environment:
       NPM_CONFIG_LOG: /builds/.npm
