@@ -5,6 +5,7 @@ import { Page, Locator } from '@playwright/test';
 
 import { AccountPage } from './AccountPage';
 import { ProfilePage } from './ProfilePage';
+import { StoragePage } from './StoragePage';
 
 export class SettingsPage {
   public readonly page: Page;
@@ -42,5 +43,12 @@ export class SettingsPage {
   public async isOptionSelected(locator: Locator): Promise<boolean> {
     await locator.waitFor();
     return await locator.evaluate((el) => el.classList.contains('active'));
+  }
+
+  public async navigateToStorage(): Promise<StoragePage> {
+    await this.storageLink.click();
+    const storagePage: StoragePage = new StoragePage(this.page);
+    await storagePage.storageHeading.waitFor();
+    return storagePage;
   }
 }

@@ -5,21 +5,53 @@ import { readFileSync, readFile } from 'node:fs';
 
 import { config } from '../config';
 
-async function makeRequest(params: string, method: string = 'GET', body?: object, headers: Headers = new Headers()) {
+async function makeRequest(
+  params: string,
+  method: string = 'GET',
+  body?: object | Buffer,
+  headers: Headers = new Headers(),
+  isBuffer: boolean = false
+) {
   const dataArray = JSON.parse(readFileSync('.auth/user.json', 'utf-8'));
   const localStorage = dataArray.origins[0].localStorage;
   const accessToken = localStorage.find((item: { name: string; value: string }) => item.name === 'access_token')?.value;
-  headers.append('content-type', 'application/json');
+  if (!headers.has('content-type')) {
+    headers.append('content-type', 'application/json');
+  }
   headers.append('authorization', 'Bearer ' + accessToken);
-  const bodyString = JSON.stringify(body);
 
   const requestOptions = {
     headers: headers,
-    body: bodyString,
+    body: isBuffer ? (body as BodyInit) : JSON.stringify(body),
     method: method,
   };
 
   return fetch(`${config.CONTROLLER_HOST}${params}`, requestOptions);
+}
+
+export async function createMeetingAsset(
+  filePath: string,
+  roomId: string,
+  eventTitle: string,
+  fileExt: string,
+  kind: string = 'record',
+  namespace: string = 'recording'
+) {
+  try {
+    const headers = new Headers({ 'content-type': 'application/octet-stream' });
+    const query = new URLSearchParams({ event_title: eventTitle, file_extension: fileExt, kind, namespace }).toString();
+    const file = readFileSync(filePath);
+
+    const response = await makeRequest(`/v1/rooms/${roomId}/assets?${query}`, 'POST', file, headers, true);
+    if (!response.ok) {
+      throw new Error(`Failed to create asset: ${response.status} ${response.statusText}}`);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw error;
+  }
 }
 
 export async function changeLanguage(lang: string) {
