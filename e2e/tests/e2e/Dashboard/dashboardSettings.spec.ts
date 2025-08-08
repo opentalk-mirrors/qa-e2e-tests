@@ -8,10 +8,14 @@ import { changeLanguage } from '../../helper/Api';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
+import { NotificationPage } from '../../pages/NotificationPage';
 import { AccountPage } from '../../pages/Settings/AccountPage';
 import { GeneralPage } from '../../pages/Settings/GeneralPage';
+import { ProfilePage } from '../../pages/Settings/ProfilePage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
 import { SidebarPage } from '../../pages/SidebarPage';
+
+const USERNAME: string = config.USERNAME;
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,
@@ -95,50 +99,54 @@ test.describe('Dashboard_Settings', () => {
     await expect(myMeetingsPage.planNewLink).toHaveText('Plan new');
   });
 
-  test.skip('TC_002_Dashboard_Settings_Profile option', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit');
+  test.describe('TC_002_Dashboard_Settings_Profile option', () => {
+    test('TC_002_Dashboard_Settings_Profile option', async () => {
+      const myProfileName = 'Bob';
+      const profilePage: ProfilePage = await settingsPage.navigateToProfile();
+      await expect(profilePage.profilePictureHeading).toBeVisible();
+      await expect(profilePage.requiredFieldsText).toBeVisible();
+      await expect(profilePage.imageAvatar).toBeVisible();
+      await expect(profilePage.profileNameLabel).toBeVisible();
+      expect(await profilePage.getProfileNameTextboxValue()).toBe(USERNAME);
+      await expect(profilePage.enterANameText).toBeVisible();
+      await expect(profilePage.saveButton).toBeVisible();
 
-    const homePage = new HomePage({ page });
-    await homePage.navigateToHomePage();
-    await page.getByRole('link', { name: 'Settings', exact: true }).click();
-    await page.getByRole('link', { name: 'Profile' }).click();
-    await expect(page.getByRole('heading', { name: 'Profile Picture' })).toBeVisible();
-    await page.getByRole('textbox', { name: 'Profile Name' }).isVisible();
-    const profileName = await page.getByRole('textbox', { name: 'Profile Name' }).inputValue();
-    await expect(page.getByRole('main').getByRole('img', { name: profileName })).toBeVisible();
-    await expect(page.getByLabel('Profile Name')).toBeVisible();
-    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toHaveValue(profileName);
-    await expect(
-      page.getByText(
-        'Enter a name (such as your first name, full name, or a nickname) that will be visible to others on OpenTalk.'
-      )
-    ).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toBeEditable();
+      await profilePage.selectProfileNameInputField();
+      await expect(profilePage.profileNameTextbox).toBeEnabled();
 
-    await page.getByRole('textbox', { name: 'Profile Name' }).clear();
-    await expect(page.getByPlaceholder('John Doe')).toBeVisible();
-    await expect(page.getByText('Error: "Profile Name" is a required field')).toBeVisible();
+      await profilePage.clearProfileName();
+      expect(await profilePage.getPlaceholderValueOfProfileNameTextbox()).toBe('John Doe');
+      expect(await profilePage.getErrorText()).toBe('Error: "Profile Name" is a required field');
 
-    await page.getByRole('textbox', { name: 'Profile Name' }).fill(`${profileName}-TEST`);
-    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toHaveValue(`${profileName}-TEST`);
+      expect(await profilePage.saveProfile()).toBeFalsy();
 
-    await page.getByRole('button', { name: 'Save' }).click();
-    const alertMessage = await page.getByRole('alert').filter({ hasText: 'Your settings' });
-    await expect(alertMessage).toBeVisible();
-    await expect(page.getByText('Your settings have been saved successfully.')).toBeVisible();
-    await expect(page.getByRole('navigation').getByText(`${profileName}-TEST`)).toBeVisible();
+      await profilePage.enterProfileName(myProfileName);
+      expect(await profilePage.getProfileNameTextboxValue()).toBe(myProfileName);
 
-    //reset values
-    await page.getByRole('textbox', { name: 'Profile Name' }).fill(config.USERNAME);
-    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toHaveValue(config.USERNAME);
-    await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByRole('navigation').getByText(config.USERNAME)).toBeVisible();
+      await profilePage.saveProfile();
+      const notificationPage = new NotificationPage({ page: profilePage.page });
+      expect(await notificationPage.getAlertNotificationText()).toBe('Your settings have been saved successfully.');
+      await expect(sideBarPage.profileName).toHaveText(myProfileName);
+    });
+
+    //cleanup
+    test.afterAll(async ({ browser }) => {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+
+      const sideBarPage = new SidebarPage({ page });
+      const settingsPage = await sideBarPage.navigateToSettingsPage();
+
+      const profilePage: ProfilePage = await settingsPage.navigateToProfile();
+      await profilePage.enterProfileName(USERNAME);
+      await profilePage.saveProfile();
+
+      await context.close();
+    });
   });
 
   test('TC_003_Dashboard_Settings_Account option', async () => {
-    const USER_EMAIL: string = config.USER_EMAIL;
-    const USERNAME: string = config.USERNAME;
+    const USER_EMAIL: string = process.env.USER_EMAIL!;
 
     const accountPage: AccountPage = await settingsPage.navigateToAccount();
     await expect(accountPage.generalInformationHeading).toBeVisible();

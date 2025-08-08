@@ -4,6 +4,7 @@
 import { Page, Locator } from '@playwright/test';
 
 import { AccountPage } from './AccountPage';
+import { ProfilePage } from './ProfilePage';
 
 export class SettingsPage {
   public readonly page: Page;
@@ -24,9 +25,11 @@ export class SettingsPage {
     this.storageLink = this.page.getByRole('link', { name: 'Storage' });
   }
 
-  public async isOptionSelected(locator: Locator): Promise<boolean> {
-    await locator.waitFor();
-    return await locator.evaluate((el) => el.classList.contains('active'));
+  public async navigateToProfile(): Promise<ProfilePage> {
+    await this.profileLink.click();
+    const profilePage = new ProfilePage(this.page);
+    await profilePage.profilePictureHeading.waitFor();
+    return profilePage;
   }
 
   public async navigateToAccount(): Promise<AccountPage> {
@@ -34,5 +37,10 @@ export class SettingsPage {
     const accountPage = new AccountPage(this.page);
     await accountPage.generalInformationHeading.waitFor();
     return accountPage;
+  }
+
+  public async isOptionSelected(locator: Locator): Promise<boolean> {
+    await locator.waitFor();
+    return await locator.evaluate((el) => el.classList.contains('active'));
   }
 }
