@@ -28,13 +28,12 @@ export class LoginPage {
     await this.usernameInputField.press('Tab');
     await this.passwordInputField.fill(password);
 
-    await Promise.all([
-      this.page.waitForResponse(
-        (response) =>
-          response.url().endsWith('/token') && response.status() === 200 && response.request().method() === 'POST'
-      ),
-      this.signInButton.click(),
-    ]);
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().endsWith('/token') && response.status() === 200 && response.request().method() === 'POST'
+    );
+    await this.signInButton.click();
+    await responsePromise;
 
     const homePage = new HomePage({ page: this.page });
     await homePage.currentMeetingsHeaderSelector.waitFor({ timeout: 30_000 });
