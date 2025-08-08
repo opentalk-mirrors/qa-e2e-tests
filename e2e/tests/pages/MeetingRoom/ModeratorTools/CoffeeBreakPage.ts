@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
+import { CoffeeBreakDialogPage } from '../CoffeeBreakDialogPage';
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class CoffeeBreakPage extends ModeratorToolsPage {
@@ -20,6 +21,9 @@ export class CoffeeBreakPage extends ModeratorToolsPage {
   public readonly customDurationLabel: Locator;
   public readonly customDurationField: Locator;
   private readonly selectedDurationLocator: Locator;
+  public readonly durationLabel: Locator;
+  public readonly timerText: Locator;
+  public readonly stopCoffeeBreakButton: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page });
@@ -37,6 +41,9 @@ export class CoffeeBreakPage extends ModeratorToolsPage {
     this.customDurationLabel = this.page.getByText('Enter custom duration (min)', { exact: true });
     this.customDurationField = this.page.getByRole('spinbutton');
     this.selectedDurationLocator = this.page.locator('div[role="button"][aria-selected="true"]');
+    this.durationLabel = this.page.locator('[data-sentry-component="TimerDuration"] p').nth(0);
+    this.timerText = this.page.getByTestId('timer-display');
+    this.stopCoffeeBreakButton = this.page.getByRole('button', { name: 'Stop coffee break' });
   }
 
   public async openDurationDialog(): Promise<void> {
@@ -111,5 +118,33 @@ export class CoffeeBreakPage extends ModeratorToolsPage {
 
   public async incrementCustomDuration(): Promise<void> {
     await this.customDurationField.press('ArrowUp');
+  }
+
+  public async decrementCustomDuration(): Promise<void> {
+    await this.customDurationField.press('ArrowDown');
+  }
+
+  public async selectStartCoffeeBreakButton(): Promise<CoffeeBreakDialogPage> {
+    await this.startCoffeeBreakButton.click();
+    const coffeeBreakDialogPage = new CoffeeBreakDialogPage({ page: this.page });
+    await coffeeBreakDialogPage.coffeeBreakDialog.waitFor();
+    return coffeeBreakDialogPage;
+  }
+
+  public async isTimerCountingDown(): Promise<boolean> {
+    const initialText = await this.timerText.textContent();
+    if (!initialText) {
+      throw new Error('Timer text not found');
+    }
+    await expect(this.timerText).not.toHaveText(initialText, { timeout: 3000 });
+    const [initialMin, initialSec] = initialText.trim().split(':').map(Number);
+    const initialTotalSec = initialMin * 60 + initialSec;
+    const updatedText = await this.timerText.textContent();
+    if (!updatedText) {
+      return false;
+    }
+    const [updatedMin, updatedSec] = updatedText.trim().split(':').map(Number);
+    const updatedTotalSec = updatedMin * 60 + updatedSec;
+    return updatedTotalSec < initialTotalSec;
   }
 }
