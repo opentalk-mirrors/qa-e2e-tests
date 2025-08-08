@@ -5,6 +5,7 @@ import { Page, Locator, BrowserContext } from '@playwright/test';
 
 import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
+import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
@@ -395,5 +396,12 @@ export class MeetingRoomPage {
   public getParticipantTileByName(name: string): ParticipantTilePage {
     const participantTileWithName = this.participantWindowLocator.filter({ hasText: name });
     return new ParticipantTilePage(participantTileWithName);
+  }
+
+  public async selectCoffeeBreakModeratorTool(): Promise<CoffeeBreakPage> {
+    await this.moderationTools.coffeeBreakButton.click();
+    const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
+    await coffeeBreakPage.getHeading('Coffee break').waitFor({ state: 'visible' });
+    return coffeeBreakPage;
   }
 }
