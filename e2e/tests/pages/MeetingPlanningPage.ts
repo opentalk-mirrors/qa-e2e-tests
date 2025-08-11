@@ -72,7 +72,10 @@ export class MeetingPlanningPage {
     repeatOnMonthComboboxLabel: Locator;
     repeatOnMonthOption: Locator;
     repeatOnEveryOption: Locator;
-    recurrenceEndDate: Locator;
+    recurrenceEndDateMonth: Locator;
+    recurrenceEndDateDay: Locator;
+    recurrenceEndDateYear: Locator;
+    recurrenceEndDateInputField: Locator;
     recurrenceInterval: Locator;
   };
 
@@ -97,7 +100,7 @@ export class MeetingPlanningPage {
     this.meetingTextAsTitle = this.page.getByText('meeting', { exact: true });
     this.participantTextAsTitle = this.page.getByText('Participants');
     this.meetingPageDescription = this.page.getByText(
-      'Required fields are marked with an asterisk. Please fill them out.'
+        'Required fields are marked with an asterisk. Please fill them out.'
     );
     this.dateInputField = {
       fromInputField: this.page.getByLabel('from *'),
@@ -140,7 +143,10 @@ export class MeetingPlanningPage {
       repeatOnMonthComboboxLabel: this.page.locator('//div[contains(text(), "Monthly on ")]'),
       repeatOnMonthOption: this.page.getByRole('option', { name: /Monthly on \d+/ }),
       repeatOnEveryOption: this.page.getByRole('option', { name: /Every month on the \d+\w+ \w+/ }),
-      recurrenceEndDate: page.getByRole('textbox', { name: 'MM/DD/YYYY' }),
+      recurrenceEndDateMonth: this.page.getByRole('spinbutton', { name: 'Month' }),
+      recurrenceEndDateDay: this.page.getByRole('spinbutton', { name: 'Day' }),
+      recurrenceEndDateYear: this.page.getByRole('spinbutton', { name: 'Year' }),
+      recurrenceEndDateInputField: this.page.getByRole('group').locator('input'),
       recurrenceInterval: this.page.locator('//div[@role="combobox"]').nth(1),
     };
   }
@@ -263,6 +269,14 @@ export class MeetingPlanningPage {
 
   async enableRecurrence(): Promise<void> {
     await this.customMeetingRepetition.on.click();
+  }
+
+  async setCustomRecurrenceEndDate(date: Date): Promise<void> {
+    await this.customMeetingRepetition.recurrenceEndDateMonth.fill(
+        String(date.getMonth() + 1).padStart(2, '0') // month starts with 0
+    );
+    await this.customMeetingRepetition.recurrenceEndDateDay.fill(String(date.getDate()).padStart(2, '0'));
+    await this.customMeetingRepetition.recurrenceEndDateYear.fill(String(date.getFullYear()));
   }
 
   async getMeetingOccurrenceDropDownExpansonState(): Promise<string | null> {

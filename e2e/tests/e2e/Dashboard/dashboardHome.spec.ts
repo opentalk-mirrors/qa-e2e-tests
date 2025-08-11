@@ -22,7 +22,7 @@ const getUserToInviteInMeeting = (browserName: 'chromium' | 'firefox' | 'webkit'
   if (parsedBaseUrl.hostname.startsWith('testing')) {
     // for testing setup
     invitedUser = 'Time Limit';
-    
+
   } else {
     // for ci setup
     invitedUser = 'test-firefox test-firefox';
@@ -324,17 +324,18 @@ test.describe('Dashboard_Home', () => {
     // Repeat every option should be selected as 2 Days
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Every 2 days');
 
-    const nextMonthDate = new Date();
-    nextMonthDate.setMonth(new Date().getMonth() + 1);
+    const dateToSet = new Date();
+    dateToSet.setMonth(new Date().getMonth() + 1);
+    dateToSet.setDate(dateToSet.getDate() + 1);
 
     // Select Recurrence end on a date a month later (either by entering the date into the input field or selecting from the calendar icon)
     await planMeetingPage.selectMeetingRepetition('Custom');
     await planMeetingPage.enableRecurrence();
-    const formattedNextMonthDate = formatDate(nextMonthDate);
-    await planMeetingPage.customMeetingRepetition.recurrenceEndDate.fill(formattedNextMonthDate);
-
+    await planMeetingPage.setCustomRecurrenceEndDate(dateToSet);
     // Recurrence end on option should be selected as date a month later
-    await expect(planMeetingPage.customMeetingRepetition.recurrenceEndDate).toHaveValue(formattedNextMonthDate);
+    await expect(planMeetingPage.customMeetingRepetition.recurrenceEndDateInputField).toHaveValue(
+        formatDate(dateToSet)
+    );
 
     await planMeetingPage.saveCustomMeetingRepetition();
 
