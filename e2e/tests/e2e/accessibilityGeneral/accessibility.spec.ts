@@ -53,7 +53,8 @@ test.describe('Accessibility_General', () => {
     await sidebarPage.page.keyboard.press('Tab');
     await expect(sidebarPage.settingButton).toBeFocused();
     await sidebarPage.page.keyboard.press('Tab');
-
+    await expect(sidebarPage.legalButton).toBeFocused();
+    await sidebarPage.page.keyboard.press('Tab');
     await expect(sidebarPage.logoutButton).toBeFocused();
     await sidebarPage.page.keyboard.press('Tab');
     await expect(sidebarPage.closeNavigationButton).toBeFocused();
@@ -109,6 +110,9 @@ test.describe('Accessibility_General', () => {
     await lobbyRoomPage.page.keyboard.press('Tab');
     await expect(lobbyRoomPage.joinMeetingButton).toBeFocused();
     await lobbyRoomPage.page.keyboard.press('Tab');
+    await expect(lobbyRoomPage.imprintLink).toBeFocused();
+    await lobbyRoomPage.page.keyboard.press('Tab');
+    await expect(lobbyRoomPage.dataProtectionLink).toBeFocused();
   });
 
   test('TC_003_Meeting_Room', async ({ page, browserName }) => {
@@ -132,6 +136,8 @@ test.describe('Accessibility_General', () => {
 
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.viewOptionsButton).toBeFocused();
+    await meetingRoomPage.page.keyboard.press('Tab');
+    await expect(meetingRoomPage.securityMonitorButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.burgerMenuButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
