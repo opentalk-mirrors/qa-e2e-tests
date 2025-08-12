@@ -161,7 +161,7 @@ export class MeetingRoomPage {
 
     this.keyboardShortcuts = {
       keyboardShortcutsPopup: this.page.getByRole('dialog', { name: 'Keyboard Shortcuts' }),
-      checkbox: this.page.getByRole('checkbox', { name: 'Keyboard Shortcuts' }),
+      checkbox: this.page.getByRole('switch', { name: 'Keyboard Shortcuts' }),
       closeButton: this.page.getByRole('button', { name: 'Close dialog' }),
     };
   }
