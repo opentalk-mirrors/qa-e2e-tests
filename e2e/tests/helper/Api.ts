@@ -22,10 +22,20 @@ export async function changeLanguage(lang: string) {
   if (!/[a-z]{2}-[A-Z]{2}/.test(lang)) {
     throw new Error('Not a valid Language');
   }
-  const response = await makeRequest(`/v1/users/me`, 'PATCH', { language: lang });
-  if (response.status !== 200) {
-    throw new Error(`Could not change language. Response code ${response.status}`);
-  }
+  let currentLangResponse: Response
+  let currentLangResponseJSON: { language: string; }
+  do {
+    const response = await makeRequest(`/v1/users/me`, 'PATCH', { language: lang });
+    if (response.status !== 200) {
+      throw new Error(`Could not change language. Response code ${response.status}`);
+    }
+    currentLangResponse = await makeRequest(`/v1/users/me`, 'GET');
+    if (currentLangResponse.status !== 200) {
+      throw new Error(`Could not read current language. Response code ${currentLangResponse.status}`);
+    }
+    currentLangResponseJSON = await currentLangResponse.json()
+  } while (currentLangResponseJSON.language != lang)
+
 }
 
 export function validateUserJson(authUserFilePath: string) {

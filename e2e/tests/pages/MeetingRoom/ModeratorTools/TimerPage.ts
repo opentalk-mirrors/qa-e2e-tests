@@ -69,7 +69,9 @@ export class TimerPage {
       saveButton: this.page.getByRole('button', { name: 'Save' }),
     };
     this.titleTextbox = this.page.getByRole('textbox', { name: 'Title' });
-    this.participantsReadyCheckbox = this.page.getByRole('checkbox', { name: 'Ask participants if they are ready' });
+    this.participantsReadyCheckbox = this.page.getByRole('tabpanel', {
+      name: 'Timer'
+    }).getByRole('switch');
     this.createTimer = {
       createTimerButton: this.page.getByRole('button', { name: 'Create Timer' }),
       tabPanel: {
