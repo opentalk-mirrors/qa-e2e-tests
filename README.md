@@ -2,7 +2,7 @@
 
 Start a new [pipeline](https://git.opentalk.dev/opentalk/qa/e2e-tests/-/pipelines/new) and define the image tags to be tested.
 
-## Setup a local testing enviroment
+## Setup a local testing environment
 
 Start all needed containers:
 ```
