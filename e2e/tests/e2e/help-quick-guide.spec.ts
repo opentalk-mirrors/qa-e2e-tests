@@ -12,6 +12,9 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     await page.getByRole('link', { name: 'Documentation' }).click();
 
     const defaultViewportSize = page.viewportSize();
+    if (!defaultViewportSize) {
+      throw new Error('Viewport size is not available');
+    }
 
     // Test dashboard Quick Guide
     await expect(page.getByRole('cell', { name: 'OpenTalk Dashboard Quick Guide' })).toBeVisible();
@@ -29,6 +32,9 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     // https://stackoverflow.com/questions/73710551/function-is-not-defined-when-called-in-page-evaluate
     const dashboardQuickGuideSize = await dashboardQuickGuidePage.evaluate(() => {
       const image = document.querySelector('svg');
+      if (!image) {
+        throw new Error('SVG not found on the page');
+      }
       const width = Math.round(image.getBoundingClientRect().width);
       const height = Math.round(image.getBoundingClientRect().height);
       return { width, height };
@@ -57,6 +63,9 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     // evalute the size of the image, to have a full screenshot
     const conferenceQuickGuideSize = await conferenceQuickGuidePage.evaluate(() => {
       const image = document.querySelector('svg');
+      if (!image) {
+        throw new Error('SVG not found on the page');
+      }
       const width = Math.round(image.getBoundingClientRect().width);
       const height = Math.round(image.getBoundingClientRect().height);
       return { width, height };

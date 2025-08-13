@@ -1,0 +1,6 @@
+build
+.*
+README.md
+CHANGELOG.md
+tsconfig.json
+*.svg

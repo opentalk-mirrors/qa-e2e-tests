@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { MeetingDetailsPage } from './MeetingDetailsPage';
 import { MeetingInvitationPage } from './MeetingInvitationPage';
 import { MeetingPlanningPage } from './MeetingPlanningPage';
@@ -15,7 +16,7 @@ export class HomePage {
   currentMeetingsHeaderSelector: Locator;
   favoriteMeetingsHeaderSelector: Locator;
   startMeetingButtonNamePrefix: string;
-  moreOptionsButtonProperties: { role; options };
+  moreOptionsButtonProperties: { role: Parameters<Page['getByRole']>[0]; options: { name: string } };
   detailsMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
@@ -53,6 +54,7 @@ export class HomePage {
         }
         return true;
       }
+      return false;
     });
     const eventsPerPageResponse = this.page.waitForResponse(
       (response) =>
@@ -66,7 +68,7 @@ export class HomePage {
         response.request().method() === 'GET' &&
         response.status() === 200
     );
-    await this.page.goto(process.env.INSTANCE_URL);
+    await this.page.goto(config.INSTANCE_URL);
     await this.page.waitForLoadState('load');
     await Promise.all([eventsTimeMinResponse, eventsPerPageResponse, tariffResponse]);
     // for dashboard page to be fully loaded, favorite meeting box should be rendered fully

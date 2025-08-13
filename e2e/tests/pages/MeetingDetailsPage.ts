@@ -45,7 +45,7 @@ export class MeetingDetailsPage {
     // it only becomes an input field after a while
     let type: string;
     do {
-      type = await locator.getAttribute('type');
+      type = (await locator.getAttribute('type')) ?? '';
     } while (type !== 'text');
   }
 

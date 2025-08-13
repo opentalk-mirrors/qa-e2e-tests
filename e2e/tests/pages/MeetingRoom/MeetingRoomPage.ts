@@ -173,7 +173,11 @@ export class MeetingRoomPage {
 
   async getMeetingRoomName(): Promise<string> {
     await this.meetingRoomName.waitFor();
-    return await this.meetingRoomName.textContent();
+    const text = await this.meetingRoomName.textContent();
+    if (text === null) {
+      throw new Error('Meeting room name not found');
+    }
+    return text;
   }
 
   async getUserName(): Promise<string> {

@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { config } from '../config';
+
 test.describe('Conference', () => {
   test.describe.configure({ mode: 'serial', timeout: 120_000 });
   test.describe('SpeedTest', () => {
     test.skip('show stable connection message with a good connection', async ({ page }) => {
-      await page.goto(process.env.INSTANCE_URL);
+      await page.goto(config.INSTANCE_URL);
       await page.getByRole('link', { name: 'Start new' }).click();
       const conferencePagePromise = page.waitForEvent('popup');
       await page.getByRole('link', { name: 'Open Video Room' }).click();
@@ -23,7 +25,7 @@ test.describe('Conference', () => {
       // throttling just works for chrome, so we need to skip the other browser
       test.skip(browserName === 'webkit' || browserName === 'firefox');
 
-      await page.goto(process.env.INSTANCE_URL);
+      await page.goto(config.INSTANCE_URL);
       await page.getByRole('link', { name: 'Start new' }).click();
       const conferencePagePromise = page.waitForEvent('popup');
       await page.getByRole('link', { name: 'Open Video Room' }).click();

@@ -4,9 +4,9 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import * as fs from 'fs';
 
-const inputFile = process.env.PLAYWRIGHT_JUNIT_INPUT_FILE;
-const outputFile = process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE;
-const suiteNameSlug = process.env.BROWSER;
+const inputFile = process.env.PLAYWRIGHT_JUNIT_INPUT_FILE ?? '';
+const outputFile = process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE ?? '';
+const suiteNameSlug = process.env.BROWSER ?? '';
 
 interface TestSuite {
   name: string;

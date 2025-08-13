@@ -1,0 +1,49 @@
+version = 1
+SPDX-PackageName = "OpenTalk Frontend"
+SPDX-PackageSupplier = "OpenTalk GmbH <mail@opentalk.eu>"
+SPDX-PackageDownloadLocation = "https://git.opentalk.dev/opentalk/qa/e2e-tests"
+
+[[annotations]]
+path = [
+    ".gitignore",
+    "certs/cert.crt",
+    "certs/cert.csr",
+    "certs/cert_key",
+    "compose.yaml",
+    "config/controller-config.toml",
+    "config/mailer-config.toml",
+    "config/nginx.conf",
+    "config/opentalk-realm.json",
+    "config/rabbitmq.conf",
+    "config/recorder-config.toml",
+    "config/test_env",
+    "package-lock.json",
+    "scripts/init-db.sh",
+    "scripts/livekit-init.sh",
+    ".commitlintrc.json",
+    ".lintstagedrc.json",
+    ".husky/*",
+    ".madgerc",
+    ".parcelrc.js",
+    ".parcelrc",
+    ".prettierrc.cjs",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json",
+    "tsconfig.json",
+    "e2e/README.md",
+    "e2e/.env-example",
+    "pnpm-lock.yaml",
+    ".knip.json",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "OpenTalk GmbH <mail@opentalk.eu>"
+SPDX-License-Identifier = "EUPL-1.2"
+
+[[annotations]]
+path = [
+    "e2e/tests/e2e/help-quick-guide.spec.ts-snapshots/**.png",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "OpenTalk GmbH <mail@opentalk.eu>"
+SPDX-License-Identifier = "CC-BY-NC-ND-4.0"

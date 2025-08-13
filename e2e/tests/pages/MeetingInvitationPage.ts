@@ -53,7 +53,11 @@ export class MeetingInvitationPage {
   }
 
   async getInviteParticipantMeetingLinkPlaceHolderText(): Promise<string> {
-    return await this.inviteParticipantsInputField.getAttribute('placeholder');
+    const placeholder = await this.inviteParticipantsInputField.getAttribute('placeholder');
+    if (placeholder === null) {
+      throw new Error('Placeholder attribute not found');
+    }
+    return placeholder;
   }
 
   async getUserFromUserInvitationDropDown(): Promise<string> {

@@ -28,9 +28,9 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
-      ['junit', { outputFile: './junit/test-results.xml' }],
-      ['html', { outputFolder: './html-report', open: 'never' }],
-    ]
+        ['junit', { outputFile: './junit/test-results.xml' }],
+        ['html', { outputFolder: './html-report', open: 'never' }],
+      ]
     : [['html', { outputFolder: './html-report' }]],
   /* Shared sett
 
@@ -97,7 +97,6 @@ export default defineConfig({
             'permissions.default.clipboard-read': 1,
             'permissions.default.clipboard-write': 1,
           },
-
         },
       },
       dependencies: ['setup'],
@@ -121,12 +120,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState: '.auth/user.json',
         launchOptions: {
-          args: [
-            '--guest',
-            '--disable-web-security',
-            '--allow-running-insecure-content',
-          ],
-        }
+          args: ['--guest', '--disable-web-security', '--allow-running-insecure-content'],
+        },
       },
       dependencies: ['setup'],
     },
@@ -137,12 +132,8 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
         storageState: '.auth/user.json',
         launchOptions: {
-          args: [
-            '--guest',
-            '--disable-web-security',
-            '--allow-running-insecure-content',
-          ],
-        }
+          args: ['--guest', '--disable-web-security', '--allow-running-insecure-content'],
+        },
       },
       dependencies: ['setup'],
     },

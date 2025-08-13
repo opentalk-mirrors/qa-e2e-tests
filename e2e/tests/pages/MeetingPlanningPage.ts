@@ -100,7 +100,7 @@ export class MeetingPlanningPage {
     this.meetingTextAsTitle = this.page.getByText('meeting', { exact: true });
     this.participantTextAsTitle = this.page.getByText('Participants');
     this.meetingPageDescription = this.page.getByText(
-        'Required fields are marked with an asterisk. Please fill them out.'
+      'Required fields are marked with an asterisk. Please fill them out.'
     );
     this.dateInputField = {
       fromInputField: this.page.getByLabel('from *'),
@@ -273,7 +273,7 @@ export class MeetingPlanningPage {
 
   async setCustomRecurrenceEndDate(date: Date): Promise<void> {
     await this.customMeetingRepetition.recurrenceEndDateMonth.fill(
-        String(date.getMonth() + 1).padStart(2, '0') // month starts with 0
+      String(date.getMonth() + 1).padStart(2, '0') // month starts with 0
     );
     await this.customMeetingRepetition.recurrenceEndDateDay.fill(String(date.getDate()).padStart(2, '0'));
     await this.customMeetingRepetition.recurrenceEndDateYear.fill(String(date.getFullYear()));

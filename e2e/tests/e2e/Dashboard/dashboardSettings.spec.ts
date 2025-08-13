@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { config } from '../../config';
+import { changeLanguage } from '../../helper/Api';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
@@ -10,7 +12,6 @@ import { AccountPage } from '../../pages/Settings/AccountPage';
 import { GeneralPage } from '../../pages/Settings/GeneralPage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
 import { SidebarPage } from '../../pages/SidebarPage';
-import {changeLanguage} from "../../helper/Api";
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,
@@ -21,7 +22,7 @@ test.describe('Dashboard_Settings', () => {
 
   test.beforeEach(async ({ page, browserName }) => {
     if (browserName === 'webkit') {
-      await changeLanguage("en-US")
+      await changeLanguage('en-US');
     }
     sideBarPage = new SidebarPage({ page });
     settingsPage = await sideBarPage.navigateToSettingsPage();
@@ -131,15 +132,15 @@ test.describe('Dashboard_Settings', () => {
     await expect(page.getByRole('navigation').getByText(`${profileName}-TEST`)).toBeVisible();
 
     //reset values
-    await page.getByRole('textbox', { name: 'Profile Name' }).fill(process.env.USERNAME);
-    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toHaveValue(process.env.USERNAME);
+    await page.getByRole('textbox', { name: 'Profile Name' }).fill(config.USERNAME);
+    await expect(page.getByRole('textbox', { name: 'Profile Name' })).toHaveValue(config.USERNAME);
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByRole('navigation').getByText(process.env.USERNAME)).toBeVisible();
+    await expect(page.getByRole('navigation').getByText(config.USERNAME)).toBeVisible();
   });
 
   test('TC_003_Dashboard_Settings_Account option', async () => {
-    const USER_EMAIL: string = process.env.USER_EMAIL!;
-    const USERNAME: string = process.env.USERNAME!;
+    const USER_EMAIL: string = config.USER_EMAIL;
+    const USERNAME: string = config.USERNAME;
 
     const accountPage: AccountPage = await settingsPage.navigateToAccount();
     await expect(accountPage.generalInformationHeading).toBeVisible();
