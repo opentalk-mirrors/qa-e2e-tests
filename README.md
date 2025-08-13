@@ -26,3 +26,18 @@ Update containers to the newest versions:
 ```
 docker compose pull && docker compose up -d
 ```
+
+## View traces of CI runs
+When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
+These traces are a very useful tool to debug failed tests in CI, specially if they pass in the local environment.  
+To access the traces of a specific CI run:
+1. open the CI job you are interested in
+2. find the "Job artifacts" section on the right side
+3. download the artifacts
+4. unpack the .zip file
+5. inside `test-results/e2e-<test title>-<browser>-retry1` you will find a `trace.zip` file
+6. run `npx playwright show-trace` with that file e.g. `npx playwright show-trace ~/Downloads/artifacts/test-results/e2e-meetingRoom-meetingRoo-b6281-ing-Room-As-Moderator-Timer-chromium-retry1/trace.zip`  
+
+Alternatively to steps 3 & 4 you can also browse content of the artifacts on git.opentalk.dev and find & download the needed `trace.zip` directly.  
+
+More documentation about the trace viewer can be found in the [playwright docs](https://playwright.dev/docs/trace-viewer#trace-viewer-features).
