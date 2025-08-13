@@ -10,6 +10,7 @@ import { AccountPage } from '../../pages/Settings/AccountPage';
 import { GeneralPage } from '../../pages/Settings/GeneralPage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
 import { SidebarPage } from '../../pages/SidebarPage';
+import {changeLanguage} from "../../helper/Api";
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,
@@ -19,6 +20,9 @@ test.describe('Dashboard_Settings', () => {
     myMeetingsPage: MyMeetingsPage;
 
   test.beforeEach(async ({ page, browserName }) => {
+    if (browserName === 'webkit') {
+      await changeLanguage("en-US")
+    }
     sideBarPage = new SidebarPage({ page });
     settingsPage = await sideBarPage.navigateToSettingsPage();
     generalPage = new GeneralPage(settingsPage.page);
