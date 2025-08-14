@@ -1,0 +1,9 @@
+// SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
+//
+// SPDX-License-Identifier: EUPL-1.2
+export const config = {
+  USERNAME: process.env.USERNAME ?? 'test',
+  PASSWORD: process.env.PASSWORD ?? 'testtest',
+  USER_EMAIL: process.env.USER_EMAIL ?? 'alice@example.com',
+  INSTANCE_URL: process.env.INSTANCE_URL ?? 'http:localhost:3000',
+};

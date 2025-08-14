@@ -1,3 +1,4 @@
+---
 services:
   webapp:
     image: git.opentalk.dev:5050/opentalk/frontend/web/web-app:latest
@@ -7,20 +8,20 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     environment:
-        PORT: 3000
-        LIVEKIT_SERVER_URL: http://localhost:7080
-        CONTROLLER_HOST: localhost:11311
-        BASE_URL: "http://localhost:3000"
-        HELPDESK_URL: "https://opentalk.eu"
-        CONTACT_SUPPORT_URL: "https://opentalk.eu"
-        IMPRINT_URL: "https://opentalk.eu/en/terms-of-use"
-        DATA_PROTECTION_URL: "https://opentalk.eu/en/data-protection"
-        OIDC_ISSUER: "http://localhost:8080/auth/realms/OPENTALK"
-        SENTRY_DSN: "https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5"
-        INSECURE: "true"
-        FEATURE_SHARED_FOLDER: "true"
+      PORT: 3000
+      LIVEKIT_SERVER_URL: http://localhost:7080
+      CONTROLLER_HOST: localhost:11311
+      BASE_URL: http://localhost:3000
+      HELPDESK_URL: https://opentalk.eu
+      CONTACT_SUPPORT_URL: https://opentalk.eu
+      IMPRINT_URL: https://opentalk.eu/en/terms-of-use
+      DATA_PROTECTION_URL: https://opentalk.eu/en/data-protection
+      OIDC_ISSUER: http://localhost:8080/auth/realms/OPENTALK
+      SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
+      INSECURE: true
+      FEATURE_SHARED_FOLDER: true
     healthcheck:
-      test: "wget \"http://localhost:3000/manifest.json\" -O - | grep '\"short_name\": \"OpenTalk\"'"
+      test: 'wget "http://localhost:3000/manifest.json" -O - | grep ''"short_name": "OpenTalk"'''
       interval: 10s
       timeout: 5s
       retries: 5
@@ -44,7 +45,7 @@ services:
         cp /builds/scripts/init-db.sh /docker-entrypoint-initdb.d/;
         /usr/local/bin/docker-entrypoint.sh postgres;
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [CMD-SHELL, pg_isready]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -59,11 +60,11 @@ services:
       LIVEKIT_TCP_PORT: 7881
       LIVEKIT_RTC_PORT_RANGE_START: 20000
       LIVEKIT_RTC_PORT_RANGE_END: 39999
-      LIVEKIT_RTC_USE_EXTERNAL_IP: "false"
-      LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: "true"
+      LIVEKIT_RTC_USE_EXTERNAL_IP: 'false'
+      LIVEKIT_RTC_ENABLE_LOOPBACK_CANDIDATE: 'true'
       LIVEKIT_KEYS_API_KEY: Controller
       LIVEKIT_KEYS_API_SECRET: QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv
-      LIVEKIT_LOGGING_JSON: "false"
+      LIVEKIT_LOGGING_JSON: 'false'
       LIVEKIT_LOGGING_LEVEL: debug
     entrypoint:
       - /bin/sh
@@ -73,7 +74,7 @@ services:
         cp /builds//scripts/livekit-init.sh /usr/local/bin;
         livekit-init.sh;
     healthcheck:
-      test: "wget \"http://localhost:7880\" -O -"
+      test: wget "http://localhost:7880" -O -
       interval: 10s
       timeout: 5s
       retries: 5
@@ -101,7 +102,7 @@ services:
         mkdir -p /data/controller &&
         /usr/bin/docker-entrypoint.sh server /data --address ":9000"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: [CMD, mc, ready, local]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -128,7 +129,8 @@ services:
           echo "Wait for repo data";
           until [ -f "/builds/config/controller-config.toml" ]; do true; done;
           sleep 10;
-          cat /builds/config/controller-config.toml | sed 's/www\.opentalk\.test/webapp\:8080/g' > /tmp/controller-config.toml
+          cat /builds/config/controller-config.toml | \
+          sed 's/www\.opentalk\.test/webapp\:8080/g' > /tmp/controller-config.toml
           sed -i 's/accounts\.opentalk\.test/localhost\:8080/g' /tmp/controller-config.toml
           sed -i 's/livekit\.opentalk\.test/localhost\:7880/g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
@@ -138,7 +140,7 @@ services:
           /controller/opentalk-controller -c /tmp/controller-config.toml;
         done;
     healthcheck:
-      test: "/controller/opentalk-controller tenants list | grep OpenTalkDefaultTenant"
+      test: /controller/opentalk-controller tenants list | grep OpenTalkDefaultTenant
       interval: 5s
       timeout: 5s
       retries: 30
@@ -160,7 +162,7 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HTTP_RELATIVE_PATH: /auth
-      KC_HTTP_ENABLED: "true"
+      KC_HTTP_ENABLED: 'true'
       KC_HOSTNAME_PORT: 8080
       KC_HOSTNAME_STRICT: 'false'
       KC_HOSTNAME_STRICT_HTTPS: 'false'
@@ -173,7 +175,13 @@ services:
         cp /builds/config/opentalk-realm.json /opt/keycloak/data/import;
         /opt/keycloak/bin/kc.sh start-dev --import-realm --health-enabled=true
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"]
+      test:
+        [
+          CMD-SHELL,
+          'exec 3<>/dev/tcp/127.0.0.1/9000; \
+          echo -e "GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3; \
+          if [ $? -eq 0 ]; then echo "Healthcheck Successful"; exit 0; else echo "Healthcheck Failed"; exit 1; fi;',
+        ]
       interval: 5s
       timeout: 5s
       retries: 15
@@ -190,14 +198,15 @@ services:
       NPM_CONFIG_LOG: /builds/.npm
     volumes:
       - ./:/builds/:rw,Z
-    working_dir:  /builds
-    tty:  true
+    working_dir: /builds
+    tty: true
     stdin_open: true
     entrypoint:
       - /bin/bash
       - -c
       - |
-        cat /builds/config/test_env | sed 's/https\:\/\/www\.opentalk\.test/http\:localhost\:3000/g' >  /builds/e2e/.env;
+        cat /builds/config/test_env | \
+        sed 's/https\:\/\/www\.opentalk\.test/http\:localhost\:3000/g' >  /builds/e2e/.env;
         sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;⏎
         npm ci
         npx playwright install

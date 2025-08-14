@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { HomePage } from './HomePage';
 import { MyMeetingsPage } from './MyMeetingsPage';
 import { SettingsPage } from './Settings/SettingsPage';
@@ -34,7 +35,7 @@ export class SidebarPage {
   }
 
   public async navigateToSettingsPage(): Promise<SettingsPage> {
-    await this.page.goto(process.env.INSTANCE_URL, { waitUntil: 'load' });
+    await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.settingButton.click();
     const settingsPage = new SettingsPage(this.page);
     await settingsPage.settingsHeading.waitFor();
@@ -42,14 +43,14 @@ export class SidebarPage {
   }
 
   public async navigateToHomePage(): Promise<HomePage> {
-    await this.page.goto(process.env.INSTANCE_URL, { waitUntil: 'load' });
+    await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.homeButton.click();
     const homePage = new HomePage({ page: this.page });
     return homePage;
   }
 
   public async navigateToMyMeetingsPage(): Promise<MyMeetingsPage> {
-    await this.page.goto(process.env.INSTANCE_URL, { waitUntil: 'load' });
+    await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.meetingsButton.click();
     const myMeetingsPage = new MyMeetingsPage(this.page);
     return myMeetingsPage;

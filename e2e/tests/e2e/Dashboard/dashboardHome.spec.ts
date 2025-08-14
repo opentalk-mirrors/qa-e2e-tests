@@ -4,6 +4,7 @@
 import { test, expect } from '@playwright/test';
 import { validate } from 'uuid';
 
+import { config } from '../../config';
 import { formatDate } from '../../helper/helper';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -16,13 +17,15 @@ const isRoomIdValid = (url: string): boolean => {
   return splitPath.includes('room') && validate(roomId);
 };
 
-const getUserToInviteInMeeting = (browserName: 'chromium' | 'firefox' | 'webkit'): { invitedUserMail: string, invitedUser: string } => {
-  const parsedBaseUrl = new URL(process.env.INSTANCE_URL);
+const getUserToInviteInMeeting = (
+  browserName: 'chromium' | 'firefox' | 'webkit'
+): { invitedUserMail: string; invitedUser: string } => {
+  const parsedBaseUrl = new URL(config.INSTANCE_URL);
   let invitedUser, invitedUserMail;
   if (parsedBaseUrl.hostname.startsWith('testing')) {
     // for testing setup
     invitedUser = 'Time Limit';
-
+    invitedUserMail = '';
   } else {
     // for ci setup
     invitedUser = 'test-firefox test-firefox';
@@ -32,7 +35,7 @@ const getUserToInviteInMeeting = (browserName: 'chromium' | 'firefox' | 'webkit'
       invitedUserMail = 'test-webkit@example.org';
     }
   }
-  return {invitedUser, invitedUserMail};
+  return { invitedUser, invitedUserMail };
 };
 
 test.beforeEach('Navigate to dashboard', async ({ page, browserName }) => {
@@ -81,7 +84,7 @@ test.describe('Dashboard_Home', () => {
     );
     await meetingInvitationPage.fillUserDetailForMeetingInvitation('nonexistentuser');
     await expect(await meetingInvitationPage.getUserFromUserInvitationDropDown()).toBe('No result');
-    const {invitedUserMail, invitedUser } = getUserToInviteInMeeting(browserName);
+    const { invitedUserMail, invitedUser } = getUserToInviteInMeeting(browserName);
     await meetingInvitationPage.fillUserDetailForMeetingInvitation(invitedUserMail);
     await expect(await meetingInvitationPage.getUserFromUserInvitationDropDown()).toBe(invitedUser);
 
@@ -123,7 +126,7 @@ test.describe('Dashboard_Home', () => {
     await expect(meetingPlanningPage.livestreamToggleButton).not.toBeChecked();
 
     // enable protection is only available in testing domain and not in CI
-    const parsedBaseUrl = new URL(process.env.INSTANCE_URL);
+    const parsedBaseUrl = new URL(config.INSTANCE_URL);
     if (parsedBaseUrl.hostname.startsWith('testing')) {
       await expect(meetingPlanningPage.enableProtectionToggleButton).not.toBeChecked();
     }
@@ -267,7 +270,7 @@ test.describe('Dashboard_Home', () => {
         await page
           .getByRole('button', { name: day, exact: true })
           .getAttribute('class')
-          .then((a) => a.split(/\s+/).includes('MuiChip-filled'))
+          .then((a) => a?.split(/\s+/).includes('MuiChip-filled'))
       ).toBe(true);
     }
 
@@ -334,7 +337,7 @@ test.describe('Dashboard_Home', () => {
     await planMeetingPage.setCustomRecurrenceEndDate(dateToSet);
     // Recurrence end on option should be selected as date a month later
     await expect(planMeetingPage.customMeetingRepetition.recurrenceEndDateInputField).toHaveValue(
-        formatDate(dateToSet)
+      formatDate(dateToSet)
     );
 
     await planMeetingPage.saveCustomMeetingRepetition();

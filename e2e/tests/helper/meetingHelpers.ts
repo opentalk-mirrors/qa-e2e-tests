@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Page, expect } from '@playwright/test';
+import { Page, expect, BrowserContext } from '@playwright/test';
 
 import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
@@ -38,7 +38,7 @@ export const startAdhocMeetingAsModerator = async (
 };
 
 export const joinMeetingRoomAsGuest = async (
-  context,
+  context: BrowserContext,
   guestLink: string,
   guestName: string
 ): Promise<MeetingRoomPage> => {
@@ -60,8 +60,8 @@ export const joinMeetingRoomAsGuest = async (
 };
 
 export const joinMeetingRoomWithNGuests = async (
-  page,
-  context,
+  page: Page,
+  context: BrowserContext,
   guestLink: string,
   guestBaseName: string,
   numberOfGuests: number

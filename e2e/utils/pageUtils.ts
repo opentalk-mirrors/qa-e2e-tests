@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { BrowserContext, expect, Page } from '@playwright/test';
 
+import { config } from '../tests/config';
+
 type ICreateMultiplePages = {
   context: BrowserContext;
   pageAmount: number;
@@ -71,7 +73,7 @@ export const createPageContextWithMultipleUsers = async ({
  * @return {Promise<void>}
  */
 export const gotoDashboard = async (page: Page) => {
-  await page.goto(process.env.INSTANCE_URL);
+  await page.goto(config.INSTANCE_URL);
 };
 
 /**

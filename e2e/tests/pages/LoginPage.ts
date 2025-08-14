@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { HomePage } from '../pages/HomePage';
 
 export class LoginPage {
@@ -19,7 +20,7 @@ export class LoginPage {
   }
 
   async gotoLoginPage() {
-    await Promise.all([this.page.goto(process.env.INSTANCE_URL), this.page.waitForLoadState('load')]);
+    await Promise.all([this.page.goto(config.INSTANCE_URL), this.page.waitForLoadState('load')]);
     await this.signInButton.isVisible();
   }
 

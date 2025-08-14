@@ -1,0 +1,13 @@
+{
+    "ignoreDependencies": [
+        "licensee",
+        "fast-xml-parser"
+    ],
+    "ignore": [
+        "e2e/tests/smoke/login.smoke.ts",
+        "scripts/modifyJUnitReportForTestRail.ts"
+    ],
+    "entry": [
+        "e2e/tests/global.setup.ts"
+    ]
+}

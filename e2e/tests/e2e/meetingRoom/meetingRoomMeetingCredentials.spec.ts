@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { config } from '../../config';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { planNewMeetingAndStartAsModerator } from '../../helper/meetingHelpers';
 import { HomePage } from '../../pages/HomePage';
@@ -10,7 +11,7 @@ import { MeetingInfoPage } from '../../pages/MeetingRoom/MeetingInfoPage';
 
 const meetingTitle = 'Smoke test all';
 const meetingPassword = 'test@123';
-const userName = process.env.USERNAME;
+const userName = config.USERNAME;
 
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage({ page });

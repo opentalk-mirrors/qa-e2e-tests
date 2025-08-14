@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { expect, test } from '@playwright/test';
 
+import { config } from '../../config';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
@@ -19,7 +20,7 @@ test.beforeEach('Navigate to dashboard', async ({ page }) => {
 test.describe('Meeting room URL', async () => {
   test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
-    const instanceUrl = new URL(process.env.INSTANCE_URL);
+    const instanceUrl = new URL(config.INSTANCE_URL);
 
     const UUIDRegexString = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     const meetingLinkRegex = new RegExp(instanceUrl.host + '/room/' + UUIDRegexString + '$');
