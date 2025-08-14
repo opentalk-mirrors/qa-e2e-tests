@@ -21,9 +21,7 @@ test.describe('Dashboard_Settings', () => {
     myMeetingsPage: MyMeetingsPage;
 
   test.beforeEach(async ({ page, browserName }) => {
-    if (browserName === 'webkit') {
-      await changeLanguage('en-US');
-    }
+    await changeLanguage('en-US');
     sideBarPage = new SidebarPage({ page });
     settingsPage = await sideBarPage.navigateToSettingsPage();
     generalPage = new GeneralPage(settingsPage.page);
