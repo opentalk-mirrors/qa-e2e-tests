@@ -18,6 +18,8 @@ export class SidebarPage {
   logoutButton: Locator;
   closeNavigationButton: Locator;
 
+  public readonly profileName: Locator;
+
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.homeButton = this.page.getByRole('link', { name: /^(Home|Startseite)$/ });
@@ -27,6 +29,7 @@ export class SidebarPage {
     this.legalButton = this.page.getByRole('link', { name: 'Legal' });
     this.logoutButton = this.page.getByRole('button', { name: 'Logout' });
     this.closeNavigationButton = this.page.getByRole('button', { name: 'Close navigation' });
+    this.profileName = this.page.getByTestId('PrimaryNavigation').getByRole('link').nth(0);
   }
 
   getProfileLocator(): Locator {
