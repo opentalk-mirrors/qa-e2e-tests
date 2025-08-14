@@ -318,10 +318,8 @@ e2e-tests:
       - BROWSER: !reference [.template_vars, BROWSERS]
   stage: e2e-tests
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'push'
     - if: $CI_PIPELINE_SOURCE == 'schedule'
-    - if: $CI_PIPELINE_SOURCE == 'trigger'
+    - if: $CI_MERGE_REQUEST_ID
   before_script:
     - npm install
     - npx playwright install --with-deps
