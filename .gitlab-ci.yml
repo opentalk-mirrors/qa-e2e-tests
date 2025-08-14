@@ -318,9 +318,10 @@ e2e-tests:
       - BROWSER: !reference [.template_vars, BROWSERS]
   stage: e2e-tests
   rules:
-    # Run in merge requests and after merged.
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: $CI_PIPELINE_SOURCE == "trigger"
   before_script:
     - npm install
     - npx playwright install --with-deps
@@ -359,15 +360,15 @@ merge-and-upload-test-results:
       ./junit/junit-$CI_MERGE_REQUEST_IID-webkit.xml \
       ./junit/junit-$CI_MERGE_REQUEST_IID-firefox.xml \
       ./merged-reports/combined-report.xml
-    # trcli -y \
-    #   -h https://opentalk.testrail.com/ \
-    #   --project "Automated Tests" \
-    #   -u $TESTRAIL_EMAIL \
-    #   -p $TESTRAIL_PASSWORD \
-    #   parse_junit \
-    #   -f "./merged-reports/combined-report.xml" \
-    #   --run-description "URL: $CI_PIPELINE_URL" \
-    #   --title "Automated Nightly Tests from GitLab CI/CD"
+    trcli -y \
+      -h https://opentalk.testrail.com/ \
+      --project "Automated Tests" \
+      -u $TESTRAIL_EMAIL \
+      -p $TESTRAIL_PASSWORD \
+      parse_junit \
+      -f "./merged-reports/combined-report.xml" \
+      --run-description "URL: $CI_PIPELINE_URL" \
+      --title "Automated Nightly Tests from GitLab CI/CD"
   artifacts:
     paths:
       - merged-reports
