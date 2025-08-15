@@ -23,7 +23,7 @@ export class SidebarPage {
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.homeButton = this.page.getByRole('link', { name: /^(Home|Startseite)$/ });
-    this.meetingsButton = this.page.getByRole('link', { name: 'Meetings' });
+    this.meetingsButton = this.page.locator('[data-testid="PrimaryNavItem"][aria-label="Meetings"]');
     this.helpButton = this.page.getByRole('link', { name: 'Help' });
     this.settingButton = this.page.getByRole('link', { name: /^(Settings|Einstellungen)$/ });
     this.legalButton = this.page.getByRole('link', { name: 'Legal' });
