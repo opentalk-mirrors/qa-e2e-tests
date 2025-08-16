@@ -207,7 +207,7 @@ services:
       - |
         cat /builds/config/test_env | \
         sed 's/https\:\/\/www\.opentalk\.test/https\:\/\/localhost\:8443/g' >  /builds/e2e/.env;
-        sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;⏎
+        sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;
         npm ci
         npx playwright install
         bash
