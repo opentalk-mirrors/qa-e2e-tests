@@ -6,34 +6,32 @@ import { Page, expect, BrowserContext } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
+import { getGuestLink, startAdhocMeetingAsModerator as startMeeting } from './Api';
 import { closeWebkitPopUp } from './webkit';
 
 export const startAdhocMeetingAsModerator = async (
   page: Page,
-  browserName?: 'webkit' | 'chromium' | 'firefox'
+  browserName?: 'webkit' | 'chromium' | 'firefox',
+  meetingTitlePrefix: string = 'Ad-hoc Meeting'
 ): Promise<{ meetingRoomPage: MeetingRoomPage; guestLink: string }> => {
-  // launch OpenTalk & start new (adhoc) meeting
-  const homePage = new HomePage({ page });
-  await homePage.navigateToHomePage();
+  const { meetingLink, roomId } = await startMeeting(meetingTitlePrefix);
+  const guestLink = await getGuestLink(roomId);
+  await page.goto(meetingLink);
+  const lobbyRoomPage = new LobbyRoomPage({ page });
+
+  // enter meeting room & assert meeting room is shown
+  const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
 
   // Warning button in safari blocks the selector for creating new meeting
   if (browserName === 'webkit') {
     await closeWebkitPopUp({ page });
   }
 
-  const meetingInvitationPage = await homePage.startAdhocMeeting();
-  const guestLink = await meetingInvitationPage.getGuestLink();
-  const lobbyRoomPage = await meetingInvitationPage.navigateToMeetingLobby();
-  await expect(lobbyRoomPage.nameInputField).toBeVisible(); // needed because of flakyness (see issue #1692)
-
-  // enter meeting room & assert meeting room is shown
-  const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
   await meetingRoomPage.meetingRoomName.isVisible();
-  await expect(await meetingRoomPage.getMeetingRoomName()).toContain('Ad-hoc Meeting');
+  expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
 
   // only moderator is present before guests join
-  await expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
-
+  expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
   return { meetingRoomPage, guestLink };
 };
 
