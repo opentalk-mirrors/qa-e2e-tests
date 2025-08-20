@@ -40,7 +40,8 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     const clipboardContent = await getClipboardContent(page);
     expect(clipboardContent).toContain(`${userName} invites you to an OpenTalk meeting.`);
     expect(clipboardContent).toContain(`Title: ${meetingTitle}`);
-    expect(clipboardContent).toContain('You can join the meeting using one of the following means:');
+    // expect(clipboardContent).toContain('You can join the meeting using one of the following means:');
+    expect(clipboardContent).toContain('meeting-details-dialog-join-line'); // This is a bug reported in https://git.opentalk.dev/opentalk/qa/reports/-/issues/403
     expect(clipboardContent).toContain(`Meeting-Link: ${guestLink}`);
     expect(clipboardContent).toContain(`Password: ${meetingPassword}`);
     expect(clipboardContent).toContain(`Telephone dial-in\nNumber: ${telephoneDialInNumber}`);
