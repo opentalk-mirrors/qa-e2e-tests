@@ -8,7 +8,7 @@ import {
   ITestCaseHookParameter,
   setDefaultTimeout,
 } from '@cucumber/cucumber';
-import { chromium, Page, Browser, BrowserContext, webkit, firefox, BrowserType } from '@playwright/test';
+import { chromium, Page, Browser, BrowserContext, Response, webkit, firefox, BrowserType } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
@@ -32,6 +32,7 @@ interface Meeting {
 interface StartedMeeting {
   meeting: Meeting;
   guestMeetingRoomPages: MeetingRoomPage[];
+  crashReportResponse?: Response;
 }
 
 setDefaultTimeout(60 * 1000);
@@ -51,11 +52,11 @@ export class CustomWorld extends World {
     super(options);
   }
 
-  setStartedMeeting(user: string, meeting: Meeting) {
+  setStartedMeeting(user: string, meeting: Meeting, crashReportResponse?: Response) {
     if (!this.startedMeetings) {
       this.startedMeetings = {};
     }
-    this.startedMeetings[user] = { meeting, guestMeetingRoomPages: [] };
+    this.startedMeetings[user] = { meeting, guestMeetingRoomPages: [], crashReportResponse };
   }
 
   getStartedMeeting(moderator: string): StartedMeeting {

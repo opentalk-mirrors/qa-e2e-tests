@@ -6,6 +6,7 @@
 import { BrowserContext, Locator, Page } from '@playwright/test';
 
 import { navigateToExternalPage } from '../../helper/externalPageHelper';
+import { GlitchTipPage } from './GlitchTipPage';
 
 export class BurgerMenuPage {
   private readonly context: BrowserContext;
@@ -41,7 +42,10 @@ export class BurgerMenuPage {
     await this.keyboardShortcutsMenuItem.click();
   }
 
-  public async openReportABug() {
+  public async openReportABug(): Promise<GlitchTipPage> {
     await this.reportABugMenuItem.click();
+    const glitchTipPage = new GlitchTipPage(this.page);
+    await glitchTipPage.glitchTipPopup.waitFor({ state: 'visible' });
+    return glitchTipPage;
   }
 }
