@@ -1,7 +1,7 @@
 ---
 services:
   webapp:
-    image: git.opentalk.dev:5050/opentalk/frontend/web/web-app:latest
+    image: ${FRONTEND_IMAGE:-git.opentalk.dev:5050/opentalk/frontend/web/web-app}:${FRONTEND_TAG:-latest}
     depends_on:
       controller:
         condition: service_healthy
@@ -118,7 +118,7 @@ services:
         condition: service_healthy
       livekit:
         condition: service_healthy
-    image: git.opentalk.dev:5050/opentalk/backend/services/controller:dev
+    image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/backend/services/controller}:${CONTROLLER_TAG:-dev}
     volumes:
       - ./:/builds/:rw,Z
     entrypoint:
