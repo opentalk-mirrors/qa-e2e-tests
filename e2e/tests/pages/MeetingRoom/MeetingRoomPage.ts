@@ -5,8 +5,10 @@ import { Page, Locator, BrowserContext } from '@playwright/test';
 
 import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
+import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
+import { ParticipantTilePage } from './ParticipantTilePage';
 import { ViewOptionsPage } from './ViewOptionsPage';
 
 export class MeetingRoomPage {
@@ -18,6 +20,8 @@ export class MeetingRoomPage {
   meetingInfoButton: Locator;
 
   public readonly viewOptionsButton: Locator;
+
+  public readonly participantWindowLocator: Locator;
 
   jumpLinks: {
     skipToModerationPanelLink: Locator;
@@ -46,6 +50,7 @@ export class MeetingRoomPage {
   toolBar: {
     toolBarPanel: Locator;
     handRaiseButton: Locator;
+    handLowerButton: Locator;
     turnOnScreenShareButton: Locator;
     microphoneButton: Locator;
     microphoneButtonOff: Locator;
@@ -97,6 +102,8 @@ export class MeetingRoomPage {
 
     this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
 
+    this.participantWindowLocator = this.page.getByTestId('ParticipantWindow');
+
     this.jumpLinks = {
       skipToModerationPanelLink: this.page.getByRole('link', { name: 'Skip to Moderation panel' }),
       skipToMyMeetingMenuLink: this.page.getByRole('link', { name: 'Skip to My meeting menu' }),
@@ -126,6 +133,7 @@ export class MeetingRoomPage {
     this.toolBar = {
       toolBarPanel: this.page.getByTestId('fullscreen').getByLabel('Personal control panel'),
       handRaiseButton: this.page.getByRole('button', { name: 'Raise Your Hand' }),
+      handLowerButton: this.page.getByRole('button', { name: 'Lower Your Hand' }),
       turnOnScreenShareButton: this.page.getByRole('button', { name: 'Turn On Screen Share' }),
       microphoneButton: this.page.getByRole('button', { name: 'Turn On Audio', exact: true }),
       microphoneButtonOff: this.page.getByRole('button', { name: 'Turn Off Audio', exact: true }),
@@ -205,6 +213,16 @@ export class MeetingRoomPage {
   }
 
   // toolbar functions
+
+  public async raiseYourHand(): Promise<void> {
+    await this.toolBar.handRaiseButton.click();
+    await this.toolBar.handLowerButton.waitFor();
+  }
+
+  public async isHandRaised(): Promise<boolean> {
+    return await this.toolBar.handLowerButton.isVisible();
+  }
+
   async isAudioOn(): Promise<boolean> {
     return await this.toolBar.microphoneButtonOff.isVisible();
   }
@@ -365,5 +383,17 @@ export class MeetingRoomPage {
 
   async hasModerator(): Promise<boolean> {
     return await this.participantsAvatar.moderatorAvatar.isVisible();
+  }
+
+  public async startResetRaisedHandsModeratorTool(): Promise<ResetRaisedHandsPage> {
+    await this.moderationTools.resetRaisedHandsButton.click();
+    const resetRaisedHandsPage = new ResetRaisedHandsPage({ page: this.page });
+    await resetRaisedHandsPage.resetRaisedHandsTitle.waitFor();
+    return resetRaisedHandsPage;
+  }
+
+  public getParticipantTileByName(name: string): ParticipantTilePage {
+    const participantTileWithName = this.participantWindowLocator.filter({ hasText: name });
+    return new ParticipantTilePage(participantTileWithName);
   }
 }
