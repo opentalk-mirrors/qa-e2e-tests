@@ -27,6 +27,21 @@ Update containers to the newest versions:
 docker compose pull && docker compose up -d
 ```
 
+Testing on a specific frontend/controller image:
+
+You can provide specific webapp and controller image to run tests on
+
+You can build your own image or you can get images from 
+- for webapp -> `container` step of pipeline 
+- for controller -> `package:container-controller-mr` step of pipeline.
+
+```
+FRONTEND_TAG=mr_branchname CONTROLLER_TAG=branchname FRONTEND_IMAGE=... CONTROLLER_IMAGE=... docker compose up -d
+```
+
+> [!IMPORTANT]  
+> If you are using image from a MR that is already closed it won't work because the image is deleted when closed
+
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
 These traces are a very useful tool to debug failed tests in CI, specially if they pass in the local environment.  
