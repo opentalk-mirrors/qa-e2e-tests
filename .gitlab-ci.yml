@@ -201,6 +201,7 @@ default:
 
 prettier+eslint:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -211,6 +212,7 @@ prettier+eslint:
 
 typecheck:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -220,6 +222,7 @@ typecheck:
 
 circular-deps:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -229,6 +232,7 @@ circular-deps:
 
 yaml:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -237,6 +241,7 @@ yaml:
 
 compliance:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -247,6 +252,7 @@ compliance:
 
 licensing:
   stage: lint
+  services: []
   image:
     name: fsfe/reuse:5.0.2
     entrypoint: ['']
@@ -257,6 +263,7 @@ licensing:
 
 audit:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -267,6 +274,7 @@ audit:
 
 commit:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -277,6 +285,7 @@ commit:
 
 unused-deps:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -287,6 +296,7 @@ unused-deps:
 
 unused-files:
   stage: lint
+  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -297,6 +307,7 @@ unused-files:
 
 commit-signature:
   stage: lint
+  services: []
   needs: []
   rules:
     # Run in merge requests only.
