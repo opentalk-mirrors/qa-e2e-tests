@@ -269,8 +269,7 @@ test.describe('Dashboard_Home', () => {
       expect(
         await page
           .getByRole('button', { name: day, exact: true })
-          .getAttribute('class')
-          .then((a) => a?.split(/\s+/).includes('MuiChip-filled'))
+          .evaluate((el) => el.classList.contains('MuiChip-filled'))
       ).toBe(true);
     }
 
