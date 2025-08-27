@@ -4,7 +4,7 @@
 import { Locator, Page } from '@playwright/test';
 
 export class DebriefingPage {
-  private readonly page: Page;
+  public readonly page: Page;
   private readonly debriefingButton: Locator;
 
   public readonly debriefingOptions: {

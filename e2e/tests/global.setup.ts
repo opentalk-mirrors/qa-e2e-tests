@@ -3,22 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test as setup } from '@playwright/test';
 
-import { config } from './config';
-import { changeLanguage, validateUserJson } from './helper/Api';
-import { LoginPage } from './pages/LoginPage';
+import { globalSetup } from './authHelpers';
 
 export const authUserFile = '.auth/user.json';
 
-setup('authenticate and set english language', async ({ page }) => {
+setup('authenticate and set english language', async () => {
   // Perform authentication steps.
-  const loginPage = new LoginPage(page);
-  await loginPage.gotoLoginPage();
-  await loginPage.login(config.USERNAME, config.PASSWORD);
-
-  // End of authentication steps.
-  await page.context().storageState({ path: authUserFile });
-  validateUserJson(authUserFile);
-
-  // Set language to english
-  await changeLanguage('en-US');
+  await globalSetup();
 });
