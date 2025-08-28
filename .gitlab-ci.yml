@@ -337,9 +337,11 @@ e2e-tests:
 
   before_script:
     - npm install
-    - npx playwright install --with-deps
+    - npx playwright install --with-deps $BROWSER
     - cp config/test_env e2e/.env
     - sleep 10
+  variables:
+    BROWSER: $BROWSER
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "*$BROWSER")
     - echo "RUNS $PROJECTS project"
