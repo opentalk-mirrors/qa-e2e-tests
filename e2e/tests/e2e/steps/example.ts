@@ -4,7 +4,9 @@
 import { Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { authUserFile } from '../../authHelpers';
 import { config } from '../../config';
+import { changeLanguage } from '../../helper/Api';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { LoginPage } from '../../pages/LoginPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
@@ -19,7 +21,6 @@ const userCredentials: Record<string, { username: string; password: string }> = 
 };
 
 Given('{string} has logged in', async function (this: CustomWorld, username: string) {
-  await this.init();
   const loginPage = new LoginPage(this.page);
 
   const creds = userCredentials[username];
@@ -29,7 +30,8 @@ Given('{string} has logged in', async function (this: CustomWorld, username: str
 
   await loginPage.gotoLoginPage();
   await loginPage.login(creds.username, creds.password);
-
+  await this.context.storageState({ path: authUserFile });
+  await changeLanguage('en-US');
   this.currentUser = username;
 });
 
