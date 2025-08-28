@@ -6,7 +6,7 @@ import { Page, expect, BrowserContext } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
-import { getGuestLink, startAdhocMeetingAsModerator as startMeeting } from './Api';
+import { getGuestLink, planMeetingAsModerator, startAdhocMeetingAsModerator as startMeeting } from './Api';
 import { closeWebkitPopUp } from './webkit';
 
 export const startAdhocMeetingAsModerator = async (
@@ -96,17 +96,25 @@ export const planNewMeetingAndStartAsModerator = async (
     await closeWebkitPopUp({ page });
   }
 
-  const meetingPlanningPage = await homePage.planNewMeeting();
-  const meetingInvitationPage = await meetingPlanningPage.createNewMeeting(meetingTitle, meetingPassword);
-  const guestLink = await meetingInvitationPage.getGuestLink();
-  const { phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin } =
-    await meetingInvitationPage.getPhoneDialInDetails();
-  const lobbyRoomPage = await meetingInvitationPage.navigateToMeetingLobby();
+  await homePage.planNewMeeting();
+  const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin } = await planMeetingAsModerator(
+    meetingTitle,
+    meetingPassword
+  );
+  const guestLink = await getGuestLink(roomId);
+  await page.goto(meetingLink);
+  const lobbyRoomPage = new LobbyRoomPage({ page });
   await expect(lobbyRoomPage.nameInputField).toBeVisible(); // needed because of flakyness (see issue #1692)
 
   const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
   await meetingRoomPage.meetingRoomName.isVisible();
   expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitle);
-
-  return { meetingRoomPage, guestLink, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin };
+  return {
+    meetingRoomPage,
+    guestLink,
+    phoneDialIn: '',
+    telephoneDialInNumber,
+    conferenceId,
+    conferencePin,
+  };
 };
