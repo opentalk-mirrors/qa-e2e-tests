@@ -7,8 +7,10 @@ import { config } from '../config';
 
 async function makeRequest(params: string, method: string = 'GET', body?: object, headers: Headers = new Headers()) {
   const dataArray = JSON.parse(readFileSync('.auth/user.json', 'utf-8'));
+  const localStorage = dataArray.origins[0].localStorage;
+  const accessToken = localStorage.find((item: { name: string; value: string }) => item.name === 'access_token')?.value;
   headers.append('content-type', 'application/json');
-  headers.append('authorization', 'Bearer ' + dataArray.origins[0].localStorage[3].value);
+  headers.append('authorization', 'Bearer ' + accessToken);
   const bodyString = JSON.stringify(body);
 
   const requestOptions = {
