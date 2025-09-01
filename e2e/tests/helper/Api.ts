@@ -60,13 +60,22 @@ export function validateUserJson(authUserFilePath: string) {
   }
 }
 
-export async function createMeeting(payload: object): Promise<{ meetingLink: string; roomId: string }> {
+export async function createMeeting(payload: object): Promise<{
+  meetingLink: string;
+  roomId: string;
+  telephoneDialInNumber: string;
+  conferenceId: string;
+  conferencePin: string;
+}> {
   try {
     const response = await makeRequest(`/v1/events`, 'POST', payload);
     const json = await response.json();
     const roomId = json.room.id;
     const meetingLink = `${config.INSTANCE_URL}/room/${roomId}`;
-    return { meetingLink, roomId };
+    const telephoneDialInNumber = json.room.call_in?.tel ?? '',
+      conferenceId = json.room.call_in?.id ?? '',
+      conferencePin = json.room.call_in?.password ?? '';
+    return { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin };
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -105,4 +114,45 @@ export async function getGuestLink(roomId: string): Promise<string> {
     }
     throw error;
   }
+}
+
+export async function planMeetingAsModerator(
+  title: string,
+  password?: string
+): Promise<{
+  meetingLink: string;
+  roomId: string;
+  telephoneDialInNumber: string;
+  conferenceId: string;
+  conferencePin: string;
+}> {
+  const now = new Date();
+  const start = new Date(now.getTime() + 5 * 60 * 1000);
+  const end = new Date(now.getTime() + 35 * 60 * 1000);
+
+  const payload = {
+    title,
+    description: '',
+    waiting_room: false,
+    show_meeting_details: true,
+    password,
+    is_time_independent: false,
+    is_adhoc: false,
+    has_shared_folder: false,
+    streaming_targets: [],
+    e2e_encryption: false,
+    starts_at: {
+      datetime: start.toISOString(),
+      timezone: 'Asia/Kathmandu',
+    },
+    ends_at: {
+      datetime: end.toISOString(),
+      timezone: 'Asia/Kathmandu',
+    },
+    is_all_day: false,
+  };
+
+  const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin } = await createMeeting(payload);
+
+  return { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin };
 }
