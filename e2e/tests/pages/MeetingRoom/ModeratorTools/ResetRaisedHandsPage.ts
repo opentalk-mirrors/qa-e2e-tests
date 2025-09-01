@@ -9,6 +9,7 @@ export class ResetRaisedHandsPage {
   public readonly allButton: Locator;
   public readonly selectedButton: Locator;
   public readonly searchParticipantTextbox: Locator;
+  public readonly participantList: Locator;
   public readonly participantListCheckboxes: Locator;
 
   constructor({ page }: { page: Page }) {
@@ -17,6 +18,7 @@ export class ResetRaisedHandsPage {
     this.allButton = this.page.getByRole('button', { name: 'All', exact: true });
     this.selectedButton = this.page.getByRole('button', { name: 'Selected', exact: true });
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });
+    this.participantList = this.page.locator('[data-sentry-component="SelectParticipantsItem"]');
     this.participantListCheckboxes = this.page
       .locator('[data-sentry-component="SelectParticipantsItem"]')
       .getByRole('checkbox');
@@ -39,5 +41,25 @@ export class ResetRaisedHandsPage {
 
   public async resetHandsOfSelectedParticipants(): Promise<void> {
     await this.selectedButton.click();
+  }
+
+  public async selectSearchParticipantTextbox(): Promise<void> {
+    await this.searchParticipantTextbox.click();
+  }
+
+  public async getPlaceholderValueOfSearchParticipantTextbox(): Promise<string> {
+    return (await this.searchParticipantTextbox.getAttribute('placeholder'))!;
+  }
+
+  public async searchParticipantInList(searchParticipant: string): Promise<void> {
+    await this.searchParticipantTextbox.fill(searchParticipant);
+  }
+
+  public getParticipantItemByName(name: string): Locator {
+    return this.participantList.filter({ hasText: name });
+  }
+
+  public async clearSearchedText(): Promise<void> {
+    await this.searchParticipantTextbox.clear();
   }
 }
