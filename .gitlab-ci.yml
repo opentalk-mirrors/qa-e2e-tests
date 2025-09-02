@@ -4,6 +4,7 @@
 ---
 stages:
   - lint
+  - e2e-gerkin-tests
   - e2e-tests
   - testrail
 
@@ -357,6 +358,29 @@ e2e-tests:
       - html-report
       - playwright-report
       - test-results
+    expire_in: 1 days
+
+e2e-gerkin-tests:
+  stage: e2e-gerkin-tests
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
+
+  variables:
+    INSTANCE_URL: https://www.opentalk.test
+    CONTROLLER_HOST: http://controller.opentalk.test
+    BROWSER: chromium
+  before_script:
+    - npm install
+    - npx playwright install $BROWSER --with-deps
+  script:
+    - npm run test e2e/tests/e2e/features/
+  artifacts:
+    when: always
+    paths:
+      - playwright-report
     expire_in: 1 days
 
 merge-and-upload-test-results:

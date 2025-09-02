@@ -9,6 +9,6 @@ Before(async function (this: CustomWorld) {
   await this.init();
 });
 
-After(async function (this: CustomWorld) {
-  await this.cleanup();
+After(async function (this: CustomWorld, scenario) {
+  await this.cleanup(scenario);
 });
