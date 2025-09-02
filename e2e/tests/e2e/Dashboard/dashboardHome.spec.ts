@@ -170,6 +170,11 @@ test.describe('Dashboard_Home', () => {
     browserName,
   }) => {
     test.skip(browserName === 'firefox');
+
+    // Set fixed time in the browser/test environment to 10:00 AM preventing nightly failure when planning meetings between 23:45–23:59.
+    const dateOnly = new Date().toISOString().split('T')[0];
+    await page.clock.setFixedTime(new Date(`${dateOnly}T10:00:00`));
+
     const homePage = new HomePage({ page });
     const planMeetingPage = await homePage.planNewMeeting();
 
