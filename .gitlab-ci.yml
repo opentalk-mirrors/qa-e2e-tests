@@ -4,7 +4,7 @@
 ---
 stages:
   - lint
-  - e2e-gerkin-tests
+  - e2e-gherkin-tests
   - e2e-tests
   - testrail
 
@@ -360,8 +360,8 @@ e2e-tests:
       - test-results
     expire_in: 1 days
 
-e2e-gerkin-tests:
-  stage: e2e-gerkin-tests
+e2e-gherkin-tests:
+  stage: e2e-gherkin-tests
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
