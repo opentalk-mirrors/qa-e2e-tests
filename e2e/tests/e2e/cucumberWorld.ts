@@ -6,6 +6,8 @@ import { chromium, Page, Browser, BrowserContext } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
+import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
+
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 export class CustomWorld extends World {
@@ -13,6 +15,10 @@ export class CustomWorld extends World {
   context!: BrowserContext;
   page!: Page;
   currentUser?: string;
+  lastCreatedMeeting?: {
+    meetingRoomPage: MeetingRoomPage;
+    guestLink: string;
+  };
 
   constructor(options: IWorldOptions) {
     super(options);
