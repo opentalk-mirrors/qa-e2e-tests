@@ -5,6 +5,7 @@ import { Page, Locator, BrowserContext } from '@playwright/test';
 
 import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
+import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
 import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
@@ -385,6 +386,17 @@ export class MeetingRoomPage {
     const resetRaisedHandsPage = new ResetRaisedHandsPage({ page: this.page });
     await resetRaisedHandsPage.resetRaisedHandsTitle.waitFor();
     return resetRaisedHandsPage;
+  }
+
+  public async startBreakoutRoomsModeratorTool(): Promise<BreakoutRoomsPage> {
+    await this.moderationTools.createBreakoutRoomsButton.click();
+    return new BreakoutRoomsPage(this.page);
+  }
+
+  public async startBreakoutRooms(randomDistribution: boolean): Promise<void> {
+    const breakoutRoomPage = await this.startBreakoutRoomsModeratorTool();
+    await breakoutRoomPage.setRandomDistribution(randomDistribution);
+    await breakoutRoomPage.startRooms();
   }
 
   public getParticipantTileByName(name: string): ParticipantTilePage {

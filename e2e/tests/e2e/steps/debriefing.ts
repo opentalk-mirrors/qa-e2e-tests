@@ -13,8 +13,8 @@ When('{string} clicks on "Debriefing" button', async function (this: CustomWorld
   if (this.currentUser !== username) {
     throw new Error(`Step user mismatch: expected ${username}, got ${this.currentUser}`);
   }
-
-  await this.lastCreatedMeeting?.meetingRoomPage.page.bringToFront();
+  const meeting = this.getStartedMeeting(username).meeting;
+  await meeting.meetingRoomPage.page.bringToFront();
   debriefingPage = new DebriefingPage(this.page);
   await debriefingPage.startDebriefingModeratorTool();
 });
