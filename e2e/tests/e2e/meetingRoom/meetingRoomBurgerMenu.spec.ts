@@ -72,7 +72,7 @@ test.describe('Meeting Room_Burger menu', () => {
     await burgerMenuPage.openKeyboardShortcuts();
     await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).toBeVisible();
     await expect(meetingRoomPage.keyboardShortcuts.checkbox).toBeChecked();
-    await meetingRoomPage.closeKeyboardShortcutsPopup();
+    await meetingRoomPage.closePopupDialog();
     await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).not.toBeVisible();
     await meetingRoomPage.pressEscape(); // escaping burgermenu because it does not allow to locate elements
 
@@ -156,7 +156,7 @@ test.describe('Meeting Room_Burger menu', () => {
       await burgerMenuPage.openReportABug();
       await expect(meetingRoomPage.reportABug.manualGlitchtipPopup).toBeVisible();
 
-      await meetingRoomPage.closeManualGlitchtipPopup(method);
+      await meetingRoomPage.closePopupDialog(method);
       await expect(meetingRoomPage.reportABug.manualGlitchtipPopup).not.toBeVisible();
     }
   });
