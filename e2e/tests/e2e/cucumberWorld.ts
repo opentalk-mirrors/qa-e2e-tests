@@ -25,7 +25,9 @@ export class CustomWorld extends World {
   }
 
   async init() {
-    this.browser = await chromium.launch({ headless: true });
+    const env = process.env.HEADLESS?.toLowerCase() ?? 'true';
+    const headless = env !== 'false';
+    this.browser = await chromium.launch({ headless });
     this.context = await this.browser.newContext({ ignoreHTTPSErrors: true });
     await this.context.tracing.start({
       screenshots: true,

@@ -13,7 +13,10 @@
     "deps:circular": "madge --circular .",
     "deps:unused": "knip --include dependencies,files",
     "prepare": "husky",
-    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx cucumber-js --require-module ts-node/register --require e2e/tests/e2e/cucumberWorld.ts --require e2e/tests/e2e/hooks.ts --require e2e/tests/e2e/steps/**/*.ts --format @cucumber/pretty-formatter"
+    "test:cucumber": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx cucumber-js --require-module ts-node/register --require e2e/tests/e2e/cucumberWorld.ts --require e2e/tests/e2e/hooks.ts --require e2e/tests/e2e/steps/**/*.ts --format @cucumber/pretty-formatter",
+    "test": "npm run test:cucumber",
+    "test:headless": "HEADLESS=true npm run test:cucumber",
+    "test:headed": "HEADLESS=false npm run test:cucumber"
   },
   "keywords": [],
   "author": "",
