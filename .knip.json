@@ -1,18 +1,26 @@
 {
-    "ignoreDependencies": [
-        "licensee",
-        "fast-xml-parser",
-        "ts-node",
-        "@cucumber/pretty-formatter"
-    ],
-    "ignore": [
-        "e2e/tests/smoke/login.smoke.ts",
-        "scripts/modifyJUnitReportForTestRail.ts",
-        "e2e/tests/e2e/hooks.ts",
-        "e2e/tests/e2e/cucumberWorld.ts",
-        "e2e/tests/e2e/steps/*.ts"
-    ],
+  "ignoreDependencies": [
+    "licensee",
+    "fast-xml-parser",
+    "ts-node",
+    "@cucumber/pretty-formatter"
+  ],
+  "entry": [
+    "e2e/tests/global.setup.ts",
+    "e2e/tests/e2e/hooks.ts"
+  ],
+  "project": [
+    "e2e/**/*.ts"
+  ],
+  "playwright": {
     "entry": [
-        "e2e/tests/global.setup.ts"
+      "e2e/tests/**/*.spec.ts",
+      "e2e/tests/smoke/*"
     ]
+  },
+  "cucumber": {
+    "entry": [
+      "e2e/tests/e2e/steps/*.ts"
+    ]
+  }
 }
