@@ -82,15 +82,13 @@ export class MeetingRoomPage {
 
   reportABug: {
     manualGlitchtipPopup: Locator;
-    closeButton: Locator;
   };
 
   keyboardShortcuts: {
     keyboardShortcutsPopup: Locator;
     checkbox: Locator;
-    closeButton: Locator;
   };
-
+  private closePopupDialogButton: Locator;
   private isKeyboardShortcutOn: boolean = true;
 
   constructor({ page }: { page: Page }) {
@@ -165,14 +163,13 @@ export class MeetingRoomPage {
 
     this.reportABug = {
       manualGlitchtipPopup: this.page.getByRole('dialog', { name: "Oh, it looks like we're having issues." }),
-      closeButton: this.page.getByRole('button', { name: 'Close dialog' }),
     };
 
     this.keyboardShortcuts = {
       keyboardShortcutsPopup: this.page.getByRole('dialog', { name: 'Keyboard Shortcuts' }),
       checkbox: this.page.getByRole('switch', { name: 'Keyboard Shortcuts' }),
-      closeButton: this.page.getByRole('button', { name: 'Close dialog' }),
     };
+    this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });
   }
 
   async renderMeetingRoom(): Promise<void> {
@@ -281,10 +278,6 @@ export class MeetingRoomPage {
   }
 
   // functions related to keyboard shortcuts
-  async closeKeyboardShortcutsPopup() {
-    await this.keyboardShortcuts.closeButton.click();
-  }
-
   async useKeyboardShortcut(key: string): Promise<void> {
     const cameraOn: boolean = await this.isCameraOn();
     const audioOn: boolean = await this.isAudioOn();
@@ -340,10 +333,11 @@ export class MeetingRoomPage {
     this.isKeyboardShortcutOn = await this.keyboardShortcuts.checkbox.isChecked();
   }
 
-  async closeManualGlitchtipPopup(method: string) {
+  async closePopupDialog(method = 'BTN_x') {
     switch (method) {
       case 'BTN_x': {
-        await this.reportABug.closeButton.click();
+        await this.closePopupDialogButton.click();
+        await this.closePopupDialogButton.waitFor({ state: 'detached' });
         break;
       }
 
