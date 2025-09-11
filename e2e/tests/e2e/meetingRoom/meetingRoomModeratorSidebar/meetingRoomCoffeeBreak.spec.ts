@@ -31,7 +31,8 @@ test.describe('Meeting room_Coffee break', async () => {
 
     test('TC_001_Meeting Room_As Moderator_Coffee break', async () => {
       coffeeBreakPage = await meetingRoomPage.selectCoffeeBreakModeratorTool();
-      await expect(coffeeBreakPage.getHeading('Coffee break')).toBeVisible();
+      await expect(coffeeBreakPage.heading).toBeVisible();
+      expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');
       await expect(coffeeBreakPage.durationButton).toHaveText('5 min');
       await expect(coffeeBreakPage.startCoffeeBreakButton).toBeVisible();
     });
@@ -132,7 +133,8 @@ test.describe('Meeting room_Coffee break', async () => {
       await assertCoffeeBreakDialog(guestCoffeeBreakDialogPage);
 
       await meetingRoomPage.page.bringToFront();
-      await expect(coffeeBreakPage.getHeading('Coffee break')).toBeVisible();
+      await expect(coffeeBreakPage.heading).toBeVisible();
+      expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');
       await expect(coffeeBreakPage.durationLabel).toBeVisible();
       await expect(coffeeBreakPage.timerText).toBeVisible();
       await expect(coffeeBreakPage.timerText).toHaveText(/^$|^\d{2}\s*:\s*\d{2}$/);
@@ -149,7 +151,8 @@ test.describe('Meeting room_Coffee break', async () => {
       const guestNotification = new NotificationPage({ page: guestMeetingRoomPage.page });
       expect(await guestNotification.getAlertNotificationText()).toBe(coffeeBreakOverNotificationText);
       await meetingRoomPage.page.bringToFront();
-      await expect(coffeeBreakPage.getHeading('Coffee break')).toBeVisible();
+      await expect(coffeeBreakPage.heading).toBeVisible();
+      expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');
       await expect(coffeeBreakPage.startCoffeeBreakButton).toBeVisible();
       await expect(meetingRoomPage.moderationTools.timerButton).toBeEnabled();
     });

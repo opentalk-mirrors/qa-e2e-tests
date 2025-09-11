@@ -30,7 +30,7 @@ test.describe('Meeting Room_Timer', () => {
   test('TC_001_Meeting Room_As Moderator_Timer', async () => {
     await meetingRoomPage.page.bringToFront();
     const timerPage: TimerPage = await meetingRoomPage.startTimerModeratorTool();
-    await expect(timerPage.timerHeading).toHaveText('Timer');
+    expect(await timerPage.getHeadingText()).toBe('Timer');
     await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName('Duration 1 minute');
     await expect(timerPage.titleTextbox).toBeVisible();
     await expect(timerPage.participantsReadyCheckbox).toBeChecked();

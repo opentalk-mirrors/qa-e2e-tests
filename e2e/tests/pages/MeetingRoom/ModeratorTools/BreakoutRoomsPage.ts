@@ -3,15 +3,16 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
-export class BreakoutRoomsPage {
-  public readonly page: Page;
+import { ModeratorToolsPage } from '../ModeratorToolsPage';
+
+export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly startRoomsButton: Locator;
   private readonly closeRoomButton: Locator;
   private readonly randomDistributionSwitch: Locator;
   private readonly participantsAvatar: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super({ page });
     this.startRoomsButton = this.page.getByRole('button', { name: 'Start rooms' });
     this.closeRoomButton = this.page.getByRole('button', { name: 'Close room' });
     this.participantsAvatar = this.page.getByRole('tabpanel').getByTestId('participantAvatar');

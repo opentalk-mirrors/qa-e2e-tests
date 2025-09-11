@@ -368,7 +368,7 @@ export class MeetingRoomPage {
   async startTimerModeratorTool(): Promise<TimerPage> {
     await this.moderationTools.timerButton.click();
     const timerPage = new TimerPage({ page: this.page });
-    await timerPage.timerHeading.waitFor();
+    await timerPage.heading.waitFor();
     return timerPage;
   }
 
@@ -384,7 +384,7 @@ export class MeetingRoomPage {
   public async startResetRaisedHandsModeratorTool(): Promise<ResetRaisedHandsPage> {
     await this.moderationTools.resetRaisedHandsButton.click();
     const resetRaisedHandsPage = new ResetRaisedHandsPage({ page: this.page });
-    await resetRaisedHandsPage.resetRaisedHandsTitle.waitFor();
+    await resetRaisedHandsPage.heading.waitFor();
     return resetRaisedHandsPage;
   }
 
@@ -407,7 +407,7 @@ export class MeetingRoomPage {
   public async selectCoffeeBreakModeratorTool(): Promise<CoffeeBreakPage> {
     await this.moderationTools.coffeeBreakButton.click();
     const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
-    await coffeeBreakPage.getHeading('Coffee break').waitFor({ state: 'visible' });
+    await coffeeBreakPage.heading.waitFor({ state: 'visible' });
     return coffeeBreakPage;
   }
 }

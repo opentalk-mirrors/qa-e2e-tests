@@ -5,9 +5,9 @@
 // in the meeting room
 import { Locator, Page } from '@playwright/test';
 
-export class TimerPage {
-  public readonly page: Page;
-  public readonly timerHeading: Locator;
+import { ModeratorToolsPage } from '../ModeratorToolsPage';
+
+export class TimerPage extends ModeratorToolsPage {
   public readonly duration: {
     readonly durationSelectionButton: Locator;
     readonly sessionDurationPopup: Locator;
@@ -51,8 +51,7 @@ export class TimerPage {
   };
 
   constructor({ page }: { page: Page }) {
-    this.page = page;
-    this.timerHeading = this.page.getByRole('heading', { name: 'Timer' });
+    super({ page: page });
     this.duration = {
       durationSelectionButton: this.page.getByRole('button', { name: 'Duration' }),
       sessionDurationPopup: this.page.getByRole('dialog', { name: 'Session Duration' }),

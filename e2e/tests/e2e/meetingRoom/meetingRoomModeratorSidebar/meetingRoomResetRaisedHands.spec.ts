@@ -54,7 +54,8 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     }
     await meetingRoomPage.page.bringToFront();
     resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
-    await expect(resetRaisedHandsPage.resetRaisedHandsTitle).toBeVisible();
+    await expect(resetRaisedHandsPage.heading).toBeVisible();
+    expect(await resetRaisedHandsPage.getHeadingText()).toBe('Reset raised hands');
     await expect(resetRaisedHandsPage.allButton).toBeVisible();
     await expect(resetRaisedHandsPage.selectedButton).toBeVisible();
     await expect(resetRaisedHandsPage.searchParticipantTextbox).toBeVisible();
