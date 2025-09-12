@@ -15,7 +15,6 @@ const userCredentials: Record<string, { username: string; password: string }> = 
 
 Given('{string} has logged in', async function (this: CustomWorld, username: string) {
   const loginPage = new LoginPage(this.page);
-
   const creds = userCredentials[username];
   if (!creds) {
     throw new Error(`No credentials found for user: ${username}`);
