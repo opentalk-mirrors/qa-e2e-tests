@@ -14,11 +14,18 @@ import path from 'path';
 
 import { config } from '../config';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
+import { BreakoutRoomsPage } from '../pages/MeetingRoom/ModeratorTools/BreakoutRoomsPage';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 interface Meeting {
   meetingRoomPage: MeetingRoomPage;
+  moderatorTools?: {
+    breakoutRooms?: {
+      breakoutRoomsPage?: BreakoutRoomsPage;
+    };
+  };
+
   guestLink: string;
 }
 

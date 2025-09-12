@@ -1,11 +1,18 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Then, When } from '@cucumber/cucumber';
+import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
+
+When('{string} opens the breakout rooms moderator tool', async function (this: CustomWorld, user: string) {
+  const meeting = this.getStartedMeeting(user).meeting;
+  await meeting.meetingRoomPage.page.bringToFront();
+  const breakoutRoomsPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
+  meeting.moderatorTools = { breakoutRooms: { breakoutRoomsPage } };
+});
 
 When('{string} creates breakout rooms with random distribution', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
@@ -59,5 +66,29 @@ Then(
     await moderatorPage.page.bringToFront();
     const breakoutRoomPage = await moderatorPage.startBreakoutRoomsModeratorTool();
     expect(await breakoutRoomPage.countParticipantsOfAllRooms()).toBe(expectedNoOfParticipants);
+  }
+);
+
+Then(
+  'the heading in the open moderator tool for {string} should be {string}',
+  async function (this: CustomWorld, moderator: string, expectedHeading: string) {
+    const startedMeeting = this.getStartedMeeting(moderator).meeting;
+    const moderatorPage = startedMeeting.meetingRoomPage;
+    await moderatorPage.page.bringToFront();
+    const breakoutRoomsPage = startedMeeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    expect(await breakoutRoomsPage?.getHeadingText()).toBe(expectedHeading);
+  }
+);
+
+Then(
+  'the "By number of" setting in the breakout rooms moderator tool for {string} should have these options:',
+  async function (this: CustomWorld, moderator: string, expectedOptionsTable: DataTable) {
+    const breakoutRoomsPage =
+      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const expectedOptions = [];
+    for (let i = 0; i < expectedOptionsTable.raw().length; i++) {
+      expectedOptions.push(expectedOptionsTable.raw()[i][0]);
+    }
+    expect(await breakoutRoomsPage?.getSelectionModeOptions()).toEqual(expectedOptions);
   }
 );
