@@ -11,6 +11,6 @@ export class ModeratorToolsPage {
   }
 
   public getHeading(name: string): Locator {
-    return this.page.getByRole('heading', { name });
+    return this.page.getByRole('heading', { name, exact: true });
   }
 }
