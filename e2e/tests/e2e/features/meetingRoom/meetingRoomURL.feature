@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
+@skip-on-webkit
 Feature: Meeting room URL
   As a user
   I want every link to the meeting room be correct

@@ -361,6 +361,9 @@ e2e-tests:
     expire_in: 1 days
 
 e2e-gherkin-tests:
+  parallel:
+    matrix:
+      - BROWSER: !reference [.template_vars, BROWSERS]
   stage: e2e-gherkin-tests
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -371,12 +374,13 @@ e2e-gherkin-tests:
   variables:
     INSTANCE_URL: https://www.opentalk.test
     CONTROLLER_HOST: http://controller.opentalk.test
-    BROWSER: chromium
+    BROWSER: $BROWSER
+    HEADLESS: true
   before_script:
     - npm install
     - npx playwright install $BROWSER --with-deps
   script:
-    - npm run test e2e/tests/e2e/features/
+    - npm run test:gherkin e2e/tests/e2e/features/
   artifacts:
     when: always
     paths:

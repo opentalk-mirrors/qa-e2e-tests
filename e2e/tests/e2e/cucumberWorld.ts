@@ -8,10 +8,11 @@ import {
   ITestCaseHookParameter,
   setDefaultTimeout,
 } from '@cucumber/cucumber';
-import { chromium, Page, Browser, BrowserContext } from '@playwright/test';
+import { chromium, Page, Browser, BrowserContext, webkit, firefox, BrowserType } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
+import { config } from '../config';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
@@ -66,11 +67,55 @@ export class CustomWorld extends World {
   }
 
   async init() {
-    const env = process.env.HEADLESS?.toLowerCase() ?? 'true';
-    const headless = env !== 'false';
-    this.browser = await chromium.launch({ headless });
+    const browserName = config.browser;
+
+    let browserType: BrowserType<Browser>;
+    let permissions: Array<string>;
+    let args = [
+      '--use-fake-device-for-media-stream',
+      '--use-fake-ui-for-media-stream',
+      '--allow-file-access',
+      '--guest',
+      '--disable-web-security',
+      '--allow-running-insecure-content',
+    ];
+    let firefoxUserPrefs: { [key: string]: string | number | boolean } = {
+      'permissions.default.microphone': 1,
+      'permissions.default.camera': 1,
+      'media.navigator.streams.fake': true,
+      'media.navigator.permission.disabled': true,
+      'dom.events.testing.asyncClipboard': true,
+      'dom.events.asyncClipboard.readText': true,
+      'dom.events.asyncClipboard.clipboardItem': true,
+      'dom.events.asyncClipboard.writeText': true,
+      'permissions.default.clipboard-read': 1,
+      'permissions.default.clipboard-write': true,
+    };
+
+    switch (browserName) {
+      case 'firefox':
+        browserType = firefox;
+        permissions = [];
+        break;
+      case 'webkit':
+        browserType = webkit;
+        permissions = [];
+        args = [];
+        firefoxUserPrefs = {};
+        break;
+      default:
+        browserType = chromium;
+        permissions = ['clipboard-read', 'clipboard-write', 'camera', 'microphone'];
+    }
+
+    this.browser = await browserType.launch({
+      slowMo: config.slowMo,
+      headless: config.headless,
+      args: args,
+      firefoxUserPrefs: firefoxUserPrefs,
+    });
     this.context = await this.browser.newContext({ ignoreHTTPSErrors: true });
-    await this.context.grantPermissions(['clipboard-read', 'clipboard-write', 'camera', 'microphone']);
+    await this.context.grantPermissions(permissions);
     await this.context.tracing.start({
       screenshots: true,
       snapshots: true,
