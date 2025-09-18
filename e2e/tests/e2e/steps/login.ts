@@ -11,7 +11,7 @@ import { LoginPage } from '../../pages/LoginPage';
 import { CustomWorld } from '../cucumberWorld';
 
 const userCredentials: Record<string, { username: string; password: string }> = {
-  Alice: { username: config.USERNAME, password: config.PASSWORD },
+  Alice: { username: 'alice', password: 'alice' },
 };
 
 Given('{string} has logged in', async function (this: CustomWorld, username: string) {
