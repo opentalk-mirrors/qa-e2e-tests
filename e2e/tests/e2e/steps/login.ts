@@ -6,6 +6,7 @@ import { Given } from '@cucumber/cucumber';
 import { authUserFile } from '../../authHelpers';
 import { config } from '../../config';
 import { changeLanguage } from '../../helper/Api';
+import { closeWebkitPopUp } from '../../helper/webkit';
 import { LoginPage } from '../../pages/LoginPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -25,4 +26,7 @@ Given('{string} has logged in', async function (this: CustomWorld, username: str
   await this.context.storageState({ path: authUserFile });
   await changeLanguage('en-US');
   this.currentUser = username;
+  if (config.browser === 'webkit') {
+    await closeWebkitPopUp({ page: this.page });
+  }
 });
