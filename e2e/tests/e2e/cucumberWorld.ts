@@ -104,6 +104,15 @@ export class CustomWorld extends World {
       this.startedMeetings[moderator].guestMeetingRoomPages.concat(guestMeetingRoomPages);
   }
 
+  removeGuestMeetingRoom(moderator: string, guestMeetingRoomPage: MeetingRoomPage) {
+    if (!this.startedMeetings || !this.startedMeetings[moderator]) {
+      throw new Error('No meeting has been created yet');
+    }
+    this.startedMeetings[moderator].guestMeetingRoomPages = this.startedMeetings[
+      moderator
+    ].guestMeetingRoomPages.filter((guestPage) => guestPage !== guestMeetingRoomPage);
+  }
+
   async init() {
     let permissions: Array<string> = [];
     if (this.browser.browserType().name() === 'chromium') {

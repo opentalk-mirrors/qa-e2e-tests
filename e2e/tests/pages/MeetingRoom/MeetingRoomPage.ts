@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator, BrowserContext } from '@playwright/test';
 
+import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
 import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
@@ -76,11 +77,23 @@ export class MeetingRoomPage {
   chatButton: Locator;
   peopleButton: Locator;
   messagesButton: Locator;
-  searchInChatButton: Locator;
-  emojiPicker: Locator;
-  chatTextField: Locator;
-  chatSubmitButton: Locator;
 
+  chatOption: Locator;
+  searchInChatButton: Locator;
+  private readonly closeSearchInChatButton: Locator;
+  public readonly chatHistoryDescription: Locator;
+  public readonly joinedText: Locator;
+  private readonly chatListItems: Locator;
+  public readonly noMessageMatchText: Locator;
+  public readonly resetButton: Locator;
+  emojiPicker: Locator;
+  public readonly emojiPickerDialog: Locator;
+  private readonly smileyEmojiButton: Locator;
+  chatTextField: Locator;
+  public readonly chatTextArea: Locator;
+  private readonly chatTextbox: Locator;
+  chatSubmitButton: Locator;
+  emptyMessageError: Locator;
   securityMonitorButton: Locator;
 
   burgerMenuButton: Locator;
@@ -158,10 +171,24 @@ export class MeetingRoomPage {
     this.chatButton = this.page.getByRole('tab', { name: 'Chat' });
     this.peopleButton = this.page.getByRole('tab', { name: 'People' });
     this.messagesButton = this.page.getByRole('tab', { name: 'Messages' });
+
+    this.chatOption = this.page.getByTestId('chat');
     this.searchInChatButton = this.page.getByLabel('Search in chat');
+    this.closeSearchInChatButton = this.page.getByRole('button', { name: 'Clear' });
+    this.chatHistoryDescription = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('paragraph');
+    this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
+    this.chatListItems = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('listitem');
+    this.noMessageMatchText = this.page.locator('//*[@data-sentry-component="NoSearchResult"]').locator('span');
+    this.resetButton = this.page.getByRole('button', { name: 'Reset' });
     this.emojiPicker = this.page.getByRole('button', { name: 'open emoji picker' });
     this.chatTextField = this.page.getByPlaceholder('Type a message');
+    this.emojiPickerDialog = this.page.getByRole('dialog', { name: 'Emoji picker' });
+    this.smileyEmojiButton = this.page.getByRole('button', { name: 'smiley', exact: true });
+
+    this.chatTextArea = this.page.locator('//*[@id="chat-input-label"]');
+    this.chatTextbox = this.page.getByRole('textbox', { name: 'Chat', exact: true });
     this.chatSubmitButton = this.page.getByRole('button', { name: 'submit chat message' });
+    this.emptyMessageError = this.page.getByText('Chatopen emoji').getByRole('paragraph');
 
     this.securityMonitorButton = this.page.getByRole('button', { name: 'Show security monitor' });
 
@@ -264,9 +291,18 @@ export class MeetingRoomPage {
     return await this.toolBar.videoButton.isVisible();
   }
 
+  async leaveMeeting(): Promise<void> {
+    await this.toolBar.endMeetingButton.click();
+    await this.toolBar.endMeetingButton.waitFor({ state: 'detached' });
+  }
+
   async selectPeopleTab(): Promise<void> {
     await this.peopleButton.waitFor({ timeout: 10_000 });
     await this.peopleButton.click();
+  }
+
+  async getPeopleTabText(): Promise<string> {
+    return await this.peopleButton.innerText();
   }
 
   async getNumberOfParticipantsInMeeting(): Promise<number> {
@@ -430,6 +466,99 @@ export class MeetingRoomPage {
     const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
     await coffeeBreakPage.heading.waitFor({ state: 'visible' });
     return coffeeBreakPage;
+  }
+
+  public async isOptionSelected(locator: Locator): Promise<boolean> {
+    return await locator.evaluate((el) => el.classList.contains('Mui-selected'));
+  }
+
+  public async getParticipantsDetails(): Promise<string[]> {
+    return (await this.chatListItems.allInnerTexts()).filter((chat) => chat.includes('joined'));
+  }
+
+  public async getAllChatListTexts(): Promise<string[]> {
+    await waitForDomStopChanging(this.page);
+    return (await this.chatListItems.allInnerTexts()).filter((chat) => !chat.includes('joined'));
+  }
+
+  public async getAllChatListCount(): Promise<number> {
+    return (await this.getAllChatListTexts()).length;
+  }
+
+  public async scrollChatListItems(): Promise<void> {
+    await waitForDomStopChanging(this.page);
+    await this.chatListItems.first().scrollIntoViewIfNeeded();
+  }
+
+  public async filterChatText(message: string): Promise<string> {
+    return (await this.getAllChatListTexts()).filter((text) => text.includes(message))[0];
+  }
+
+  public async getLastChatText(): Promise<string> {
+    const chatListTexts = await this.getAllChatListTexts();
+    return chatListTexts.slice(-1)[0] ?? chatListTexts[0];
+  }
+
+  public async openEmojiPickerDialog(): Promise<void> {
+    await this.emojiPicker.click();
+  }
+
+  private getEmojiLocator(emoji: string): Locator {
+    return this.page.getByText(emoji, { exact: true });
+  }
+
+  public async selectEmoji(emoji: string): Promise<void> {
+    await this.getEmojiLocator(emoji).click();
+  }
+
+  public async selectChatTextbox(): Promise<void> {
+    await this.chatTextbox.click();
+  }
+
+  public async typeMessage(message: string): Promise<void> {
+    await this.chatTextbox.fill(message);
+  }
+
+  public async getChatTextboxPlaceholder(): Promise<string> {
+    return (await this.chatTextbox.getAttribute('placeholder')) ?? '';
+  }
+
+  public async getChatTextFieldInputValue(): Promise<string> {
+    return await this.chatTextArea.inputValue();
+  }
+
+  public async submitChat(): Promise<void> {
+    await this.chatSubmitButton.click();
+  }
+
+  public async getEmptyMessageErrorText(): Promise<string> {
+    return await this.emptyMessageError.innerText();
+  }
+
+  public async selectSearchInChatTextbox(): Promise<void> {
+    await this.searchInChatButton.click();
+  }
+
+  public async getSearchInChatTextboxPlaceholder(): Promise<string> {
+    return (await this.searchInChatButton.getAttribute('placeholder')) ?? '';
+  }
+
+  public async getSearchInChatTextboxValue(): Promise<string> {
+    return await this.searchInChatButton.inputValue();
+  }
+
+  public async closeSearchInChatTextbox(): Promise<void> {
+    await this.closeSearchInChatButton.click();
+    await this.closeSearchInChatButton.waitFor({ state: 'detached' });
+  }
+
+  public async typeTextInSearchInChatTextbox(text: string): Promise<void> {
+    await this.searchInChatButton.fill(text);
+    await this.closeSearchInChatButton.waitFor({ state: 'visible' });
+  }
+
+  public async resetMatchedSearchedText(): Promise<void> {
+    await this.resetButton.click();
   }
 
   public async startTalkingStickModeratorTool(): Promise<TalkingStickPage> {
