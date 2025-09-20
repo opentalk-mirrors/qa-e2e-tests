@@ -6,6 +6,7 @@ SPDX-PackageDownloadLocation = "https://git.opentalk.dev/opentalk/qa/e2e-tests"
 [[annotations]]
 path = [
     ".gitignore",
+    "nginx.conf",
     "certs/cert.crt",
     "certs/cert.csr",
     "certs/cert_key",

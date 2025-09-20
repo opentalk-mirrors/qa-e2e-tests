@@ -10,7 +10,7 @@ docker compose up -d
 ```
 
 Immediately after starting the container, the tests may fail because some OpenTalk components take some time to start.
-You can access the webapp via http://localhost:3000.
+You can access the webapp via https://localhost:8443.
 
 Run a test suite:
 ```

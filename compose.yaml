@@ -11,7 +11,7 @@ services:
       PORT: 3000
       LIVEKIT_SERVER_URL: http://localhost:7080
       CONTROLLER_HOST: localhost:11311
-      BASE_URL: http://localhost:3000
+      BASE_URL: https://localhost:8443
       HELPDESK_URL: https://opentalk.eu
       CONTACT_SUPPORT_URL: https://opentalk.eu
       IMPRINT_URL: https://opentalk.eu/en/terms-of-use
@@ -130,7 +130,7 @@ services:
           until [ -f "/builds/config/controller-config.toml" ]; do true; done;
           sleep 10;
           cat /builds/config/controller-config.toml | \
-          sed 's/www\.opentalk\.test/webapp\:8080/g' > /tmp/controller-config.toml
+          sed 's/www\.opentalk\.test/localhost\:8443/g' > /tmp/controller-config.toml
           sed -i 's/accounts\.opentalk\.test/localhost\:8080/g' /tmp/controller-config.toml
           sed -i 's/livekit\.opentalk\.test/localhost\:7880/g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
@@ -206,8 +206,34 @@ services:
       - -c
       - |
         cat /builds/config/test_env | \
-        sed 's/https\:\/\/www\.opentalk\.test/http\:\/\/localhost\:3000/g' >  /builds/e2e/.env;
+        sed 's/https\:\/\/www\.opentalk\.test/https\:\/\/localhost\:8443/g' >  /builds/e2e/.env;
         sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;⏎
         npm ci
         npx playwright install
         bash
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - certs-volume:/etc/nginx/certs
+    ports:
+      - 8443:443
+    depends_on:
+      - webapp
+      - controller
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        if [ ! -f /etc/nginx/certs/fullchain.pem ]; then
+          apt-get update && apt-get install -y openssl
+          cd /etc/nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout privkey.pem -out fullchain.pem \
+            -subj "/CN=localhost"
+        fi;
+        exec nginx -g "daemon off;";
+
+volumes:
+  certs-volume:
