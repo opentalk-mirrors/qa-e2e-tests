@@ -18,8 +18,8 @@ services:
       DATA_PROTECTION_URL: https://opentalk.eu/en/data-protection
       OIDC_ISSUER: http://localhost:8080/auth/realms/OPENTALK
       SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
-      INSECURE: true
-      FEATURE_SHARED_FOLDER: true
+      INSECURE: 'true'
+      FEATURE_SHARED_FOLDER: 'true'
     healthcheck:
       test: 'wget "http://localhost:3000/manifest.json" -O - | grep ''"short_name": "OpenTalk"'''
       interval: 10s
