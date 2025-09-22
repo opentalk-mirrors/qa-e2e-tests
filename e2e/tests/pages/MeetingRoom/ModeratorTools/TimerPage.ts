@@ -75,7 +75,7 @@ export class TimerPage {
       })
       .getByRole('switch');
     this.createTimer = {
-      createTimerButton: this.page.getByRole('button', { name: 'Create Timer' }),
+      createTimerButton: this.page.getByRole('button', { name: 'Start Timer' }),
       tabPanel: {
         tabPanelSection: this.page.getByRole('tabpanel', { name: 'Timer' }),
         heading: this.page.getByRole('tabpanel', { name: 'Timer' }).getByRole('heading', { name: 'Timer' }),
@@ -104,7 +104,7 @@ export class TimerPage {
         markMeAsDoneButton: this.page.getByRole('button', { name: 'Mark me as done', exact: true }),
         unmarkMeAsDoneButton: this.page.getByRole('button', { name: 'Unmark me as done', exact: true }),
       },
-      stopTimerButton: this.page.getByRole('button', { name: 'Stop timer' }),
+      stopTimerButton: this.page.getByRole('button', { name: 'End timer' }),
       timerStoppedAlert: this.page.getByRole('alert').getByText('The timer was stopped'),
       timerRanOutAlert: this.page.getByRole('alert').getByText('The timer ran out'),
     };
