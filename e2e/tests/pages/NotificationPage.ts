@@ -24,12 +24,20 @@ export class NotificationPage {
   }
 
   public async joinBreakoutRoom(): Promise<void> {
-    await this.joinBreakoutRoomLocator.click();
-    await this.baseAlertLocator.waitFor({ state: 'detached' });
+    await this.transitionBreakoutRoom(this.joinBreakoutRoomLocator);
   }
 
   public async leaveBreakoutRoom(): Promise<void> {
-    await this.leaveBreakoutRoomLocator.click();
-    await this.baseAlertLocator.waitFor({ state: 'detached' });
+    await this.transitionBreakoutRoom(this.leaveBreakoutRoomLocator);
+  }
+
+  private async transitionBreakoutRoom(button: Locator): Promise<void> {
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().endsWith('/start') && response.status() === 200 && response.request().method() === 'POST'
+    );
+    await button.click();
+    await responsePromise;
+    await button.waitFor({ state: 'detached' });
   }
 }
