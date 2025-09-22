@@ -7,6 +7,7 @@ import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
 import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
 import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
+import { MuteParticipantsPage } from './ModeratorTools/MuteParticipantsPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
@@ -393,6 +394,13 @@ export class MeetingRoomPage {
   public async startBreakoutRoomsModeratorTool(): Promise<BreakoutRoomsPage> {
     await this.moderationTools.createBreakoutRoomsButton.click();
     return new BreakoutRoomsPage(this.page);
+  }
+
+  public async startMuteParticipantsModeratorTool(): Promise<MuteParticipantsPage> {
+    await this.moderationTools.muteParticipantsButton.click();
+    const muteParticipantsPage = new MuteParticipantsPage(this.page);
+    await muteParticipantsPage.waitForPageToBeLoaded();
+    return muteParticipantsPage;
   }
 
   public async startBreakoutRooms(randomDistribution: boolean): Promise<void> {
