@@ -351,6 +351,7 @@ e2e-tests:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml
     - npx ts-node ./scripts/modifyJUnitReportForTestRail.ts
+    - rm $PLAYWRIGHT_JUNIT_INPUT_FILE
   artifacts:
     when: always
     paths:
