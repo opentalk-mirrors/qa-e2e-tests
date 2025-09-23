@@ -7,21 +7,21 @@ import { expect } from '@playwright/test';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
-When('{string} opens the breakout rooms moderator tool', async function (this: CustomWorld, user: string) {
+When('{string} opens the Breakout Rooms moderator tool', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
   const breakoutRoomsPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
   meeting.moderatorTools = { breakoutRooms: { breakoutRoomsPage } };
 });
 
-When('{string} creates breakout rooms with random distribution', async function (this: CustomWorld, user: string) {
+When('{string} creates Breakout Rooms with random distribution', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
   await meeting.meetingRoomPage.startBreakoutRooms(true);
 });
 
 When(
-  'all participants in the meeting room of {string} join the breakout rooms',
+  'all participants in the meeting room of {string} join the Breakout Rooms',
   async function (this: CustomWorld, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
     const moderatorPage = startedMeeting.meeting.meetingRoomPage;
@@ -36,7 +36,7 @@ When(
   }
 );
 
-When('{string} closes the breakout rooms', async function (this: CustomWorld, user: string) {
+When('{string} closes the Breakout Rooms', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
   const breakoutRoomPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
@@ -44,7 +44,7 @@ When('{string} closes the breakout rooms', async function (this: CustomWorld, us
 });
 
 When(
-  'all participants in the meeting room of {string} leave the breakout rooms',
+  'all participants in the meeting room of {string} leave the Breakout Rooms',
   async function (this: CustomWorld, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
     const moderatorPage = startedMeeting.meeting.meetingRoomPage;
@@ -60,7 +60,7 @@ When(
 );
 
 Then(
-  'all together {int} participants should be in the breakout rooms in the meeting room of {string}',
+  'all together {int} participants should be in the Breakout Rooms in the meeting room of {string}',
   async function (this: CustomWorld, expectedNoOfParticipants: number, moderator: string) {
     const moderatorPage = this.getStartedMeeting(moderator).meeting.meetingRoomPage;
     await moderatorPage.page.bringToFront();
@@ -81,7 +81,7 @@ Then(
 );
 
 Then(
-  'the "By number of" setting in the breakout rooms moderator tool for {string} should have these options:',
+  'the "By number of" setting in the Breakout Rooms moderator tool for {string} should have these options:',
   async function (this: CustomWorld, moderator: string, expectedOptionsTable: DataTable) {
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
