@@ -6,12 +6,16 @@ import { Locator, Page } from '@playwright/test';
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class BreakoutRoomsPage extends ModeratorToolsPage {
-  private readonly startRoomsButton: Locator;
-  private readonly closeRoomButton: Locator;
+  public readonly startRoomsButton: Locator;
+  public readonly closeRoomButton: Locator;
   private readonly randomDistributionSwitch: Locator;
   private readonly participantsAvatar: Locator;
   private readonly selectionModeDropdown: Locator;
   private readonly selectionModeDropdownItems: Locator;
+  private readonly durationText: Locator;
+  private readonly numberOfRoomsInput: Locator;
+  private readonly roomsToBeCreatedRegex: RegExp;
+  private readonly roomsToBeCreated: Locator;
 
   constructor(page: Page) {
     super({ page });
@@ -24,6 +28,10 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     this.randomDistributionSwitch = this.page.locator('//input[@name="distribution"]');
     this.selectionModeDropdown = this.page.getByRole('combobox');
     this.selectionModeDropdownItems = this.page.getByRole('listbox');
+    this.durationText = this.page.locator('//*[@data-sentry-component="DurationField"]/button');
+    this.numberOfRoomsInput = this.page.locator('//input[@name="rooms"]');
+    this.roomsToBeCreatedRegex = /Create (\d+) Rooms/;
+    this.roomsToBeCreated = this.page.getByText(this.roomsToBeCreatedRegex);
   }
 
   public async startRooms(): Promise<void> {
@@ -49,5 +57,35 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     await this.selectionModeDropdownItems.innerText();
     const itemsAsText = await this.selectionModeDropdownItems.innerText();
     return itemsAsText.trim().split('\n');
+  }
+
+  public async getSelectionMode(): Promise<string> {
+    const selectionMode = await this.selectionModeDropdown.innerText();
+    return selectionMode.trim();
+  }
+
+  public async setSelectionMode(mode: string) {
+    await this.selectionModeDropdown.click();
+    await this.selectionModeDropdownItems.getByText(mode).click();
+  }
+
+  public async getDuration(): Promise<string> {
+    const duration = await this.durationText.innerText();
+    return duration.trim();
+  }
+
+  public async getNumberOfRooms(): Promise<string> {
+    const numberOfRooms = await this.numberOfRoomsInput.inputValue();
+    return numberOfRooms.trim();
+  }
+
+  public async isDistributionRandom(): Promise<boolean> {
+    return await this.randomDistributionSwitch.isChecked();
+  }
+
+  async getNumberOfRoomsToBeCreated(): Promise<number> {
+    const fullText = await this.roomsToBeCreated.innerText();
+    const matchNoRooms = fullText.match(this.roomsToBeCreatedRegex);
+    return matchNoRooms ? parseInt(matchNoRooms[1], 10) : 0;
   }
 }

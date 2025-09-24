@@ -59,6 +59,16 @@ When(
   }
 );
 
+When(
+  '{string} selects {string} for the "By number of" setting',
+  async function (this: CustomWorld, user: string, selectedOption: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    await breakoutRoomsPage?.setSelectionMode(selectedOption);
+  }
+);
+
 Then(
   'all together {int} participants should be in the Breakout Rooms in the meeting room of {string}',
   async function (this: CustomWorld, expectedNoOfParticipants: number, moderator: string) {
@@ -90,5 +100,68 @@ Then(
       expectedOptions.push(expectedOptionsTable.raw()[i][0]);
     }
     expect(await breakoutRoomsPage?.getSelectionModeOptions()).toEqual(expectedOptions);
+  }
+);
+
+Then(
+  'these settings should be set in the Breakout Rooms moderator tool for {string}',
+  async function (this: CustomWorld, moderator: string, expectedSettingsTable: DataTable) {
+    const expectedSettingsTableHashes = expectedSettingsTable.hashes();
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    for (let i = 0; i < expectedSettingsTableHashes.length; i++) {
+      switch (expectedSettingsTableHashes[i].setting) {
+        case 'Duration':
+          expect(await breakoutRoomsPage?.getDuration()).toBe(expectedSettingsTableHashes[i].value);
+          break;
+        case 'By number of':
+          expect(await breakoutRoomsPage?.getSelectionMode()).toBe(expectedSettingsTableHashes[i].value);
+          break;
+        case 'Number of rooms':
+          expect(await breakoutRoomsPage?.getNumberOfRooms()).toBe(expectedSettingsTableHashes[i].value);
+          break;
+        case 'Random distribution':
+          if (expectedSettingsTableHashes[i].value === 'enabled') {
+            expect(await breakoutRoomsPage?.isDistributionRandom()).toBeTruthy();
+          } else if (expectedSettingsTableHashes[i].value === 'disabled') {
+            expect(await breakoutRoomsPage?.isDistributionRandom()).toBeFalsy();
+          } else {
+            throw new Error('Invalid value for "Random distribution" setting');
+          }
+          break;
+        default:
+          throw new Error('Invalid Setting name for the Breakout Rooms moderator tool');
+      }
+    }
+  }
+);
+
+Then(
+  '{int} rooms to be created should be displayed in the Breakout Rooms moderator tool for {string}',
+  async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string) {
+    const breakoutRoomsPage =
+      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    expect(await breakoutRoomsPage?.getNumberOfRoomsToBeCreated()).toBe(expectedNoOfRooms);
+  }
+);
+
+Then(
+  'a {string} button should be displayed in the Breakout Rooms moderator tool for {string}',
+  async function (this: CustomWorld, buttonName: string, moderator: string) {
+    const breakoutRoomsPage =
+      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    if (!breakoutRoomsPage) {
+      throw new Error('Breakout rooms moderator tool has not been opened yet');
+    }
+    switch (buttonName.toLowerCase()) {
+      case 'start rooms':
+        await expect(breakoutRoomsPage.startRoomsButton).toBeVisible();
+        break;
+      case 'close room':
+        await expect(breakoutRoomsPage.closeRoomButton).toBeVisible();
+        break;
+      default:
+        throw new Error('Invalid button name for the Breakout Rooms moderator tool');
+    }
   }
 );
