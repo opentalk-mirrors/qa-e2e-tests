@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
-export class ResetRaisedHandsPage {
-  private readonly page: Page;
-  public readonly resetRaisedHandsTitle: Locator;
+import { ModeratorToolsPage } from '../ModeratorToolsPage';
+
+export class ResetRaisedHandsPage extends ModeratorToolsPage {
   public readonly allButton: Locator;
   public readonly selectedButton: Locator;
   public readonly searchParticipantTextbox: Locator;
@@ -13,8 +13,7 @@ export class ResetRaisedHandsPage {
   public readonly participantListCheckboxes: Locator;
 
   constructor({ page }: { page: Page }) {
-    this.page = page;
-    this.resetRaisedHandsTitle = this.page.getByRole('heading', { name: 'Reset raised hands' });
+    super({ page: page });
     this.allButton = this.page.getByRole('button', { name: 'All', exact: true });
     this.selectedButton = this.page.getByRole('button', { name: 'Selected', exact: true });
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });

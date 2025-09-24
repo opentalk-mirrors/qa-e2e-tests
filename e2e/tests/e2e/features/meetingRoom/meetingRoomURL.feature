@@ -12,17 +12,17 @@ Feature: Meeting room URL
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And 3 guests join the meeting of "Alice"
     Then 4 participants should be in the meeting room of "Alice"
-    When "Alice" creates breakout rooms with random distribution
-    And all participants in the meeting room of "Alice" join the breakout rooms
+    When "Alice" creates Breakout Rooms with random distribution
+    And all participants in the meeting room of "Alice" join the Breakout Rooms
     Then 2 participants should be in the breakout room of "Alice"
-    And all together 4 participants should be in the breakout rooms in the meeting room of "Alice"
+    And all together 4 participants should be in the Breakout Rooms in the meeting room of "Alice"
     When "Alice" creates a guest link from the more-options menu
     And "Alice" copies the guest link into the clipboard
     Then the content of the clipboard of "Alice" should match "%meeting_url_pattern%"
     When a guest joins the meeting using the link in the clipboard of "Alice"
     And "Alice" closes all open dialogs by pressing Escape 2 times
     Then 3 participants should be in the meeting room of "Alice"
-    And all together 5 participants should be in the breakout rooms in the meeting room of "Alice"
-    When "Alice" closes the breakout rooms
-    And all participants in the meeting room of "Alice" leave the breakout rooms
+    And all together 5 participants should be in the Breakout Rooms in the meeting room of "Alice"
+    When "Alice" closes the Breakout Rooms
+    And all participants in the meeting room of "Alice" leave the Breakout Rooms
     Then 5 participants should be in the meeting room of "Alice"

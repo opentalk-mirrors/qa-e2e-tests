@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
-export class DebriefingPage {
-  public readonly page: Page;
+import { ModeratorToolsPage } from '../ModeratorToolsPage';
+
+export class DebriefingPage extends ModeratorToolsPage {
   private readonly debriefingButton: Locator;
 
   public readonly debriefingOptions: {
@@ -16,7 +17,7 @@ export class DebriefingPage {
   public readonly debriefingInitAlert: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super({ page: page });
     this.debriefingButton = this.page.getByRole('tab', { name: 'Debriefing' });
 
     this.debriefingOptions = {

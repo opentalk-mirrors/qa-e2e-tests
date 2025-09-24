@@ -4,13 +4,15 @@
 import { Locator, Page } from '@playwright/test';
 
 export class ModeratorToolsPage {
-  protected readonly page: Page;
+  public readonly page: Page;
+  public readonly heading: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
+    this.heading = this.page.getByRole('tabpanel').getByRole('heading').first();
   }
 
-  public getHeading(name: string): Locator {
-    return this.page.getByRole('heading', { name, exact: true });
+  public async getHeadingText() {
+    return await this.heading.innerText();
   }
 }

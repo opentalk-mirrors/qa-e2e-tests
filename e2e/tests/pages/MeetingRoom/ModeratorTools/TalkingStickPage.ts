@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
-export class TalkingStickPage {
-  private readonly page: Page;
+import { ModeratorToolsPage } from '../ModeratorToolsPage';
+
+export class TalkingStickPage extends ModeratorToolsPage {
   private readonly talkingStickButton: Locator;
 
   private readonly startNowButton: Locator;
@@ -12,7 +13,7 @@ export class TalkingStickPage {
   public readonly yourTurnPopup: Locator;
 
   constructor({ page }: { page: Page }) {
-    this.page = page;
+    super({ page: page });
     this.talkingStickButton = this.page.getByRole('tab', { name: 'Talking Stick' });
 
     this.startNowButton = this.page.getByRole('button', { name: 'Start now' });
