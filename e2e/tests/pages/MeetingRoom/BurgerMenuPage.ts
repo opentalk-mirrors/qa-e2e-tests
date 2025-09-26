@@ -23,7 +23,7 @@ export class BurgerMenuPage {
     this.burgerMenuDropdown = this.page.getByRole('menu', { name: 'My meeting' });
     this.accessibilityMenuItem = this.page.getByRole('menuitem', { name: 'Accessibility Open in new tab' });
     this.userManualMenuItem = this.page.getByRole('menuitem', { name: 'User manual Open in new tab' });
-    this.keyboardShortcutsMenuItem = this.page.getByRole('menuitem', { name: 'Keyboard Shortcuts' });
+    this.keyboardShortcutsMenuItem = this.page.getByRole('menuitem', { name: 'Hotkeys' });
     this.reportABugMenuItem = this.page.getByRole('menuitem', { name: 'Report a bug' });
   }
 
