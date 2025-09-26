@@ -348,9 +348,10 @@ e2e-tests:
     - echo "RUNS $PROJECTS project"
     - npx playwright test --project=$PROJECTS --workers=1
   after_script:
-    - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
-    - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-$CI_MERGE_REQUEST_IID-${BROWSER}.xml
+    - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
+    - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml
     - npx ts-node ./scripts/modifyJUnitReportForTestRail.ts
+    - rm $PLAYWRIGHT_JUNIT_INPUT_FILE
   artifacts:
     when: always
     paths:
@@ -399,9 +400,9 @@ merge-and-upload-test-results:
   script: |
     mkdir ./merged-reports
     junitparser merge \
-      ./junit/junit-$CI_MERGE_REQUEST_IID-chromium.xml \
-      ./junit/junit-$CI_MERGE_REQUEST_IID-webkit.xml \
-      ./junit/junit-$CI_MERGE_REQUEST_IID-firefox.xml \
+      ./junit/junit-chromium.xml \
+      ./junit/junit-webkit.xml \
+      ./junit/junit-firefox.xml \
       ./merged-reports/combined-report.xml
     trcli -y \
       -h https://opentalk.testrail.com/ \
