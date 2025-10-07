@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Given, Then, When } from '@cucumber/cucumber';
+import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 import { getClipboardContent } from '../../helper/clipboardHelpers';
@@ -12,6 +12,7 @@ import {
   startAdhocMeetingAsModerator,
 } from '../../helper/meetingHelpers';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
+import { HomePage } from '../../pages/HomePage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -30,16 +31,11 @@ When(
 
 When(
   '{int} guests join the meeting of {string}',
-  async function (this: CustomWorld, numOfGuests: number, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    const guestRooms = await joinMeetingRoomWithNGuests(
-      this.page,
-      this.context,
-      meeting.guestLink,
-      'guest',
-      numOfGuests
-    );
-    this.addGuestMeetingRooms(user, guestRooms);
+  async function (this: CustomWorld, numOfGuests: number, username: string) {
+    const meeting = this.getStartedMeeting(username).meeting;
+    const context = this.getUser(username).context;
+    const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
+    this.addGuestMeetingRooms(username, guestRooms);
   }
 );
 
@@ -69,8 +65,9 @@ When('{string} copies the guest link into the clipboard', async function (this: 
 When(
   'a guest joins the meeting using the link in the clipboard of {string}',
   async function (this: CustomWorld, user: string) {
+    const context = this.getUser(user).context;
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
-    const guestRoom = await joinMeetingRoomAsGuest(this.context, clipboardContent, 'guest_joined_inside_breakout_room');
+    const guestRoom = await joinMeetingRoomAsGuest(context, clipboardContent, 'guest_joined_inside_breakout_room');
     this.addGuestMeetingRooms(user, [guestRoom]);
   }
 );
@@ -97,8 +94,139 @@ Then(
 );
 
 async function startAdhocMeeting(world: CustomWorld, username: string) {
-  if (world.currentUser !== username) {
-    throw new Error(`Expected ${username} but current user is ${world.currentUser}`);
-  }
-  world.setStartedMeeting(username, await startAdhocMeetingAsModerator(world.page));
+  const page = world.getUser(username).page;
+  world.setStartedMeeting(username, await startAdhocMeetingAsModerator(page));
 }
+
+Given(
+  /^"([^"]+)" has created a (scheduled|unscheduled) meeting with the title "([^"]+)"$/,
+  async function (this: CustomWorld, moderator: string, meetingType: string, meetingTitle: string) {
+    const user = this.getUser(moderator).api;
+    await user.planMeetingAsModerator({
+      title: meetingTitle,
+      is_time_independent: meetingType === 'unscheduled',
+    });
+  }
+);
+
+Given(
+  '{string} has invited {string} to meeting {string}',
+  async function (this: CustomWorld, moderator: string, invitedUser: string, meetingTitle: string) {
+    const api = this.getUser(moderator).api;
+    const meeting = await api.getMeetingByTitle(meetingTitle);
+    const user = await api.getUser(invitedUser);
+    await api.inviteUser(meeting.id, user[0].email);
+  }
+);
+
+When(
+  '{string} checks more options for meeting {string} on the Home page',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await home.showMoreOptions(meetingTitle);
+  }
+);
+
+Then(
+  '{string} should see the following options on the Home page:',
+  async function (this: CustomWorld, user: string, expectedDetailsDataTable: DataTable) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    const expectedDetails = expectedDetailsDataTable.hashes();
+    for (let i = 0; i < expectedDetails.length; i++) {
+      switch (expectedDetails[i].options) {
+        case 'Edit':
+          await expect(home.editMenuItem).toBeVisible();
+          break;
+        case 'Add to favorites':
+          await expect(home.addToFavoriteMenuItem).toBeVisible();
+          break;
+        case 'Copy Meeting-Link':
+          await expect(home.copyMeetingLinkMenuItem).toBeVisible();
+          break;
+        case 'Copy Guest-Link':
+          await expect(home.copyGuestLinkMenuItem).toBeVisible();
+          break;
+        case 'Delete':
+          await expect(home.deleteMenuItem).toBeVisible();
+          break;
+        case 'Details':
+          await expect(home.detailsMenuItem).toBeVisible();
+          break;
+        case 'Decline':
+          await expect(home.declineMenuItem).toBeVisible();
+          break;
+        default:
+          throw new Error(`'${expectedDetails[i].options}' option is not available in 3-dot button menu`);
+      }
+    }
+    await page.keyboard.press('Escape');
+  }
+);
+
+When('{string} checks the current meetings on the Home page', async function (this: CustomWorld, moderator: string) {
+  const page = this.getUser(moderator).page;
+  const home = new HomePage({ page: page });
+  await home.navigateToHomePage();
+});
+
+Given(
+  '{string} has accepted the invitation for the meeting with the title {string} created by {string}',
+  async function (this: CustomWorld, invitee: string, meetingTitle: string, moderator: string) {
+    const api = this.getUser(invitee).api;
+    const meeting = await api.getMeetingByTitle(meetingTitle);
+    expect(meeting.created_by.firstname).toBe(moderator);
+    await api.acceptInvite(meeting.id);
+  }
+);
+
+Then(
+  '{string} should see the following details for meeting {string} on the Home page',
+  async function (this: CustomWorld, user: string, meetingTitle: string, dataTable: DataTable) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    const meetingItem = await home.getMeetingListItem(meetingTitle);
+    const expectedDetails = dataTable.hashes();
+    for (let i = 0; i < expectedDetails.length; i++) {
+      switch (expectedDetails[i].detail) {
+        case 'time':
+          if (expectedDetails[i].value === '%date_time_format%') {
+            expect(await meetingItem.textContent()).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2} - \d{2}:\d{2}/);
+          } else {
+            await expect(meetingItem).toContainText(expectedDetails[i].value);
+          }
+          break;
+        case 'meeting title':
+          await expect(meetingItem).toContainText(expectedDetails[i].value);
+          break;
+        case 'creator':
+          await expect(meetingItem).toContainText(expectedDetails[i].value);
+          break;
+        default:
+          throw new Error(`${expectedDetails[i].options} detail is not available`);
+      }
+    }
+  }
+);
+
+Then(
+  '{string} should see the following buttons for meeting {string} on the Home page',
+  async function (this: CustomWorld, user: string, meetingTitle: string, dataTable: DataTable) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    const expectedDetails = dataTable.hashes();
+    for (let i = 0; i < expectedDetails.length; i++) {
+      switch (expectedDetails[i].buttons) {
+        case '3-dot option':
+          await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
+          break;
+        case 'Start':
+          await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
+          break;
+        default:
+          throw new Error(`${expectedDetails[i].options} button is not available`);
+      }
+    }
+  }
+);

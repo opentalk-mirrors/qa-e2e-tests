@@ -35,7 +35,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.raiseYourHand();
-    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     for (const guestMeetingRoomPage of guestMeetingRoomPages) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
@@ -129,7 +129,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
 test.describe('Meeting Room_Reset raised hands search participant', () => {
   test.beforeEach(async ({ page, context, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     for (const guestMeetingRoomPage of guestMeetingRoomPages) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();

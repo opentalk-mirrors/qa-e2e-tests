@@ -34,7 +34,9 @@ export class NotificationPage {
   private async transitionBreakoutRoom(button: Locator): Promise<void> {
     const responsePromise = this.page.waitForResponse(
       (response) =>
-        response.url().endsWith('/start') && response.status() === 200 && response.request().method() === 'POST'
+        (response.url().endsWith('/start') || response.url().endsWith('/start_invited')) &&
+        response.status() === 200 &&
+        response.request().method() === 'POST'
     );
     await button.click();
     await responsePromise;

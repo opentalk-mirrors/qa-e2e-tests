@@ -18,6 +18,13 @@ export class HomePage {
   startMeetingButtonNamePrefix: string;
   moreOptionsButtonProperties: { role: Parameters<Page['getByRole']>[0]; options: { name: string } };
   detailsMenuItem: Locator;
+  editMenuItem: Locator;
+  addToFavoriteMenuItem: Locator;
+  copyMeetingLinkMenuItem: Locator;
+  copyGuestLinkMenuItem: Locator;
+  deleteMenuItem: Locator;
+  declineMenuItem: Locator;
+  acceptMeetingInvitationButton: Locator;
   deleteMenu: Locator;
   deleteButton: Locator;
   constructor({ page }: { page: Page }) {
@@ -30,7 +37,14 @@ export class HomePage {
     this.startMeetingButtonNamePrefix = 'Start ';
     this.deleteMenu = this.page.getByRole('menuitem', { name: 'Delete' });
     this.deleteButton = this.page.getByRole('button', { name: 'Delete' });
-    this.detailsMenuItem = this.page.getByRole('menuitem', { name: 'Details' });
+    this.detailsMenuItem = this.page.getByRole('menuitem', { name: /Details of \w+/ });
+    this.editMenuItem = this.page.getByRole('menuitem', { name: /Edit \w+/ });
+    this.addToFavoriteMenuItem = this.page.getByRole('menuitem', { name: /Add \w+ to favorites/ });
+    this.copyMeetingLinkMenuItem = this.page.getByRole('menuitem', { name: /Copy Meeting-Link for \w+/ });
+    this.copyGuestLinkMenuItem = this.page.getByRole('menuitem', { name: /Copy Guest-Link for \w+/ });
+    this.deleteMenuItem = this.page.getByRole('menuitem', { name: /Delete \w+/ });
+    this.declineMenuItem = this.page.getByRole('menuitem', { name: 'global-decline-label' });
+    this.acceptMeetingInvitationButton = this.page.getByRole('button', { name: 'Accept' });
     this.moreOptionsButtonProperties = {
       role: 'button',
       options: { name: 'More Options' },
@@ -109,13 +123,27 @@ export class HomePage {
   }
 
   async getThreeDotMenuOfMeeting(meetingTitle: string): Promise<Locator> {
-    const listWithMeeting = this.page.getByRole('list').filter({
-      has: this.page.getByRole('heading', { name: meetingTitle, exact: true }).first(),
+    const listWithMeeting = this.page.getByRole('listitem').filter({
+      hasText: meetingTitle,
     });
 
     return listWithMeeting
       .getByRole(this.moreOptionsButtonProperties.role, this.moreOptionsButtonProperties.options)
       .first();
+  }
+
+  async getMeetingListItem(meetingTitle: string): Promise<Locator> {
+    return this.page
+      .getByRole('listitem')
+      .filter({
+        hasText: meetingTitle,
+      })
+      .first();
+  }
+
+  async showMoreOptions(meetingTitle: string): Promise<void> {
+    const meetingMenu = await this.getThreeDotMenuOfMeeting(meetingTitle);
+    await meetingMenu.click();
   }
 
   async showMeetingDetails(meetingTitle: string): Promise<MeetingDetailsPage> {
