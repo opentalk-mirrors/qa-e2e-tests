@@ -320,12 +320,14 @@ export class MeetingRoomPage {
   }
 
   async holdToSpeak() {
-    await this.page.keyboard.down('Space');
+    await this.page.keyboard.down('Control');
+    await this.page.keyboard.down('m');
     await this.page.waitForTimeout(2000);
   }
 
   async releaseHoldToSpeak() {
-    await this.page.keyboard.up('Space');
+    await this.page.keyboard.up('Control');
+    await this.page.keyboard.up('m');
     await this.page.waitForTimeout(2000);
   }
 
