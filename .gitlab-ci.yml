@@ -53,7 +53,7 @@ variables:
 
 default:
   image:
-    name: mcr.microsoft.com/playwright:v1.53.2-noble
+    name: mcr.microsoft.com/playwright:v1.56.0-noble
     pull_policy: if-not-present
   services:
     - name: git.opentalk.dev:5050/opentalk/frontend/web/web-app:$FRONTEND_TAG
