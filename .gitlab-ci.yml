@@ -53,7 +53,7 @@ variables:
 
 default:
   image:
-    name: mcr.microsoft.com/playwright:v1.53.2-noble
+    name: mcr.microsoft.com/playwright:v1.56.0-noble
     pull_policy: if-not-present
   services:
     - name: git.opentalk.dev:5050/opentalk/frontend/web/web-app:$FRONTEND_TAG
@@ -340,7 +340,8 @@ e2e-tests:
     - npm install
     - npx playwright install --with-deps $BROWSER
     - cp config/test_env e2e/.env
-    - sleep 10
+    - source config/test_env
+    - /builds/$CI_PROJECT_PATH/scripts/wait-for-webapp.sh $INSTANCE_URL 60
   variables:
     BROWSER: $BROWSER
   script:
@@ -380,6 +381,8 @@ e2e-gherkin-tests:
   before_script:
     - npm install
     - npx playwright install $BROWSER --with-deps
+    - /builds/$CI_PROJECT_PATH/scripts/wait-for-webapp.sh $INSTANCE_URL 60
+
   script:
     - npm run test:gherkin e2e/tests/e2e/features/
   artifacts:
