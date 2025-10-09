@@ -80,7 +80,10 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/$CI_PROJECT_PATH/scripts/init-db.sh" ]; do true; done;
+          until [ -f "/builds/$CI_PROJECT_PATH/scripts/init-db.sh" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/scripts/init-db.sh";
+            sleep 1;
+          done;
           cp /builds/$CI_PROJECT_PATH/scripts/init-db.sh /docker-entrypoint-initdb.d/;
           /usr/local/bin/docker-entrypoint.sh postgres;
 
@@ -102,7 +105,10 @@ default:
         - /bin/sh
         - -c
         - |
-          until [ -f "/builds/$CI_PROJECT_PATH/scripts/livekit-init.sh" ]; do true; done;
+          until [ -f "/builds/$CI_PROJECT_PATH/scripts/livekit-init.sh" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/scripts/livekit-init.sh";
+            sleep 1;
+          done;
           cp /builds/$CI_PROJECT_PATH/scripts/livekit-init.sh /usr/local/bin;
           livekit-init.sh;
 
@@ -131,7 +137,10 @@ default:
         - -c
         - |
           while true; do
-            until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do true; done;
+            until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do
+              echo waiting for "/builds/$CI_PROJECT_PATH/config/controller-config.toml";
+              sleep 1;
+            done;
             sleep 5;
             /controller/opentalk-controller -c /builds/$CI_PROJECT_PATH/config/controller-config.toml;
           done;
@@ -182,7 +191,10 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json" ]; do true; done;
+          until [ -f "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json";
+            sleep 1;
+          done;
           mkdir -p /opt/keycloak/data/import;
           cp /builds/$CI_PROJECT_PATH/config/opentalk-realm.json /opt/keycloak/data/import;
           /opt/keycloak/bin/kc.sh start-dev --import-realm
@@ -194,7 +206,10 @@ default:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/$CI_PROJECT_PATH/config/nginx.conf" ]; do true; done
+          until [ -f "/builds/$CI_PROJECT_PATH/config/nginx.conf" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/config/nginx.conf";
+            sleep 1;
+          done;
           cp -r /builds/$CI_PROJECT_PATH/certs /etc/nginx/;
           mv /etc/nginx/certs/cert_key /etc/nginx/certs/cert.key;
           cp /builds/$CI_PROJECT_PATH/config/nginx.conf /etc/nginx/conf.d/;
