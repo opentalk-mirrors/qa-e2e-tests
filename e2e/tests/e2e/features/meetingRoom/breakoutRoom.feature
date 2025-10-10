@@ -22,3 +22,17 @@ Feature: Meeting Room Breakout Room
     And the "By number of" setting in the Breakout Rooms moderator tool for "Alice" should have these options:
       | Rooms        |
       | Participants |
+
+  Scenario: Meeting Room As Moderator random distribution option
+    Given "Alice" has logged in
+    And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
+    When "Alice" opens the Breakout Rooms moderator tool
+    Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | Random distribution | disabled |
+    When "Alice" enables "Random distribution" in the Breakout Rooms moderator tool
+    Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | Random distribution | enabled |
+    When "Alice" disables "Random distribution" in the Breakout Rooms moderator tool
+    Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | Random distribution | disabled |
+

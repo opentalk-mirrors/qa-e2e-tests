@@ -69,6 +69,16 @@ When(
   }
 );
 
+When(
+  /^"([^"]*)" (enables|disables) "Random distribution" in the Breakout Rooms moderator tool$/,
+  async function (this: CustomWorld, user: string, action: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    await breakoutRoomsPage?.setRandomDistribution(action === 'enables');
+  }
+);
+
 Then(
   'all together {int} participants should be in the Breakout Rooms in the meeting room of {string}',
   async function (this: CustomWorld, expectedNoOfParticipants: number, moderator: string) {
