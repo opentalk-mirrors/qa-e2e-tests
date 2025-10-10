@@ -19,7 +19,7 @@ async function makeRequest(params: string, method: string = 'GET', body?: object
     method: method,
   };
 
-  return fetch(`${process.env.CONTROLLER_HOST}${params}`, requestOptions);
+  return fetch(`${config.CONTROLLER_HOST}${params}`, requestOptions);
 }
 
 export async function changeLanguage(lang: string) {
