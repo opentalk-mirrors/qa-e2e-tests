@@ -9,18 +9,7 @@ Start all needed containers:
 docker compose up -d
 ```
 
-Immediately after starting the container, the tests may fail because some OpenTalk components take some time to start.
 You can access the webapp via https://localhost:8443.
-
-Run a test suite:
-```
-docker compose exec test-runner npx playwright test --project=chromium
-```
-
-Visit last test reports:
-```
-docker compose exec test-runner npx playwright show-report
-```
 
 Update containers to the newest versions:
 ```
@@ -31,8 +20,8 @@ Testing on a specific frontend/controller image:
 
 You can provide specific webapp and controller image to run tests on
 
-You can build your own image or you can get images from 
-- for webapp -> `container` step of pipeline 
+You can build your own image or you can get images from
+- for webapp -> `container` step of pipeline
 - for controller -> `package:container-controller-mr` step of pipeline.
 
 ```
@@ -41,6 +30,47 @@ FRONTEND_TAG=mr_branchname CONTROLLER_TAG=branchname FRONTEND_IMAGE=... CONTROLL
 
 > [!IMPORTANT]  
 > If you are using image from a MR that is already closed it won't work because the image is deleted when closed
+
+## Run tests
+
+So far there are tests that are written in vanilla playwright and those that utilize Gherkin.
+
+### Vanilla Playwright Tests
+
+Run a playwright test suite inside a container:
+```
+docker compose exec test-runner npx playwright test --project=chromium
+```
+
+Visit last test reports:
+```
+docker compose exec test-runner npx playwright show-report
+```
+
+### Gherkin Tests
+Runs all gherkin tests (default in headless mode):
+
+```
+npm run test:all
+```
+
+Runs all gherkin tests in headed mode:
+
+```
+npm run test:all:headed
+```
+
+Runs a specific feature file (default in headless mode):
+
+```
+npm run test:feature e2e/tests/e2e/features/myFeature.feature
+```
+
+Runs a specific feature file in headed mode:
+
+```
+npm run test:feature:headed e2e/tests/e2e/features/myFeature.feature
+```
 
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
