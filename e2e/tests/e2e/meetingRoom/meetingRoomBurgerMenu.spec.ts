@@ -101,8 +101,8 @@ test.describe('Meeting Room_Burger menu', () => {
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();
 
     const talkingStickPage = new TalkingStickPage({ page });
-    await talkingStickPage.clickOnTalkingStick();
-    await talkingStickPage.clickOnTalkingStickStartNow();
+    await talkingStickPage.openTalkingStickPage();
+    await talkingStickPage.startTalkingStick();
     await expect(talkingStickPage.talkingStickStartedNotification).toBeVisible();
     await expect(talkingStickPage.yourTurnPopup).toBeVisible();
 
@@ -134,7 +134,7 @@ test.describe('Meeting Room_Burger menu', () => {
     await meetingRoomPage.useKeyboardShortcut('f');
     expect(await viewOptionsPage.isFullScreen()).toBeFalsy();
 
-    await talkingStickPage.clickOnTalkingStickStartNow();
+    await talkingStickPage.startTalkingStick();
     await expect(talkingStickPage.yourTurnPopup).toBeVisible();
     await meetingRoomPage.useKeyboardShortcut('n');
     await expect(talkingStickPage.yourTurnPopup).toBeVisible();

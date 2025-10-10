@@ -21,11 +21,11 @@ export class TalkingStickPage extends ModeratorToolsPage {
     this.yourTurnPopup = this.page.getByText("It's your turn now. Please turn on the microphone!", { exact: true });
   }
 
-  public async clickOnTalkingStick(): Promise<void> {
+  public async openTalkingStickPage(): Promise<void> {
     await this.talkingStickButton.click();
   }
 
-  public async clickOnTalkingStickStartNow(): Promise<void> {
+  public async startTalkingStick(): Promise<void> {
     await this.startNowButton.click();
   }
 }
