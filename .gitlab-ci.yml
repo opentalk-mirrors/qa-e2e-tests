@@ -355,10 +355,12 @@ e2e-tests:
     - npm install
     - npx playwright install --with-deps $BROWSER
     - cp config/test_env e2e/.env
+    - set -a
     - source config/test_env
-    - /builds/$CI_PROJECT_PATH/scripts/wait-for-webapp.sh $INSTANCE_URL 60
+    - /builds/$CI_PROJECT_PATH/scripts/wait-for-services.sh
   variables:
     BROWSER: $BROWSER
+    OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "*$BROWSER")
     - echo "RUNS $PROJECTS project"
@@ -393,10 +395,11 @@ e2e-gherkin-tests:
     CONTROLLER_HOST: http://controller.opentalk.test
     BROWSER: $BROWSER
     HEADLESS: true
+    OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   before_script:
     - npm install
     - npx playwright install $BROWSER --with-deps
-    - /builds/$CI_PROJECT_PATH/scripts/wait-for-webapp.sh $INSTANCE_URL 60
+    - /builds/$CI_PROJECT_PATH/scripts/wait-for-services.sh
 
   script:
     - npm run test:gherkin e2e/tests/e2e/features/
