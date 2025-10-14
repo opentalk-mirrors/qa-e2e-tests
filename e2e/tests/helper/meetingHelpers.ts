@@ -51,6 +51,11 @@ export const joinMeetingRoomAsGuest = async (
   await newPage.goto(guestLink);
   await newPage.waitForLoadState('domcontentloaded', { timeout: 10_000 });
 
+  // Close warning button in safari
+  if (context.browser()?.browserType().name() === 'webkit') {
+    await closeWebkitPopUp({ page: newPage });
+  }
+
   const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
   await expect(guestLobbyRoomPage.nameInputField).toBeVisible();
   await guestLobbyRoomPage.nameInputField.fill(guestName);
