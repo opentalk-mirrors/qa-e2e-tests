@@ -24,14 +24,14 @@ export const startAdhocMeetingAsModerator = async (
   const guestLink = await getGuestLink(roomId);
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
-
-  // enter meeting room & assert meeting room is shown
-  const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
-
-  // Warning button in safari blocks the selector for creating new meeting
+  await lobbyRoomPage.renderLobbyPage();
+  // Close warning button in safari
   if (browserName === 'webkit') {
     await closeWebkitPopUp({ page });
   }
+
+  // enter meeting room & assert meeting room is shown
+  const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
 
   await meetingRoomPage.meetingRoomName.isVisible();
   expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
@@ -50,6 +50,11 @@ export const joinMeetingRoomAsGuest = async (
   const newPage = await context.newPage();
   await newPage.goto(guestLink);
   await newPage.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+
+  // Close warning button in safari
+  if (context.browser()?.browserType().name() === 'webkit') {
+    await closeWebkitPopUp({ page: newPage });
+  }
 
   const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
   await expect(guestLobbyRoomPage.nameInputField).toBeVisible();
