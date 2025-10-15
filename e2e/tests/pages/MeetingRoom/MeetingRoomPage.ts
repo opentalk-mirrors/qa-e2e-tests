@@ -9,6 +9,7 @@ import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
 import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
 import { MuteParticipantsPage } from './ModeratorTools/MuteParticipantsPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
+import { TalkingStickPage } from './ModeratorTools/TalkingStickPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
 import { ParticipantTilePage } from './ParticipantTilePage';
@@ -419,5 +420,12 @@ export class MeetingRoomPage {
     const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
     await coffeeBreakPage.heading.waitFor({ state: 'visible' });
     return coffeeBreakPage;
+  }
+
+  public async startTalkingStickModeratorTool(): Promise<TalkingStickPage> {
+    await this.moderationTools.talkingStickButton.click();
+    const talkingStickPage = new TalkingStickPage({ page: this.page });
+    await talkingStickPage.heading.waitFor({ state: 'visible' });
+    return talkingStickPage;
   }
 }

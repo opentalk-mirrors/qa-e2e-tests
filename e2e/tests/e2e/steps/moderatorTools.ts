@@ -10,21 +10,31 @@ import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
 
 Then(
-  'these buttons should be displayed in the open moderator tool for {string}:',
-  async function (this: CustomWorld, user: string, expectedButtons: DataTable) {
+  'these {string} should be displayed in the open moderator tool for {string}:',
+  async function (this: CustomWorld, elements: string, user: string, expectedElements: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    const existingButtons = await moderatorToolsPage.getAllButtonsInnerText();
-    for (const expectedButton of expectedButtons.raw().flat()) {
-      let buttonFound = false;
-      for (const existingButton of existingButtons) {
-        if (expectedButton === existingButton) {
-          buttonFound = true;
+    let existingElements: string[] = [];
+    switch (elements) {
+      case 'buttons':
+        existingElements = await moderatorToolsPage.getAllButtonsInnerText();
+        break;
+
+      case 'menu items':
+        existingElements = await moderatorToolsPage.getAllMenuItemsInnerText();
+        break;
+    }
+
+    for (const expectedElement of expectedElements.raw().flat()) {
+      let elementFound = false;
+      for (const existingElement of existingElements) {
+        if (expectedElement === existingElement) {
+          elementFound = true;
           break;
         }
       }
-      assert(buttonFound, `could not find the button '${expectedButton}'`);
+      assert(elementFound, `could not find the element '${expectedElement}'`);
     }
   }
 );
