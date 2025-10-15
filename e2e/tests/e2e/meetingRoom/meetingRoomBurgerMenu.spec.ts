@@ -88,11 +88,11 @@ test.describe('Meeting Room_Burger menu', () => {
     await meetingRoomPage.useKeyboardShortcut('v');
     expect(await meetingRoomPage.isCameraOn()).toBeFalsy();
 
-    // expect(await viewOptionsPage.isFullScreen()).toBeFalsy();
-    // await meetingRoomPage.useKeyboardShortcut('f');
-    // expect(await viewOptionsPage.isFullScreen()).toBeTruthy();
-    // await meetingRoomPage.useKeyboardShortcut('f');
-    // expect(await viewOptionsPage.isFullScreen()).toBeFalsy();
+    expect(await viewOptionsPage.isFullScreen()).toBeFalsy();
+    await meetingRoomPage.useKeyboardShortcut('f');
+    expect(await viewOptionsPage.isFullScreen()).toBeTruthy();
+    await meetingRoomPage.useKeyboardShortcut('f');
+    expect(await viewOptionsPage.isFullScreen()).toBeFalsy();
 
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();
     await meetingRoomPage.holdToSpeak();
