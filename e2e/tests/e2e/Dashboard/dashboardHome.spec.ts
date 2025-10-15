@@ -181,14 +181,14 @@ test.describe('Dashboard_Home', () => {
     await expect(planMeetingPage.meetingOccurrenceDropDown).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('No repetition');
 
-    await planMeetingPage.clickOnMeetingRepetitionDropDown();
+    await planMeetingPage.openMeetingRepetitionDropDown();
     await expect(planMeetingPage.meetingOccurrenceOptions.noRepetition).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.daily).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.weekly).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.biWeekly).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.monthly).toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.custom).toBeVisible();
-    await planMeetingPage.clickOnmeetingOccurrenceOptionsNoRepetition();
+    await planMeetingPage.selectNoRepetitionMeetingOccurrenceOption();
 
     // Select the Daily option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Daily');
@@ -296,13 +296,13 @@ test.describe('Dashboard_Home', () => {
     await expect(planMeetingPage.customMeetingRepetition.repeatOnMonthComboboxLabel).toBeVisible();
 
     // Click on the dropdown field Monthly on [X]
-    await planMeetingPage.clickOnRepeatOnMonthComboboxLabel();
+    await planMeetingPage.selectRepeatOnMonthCombobox();
 
     await expect(planMeetingPage.customMeetingRepetition.repeatOnMonthOption).toBeVisible();
     await expect(planMeetingPage.customMeetingRepetition.repeatOnEveryOption).toBeVisible();
 
     // Select any value here (Eg: Every month on the [X] day ) and click on Save button
-    await planMeetingPage.clickOnRepeatOnEveryOption();
+    await planMeetingPage.selectRepeatOnEveryOption();
     await planMeetingPage.saveCustomMeetingRepetition();
 
     // Custom meeting repetition dialogue box should be closed

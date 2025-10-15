@@ -201,7 +201,7 @@ export class MeetingPlanningPage {
     await this.saveCustomMeetingRepetition();
   }
 
-  async clickOnMeetingRepetitionDropDown() {
+  async openMeetingRepetitionDropDown() {
     await this.meetingOccurrenceDropDown.click();
   }
 
@@ -247,11 +247,11 @@ export class MeetingPlanningPage {
     }
   }
 
-  async clickOnmeetingOccurrenceOptionsCustom(): Promise<void> {
+  async selectCustomMeetingOccurrenceOption(): Promise<void> {
     await this.meetingOccurrenceOptions.custom.click();
   }
 
-  async clickOnmeetingOccurrenceOptionsNoRepetition(): Promise<void> {
+  async selectNoRepetitionMeetingOccurrenceOption(): Promise<void> {
     await this.meetingOccurrenceOptions.noRepetition.click();
   }
 
@@ -259,11 +259,11 @@ export class MeetingPlanningPage {
     await this.customMeetingRepetition.save.click();
   }
 
-  async clickOnRepeatOnMonthComboboxLabel(): Promise<void> {
+  async selectRepeatOnMonthCombobox(): Promise<void> {
     await this.customMeetingRepetition.repeatOnMonthComboboxLabel.click();
   }
 
-  async clickOnRepeatOnEveryOption(): Promise<void> {
+  async selectRepeatOnEveryOption(): Promise<void> {
     await this.customMeetingRepetition.repeatOnEveryOption.click();
   }
 
