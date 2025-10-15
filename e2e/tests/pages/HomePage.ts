@@ -18,7 +18,8 @@ export class HomePage {
   startMeetingButtonNamePrefix: string;
   moreOptionsButtonProperties: { role: Parameters<Page['getByRole']>[0]; options: { name: string } };
   detailsMenuItem: Locator;
-
+  deleteMenu: Locator;
+  deleteButton: Locator;
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.planNewMeetingButton = this.page.getByRole('link', { name: 'Plan new' });
@@ -27,6 +28,8 @@ export class HomePage {
     this.currentMeetingsHeaderSelector = this.page.getByText('Current meetings');
     this.favoriteMeetingsHeaderSelector = this.page.getByText(/^(My favorite meetings|Meine Favoriten)$/);
     this.startMeetingButtonNamePrefix = 'Start ';
+    this.deleteMenu = this.page.getByRole('menuitem', { name: 'Delete' });
+    this.deleteButton = this.page.getByRole('button', { name: 'Delete' });
     this.detailsMenuItem = this.page.getByRole('menuitem', { name: 'Details' });
     this.moreOptionsButtonProperties = {
       role: 'button',
@@ -150,8 +153,8 @@ export class HomePage {
     );
     const loadStatePromise = this.page.waitForLoadState('domcontentloaded');
     await meetingMenu.click();
-    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.deleteMenu.click();
+    await this.deleteButton.click();
     await Promise.all([deleteResponsePromise, eventsRefreshedPromise, loadStatePromise]);
     let isStartMeetingButtonVisible: boolean;
     do {
