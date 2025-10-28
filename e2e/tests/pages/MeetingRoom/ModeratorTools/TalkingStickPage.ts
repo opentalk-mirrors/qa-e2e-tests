@@ -13,8 +13,6 @@ export class TalkingStickPage extends ModeratorToolsPage {
   public readonly yourTurnPopup: Locator;
   public readonly dropdownMenuItem: Locator;
   public readonly showPossibleOrderSelectionsButton: Locator;
-  private readonly participantNameSelector: Locator;
-  private readonly participantTimeSelector: Locator;
   public readonly includeModeratorSwitch: Locator;
   public readonly activeSpeakerSVG: Locator;
 
@@ -28,8 +26,6 @@ export class TalkingStickPage extends ModeratorToolsPage {
       .getByRole('menu')
       .filter({ has: this.page.getByRole('menuitem', { name: 'Name (A - Z)' }) });
     this.showPossibleOrderSelectionsButton = this.page.locator('[data-sentry-element="Button"]');
-    this.participantNameSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] p');
-    this.participantTimeSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] span');
     this.includeModeratorSwitch = this.page.getByRole('switch', { name: 'Include moderator' });
     this.activeSpeakerSVG = this.page.locator('[aria-labelledby="active-speaker-icon-title-id"]');
   }
@@ -59,23 +55,6 @@ export class TalkingStickPage extends ModeratorToolsPage {
 
   public async selectOrderSelection(selectedOrder: string): Promise<void> {
     await this.getOptionMenuLocator(selectedOrder).click();
-  }
-
-  public async getParticipantData(childType: 'name' | 'time'): Promise<string[]> {
-    let allTexts: string[];
-    switch (childType) {
-      case 'name':
-        allTexts = await this.participantNameSelector.allInnerTexts();
-        break;
-      case 'time':
-        allTexts = await this.participantTimeSelector.allInnerTexts();
-        break;
-    }
-    return allTexts;
-  }
-
-  public async getTotalParticipantsNumber(): Promise<number> {
-    return (await this.getParticipantData('name')).length;
   }
 
   public async getIncludeModeratorSwitchValue(): Promise<boolean> {

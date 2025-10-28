@@ -117,3 +117,92 @@ Feature: Meeting Room Home
     When "Alice" resets the searched text in the chat overview on the Meeting-Room-Page
     Then for "Alice" the chat overview should be displayed on the Meeting-Room-Page
     And the chat messages count for "Alice" should be 9 on the Meeting-Room-Page
+
+
+  Scenario: TC_002_Meeting Room_As Moderator_Home_People option+search+sort+group
+    Given 2 guests have joined the meeting of "Alice" with delay of 30000 milliseconds
+    When "Alice" views the participants on the Meeting-Room-Page
+    Then for "Alice" these participants should be labeled as guests on the People-Option-Page:
+      | guest1 |
+      | guest2 |
+    And a "Search participant" "field" should be displayed in the open moderator tool for "Alice"
+    And a "Sort by" "button" should be displayed in the open moderator tool for "Alice"
+    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
+    And 4 participants should be displayed in the open moderator tool for "Alice"
+    And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
+    And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
+
+    When "Alice" selects the search participant textbox on the People-Option-Page
+    Then for "Alice" the search participant textbox with the placeholder text "John Doe" should be displayed on the People-Option-Page
+    When "Alice" types the text "guest" into the search participant textbox on the People-Option-Page
+    Then for "Alice" these participants should be listed on the People-Option-Page:
+      | guest1     |
+      | guest2     |
+    When "Alice" clears the typed text in the search participant textbox on the People-Option-Page
+    Then the search participant textbox on the People-Option-Page should contain no text for "Alice"
+    And 4 participants should be displayed in the open moderator tool for "Alice"
+    When "Alice" types the text "Brian" into the search participant textbox on the People-Option-Page
+    Then for "Alice" searched results should be empty on the People-Option-Page
+    When "Alice" clears the typed text in the search participant textbox on the People-Option-Page
+    Then the search participant textbox on the People-Option-Page should contain no text for "Alice"
+    And 4 participants should be displayed in the open moderator tool for "Alice"
+
+    When "Alice" shows the possible order selections on the People-Option-Page
+    Then these menu items should be displayed on the People-Option-Page for "Alice":
+      | Name (A - Z)      |
+      | Name (Z - A)      |
+      | First Join Time   |
+      | Last Join Time    |
+      | Last Active       |
+      | Raised Hand First |
+    When "Alice" orders the participants by "Name (A - Z)" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Ascending" order on the People-Option-Page
+    When "Alice" orders the participants by "Name (Z - A)" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Descending" order on the People-Option-Page
+    When "Alice" orders the participants by "First Join Time" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "First Join Time" order on the People-Option-Page
+    When "Alice" orders the participants by "Last Join Time" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Last Join Time" order on the People-Option-Page
+    When "Alice" orders the participants by "Last Active" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Last Active" order on the People-Option-Page
+    # participants need to raise the hand first before observing the raise hand first order
+    When these participants raise their hands in the Meeting room of "Alice" with delay of 16000 milliseconds:
+      | Alice  |
+      | Bob    |
+      | guest1 |
+      | guest2 |
+    And "Alice" orders the participants by "Raised Hand First" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Raised Hand First" order on the People-Option-Page
+    # lowering the raised hand
+    When these participants lower their hands in the Meeting room of "Alice":
+      | Alice  |
+      | Bob    |
+      | guest1 |
+      | guest2 |
+    And "Alice" orders the participants by "Name (A - Z)" on the People-Option-Page
+    Then for "Alice" the participants list should be displayed in "Ascending" order on the People-Option-Page
+    When "Alice" presses the escape button twice on the Meeting-Room-Page
+    Then for "Alice" order selection dropdown should not be displayed on the People-Option-Page
+    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
+
+    When "Alice" toggles "Group filter off" on the People-Option-Page
+    Then a "Group filter on" "switch" should be displayed in the open moderator tool for "Alice"
+    # labels are rendered based on config/opentalk-realm.json
+    # we currently have different labels from what is mentioned in the test case and this feature might be disabled in future
+    And for "Alice" the without group label with expand button should be displayed on the People-Option-Page
+    When "Alice" expands the 'without group' section on the People-Option-Page
+    Then for "Alice" these participants should be listed on the People-Option-Page:
+      | Bob Burton |
+      | guest1     |
+      | guest2     |
+    And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
+    And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
+
+    When "Alice" collapses the 'without group' section on the People-Option-Page
+    Then no participants should be listed for "Alice" on the People-Option-Page
+
+    When "Alice" toggles "Group filter on" on the People-Option-Page
+    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
+    And 4 participants should be displayed in the open moderator tool for "Alice"
+    And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
+    And for "Alice" the audio status for each participant should be displayed on the People-Option-Page

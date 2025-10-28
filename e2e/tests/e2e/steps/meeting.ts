@@ -20,7 +20,7 @@ import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
-import { CustomWorld, User } from '../cucumberWorld';
+import { CustomWorld, ParticipantMeetingRoomPages, User } from '../cucumberWorld';
 
 Given(
   '{string} has started an ad-hoc meeting and joined the meeting as moderator',
@@ -60,6 +60,22 @@ Given(
     const meeting = this.getStartedMeeting(user).meeting;
     const context = this.getUser(user).context;
     const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
+    this.addParticipantMeetingRooms(user, guestRooms);
+  }
+);
+
+Given(
+  '{int} guests have joined the meeting of {string} with delay of {int} milliseconds',
+  async function (this: CustomWorld, numOfGuests: number, user: string, delay: number) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const context = this.getUser(user).context;
+    const guestRooms: ParticipantMeetingRoomPages = {};
+    for (let i = 1; i <= numOfGuests; i++) {
+      await meeting.meetingRoomPage.page.waitForTimeout(delay);
+      const guestRoom = await joinMeetingRoomAsGuest(context, meeting.guestLink, `guest${i}`);
+      Object.assign(guestRooms, guestRoom);
+    }
+
     this.addParticipantMeetingRooms(user, guestRooms);
   }
 );
@@ -121,6 +137,9 @@ Then(
 async function startAdhocMeeting(world: CustomWorld, username: string) {
   const page = world.getUser(username).page;
   world.setStartedMeeting(username, await startAdhocMeetingAsModerator(page));
+  world.addParticipantMeetingRooms(username, {
+    [username]: world.getStartedMeeting(username).meeting.meetingRoomPage,
+  });
 }
 
 Given(

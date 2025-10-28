@@ -442,3 +442,33 @@ When(
     this.removeParticipantMeetingRoom(moderator, guest);
   }
 );
+
+When(
+  'these participants raise their hands in the Meeting room of {string} with delay of {int} milliseconds:',
+  async function (this: CustomWorld, moderator: string, delay: number, dataTable: DataTable) {
+    const participants = dataTable.raw().map((guest) => guest[0]);
+    const startedMeeting = this.getStartedMeeting(moderator);
+    for (let i = 0; i < participants.length; i++) {
+      await startedMeeting.participantMeetingRoomPages[participants[i]].page.bringToFront();
+      await startedMeeting.participantMeetingRoomPages[participants[i]].page.waitForTimeout(delay);
+      await startedMeeting.participantMeetingRoomPages[participants[i]].raiseYourHand();
+    }
+  }
+);
+
+When(
+  'these participants lower their hands in the Meeting room of {string}:',
+  async function (this: CustomWorld, moderator: string, dataTable: DataTable) {
+    const participants = dataTable.raw().map((guest) => guest[0]);
+    const startedMeeting = this.getStartedMeeting(moderator);
+    for (let i = 0; i < participants.length; i++) {
+      await startedMeeting.participantMeetingRoomPages[participants[i]].page.bringToFront();
+      await startedMeeting.participantMeetingRoomPages[participants[i]].lowerYourHand();
+    }
+  }
+);
+
+When('{string} views the participants on the Meeting-Room-Page', async function (this: CustomWorld, moderator: string) {
+  const meeting = this.getStartedMeeting(moderator).meeting;
+  await meeting.meetingRoomPage.selectPeopleOption();
+});

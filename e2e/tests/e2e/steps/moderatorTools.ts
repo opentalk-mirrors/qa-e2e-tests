@@ -29,6 +29,9 @@ Then(
       case 'options':
         existingElements = await moderatorToolsPage.getAllDropdownOptionsInnerText();
         break;
+
+      default:
+        throw new Error(`Invalid element ${elements}`);
     }
 
     for (const expectedElement of expectedElements.raw().flat()) {
@@ -45,12 +48,29 @@ Then(
 );
 
 Then(
-  'a {string} field should be displayed in the open moderator tool for {string}',
-  async function (this: CustomWorld, expectedField: string, user: string) {
+  'a {string} {string} should be displayed in the open moderator tool for {string}',
+  async function (this: CustomWorld, elementName: string, element: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await expect(moderatorToolsPage.getTextboxByLabel(expectedField)).toBeVisible();
+    switch (element) {
+      case 'field':
+        await expect(moderatorToolsPage.getTextboxByLabel(elementName)).toBeVisible();
+        break;
+
+      // switch has no inner text and returns null, so cant return accessible name
+      case 'switch':
+        await expect(moderatorToolsPage.getSwitchByName(elementName)).toBeVisible();
+        break;
+
+      // sort by button has no inner text and returns null, so cant return accessible name
+      case 'button':
+        await expect(moderatorToolsPage.getButtonByName(elementName)).toBeVisible();
+        break;
+
+      default:
+        throw new Error(`Invalid element ${element}`);
+    }
   }
 );
 
@@ -157,5 +177,15 @@ When(
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     await moderatorToolsPage.openSessionDurationDialog();
+  }
+);
+
+Then(
+  '{int} participants should be displayed in the open moderator tool for {string}',
+  async function (this: CustomWorld, participantsCount: number, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    const actualParticipantsCount = await moderatorToolsPage.getTotalParticipantsNumber();
+    expect(participantsCount).toEqual(actualParticipantsCount);
   }
 );

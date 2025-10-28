@@ -15,6 +15,7 @@ import { TimerPage } from './ModeratorTools/TimerPage';
 import { VotingRoomPage } from './ModeratorTools/VotingRoomPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
 import { ParticipantTilePage } from './ParticipantTilePage';
+import { PeopleOptionPage } from './PeopleOptionPage';
 import { ViewOptionsPage } from './ViewOptionsPage';
 
 export class MeetingRoomPage {
@@ -252,6 +253,11 @@ export class MeetingRoomPage {
   public async raiseYourHand(): Promise<void> {
     await this.toolBar.handRaiseButton.click();
     await this.toolBar.handLowerButton.waitFor();
+  }
+
+  public async lowerYourHand(): Promise<void> {
+    await this.toolBar.handLowerButton.click();
+    await this.toolBar.handRaiseButton.waitFor();
   }
 
   public async isHandRaised(): Promise<boolean> {
@@ -581,5 +587,12 @@ export class MeetingRoomPage {
       const video = document.querySelector('video');
       return video && video.srcObject && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
     });
+  }
+
+  public async selectPeopleOption(): Promise<PeopleOptionPage> {
+    await this.peopleButton.click();
+    const peopleOptionPage = new PeopleOptionPage(this.page);
+    await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });
+    return peopleOptionPage;
   }
 }

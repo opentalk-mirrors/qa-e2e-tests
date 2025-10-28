@@ -24,7 +24,7 @@ Feature: Mute Participants
     And these "buttons" should be displayed in the open moderator tool for "Alice":
       | All      |
       | Selected |
-    And a "Search participant" field should be displayed in the open moderator tool for "Alice"
+    And a "Search participant" "field" should be displayed in the open moderator tool for "Alice"
     And these participants should be displayed with checkboxes in the open moderator tool for "Alice":
       | Bob    |
       | guest1 |

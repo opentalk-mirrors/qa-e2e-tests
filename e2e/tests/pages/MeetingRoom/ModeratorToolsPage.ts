@@ -14,6 +14,8 @@ export class ModeratorToolsPage {
   private readonly dropdownOption: Locator;
   protected readonly sessionDurationDialog: SessionDurationDialog;
   public readonly durationButton: Locator;
+  private readonly participantNameSelector: Locator;
+  private readonly participantTimeSelector: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
@@ -22,6 +24,8 @@ export class ModeratorToolsPage {
     this.button = this.page.getByRole('button');
     this.menuItem = this.page.getByRole('menuitem');
     this.dropdownOption = this.page.getByRole('option');
+    this.participantNameSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] p');
+    this.participantTimeSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] span');
     this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
 
     this.sessionDurationDialog = new SessionDurationDialog(this.page);
@@ -70,8 +74,12 @@ export class ModeratorToolsPage {
     return this.page.getByRole('option', { name: optionName, exact: true });
   }
 
-  private getSwitchByName(switchName: string): Locator {
+  public getSwitchByName(switchName: string): Locator {
     return this.page.getByRole('switch', { name: switchName, exact: true });
+  }
+
+  public getButtonByName(button: string): Locator {
+    return this.page.getByRole('button', { name: button, exact: true });
   }
 
   public async selectField(field: string): Promise<void> {
@@ -119,5 +127,22 @@ export class ModeratorToolsPage {
     }
     await this.sessionDurationDialog.title.waitFor({ state: 'attached' });
     return this.sessionDurationDialog;
+  }
+
+  public async getParticipantData(childType: 'name' | 'time'): Promise<string[]> {
+    let allTexts: string[];
+    switch (childType) {
+      case 'name':
+        allTexts = await this.participantNameSelector.allInnerTexts();
+        break;
+      case 'time':
+        allTexts = await this.participantTimeSelector.allInnerTexts();
+        break;
+    }
+    return allTexts;
+  }
+
+  public async getTotalParticipantsNumber(): Promise<number> {
+    return (await this.getParticipantData('name')).length;
   }
 }
