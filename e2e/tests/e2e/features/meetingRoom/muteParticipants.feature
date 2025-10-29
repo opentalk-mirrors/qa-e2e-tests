@@ -20,7 +20,7 @@ Feature: Mute Participants
     And "Bob" has joined the meeting with the title "with-alice" created by "Alice" with:
       | Audio | enabled |
     When "Alice" opens the Mute Participants moderator tool
-    Then the heading in the open moderator tool for "Alice" should be "Mute participants"
+    Then the "heading" in the open moderator tool for "Alice" should be "Mute participants"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
       | All      |
       | Selected |

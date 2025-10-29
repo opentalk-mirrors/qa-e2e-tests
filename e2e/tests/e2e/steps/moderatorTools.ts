@@ -10,7 +10,7 @@ import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
 
 Then(
-  'these {string} should be displayed in the open moderator tool for {string}:',
+  /(?:these|this) "([^"]*)" should be displayed in the open moderator tool for "([^"]*)":/,
   async function (this: CustomWorld, elements: string, user: string, expectedElements: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
@@ -18,6 +18,7 @@ Then(
     let existingElements: string[] = [];
     switch (elements) {
       case 'buttons':
+      case 'button':
         existingElements = await moderatorToolsPage.getAllButtonsInnerText();
         break;
 
@@ -58,6 +59,18 @@ Then(
     const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
     for (const participant of expectedParticipants.raw().flat()) {
       await expect(participantList.getParticipantItemByName(participant)).toBeVisible();
+    }
+  }
+);
+
+Then(
+  'these fields should be displayed in the open moderator tool for {string}:',
+  async function (this: CustomWorld, user: string, labels: DataTable) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    for (const label of labels.raw().flat()) {
+      await expect(await moderatorToolsPage.getTextboxByLabel(label)).toBeVisible();
     }
   }
 );
