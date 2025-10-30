@@ -51,10 +51,7 @@ variables:
 .template_vars:
   BROWSERS: [chromium, webkit, firefox]
 
-default:
-  image:
-    name: mcr.microsoft.com/playwright:v1.56.0-noble
-    pull_policy: if-not-present
+.services-template:
   services:
     - name: git.opentalk.dev:5050/opentalk/frontend/web/web-app:$FRONTEND_TAG
       # pull_policy: if-not-present
@@ -215,9 +212,13 @@ default:
           cp /builds/$CI_PROJECT_PATH/config/nginx.conf /etc/nginx/conf.d/;
           /docker-entrypoint.sh nginx -g "daemon off;"
 
+default:
+  image:
+    name: mcr.microsoft.com/playwright:v1.56.0-noble
+    pull_policy: if-not-present
+
 prettier+eslint:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -228,7 +229,6 @@ prettier+eslint:
 
 typecheck:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -238,7 +238,6 @@ typecheck:
 
 circular-deps:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -248,7 +247,6 @@ circular-deps:
 
 yaml:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -257,7 +255,6 @@ yaml:
 
 compliance:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -268,7 +265,6 @@ compliance:
 
 licensing:
   stage: lint
-  services: []
   image:
     name: fsfe/reuse:5.0.2
     entrypoint: ['']
@@ -279,7 +275,6 @@ licensing:
 
 audit:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -290,7 +285,6 @@ audit:
 
 commit:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -301,7 +295,6 @@ commit:
 
 unused-deps:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -312,7 +305,6 @@ unused-deps:
 
 unused-files:
   stage: lint
-  services: []
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   before_script:
@@ -323,7 +315,6 @@ unused-files:
 
 commit-signature:
   stage: lint
-  services: []
   needs: []
   rules:
     # Run in merge requests only.
@@ -344,6 +335,8 @@ e2e-tests:
     matrix:
       - BROWSER: !reference [.template_vars, BROWSERS]
   stage: e2e-tests
+  extends:
+    - .services-template
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -384,6 +377,8 @@ e2e-gherkin-tests:
     matrix:
       - BROWSER: !reference [.template_vars, BROWSERS]
   stage: e2e-gherkin-tests
+  extends:
+    - .services-template
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
