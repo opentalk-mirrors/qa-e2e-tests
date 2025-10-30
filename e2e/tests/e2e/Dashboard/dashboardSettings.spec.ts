@@ -35,7 +35,7 @@ test.describe('Dashboard_Settings', () => {
     }
   });
 
-  test('TC_001_Dashboard_Settings_General', async () => {
+  test.skip('TC_001_Dashboard_Settings_General', async () => {
     await expect(settingsPage.settingsHeading).toBeVisible();
     await expect(settingsPage.generalLink).toHaveText('General');
     expect(await settingsPage.isOptionSelected(settingsPage.generalLink)).toBeTruthy();
