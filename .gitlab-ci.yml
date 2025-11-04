@@ -386,14 +386,15 @@ e2e-gherkin-tests:
     - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
 
   variables:
-    INSTANCE_URL: https://www.opentalk.test
-    CONTROLLER_HOST: http://controller.opentalk.test
     BROWSER: $BROWSER
     HEADLESS: true
     OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   before_script:
     - npm install
     - npx playwright install $BROWSER --with-deps
+    - cp config/test_env e2e/.env
+    - set -a
+    - source config/test_env
     - /builds/$CI_PROJECT_PATH/scripts/wait-for-services.sh
 
   script:
