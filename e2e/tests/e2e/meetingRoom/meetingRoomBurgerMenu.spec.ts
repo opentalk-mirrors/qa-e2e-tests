@@ -20,14 +20,14 @@ test.describe('Meeting Room_Burger menu', () => {
 
     const accessibiltyPage = await burgerMenuPage.gotoAccessibilty();
     const accessibilityHeading = accessibiltyPage.getByRole('heading', {
-      name: 'Erklärung zur Barrierefreiheit',
+      name: 'Accessibility statement',
       exact: true,
     });
     const openTalkInformationHeading = accessibiltyPage.getByRole('heading', {
-      name: 'Erklärung zur Barrierefreiheit für die Videokonferenzlösung OpenTalk',
+      name: 'Accessibility statement for the OpenTalk video conferencing solution',
       exact: true,
     });
-    expect(accessibiltyPage.url()).toBe('https://opentalk.eu/de/erklaerung-zur-barrierefreiheit');
+    expect(accessibiltyPage.url()).toBe('https://opentalk.eu/en/accessibility-statement');
     await expect(accessibilityHeading).toBeVisible();
     await expect(openTalkInformationHeading).toBeVisible();
 
