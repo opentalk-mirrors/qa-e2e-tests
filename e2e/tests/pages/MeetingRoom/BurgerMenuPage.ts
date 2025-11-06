@@ -30,7 +30,7 @@ export class BurgerMenuPage {
 
   public async gotoAccessibilty(): Promise<Page> {
     await this.accessibilityMenuItem.click();
-    return await navigateToExternalPage(this.context, 'Erklärung zur Barrierefreiheit | OpenTalk');
+    return await navigateToExternalPage(this.context, 'Accessibility statement | OpenTalk');
   }
 
   public async gotoUserManual(): Promise<Page> {

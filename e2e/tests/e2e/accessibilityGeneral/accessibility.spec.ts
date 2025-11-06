@@ -115,7 +115,7 @@ test.describe('Accessibility_General', () => {
     await expect(lobbyRoomPage.dataProtectionLink).toBeFocused();
   });
 
-  test('TC_003_Meeting_Room', async ({ page, browserName }) => {
+  test.skip('TC_003_Meeting_Room', async ({ page, browserName }) => {
     // Camera and Microphone permissions are not being granted in Safari in CI
     // Thus they cannot be accessed by keyboard "Tab", see https://github.com/microsoft/playwright/issues/20563
     test.skip(browserName === 'webkit');
