@@ -1,6 +1,11 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '..', '.env'), override: true });
+
 export const config = {
   USERNAME: process.env.USERNAME ?? 'test',
   PASSWORD: process.env.PASSWORD ?? 'testtest',
