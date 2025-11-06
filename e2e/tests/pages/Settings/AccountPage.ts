@@ -23,11 +23,23 @@ export class AccountPage {
     await this.emailTextbox.click();
   }
 
+  public async enterEmail(email: string): Promise<void> {
+    await this.emailTextbox.fill(email);
+  }
+
   public async focusFirstNameField() {
     await this.firstNameTextbox.click();
   }
 
+  public async enterFirstName(firstName: string): Promise<void> {
+    await this.firstNameTextbox.fill(firstName);
+  }
+
   public async focusFamilyNameField() {
     await this.familyNameTextbox.click();
+  }
+
+  public async enterFamilyName(familyName: string): Promise<void> {
+    await this.familyNameTextbox.fill(familyName);
   }
 }
