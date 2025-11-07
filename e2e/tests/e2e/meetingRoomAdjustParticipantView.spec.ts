@@ -39,7 +39,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
 
     // open grid view options besides the meeting room name
@@ -72,7 +72,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 2 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', SMALL_NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', SMALL_NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.peopleButton.click();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(SMALL_NUMBER_OF_GUESTS + 1);
@@ -106,7 +106,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
 
@@ -136,7 +136,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    const guestPages = await joinMeetingRoomWithNGuests(page, context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    const guestPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
     const firstGuestMeetingRoomPage = guestPages[0];

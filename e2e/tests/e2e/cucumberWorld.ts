@@ -8,11 +8,11 @@ import {
   ITestCaseHookParameter,
   setDefaultTimeout,
 } from '@cucumber/cucumber';
-import { chromium, Page, Browser, BrowserContext, Response, webkit, firefox, BrowserType } from '@playwright/test';
+import { Page, Browser, BrowserContext, Response } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-import { config } from '../config';
+import { Api } from '../helper/Api';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
 import { BreakoutRoomsPage } from '../pages/MeetingRoom/ModeratorTools/BreakoutRoomsPage';
 
@@ -27,6 +27,7 @@ interface Meeting {
   };
 
   guestLink: string;
+  meetingId: string;
 }
 
 interface StartedMeeting {
@@ -34,6 +35,13 @@ interface StartedMeeting {
   guestMeetingRoomPages: MeetingRoomPage[];
   crashReportResponse?: Response;
 }
+
+export type User = {
+  firstname: string;
+  api: Api;
+  page: Page;
+  context: BrowserContext;
+};
 
 setDefaultTimeout(60 * 1000);
 
@@ -48,8 +56,16 @@ export class CustomWorld extends World {
     [key: string]: StartedMeeting;
   };
 
+  users?: {
+    [key: string]: User;
+  };
+
   constructor(options: IWorldOptions) {
     super(options);
+  }
+
+  setBrowser(browser: Browser): void {
+    this.browser = browser;
   }
 
   setStartedMeeting(user: string, meeting: Meeting, crashReportResponse?: Response) {
@@ -57,6 +73,20 @@ export class CustomWorld extends World {
       this.startedMeetings = {};
     }
     this.startedMeetings[user] = { meeting, guestMeetingRoomPages: [], crashReportResponse };
+  }
+
+  setUsers(user: User) {
+    if (!this.users) {
+      this.users = {};
+    }
+    this.users[user.firstname] = user;
+  }
+
+  getUser(user: string): User {
+    if (!this.users || !this.users[user]) {
+      throw new Error('No users have been saved');
+    }
+    return this.users[user];
   }
 
   getStartedMeeting(moderator: string): StartedMeeting {
@@ -75,75 +105,37 @@ export class CustomWorld extends World {
   }
 
   async init() {
-    const browserName = config.browser;
-
-    let browserType: BrowserType<Browser>;
-    let permissions: Array<string>;
-    let args = [
-      '--use-fake-device-for-media-stream',
-      '--use-fake-ui-for-media-stream',
-      '--allow-file-access',
-      '--guest',
-      '--disable-web-security',
-      '--allow-running-insecure-content',
-    ];
-    let firefoxUserPrefs: { [key: string]: string | number | boolean } = {
-      'permissions.default.microphone': 1,
-      'permissions.default.camera': 1,
-      'media.navigator.streams.fake': true,
-      'media.navigator.permission.disabled': true,
-      'dom.events.testing.asyncClipboard': true,
-      'dom.events.asyncClipboard.readText': true,
-      'dom.events.asyncClipboard.clipboardItem': true,
-      'dom.events.asyncClipboard.writeText': true,
-      'permissions.default.clipboard-read': 1,
-      'permissions.default.clipboard-write': true,
-    };
-
-    switch (browserName) {
-      case 'firefox':
-        browserType = firefox;
-        permissions = [];
-        break;
-      case 'webkit':
-        browserType = webkit;
-        permissions = [];
-        args = [];
-        firefoxUserPrefs = {};
-        break;
-      default:
-        browserType = chromium;
-        permissions = ['clipboard-read', 'clipboard-write', 'camera', 'microphone'];
+    let permissions: Array<string> = [];
+    if (this.browser.browserType().name() === 'chromium') {
+      permissions = ['clipboard-read', 'clipboard-write', 'camera', 'microphone'];
     }
-
-    this.browser = await browserType.launch({
-      slowMo: config.slowMo,
-      headless: config.headless,
-      args: args,
-      firefoxUserPrefs: firefoxUserPrefs,
-    });
-    this.context = await this.browser.newContext({ ignoreHTTPSErrors: true });
-    await this.context.grantPermissions(permissions);
-    await this.context.tracing.start({
+    const context = await this.browser.newContext({ ignoreHTTPSErrors: true });
+    await context.grantPermissions(permissions);
+    await context.tracing.start({
       screenshots: true,
       snapshots: true,
       sources: true,
     });
-    this.page = await this.context.newPage();
+    return context;
   }
 
   async cleanup(scenario: ITestCaseHookParameter) {
-    if (scenario.result?.status === 'FAILED') {
-      await this.context?.tracing.stop({
-        path: `playwright-report/${scenario.pickle.name.replaceAll(' ', '-')}${new Date().toISOString().replaceAll(/[:.,]/g, '-')}.zip`,
-      });
-    } else {
-      await this.context.tracing.stop();
-    }
+    if (this.users) {
+      for (const [_key, user] of Object.entries(this.users)) {
+        const { api: api } = user;
+        if (scenario.result?.status === 'FAILED') {
+          await user.context?.tracing.stop({
+            path: `playwright-report/${scenario.pickle.name.replaceAll(' ', '-')}${new Date().toISOString().replaceAll(/[:.,]/g, '-')}.zip`,
+          });
+        } else {
+          await this.context?.tracing.stop();
+        }
 
-    await this.context?.close();
-    await this.browser?.close();
-    this.currentUser = undefined;
+        await user.context.close();
+        this.currentUser = undefined;
+        api.deleteMeetings();
+      }
+    }
   }
 }
 

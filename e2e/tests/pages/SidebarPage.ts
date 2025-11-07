@@ -58,4 +58,9 @@ export class SidebarPage {
     const myMeetingsPage = new MyMeetingsPage(this.page);
     return myMeetingsPage;
   }
+
+  public async logOut(): Promise<void> {
+    await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
+    await this.logoutButton.click();
+  }
 }

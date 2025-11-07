@@ -67,7 +67,9 @@ export class LobbyRoomPage {
     await this.joinMeetingButton.isVisible();
     await this.joinMeetingButton.click();
     await this.page.waitForLoadState('load');
-    return new MeetingRoomPage({ page: this.page });
+    const meetingRoomPage = new MeetingRoomPage({ page: this.page });
+    meetingRoomPage.meetingRoomName.isVisible();
+    return meetingRoomPage;
   }
 
   async waitForParticipantNameToBeVisibleInNameField(): Promise<void> {

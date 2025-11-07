@@ -19,8 +19,8 @@ export const startAdhocMeetingAsModerator = async (
   page: Page,
   browserName?: 'webkit' | 'chromium' | 'firefox',
   meetingTitlePrefix: string = 'Ad-hoc Meeting'
-): Promise<{ meetingRoomPage: MeetingRoomPage; guestLink: string }> => {
-  const { meetingLink, roomId } = await startMeeting(meetingTitlePrefix);
+): Promise<{ meetingRoomPage: MeetingRoomPage; guestLink: string; meetingId: string }> => {
+  const { meetingLink, roomId, meetingId } = await startMeeting(meetingTitlePrefix);
   const guestLink = await getGuestLink(roomId);
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
@@ -38,7 +38,7 @@ export const startAdhocMeetingAsModerator = async (
 
   // only moderator is present before guests join
   expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
-  return { meetingRoomPage, guestLink };
+  return { meetingRoomPage, guestLink, meetingId };
 };
 
 export const joinMeetingRoomAsGuest = async (
@@ -69,7 +69,6 @@ export const joinMeetingRoomAsGuest = async (
 };
 
 export const joinMeetingRoomWithNGuests = async (
-  page: Page,
   context: BrowserContext,
   guestLink: string,
   guestBaseName: string,
