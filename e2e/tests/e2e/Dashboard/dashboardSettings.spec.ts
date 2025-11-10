@@ -147,7 +147,6 @@ test.describe('Dashboard_Settings', () => {
 
   test('TC_003_Dashboard_Settings_Account option', async () => {
     const USER_EMAIL: string = process.env.USER_EMAIL!;
-    const dummyValue: string = 'Hello';
 
     const accountPage: AccountPage = await settingsPage.navigateToAccount();
     await expect(accountPage.generalInformationHeading).toBeVisible();
@@ -158,20 +157,17 @@ test.describe('Dashboard_Settings', () => {
     await expect(accountPage.emailTextbox).toHaveValue(USER_EMAIL);
 
     await accountPage.focusEmailAddressField();
-    await accountPage.enterEmail(dummyValue);
-    await expect(accountPage.emailTextbox).not.toHaveValue(dummyValue);
+    await expect(accountPage.emailTextbox).not.toBeEditable();
 
     await expect(accountPage.firstNameTextbox).toHaveValue(USERNAME);
 
     await accountPage.focusFirstNameField();
-    await accountPage.enterFirstName(dummyValue);
-    await expect(accountPage.firstNameTextbox).not.toHaveValue(dummyValue);
+    await expect(accountPage.firstNameTextbox).not.toBeEditable();
 
     await expect(accountPage.familyNameTextbox).toHaveValue(USERNAME);
 
     await accountPage.focusFamilyNameField();
-    await accountPage.enterFamilyName(dummyValue);
-    await expect(accountPage.familyNameTextbox).not.toHaveValue(dummyValue);
+    await expect(accountPage.familyNameTextbox).not.toBeEditable();
   });
 
   test('TC_004_Dashboard_Settings_Storage option', async ({ page }) => {
