@@ -14,6 +14,7 @@ export class HomePage {
   startNewMeetingButton: Locator;
   joinExistingMeetingButton: Locator;
   currentMeetingsHeaderSelector: Locator;
+  noFavoritesSelector: Locator;
   favoriteMeetingsHeaderSelector: Locator;
   startMeetingButtonNamePrefix: string;
   moreOptionsButtonProperties: { role: Parameters<Page['getByRole']>[0]; options: { name: string } };
@@ -34,6 +35,7 @@ export class HomePage {
     this.startNewMeetingButton = this.page.getByRole('link', { name: /^(Start new|Meeting starten)$/ });
     this.joinExistingMeetingButton = this.page.getByRole('button', { name: 'Join existing' });
     this.currentMeetingsHeaderSelector = this.page.getByText('Current meetings');
+    this.noFavoritesSelector = this.page.getByText("You don't have any favorites yet.");
     this.favoriteMeetingsHeaderSelector = this.page.getByText(/^(My favorite meetings|Meine Favoriten)$/);
     this.startMeetingButtonNamePrefix = 'Start ';
     this.deleteMenu = this.page.getByRole('menuitem', { name: 'Delete' });
@@ -203,5 +205,9 @@ export class HomePage {
   private async getCountOfMeetingsWithTitle(meetingTitle: string): Promise<number> {
     const elements = this.page.getByTitle(meetingTitle);
     return await elements.count();
+  }
+
+  async navigateToMeetingListFromFavoritesMeetingList(): Promise<void> {
+    await this.noFavoritesSelector.click();
   }
 }

@@ -18,6 +18,7 @@ import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
+import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { CustomWorld, User } from '../cucumberWorld';
 
@@ -343,3 +344,31 @@ Then(
     expect((await home.getAllMeetingListItems(meetingTitle)).length).toBe(expectedCountOfMeetings);
   }
 );
+
+When('{string} checks her faviorite meetings on Home Page', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const home = new HomePage({ page: page });
+  await expect(home.favoriteMeetingsHeaderSelector).toBeVisible();
+});
+
+Then(
+  '{string} should see the following details on Home Page',
+  async function (this: CustomWorld, user: string, _dataTable: DataTable) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await expect(home.noFavoritesSelector).toBeVisible();
+    await expect(home.noFavoritesSelector).toBeVisible();
+  }
+);
+
+When('{string} selects {string} on Home Page', async function (user, _string2) {
+  const page = this.getUser(user).page;
+  const home = new HomePage({ page: page });
+  await home.navigateToMeetingListFromFavoritesMeetingList();
+});
+
+Then('{string} should be navigated to Meetings list', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const myMeeting = new MyMeetingsPage(page);
+  await expect(myMeeting.myMeetingsHeading).toBeVisible();
+});
