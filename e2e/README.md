@@ -24,7 +24,7 @@ Have a look in to the [Commands](#commands) section
 | Variable Name         | Required | Default       | Description                                          |
 | --------------------- | -------- | ------------- | -----------------------------------------------------|
 | INSTANCE_URL          | yes      |               | The instance Baseurl against the tests should be run |
-| USERNAME              | yes      |               | Username for login                                   |
+| USER_NAME             | yes      |               | Username for login                                   |
 | USER_EMAIL            | yes      |               | Email for login                                      |
 | PASSWORD              | yes      |               | Password for login                                   |
 | ALL_TESTS             | no       | false         | Per default just smoke tests are running, if all tests should run set this variable to `true` |

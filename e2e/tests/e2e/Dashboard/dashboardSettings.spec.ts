@@ -15,7 +15,7 @@ import { ProfilePage } from '../../pages/Settings/ProfilePage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
 import { SidebarPage } from '../../pages/SidebarPage';
 
-const USERNAME: string = config.USERNAME;
+const USERNAME: string = config.USER_NAME;
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,

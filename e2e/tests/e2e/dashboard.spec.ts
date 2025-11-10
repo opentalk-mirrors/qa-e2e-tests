@@ -42,7 +42,7 @@ test.describe('Dashboard', () => {
       await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
       //Relogin user again
       await page.goto(config.INSTANCE_URL);
-      await page.getByLabel('Username or email').fill(config.USERNAME);
+      await page.getByLabel('Username or email').fill(config.USER_NAME);
       await page.getByLabel('Username or email').press('Tab');
       await page.getByLabel('Password').fill(config.PASSWORD);
       await page.getByRole('button', { name: 'Sign In' }).click();
