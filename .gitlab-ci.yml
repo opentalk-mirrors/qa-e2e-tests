@@ -346,7 +346,7 @@ e2e-tests:
 
   before_script:
     - npm install
-    - npx playwright install --with-deps $BROWSER
+    - npx playwright install --only-shell --with-deps $BROWSER
     - cp config/test_env e2e/.env
     - set -a
     - source config/test_env
@@ -391,7 +391,7 @@ e2e-gherkin-tests:
     OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   before_script:
     - npm install
-    - npx playwright install $BROWSER --with-deps
+    - npx playwright install --only-shell --with-deps $BROWSER
     - cp config/test_env e2e/.env
     - set -a
     - source config/test_env
