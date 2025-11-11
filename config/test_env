@@ -1,4 +1,4 @@
-USERNAME=alice
+USER_NAME=alice
 PASSWORD=alice
 USER_EMAIL=alice@example.com
 INSTANCE_URL=https://www.opentalk.test

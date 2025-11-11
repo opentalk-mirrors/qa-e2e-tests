@@ -7,7 +7,7 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '..', '.env'), override: true });
 
 export const config = {
-  USERNAME: process.env.USERNAME ?? 'test',
+  USER_NAME: process.env.USER_NAME ?? 'test',
   PASSWORD: process.env.PASSWORD ?? 'testtest',
   USER_EMAIL: process.env.USER_EMAIL ?? 'alice@example.com',
   INSTANCE_URL: (process.env.INSTANCE_URL ?? 'https://localhost:8443').replace(/\/+$/, ''),

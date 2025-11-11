@@ -70,7 +70,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
     const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
     await firstGuestMeetingRoomPage.page.bringToFront();
-    moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USERNAME);
+    moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USER_NAME);
     expect(await moderatorTile.isHandRaised()).toBeTruthy();
 
     await meetingRoomPage.page.bringToFront();

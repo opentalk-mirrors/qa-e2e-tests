@@ -31,7 +31,7 @@ export async function globalSetup(): Promise<void> {
 
   const loginPage = new LoginPage(page);
   await loginPage.gotoLoginPage();
-  await loginPage.login(config.USERNAME, config.PASSWORD);
+  await loginPage.login(config.USER_NAME, config.PASSWORD);
 
   await context.storageState({ path: authUserFile });
 
