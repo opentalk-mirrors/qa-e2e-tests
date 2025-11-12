@@ -159,6 +159,39 @@ export async function planMeetingAsModerator(
   return { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin };
 }
 
+async function getUser(searchQuery: string): Promise<User[]> {
+  const response = await makeRequest(`/v1/users/find?q=${searchQuery}`, 'GET');
+  if (response.status !== 200) {
+    throw new Error(`Could not find user. Response code ${response.status}`);
+  }
+  const data: User[] = await response.json();
+  return data;
+}
+
+async function getMeetings(userName: string): Promise<OpenTalkEvent[]> {
+  const users = await getUser(userName);
+  const userId = users[0].id;
+  const query = new URLSearchParams({ created_by: userId }).toString();
+  const response = await makeRequest(`/v1/events?${query}`, 'GET');
+  if (!response.ok) {
+    throw new Error(`Failed to get meetings. Response code:${response.status}`);
+  }
+  const meetings: OpenTalkEvent[] = await response.json();
+  return meetings;
+}
+
+export async function deleteMeetings(userName: string): Promise<void> {
+  const meetings = await getMeetings(userName);
+  for (const meeting of meetings) {
+    if (meeting.can_edit) {
+      const response = await makeRequest(`/v1/events/${meeting.id}`, 'DELETE');
+      if (response.status !== 204) {
+        throw new Error(`Error deleting meeting. Response code: ${response.status}`);
+      }
+    }
+  }
+}
+
 type MeetingTime = {
   datetime: string;
   timezone: string;

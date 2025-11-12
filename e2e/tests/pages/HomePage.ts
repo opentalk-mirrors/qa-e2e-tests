@@ -191,16 +191,6 @@ export class HomePage {
     return true;
   }
 
-  async deleteAllCreatedMeetings(meetingTitle: string): Promise<void> {
-    // The UI only shows a maximum of four meetings in the dashboard at a time
-    // We need to ensure all meetings are deleted if more than four exist
-    let count = await this.getCountOfMeetingsWithTitle(meetingTitle);
-    while (count > 0) {
-      await this.deleteMeeting(meetingTitle);
-      count = await this.getCountOfMeetingsWithTitle(meetingTitle);
-    }
-  }
-
   private async getCountOfMeetingsWithTitle(meetingTitle: string): Promise<number> {
     const elements = this.page.getByTitle(meetingTitle);
     return await elements.count();
