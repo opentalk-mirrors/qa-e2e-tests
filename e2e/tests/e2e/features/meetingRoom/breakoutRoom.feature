@@ -6,6 +6,7 @@ Feature: Meeting Room Breakout Room
   I want to be able to create Breakout Rooms
   So that the participants can have discussions in smaller groups
 
+
   Scenario: Meeting Room As Moderator Create Breakout Rooms Moderator sidebar tool
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
@@ -22,6 +23,7 @@ Feature: Meeting Room Breakout Room
     And the "By number of" setting in the Breakout Rooms moderator tool for "Alice" should have these options:
       | Rooms        |
       | Participants |
+
 
   Scenario: Meeting Room As Moderator random distribution option
     Given "Alice" has logged in

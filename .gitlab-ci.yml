@@ -330,6 +330,15 @@ commit-signature:
       | tr -d '\n'
       | grep -q -v -e "N" -e "B"
 
+gherlint:
+  stage: lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  before_script:
+    - *setup-pnpm
+  script:
+    - pnpm fmt:gherkin
+
 e2e-tests:
   parallel:
     matrix:

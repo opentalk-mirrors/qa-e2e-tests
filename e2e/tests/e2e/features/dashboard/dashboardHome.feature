@@ -3,8 +3,9 @@
 # SPDX-License-Identifier: EUPL-1.2
 Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
   As a user
-  I want to distinguish my meetings from meetings created by other users 
+  I want to distinguish my meetings from meetings created by other users
   So that I can manage my meetings
+
 
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
     Given "Bob" has logged in

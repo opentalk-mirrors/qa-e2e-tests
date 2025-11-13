@@ -14,7 +14,9 @@
     "deps:unused": "knip --include dependencies,files",
     "prepare": "husky",
     "test:gherkin": "TEST=gherkin bash e2e/script/runTest.sh",
-    "test:playwright": "NODE_TLS_REJECT_UNAUTHORIZED=0 TEST=playwright bash e2e/script/runTest.sh"
+    "test:playwright": "NODE_TLS_REJECT_UNAUTHORIZED=0 TEST=playwright bash e2e/script/runTest.sh",
+    "fmt:gherkin": "gherlint e2e/tests/e2e/features -c .gherlintrc.json",
+    "fmt:gherkin-fix": "gherlint --fix e2e/tests/e2e/features -c .gherlintrc.json"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +30,7 @@
     "@eslint/js": "^9.32.0",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.8",
+    "@gherlint/gherlint": "^1.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
