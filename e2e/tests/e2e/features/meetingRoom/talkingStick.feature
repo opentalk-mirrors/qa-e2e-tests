@@ -12,6 +12,18 @@ Feature: Meeting Room Talking stick
     And 3 guests have joined the meeting of "Alice"
 
 
+  Scenario: TC_001_Meeting Room_As Moderator_Talking stick
+    When "Alice" opens the Talking Stick moderator tool
+    Then the "heading" in the open moderator tool for "Alice" should be "Talking stick"
+    And the order selection field with the "Name (A - Z)" button should be displayed in the Talking Stick moderator tool for "Alice"
+    And "Include moderator" should be switched ON in the Talking Stick moderator tool for "Alice"
+    And the participants list should be displayed in "Ascending" order in the Talking Stick moderator tool for "Alice"
+    And the participants joined time should have the format “Joined HH:MM” in the Talking Stick moderator tool for "Alice"
+    And the audio status for each participant in the Meeting room should be turned off by default in the Talking Stick moderator tool for "Alice"
+    And this "button" should be displayed in the open moderator tool for "Alice":
+      | Start now |
+
+
   Scenario: TC_002_Meeting Room_As Moderator_Talking stick_Order selection field
     When "Alice" opens the Talking Stick moderator tool
     And "Alice" shows the possible order selections in the Talking Stick moderator tool
