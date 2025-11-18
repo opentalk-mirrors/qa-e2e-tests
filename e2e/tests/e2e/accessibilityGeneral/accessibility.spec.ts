@@ -166,6 +166,22 @@ test.describe('Accessibility_General', () => {
       await meetingRoomPage.page.keyboard.press('ArrowDown');
     }
 
+    const toolBarButtons = [
+      meetingRoomPage.toolBar.handRaiseButton,
+      meetingRoomPage.toolBar.turnOnScreenShareButton,
+      meetingRoomPage.toolBar.microphoneButton,
+      meetingRoomPage.toolBar.microphoneMoreOptionsMenuButton,
+      meetingRoomPage.toolBar.videoButton,
+      meetingRoomPage.toolBar.cameraMoreOptionButton,
+      meetingRoomPage.toolBar.moreOptionButton,
+      meetingRoomPage.toolBar.endMeetingButton,
+    ];
+
+    for (const button of toolBarButtons) {
+      await meetingRoomPage.page.keyboard.press('Tab');
+      await expect(button).toBeFocused();
+    }
+
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.chatButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('ArrowRight');
@@ -182,21 +198,5 @@ test.describe('Accessibility_General', () => {
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.chatSubmitButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
-
-    const toolBarButtons = [
-      meetingRoomPage.toolBar.handRaiseButton,
-      meetingRoomPage.toolBar.turnOnScreenShareButton,
-      meetingRoomPage.toolBar.microphoneButton,
-      meetingRoomPage.toolBar.microphoneMoreOptionsMenuButton,
-      meetingRoomPage.toolBar.videoButton,
-      meetingRoomPage.toolBar.cameraMoreOptionButton,
-      meetingRoomPage.toolBar.moreOptionButton,
-      meetingRoomPage.toolBar.endMeetingButton,
-    ];
-
-    for (const button of toolBarButtons) {
-      await expect(button).toBeFocused();
-      await meetingRoomPage.page.keyboard.press('Tab');
-    }
   });
 });
