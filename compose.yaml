@@ -9,16 +9,16 @@ services:
       - 127.0.0.1:3000:3000
     environment:
       PORT: 3000
-      LIVEKIT_SERVER_URL: http://localhost:7080
-      CONTROLLER_HOST: localhost:11311
+      LIVEKIT_SERVER_URL: https://localhost:7880
+      CONTROLLER_HOST: localhost:21311
       BASE_URL: https://localhost:8443
       HELPDESK_URL: https://opentalk.eu
       CONTACT_SUPPORT_URL: https://opentalk.eu
       IMPRINT_URL: https://opentalk.eu/en/terms-of-use
       DATA_PROTECTION_URL: https://opentalk.eu/en/data-protection
-      OIDC_ISSUER: http://localhost:8080/auth/realms/OPENTALK
+      OIDC_ISSUER: https://localhost:7443/auth/realms/OPENTALK
       SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
-      INSECURE: 'true'
+      INSECURE: 'false'
       FEATURE_SHARED_FOLDER: 'true'
     healthcheck:
       test: 'wget "http://localhost:3000/manifest.json" -O - | grep ''"short_name": "OpenTalk"'''
@@ -51,7 +51,6 @@ services:
       retries: 5
 
   livekit:
-    network_mode: host
     image: livekit/livekit-server:v1.8
     volumes:
       - ./:/builds/:rw,Z
@@ -118,9 +117,14 @@ services:
         condition: service_healthy
       livekit:
         condition: service_healthy
+      certs:
+        condition: service_completed_successfully
     image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/backend/services/controller}:${CONTROLLER_TAG:-dev}
     volumes:
       - ./:/builds/:rw,Z
+      - certs-volume:/etc/ssl/certs:ro
+    environment:
+      SSL_CERT_FILE: /etc/ssl/certs/fullchain.pem
     entrypoint:
       - /bin/bash
       - -c
@@ -131,8 +135,14 @@ services:
           sleep 10;
           cat /builds/config/controller-config.toml | \
           sed 's/www\.opentalk\.test/localhost\:8443/g' > /tmp/controller-config.toml
-          sed -i 's/accounts\.opentalk\.test/localhost\:8080/g' /tmp/controller-config.toml
-          sed -i 's/livekit\.opentalk\.test/localhost\:7880/g' /tmp/controller-config.toml
+          sed -i \
+            's|http://accounts\.opentalk\.test/auth/realms/OPENTALK|https://localhost:7443/auth/realms/OPENTALK|g' \
+            /tmp/controller-config.toml
+          sed -i \
+            's|http://accounts\.opentalk\.test/auth/admin/realms/OPENTALK|'\
+            'https://localhost:7443/auth/admin/realms/OPENTALK|g' \
+            /tmp/controller-config.toml
+          sed -i 's|http://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
           sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
           sed -i 's/\/minio\:/\/localhost\:/g' /tmp/controller-config.toml
@@ -150,10 +160,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      certs:
+        condition: service_completed_successfully
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:7443:7443
     volumes:
       - ./:/builds/:rw,Z
+      - certs-volume:/opt/keycloak/certs:ro
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://db/keycloak
@@ -162,10 +175,14 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HTTP_RELATIVE_PATH: /auth
-      KC_HTTP_ENABLED: 'true'
-      KC_HOSTNAME_PORT: 8080
-      KC_HOSTNAME_STRICT: 'false'
-      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KC_HTTP_ENABLED: 'false'
+      KC_HTTPS_PORT: 7443
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: 'true'
+      KC_HOSTNAME_STRICT_HTTPS: 'true'
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/fullchain.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/privkey.pem
     entrypoint:
       - /bin/bash
       - -c
@@ -207,7 +224,7 @@ services:
       - |
         cat /builds/config/test_env | \
         sed 's/https\:\/\/www\.opentalk\.test/https\:\/\/localhost\:8443/g' >  /builds/e2e/.env;
-        sed -i 's/controller\.opentalk\.test/localhost\:11311/g' /builds/e2e/.env;
+        sed -i 's|http://controller.opentalk.test|https://localhost:21311|g'  /builds/e2e/.env;
         npm ci
         npx playwright install
         bash
@@ -216,24 +233,39 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - certs-volume:/etc/nginx/certs
+      - certs-volume:/etc/nginx/certs:ro
     ports:
       - 8443:443
+      - 7880:7880
+      - 21311:11311
+    extra_hosts:
+      - host.docker.internal:host-gateway
     depends_on:
       - webapp
       - controller
+
+  certs:
+    image: mcr.microsoft.com/playwright:v1.56.0-noble
+    volumes:
+      - certs-volume:/certs
     entrypoint:
       - /bin/bash
       - -c
       - |
-        if [ ! -f /etc/nginx/certs/fullchain.pem ]; then
-          apt-get update && apt-get install -y openssl
-          cd /etc/nginx/certs
-          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout privkey.pem -out fullchain.pem \
-            -subj "/CN=localhost"
-        fi;
-        exec nginx -g "daemon off;";
+        mkdir -p /certs
+        if [ ! -f /certs/fullchain.pem ]; then
+          cd /certs
+          openssl req -new -newkey rsa:2048 -nodes -keyout privkey.pem -subj "/CN=localhost" -out server.csr
+          openssl x509 -req -days 365 -in server.csr -signkey privkey.pem -out fullchain.pem \
+          -extfile <(printf "\
+          basicConstraints=CA:FALSE\n\
+          subjectAltName=DNS:localhost,IP:127.0.0.1\n\
+          keyUsage=nonRepudiation,digitalSignature,keyEncipherment\n\
+          extendedKeyUsage=serverAuth\
+          ")
+        fi
+        find /certs -xtype l -delete
+        chmod 644 /certs/*.pem
 
 volumes:
   certs-volume:
