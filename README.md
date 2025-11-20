@@ -9,6 +9,10 @@ Start all needed containers:
 docker compose up -d
 ```
 
+> [!NOTE]
+> If you are using `ufw` as firewall add this rule to it:
+> `sudo ufw allow in from 172.0.0.0/8 to 172.0.0.0/8`
+
 You can access the webapp via https://localhost:8443.
 
 > [!NOTE]  
