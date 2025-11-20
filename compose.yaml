@@ -135,13 +135,7 @@ services:
           sleep 10;
           cat /builds/config/controller-config.toml | \
           sed 's/www\.opentalk\.test/localhost\:8443/g' > /tmp/controller-config.toml
-          sed -i \
-            's|http://accounts\.opentalk\.test/auth/realms/OPENTALK|https://localhost:7443/auth/realms/OPENTALK|g' \
-            /tmp/controller-config.toml
-          sed -i \
-            's|http://accounts\.opentalk\.test/auth/admin/realms/OPENTALK|'\
-            'https://localhost:7443/auth/admin/realms/OPENTALK|g' \
-            /tmp/controller-config.toml
+          sed -i 's|http://accounts\.opentalk\.test/|https://localhost:7443/|g' /tmp/controller-config.toml
           sed -i 's|http://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
           sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
