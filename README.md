@@ -74,29 +74,27 @@ Visit last test reports:
 docker compose exec test-runner npx playwright show-report
 ```
 
+Run all playwright tests (defaults in headed mode):
+```
+npm run test:playwright
+```
+
+Runs a specific playwright test (defaults in headed mode):
+```
+FILEPATH=<your_file_path> npm run test:playwright
+```
+
 ### Gherkin Tests
-Runs all gherkin tests (default in headless mode):
+Run all gherkin tests (defaults in headed mode):
 
 ```
-npm run test:all
+npm run test:gherkin e2e/tests/e2e/features/
 ```
 
-Runs all gherkin tests in headed mode:
+Run a specific feature file (defaults in headed mode):
 
 ```
-npm run test:all:headed
-```
-
-Runs a specific feature file (default in headless mode):
-
-```
-npm run test:feature e2e/tests/e2e/features/myFeature.feature
-```
-
-Runs a specific feature file in headed mode:
-
-```
-npm run test:feature:headed e2e/tests/e2e/features/myFeature.feature
+npm run test:gherkin <path_to_your_feature_file>
 ```
 
 ## View traces of CI runs

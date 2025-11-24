@@ -353,11 +353,12 @@ e2e-tests:
     - /builds/$CI_PROJECT_PATH/scripts/wait-for-services.sh
   variables:
     BROWSER: $BROWSER
+    HEADLESS: true
     OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   script:
-    - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "*$BROWSER")
+    - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "$BROWSER")
     - echo "RUNS $PROJECTS project"
-    - npx playwright test --project=$PROJECTS --workers=1
+    - BROWSER=$PROJECTS npm run test:playwright --workers=1
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml
