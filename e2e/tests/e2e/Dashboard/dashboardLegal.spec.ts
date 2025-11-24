@@ -27,7 +27,7 @@ test.describe('Dashboard_Legal', () => {
 
     await expect(openTalkImprintPage).toHaveTitle('Terms of Use for OpenTalk-as-a-Service | OpenTalk');
     const choiceOfLawHeading = openTalkImprintPage.getByRole('heading', {
-      name: '§ 8 – Choice of Law, Place of Jurisdiction, Severability Clause',
+      name: '§ 9 – Choice of Law, Place of Jurisdiction, Severability Clause',
       exact: true,
     });
     await expect(choiceOfLawHeading).toBeVisible();
