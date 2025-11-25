@@ -21,6 +21,12 @@ export async function globalSetup(): Promise<void> {
     case 'webkit':
       browserType = webkit;
       break;
+    case 'smoke-firefox':
+      browserType = firefox;
+      break;
+    case 'smoke-webkit':
+      browserType = webkit;
+      break;
     default:
       browserType = chromium;
   }
