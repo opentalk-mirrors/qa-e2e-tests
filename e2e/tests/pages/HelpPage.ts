@@ -33,7 +33,7 @@ export class HelpPage {
 
   async navigateToUserManual(): Promise<Page> {
     await this.userManualLink.click();
-    return await navigateToExternalPage(this.context, 'User manual | OpenTalk');
+    return await navigateToExternalPage(this.context, 'Index - OpenTalk Documentation');
   }
 
   async navigateToSupport(): Promise<Page> {

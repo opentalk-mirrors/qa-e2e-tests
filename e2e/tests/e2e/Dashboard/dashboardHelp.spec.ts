@@ -27,7 +27,7 @@ test.describe('Dashboard_Help', () => {
     expect(userManualDocsPage.getByRole('heading', { name: 'User manual' })).toHaveText('User manual', {
       timeout: 10_000,
     });
-    expect(userManualDocsPage.url()).toBe('https://docs.opentalk.eu/user/Handbuch/');
+    expect(userManualDocsPage.url()).toBe('https://docs.opentalk.eu/25.3/user/en/guide/');
     await expect(
       userManualDocsPage.getByText(
         'Please contact your admin if this manual leaves any questions unanswered or if you have found a technical error. We hope you enjoy using OpenTalk!'

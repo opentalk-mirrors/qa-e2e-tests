@@ -35,7 +35,7 @@ export class BurgerMenuPage {
 
   public async gotoUserManual(): Promise<Page> {
     await this.userManualMenuItem.click();
-    return await navigateToExternalPage(this.context, 'User manual | OpenTalk');
+    return await navigateToExternalPage(this.context, 'Index - OpenTalk Documentation');
   }
 
   public async openKeyboardShortcuts() {
