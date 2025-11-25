@@ -50,7 +50,7 @@ test.describe('Meeting Room_Burger menu', () => {
       'Please contact your admin if this manual leaves any questions unanswered or if you have found a technical error. We hope you enjoy using OpenTalk!',
       { exact: true }
     );
-    expect(userManualPage.url()).toBe('https://docs.opentalk.eu/user/Handbuch/');
+    expect(userManualPage.url()).toBe('https://docs.opentalk.eu/25.3/user/en/guide/');
     await expect(userManualHeading).toBeVisible();
     await expect(openTalkDocs).toBeVisible();
 
