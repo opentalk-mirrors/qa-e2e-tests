@@ -11,7 +11,7 @@ import { MeetingInfoPage } from '../../pages/MeetingRoom/MeetingInfoPage';
 
 const meetingTitle = 'Smoke test all';
 const meetingPassword = 'test@123';
-const userName = config.USER_NAME;
+const userName = config.USER_FIRSTNAME + ' ' + config.USER_FAMILYNAME;
 
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage({ page });

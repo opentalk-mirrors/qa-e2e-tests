@@ -15,7 +15,8 @@ import { ProfilePage } from '../../pages/Settings/ProfilePage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
 import { SidebarPage } from '../../pages/SidebarPage';
 
-const USERNAME: string = config.USER_NAME;
+const FIRSTNAME: string = config.USER_FIRSTNAME;
+const FAMILYNAME: string = config.USER_FAMILYNAME;
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,
@@ -107,7 +108,7 @@ test.describe('Dashboard_Settings', () => {
       await expect(profilePage.requiredFieldsText).toBeVisible();
       await expect(profilePage.imageAvatar).toBeVisible();
       await expect(profilePage.profileNameLabel).toBeVisible();
-      expect(await profilePage.getProfileNameTextboxValue()).toBe(USERNAME);
+      expect(await profilePage.getProfileNameTextboxValue()).toBe(FIRSTNAME + ' ' + FAMILYNAME);
       await expect(profilePage.enterANameText).toBeVisible();
       await expect(profilePage.saveButton).toBeVisible();
 
@@ -138,7 +139,7 @@ test.describe('Dashboard_Settings', () => {
       const settingsPage = await sideBarPage.navigateToSettingsPage();
 
       const profilePage: ProfilePage = await settingsPage.navigateToProfile();
-      await profilePage.enterProfileName(USERNAME);
+      await profilePage.enterProfileName(FIRSTNAME + ' ' + FAMILYNAME);
       await profilePage.saveProfile();
 
       await context.close();
@@ -159,12 +160,12 @@ test.describe('Dashboard_Settings', () => {
     await accountPage.focusEmailAddressField();
     await expect(accountPage.emailTextbox).not.toBeEditable();
 
-    await expect(accountPage.firstNameTextbox).toHaveValue(USERNAME);
+    await expect(accountPage.firstNameTextbox).toHaveValue(FIRSTNAME);
 
     await accountPage.focusFirstNameField();
     await expect(accountPage.firstNameTextbox).not.toBeEditable();
 
-    await expect(accountPage.familyNameTextbox).toHaveValue(USERNAME);
+    await expect(accountPage.familyNameTextbox).toHaveValue(FAMILYNAME);
 
     await accountPage.focusFamilyNameField();
     await expect(accountPage.familyNameTextbox).not.toBeEditable();
