@@ -16,6 +16,7 @@ export class HomePage {
   currentMeetingsHeaderSelector: Locator;
   noFavoritesSelector: Locator;
   favoriteMeetingsHeaderSelector: Locator;
+  favoriteMeetingsIcons: Locator;
   startMeetingButtonNamePrefix: string;
   moreOptionsButtonProperties: { role: Parameters<Page['getByRole']>[0]; options: { name: string } };
   detailsMenuItem: Locator;
@@ -37,6 +38,7 @@ export class HomePage {
     this.currentMeetingsHeaderSelector = this.page.getByText('Current meetings');
     this.noFavoritesSelector = this.page.getByText("You don't have any favorites yet.");
     this.favoriteMeetingsHeaderSelector = this.page.getByText(/^(My favorite meetings|Meine Favoriten)$/);
+    this.favoriteMeetingsIcons = this.favoriteMeetingsHeaderSelector.locator('..').locator('svg');
     this.startMeetingButtonNamePrefix = 'Start ';
     this.deleteMenu = this.page.getByRole('menuitem', { name: 'Delete' });
     this.deleteButton = this.page.getByRole('button', { name: 'Delete' });
@@ -119,7 +121,7 @@ export class HomePage {
   }
 
   async getFavouriteMeetingSelector(meetingTitle: string): Promise<Locator> {
-    return await this.page.getByRole('link', { name: meetingTitle, exact: true });
+    return this.page.getByRole('link', { name: meetingTitle, exact: true });
   }
 
   public async getStartMeetingButton(meetingTitle: string): Promise<Locator> {
@@ -140,6 +142,9 @@ export class HomePage {
     return this.meetingListItem
       .filter({
         hasText: meetingTitle,
+      })
+      .filter({
+        hasText: `Created by`,
       })
       .first();
   }
@@ -207,7 +212,16 @@ export class HomePage {
     return await elements.count();
   }
 
-  async navigateToMeetingListFromFavoritesMeetingList(): Promise<void> {
+  async navigateToMeetingListFromFavoritesMeetingListIfNoFavoriteMeetings(): Promise<void> {
     await this.noFavoritesSelector.click();
+  }
+
+  async openFavoriteMeeting(meetingTitle: string): Promise<void> {
+    await (await this.getFavouriteMeetingSelector(meetingTitle)).click();
+  }
+
+  async isMeetingFavorite(meetingTitle: string): Promise<boolean> {
+    const meeting = await this.getMeetingListItem(meetingTitle);
+    return (await meeting.locator('svg').count()) === 2;
   }
 }

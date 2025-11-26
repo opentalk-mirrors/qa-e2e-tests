@@ -92,4 +92,8 @@ export class LobbyRoomPage {
     await this.nameInputField.waitFor({ state: 'visible' });
     await this.waitForParticipantNameToBeVisibleInNameField();
   }
+
+  async getMeetingInvitationTitleLocator(meetingTitle: string): Promise<Locator> {
+    return this.page.getByRole('heading', { name: `OpenTalk Meeting Invitation - "${meetingTitle}"` });
+  }
 }

@@ -18,8 +18,8 @@ import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
-import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
+import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
 import { CustomWorld, User } from '../cucumberWorld';
 
 Given(
@@ -248,11 +248,16 @@ Then(
   }
 );
 
-When('{string} checks the current meetings on the Home-Page', async function (this: CustomWorld, moderator: string) {
-  const page = this.getUser(moderator).page;
+When('{string} navigates to the Home-Page', async function (this: CustomWorld, moderator: string) {
+  await navigateToHomePage(this, moderator);
+});
+
+async function navigateToHomePage(world: CustomWorld, moderator: string) {
+  const page = world.getUser(moderator).page;
   const home = new HomePage({ page: page });
   await home.navigateToHomePage();
-});
+  return home;
+}
 
 Given(
   '{string} has accepted the invitation for the meeting with the title {string} created by {string}',
@@ -345,30 +350,119 @@ Then(
   }
 );
 
-When('{string} checks her faviorite meetings on Home Page', async function (this: CustomWorld, user: string) {
-  const page = this.getUser(user).page;
-  const home = new HomePage({ page: page });
-  await expect(home.favoriteMeetingsHeaderSelector).toBeVisible();
-});
-
 Then(
-  '{string} should see the following details on Home Page',
-  async function (this: CustomWorld, user: string, _dataTable: DataTable) {
+  'for {string} following details should be displayed on Home-Page',
+  async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    await expect(home.noFavoritesSelector).toBeVisible();
-    await expect(home.noFavoritesSelector).toBeVisible();
+    const expectedDetails = dataTable.hashes();
+    for (let i = 0; i < expectedDetails.length; i++) {
+      switch (expectedDetails[i].details) {
+        case 'no-favorite-meetings-text':
+          await expect(home.noFavoritesSelector).toBeVisible();
+          break;
+        case 'bookmark icon':
+          expect(await home.favoriteMeetingsIcons.count()).toBe(1);
+          break;
+        default:
+          throw new Error(`${expectedDetails[i].details} is a typo or an unexpected detail`);
+      }
+    }
   }
 );
 
-When('{string} selects {string} on Home Page', async function (user, _string2) {
+When('{string} selects {string} on the Home-Page', async function (this: CustomWorld, user: string, element: string) {
   const page = this.getUser(user).page;
   const home = new HomePage({ page: page });
-  await home.navigateToMeetingListFromFavoritesMeetingList();
+  if (element === 'no-favorite-meetings-text') {
+    await home.navigateToMeetingListFromFavoritesMeetingListIfNoFavoriteMeetings();
+  } else {
+    throw new Error(`'${element}' is a typo or element does not exist`);
+  }
 });
 
-Then('{string} should be navigated to Meetings list', async function (this: CustomWorld, user: string) {
+Then('for {string} the Meetings list should be displayed', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
   const myMeeting = new MyMeetingsPage(page);
   await expect(myMeeting.myMeetingsHeading).toBeVisible();
 });
+
+When(
+  '{string} hovers over {string} on the Home-Page',
+  async function (this: CustomWorld, user: string, element: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    if (element === 'no-favorite-meetings-text') {
+      await home.noFavoritesSelector.hover();
+    } else {
+      throw new Error(`${element} is a typo or element does not exist`);
+    }
+  }
+);
+
+When(
+  '{string} marks the meeting named {string} as favorite on the Home-Page',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const home = await navigateToHomePage(this, user);
+    await home.markMeetingAsFavourite(meetingTitle);
+  }
+);
+
+Then(
+  'for {string} a tooltip with the text {string} should be shown on the Home-Page',
+  async function (this: CustomWorld, user: string, text: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    if (text === 'mark-favorites-tooltip') {
+      home.page.getByText('You can mark favourites over the menu in the card.');
+    } else {
+      throw new Error(`${text} is a typo or element does not exist`);
+    }
+  }
+);
+
+Then(
+  'for {string} the meeting {string} should be marked as favorite on the Home-Page',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    expect(await home.isMeetingFavorite(meetingTitle)).toBe(true);
+  }
+);
+
+Then(
+  'for {string} these meetings should be displayed under the My favorite meetings label with a bookmark icon on the Home-Page:',
+  async function (this: CustomWorld, user: string, dataTable: DataTable) {
+    const home = await navigateToHomePage(this, user);
+    const expectedMeetings = dataTable.hashes();
+    for (let i = 0; i < expectedMeetings.length; i++) {
+      await expect(await home.getFavouriteMeetingSelector(expectedMeetings[i].meeting)).toBeVisible();
+    }
+    await expect(home.favoriteMeetingsIcons).toBeVisible();
+  }
+);
+
+When(
+  '{string} selects meeting {string} on the Home-Page',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await home.openFavoriteMeeting(meetingTitle);
+  }
+);
+
+Then(
+  '{string} should be on the Lobby-Page of the meeting named {string}',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const context = this.getUser(user).context;
+    const pages = context.pages();
+    for (const page of pages) {
+      const title = await page.title();
+      if (title === `OpenTalk Meeting Invitation - "${meetingTitle}"`) {
+        const lobby = new LobbyRoomPage({ page });
+        const meetingTitleLocator = await lobby.getMeetingInvitationTitleLocator(meetingTitle);
+        await expect(meetingTitleLocator).toBeVisible();
+      }
+    }
+  }
+);
