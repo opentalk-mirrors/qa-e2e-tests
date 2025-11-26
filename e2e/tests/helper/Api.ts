@@ -192,7 +192,7 @@ type User = {
   avatar_url: string;
 };
 
-interface OpenTalkEvent {
+export interface OpenTalkEvent {
   can_edit: boolean;
   created_at: string;
   created_by: UserProfile;

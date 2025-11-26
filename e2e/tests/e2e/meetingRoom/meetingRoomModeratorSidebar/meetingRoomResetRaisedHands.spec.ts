@@ -10,6 +10,7 @@ import {
   startAdhocMeetingAsModerator,
 } from '../../../helper/meetingHelpers';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
+import { ParticipantListWithCheckboxesPage } from '../../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { ResetRaisedHandsPage } from '../../../pages/MeetingRoom/ModeratorTools/ResetRaisedHandsPage';
 import { ParticipantTilePage } from '../../../pages/MeetingRoom/ParticipantTilePage';
 import { NotificationPage } from '../../../pages/NotificationPage';
@@ -59,7 +60,11 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await expect(resetRaisedHandsPage.allButton).toBeVisible();
     await expect(resetRaisedHandsPage.selectedButton).toBeVisible();
     await expect(resetRaisedHandsPage.searchParticipantTextbox).toBeVisible();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
+    const participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({
+      page: resetRaisedHandsPage.page,
+    });
+
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
 
     for (const guest of guestName) {
       guestTile = meetingRoomPage.getParticipantTileByName(guest);
@@ -97,7 +102,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await firstGuestMeetingRoomPage.page.bringToFront();
     expect(await moderatorTile.isHandRaised()).toBeFalsy();
     await meetingRoomPage.page.bringToFront();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(0);
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(0);
 
     await meetingRoomPage.raiseYourHand();
     for (const guestMeetingRoomPage of guestMeetingRoomPages) {
@@ -105,10 +110,9 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
       await guestMeetingRoomPage.raiseYourHand();
     }
     await meetingRoomPage.page.bringToFront();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
-
-    await resetRaisedHandsPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
-    expect(await resetRaisedHandsPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS);
+    await participantListWithCheckboxesPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
+    expect(await participantListWithCheckboxesPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
 
     await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
     await firstGuestMeetingRoomPage.page.bringToFront();
@@ -122,7 +126,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(idleGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await meetingRoomPage.page.bringToFront();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
   });
 });
 
@@ -151,13 +155,17 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     expect(await resetRaisedHandsPage.getPlaceholderValueOfSearchParticipantTextbox()).toBe('John Doe');
 
     await resetRaisedHandsPage.searchParticipantInList(guest1.slice(-2)); //extracts t1 from guest1
-    await expect(resetRaisedHandsPage.getParticipantItemByName(guest1)).toBeVisible();
-    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).not.toBeVisible();
-    await expect(resetRaisedHandsPage.getParticipantItemByName(idleGuest)).not.toBeVisible();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+    const participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({
+      page: resetRaisedHandsPage.page,
+    });
 
-    await resetRaisedHandsPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
-    expect(await resetRaisedHandsPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
+    await expect(participantListWithCheckboxesPage.getParticipantItemByName(guest1)).toBeVisible();
+    await expect(participantListWithCheckboxesPage.getParticipantItemByName(guest2)).not.toBeVisible();
+    await expect(participantListWithCheckboxesPage.getParticipantItemByName(idleGuest)).not.toBeVisible();
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+
+    await participantListWithCheckboxesPage.selectParticipantByIndexes([0]); //select participant at index 0 i.e. of guest1
+    expect(await participantListWithCheckboxesPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
 
     await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
     const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
@@ -176,13 +184,13 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
 
     await meetingRoomPage.page.bringToFront();
     await resetRaisedHandsPage.clearSearchedText();
-    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).toBeVisible();
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
+    await expect(participantListWithCheckboxesPage.getParticipantItemByName(guest2)).toBeVisible();
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(NUMBER_OF_GUESTS - 1);
 
     await resetRaisedHandsPage.searchParticipantInList('abc');
-    await expect(resetRaisedHandsPage.participantListCheckboxes).toHaveCount(0);
+    await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(0);
 
     await resetRaisedHandsPage.clearSearchedText();
-    await expect(resetRaisedHandsPage.getParticipantItemByName(guest2)).toBeVisible();
+    await expect(participantListWithCheckboxesPage.getParticipantItemByName(guest2)).toBeVisible();
   });
 });

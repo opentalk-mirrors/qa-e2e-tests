@@ -44,7 +44,8 @@ export const startAdhocMeetingAsModerator = async (
 export const joinMeetingRoomAsGuest = async (
   context: BrowserContext,
   guestLink: string,
-  guestName: string
+  guestName: string,
+  options?: JoinMeetingOptions
 ): Promise<MeetingRoomPage> => {
   // create new browser instance & launch OpenTalk with guest link
   const newPage = await context.newPage();
@@ -59,6 +60,10 @@ export const joinMeetingRoomAsGuest = async (
   const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
   await expect(guestLobbyRoomPage.nameInputField).toBeVisible();
   await guestLobbyRoomPage.nameInputField.fill(guestName);
+  if (options?.audio) {
+    await guestLobbyRoomPage.waitForMicrophoneButtonToBeEnabled();
+    await guestLobbyRoomPage.turnOnMicrophone();
+  }
 
   // enter meeting room & assert meeting room is shown
   const guestMeetingRoomPage = await guestLobbyRoomPage.enterMeetingRoom();
@@ -68,17 +73,22 @@ export const joinMeetingRoomAsGuest = async (
   return guestMeetingRoomPage;
 };
 
+class JoinMeetingOptions {
+  audio: boolean = false;
+}
+
 export const joinMeetingRoomWithNGuests = async (
   context: BrowserContext,
   guestLink: string,
   guestBaseName: string,
-  numberOfGuests: number
+  numberOfGuests: number,
+  options?: JoinMeetingOptions
 ): Promise<MeetingRoomPage[]> => {
   const guestMeetingRoomPages: MeetingRoomPage[] = [];
 
   for (let i = 1; i <= numberOfGuests; i++) {
     const guestUserName = guestBaseName + i;
-    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, guestUserName);
+    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, guestUserName, options);
     guestMeetingRoomPages.push(guestMeetingRoomPage);
   }
 

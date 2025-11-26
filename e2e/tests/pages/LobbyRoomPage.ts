@@ -52,6 +52,10 @@ export class LobbyRoomPage {
     };
   }
 
+  public async turnOnMicrophone(): Promise<void> {
+    await this.microphoneButton.click();
+  }
+
   public async waitForMicrophoneButtonToBeEnabled(): Promise<boolean> {
     await this.microphoneButton.isVisible();
     let count = 0;
@@ -68,7 +72,7 @@ export class LobbyRoomPage {
     await this.joinMeetingButton.click();
     await this.page.waitForLoadState('load');
     const meetingRoomPage = new MeetingRoomPage({ page: this.page });
-    meetingRoomPage.meetingRoomName.isVisible();
+    await meetingRoomPage.renderMeetingRoom();
     return meetingRoomPage;
   }
 

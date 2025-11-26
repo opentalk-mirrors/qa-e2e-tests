@@ -19,7 +19,7 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
       | detail        | value                       |
       | time          | <time>                      |
       | meeting title | ali1                        |
-      | creator       | Created by alice alice (Me) |
+      | creator       | Created by Alice Hansen (Me) |
     And "Alice" should see the following buttons for meeting "ali1" on the Home page
       | buttons      |
       | 3-dot option |

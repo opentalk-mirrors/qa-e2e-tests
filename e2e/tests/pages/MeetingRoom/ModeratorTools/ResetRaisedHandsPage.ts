@@ -4,38 +4,24 @@
 import { Locator, Page } from '@playwright/test';
 
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
+import { ParticipantListWithCheckboxesPage } from './ParticipantListWithCheckboxesPage';
 
 export class ResetRaisedHandsPage extends ModeratorToolsPage {
   public readonly allButton: Locator;
   public readonly selectedButton: Locator;
   public readonly searchParticipantTextbox: Locator;
-  public readonly participantList: Locator;
-  public readonly participantListCheckboxes: Locator;
+  public readonly participantListWithCheckboxesPage: ParticipantListWithCheckboxesPage;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
     this.allButton = this.page.getByRole('button', { name: 'All', exact: true });
     this.selectedButton = this.page.getByRole('button', { name: 'Selected', exact: true });
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });
-    this.participantList = this.page.locator('[data-sentry-component="SelectParticipantsItem"]');
-    this.participantListCheckboxes = this.page
-      .locator('[data-sentry-component="SelectParticipantsItem"]')
-      .getByRole('checkbox');
+    this.participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({ page: this.page });
   }
 
   public async resetAllRaisedHands(): Promise<void> {
     await this.allButton.click();
-  }
-
-  public async selectParticipantByIndexes(indexes: number[]): Promise<void> {
-    for (const index of indexes) {
-      const checkbox = this.participantListCheckboxes.nth(index);
-      await checkbox.check();
-    }
-  }
-
-  public async isParticipantCheckboxCheckedAt(index: number): Promise<boolean> {
-    return await this.participantListCheckboxes.nth(index).isChecked();
   }
 
   public async resetHandsOfSelectedParticipants(): Promise<void> {
@@ -52,10 +38,6 @@ export class ResetRaisedHandsPage extends ModeratorToolsPage {
 
   public async searchParticipantInList(searchParticipant: string): Promise<void> {
     await this.searchParticipantTextbox.fill(searchParticipant);
-  }
-
-  public getParticipantItemByName(name: string): Locator {
-    return this.participantList.filter({ hasText: name });
   }
 
   public async clearSearchedText(): Promise<void> {

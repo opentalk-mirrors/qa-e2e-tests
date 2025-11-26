@@ -4,6 +4,7 @@
 import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -95,8 +96,8 @@ Then(
     const startedMeeting = this.getStartedMeeting(moderator).meeting;
     const moderatorPage = startedMeeting.meetingRoomPage;
     await moderatorPage.page.bringToFront();
-    const breakoutRoomsPage = startedMeeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    expect(await breakoutRoomsPage?.getHeadingText()).toBe(expectedHeading);
+    const moderatorToolsPage = new ModeratorToolsPage({ page: moderatorPage.page });
+    expect(await moderatorToolsPage?.getHeadingText()).toBe(expectedHeading);
   }
 );
 

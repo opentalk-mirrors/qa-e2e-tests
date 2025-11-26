@@ -4,6 +4,8 @@
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { config } from '../../config';
+import { OpenTalkEvent } from '../../helper/Api';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { substituteInLineCodes } from '../../helper/helper';
 import {
@@ -12,9 +14,12 @@ import {
   startAdhocMeetingAsModerator,
 } from '../../helper/meetingHelpers';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
+import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
+import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
-import { CustomWorld } from '../cucumberWorld';
+import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
+import { CustomWorld, User } from '../cucumberWorld';
 
 Given(
   '{string} has started an ad-hoc meeting and joined the meeting as moderator',
@@ -99,13 +104,69 @@ async function startAdhocMeeting(world: CustomWorld, username: string) {
 }
 
 Given(
-  /^"([^"]+)" has created a (scheduled|unscheduled) meeting with the title "([^"]+)"$/,
+  /^"([^"]+)" has created an? (scheduled|unscheduled) meeting with the title "([^"]+)"$/,
   async function (this: CustomWorld, moderator: string, meetingType: string, meetingTitle: string) {
     const user = this.getUser(moderator).api;
     await user.planMeetingAsModerator({
       title: meetingTitle,
       is_time_independent: meetingType === 'unscheduled',
     });
+  }
+);
+
+async function joinMeeting(
+  world: CustomWorld,
+  userToJoin: User,
+  meeting: OpenTalkEvent,
+  options?: { Audio?: string }
+): Promise<MeetingRoomPage> {
+  await userToJoin.page.goto(`${config.INSTANCE_URL}/room/${meeting.room.id}`);
+  const lobbyRoomPage = new LobbyRoomPage({ page: userToJoin.page });
+  await lobbyRoomPage.renderLobbyPage();
+
+  // Close the warning button in safari
+  if (world.browser.browserType().name() === 'webkit') {
+    await closeWebkitPopUp({ page: userToJoin.page });
+  }
+
+  if (options?.Audio === 'enabled') {
+    await lobbyRoomPage.waitForMicrophoneButtonToBeEnabled();
+    await lobbyRoomPage.turnOnMicrophone();
+  }
+
+  // enter the meeting room & assert meeting room is shown
+  return await lobbyRoomPage.enterMeetingRoom();
+}
+
+Given(
+  '{string} has joined the meeting with the title {string} as moderator',
+  async function (this: CustomWorld, moderator: string, meetingTitle: string) {
+    const user = this.getUser(moderator);
+    const meeting = await user.api.getMeetingByTitle(meetingTitle);
+    const meetingRoomPage = await joinMeeting(this, user, meeting);
+
+    this.setStartedMeeting(moderator, {
+      meetingId: meeting.id,
+      meetingRoomPage: meetingRoomPage,
+      guestLink: await user.api.getGuestLink(meeting.room.id),
+    });
+  }
+);
+
+Given(
+  '{string} has joined the meeting with the title {string} created by {string} with:',
+  async function (
+    this: CustomWorld,
+    nameOfUserToJoin: string,
+    meetingTitle: string,
+    nameOfModerator: string,
+    optionsTable: DataTable
+  ) {
+    const options = optionsTable.rowsHash();
+    const moderator = this.getUser(nameOfModerator);
+    const userToJoin = this.getUser(nameOfUserToJoin);
+    const meeting = await moderator.api.getMeetingByTitle(meetingTitle);
+    await joinMeeting(this, userToJoin, meeting, options);
   }
 );
 
@@ -178,6 +239,28 @@ Given(
     const meeting = await api.getMeetingByTitle(meetingTitle);
     expect(meeting.created_by.firstname).toBe(moderator);
     await api.acceptInvite(meeting.id);
+  }
+);
+
+Given(
+  '{int} guests have joined the meeting with the title {string} created by {string} with:',
+  async function (
+    this: CustomWorld,
+    numOfGuests: number,
+    meetingTitle: string,
+    moderator: string,
+    optionsTable: DataTable
+  ) {
+    const options = optionsTable.rowsHash();
+
+    const api = this.getUser(moderator).api;
+    const meeting = await api.getMeetingByTitle(meetingTitle);
+    const guestLink = await api.getGuestLink(meeting.room.id);
+    const context = this.getUser(moderator).context;
+    const guestRooms = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', numOfGuests, {
+      audio: options.Audio === 'enabled',
+    });
+    this.addGuestMeetingRooms(moderator, guestRooms);
   }
 );
 
