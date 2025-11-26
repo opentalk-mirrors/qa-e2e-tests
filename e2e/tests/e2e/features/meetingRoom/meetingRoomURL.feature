@@ -7,6 +7,7 @@ Feature: Meeting room URL
   I want every link to the meeting room be correct
   So that I and other invited participants can easily join
 
+
   Scenario: TC_002_URL route in Breakout room
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
