@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 RETRY=1
-if $CI; then
+if [[ "$CI" == "true" ]]; then
   RETRY=2
 fi
 
