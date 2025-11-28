@@ -44,6 +44,16 @@ When(
   }
 );
 
+Given(
+  '{int} guests have joined the meeting of {string}',
+  async function (this: CustomWorld, numOfGuests: number, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const context = this.getUser(user).context;
+    const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
+    this.addGuestMeetingRooms(user, guestRooms);
+  }
+);
+
 When('{string} creates a guest link from the more-options menu', async function (this: CustomWorld, user: string) {
   const moreOptionsPage = await this.getStartedMeeting(user).meeting.meetingRoomPage.showMoreOptions();
   const inviteGuestPopupPage = await moreOptionsPage.inviteGuest();

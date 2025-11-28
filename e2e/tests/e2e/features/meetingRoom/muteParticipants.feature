@@ -21,7 +21,7 @@ Feature: Mute Participants
       | Audio | enabled |
     When "Alice" opens the Mute Participants moderator tool
     Then the heading in the open moderator tool for "Alice" should be "Mute participants"
-    And these buttons should be displayed in the open moderator tool for "Alice":
+    And these "buttons" should be displayed in the open moderator tool for "Alice":
       | All      |
       | Selected |
     And a "Search participant" field should be displayed in the open moderator tool for "Alice"

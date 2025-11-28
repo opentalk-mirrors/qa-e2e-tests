@@ -7,11 +7,13 @@ export class ModeratorToolsPage {
   public readonly page: Page;
   public readonly heading: Locator;
   private readonly button: Locator;
+  private readonly menuItem: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.heading = this.page.getByRole('tabpanel').getByRole('heading').first();
     this.button = this.page.getByRole('button');
+    this.menuItem = this.page.getByRole('menuitem');
   }
 
   private async getAllButtons(): Promise<Locator[]> {
@@ -29,5 +31,14 @@ export class ModeratorToolsPage {
 
   public async getTextboxByLabel(label: string): Promise<Locator> {
     return this.page.getByRole('textbox', { name: label });
+  }
+
+  private async getAllMenuItems(): Promise<Locator[]> {
+    return await this.menuItem.all();
+  }
+
+  public async getAllMenuItemsInnerText(): Promise<string[]> {
+    const menuItems = await this.getAllMenuItems();
+    return await Promise.all(menuItems.map(async (menuItem) => (await menuItem.innerText()).replace(/\n/g, '')));
   }
 }
