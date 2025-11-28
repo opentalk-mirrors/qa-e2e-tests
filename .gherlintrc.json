@@ -11,7 +11,7 @@
         "lowercase_title": "off",
         "no_but_in_given_when": "error",
         "grammar_check": [
-          "warn",
+          "error",
           "American",
           ["EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
           "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose", "min"
