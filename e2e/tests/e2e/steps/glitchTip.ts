@@ -36,12 +36,12 @@ When(
   }
 );
 
-Then('for {string} no request should have been send to glitchtip', async function (this: CustomWorld, user: string) {
+Then('for {string} no request should have been sent to glitchtip', async function (this: CustomWorld, user: string) {
   expect(this.getStartedMeeting(user).crashReportResponse).toBeUndefined();
 });
 
 Then(
-  'for {string} a request to glitchtip should have been send and a response with status code 200 should have been received',
+  'for {string} a request to glitchtip should have been sent and a response with status code 200 should have been received',
   async function (this: CustomWorld, user: string) {
     expect(this.getStartedMeeting(user).crashReportResponse?.status()).toBe(200);
   }

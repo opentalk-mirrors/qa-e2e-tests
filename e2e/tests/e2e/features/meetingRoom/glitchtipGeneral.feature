@@ -18,7 +18,7 @@ Feature: GlitchTip_General
     When "Alice" closes the glitchTip popup
     Then for "Alice" the glitchTip popup should not be displayed
 
-    And for "Alice" no request should have been send to glitchtip
+    And for "Alice" no request should have been sent to glitchtip
 
     Given "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And "Alice" opens the "Report a bug" form
@@ -27,11 +27,11 @@ Feature: GlitchTip_General
       | Alice | alice@example.org | This is a bug report |
     Then for "Alice" the glitchTip popup should not be displayed
     And for "Alice" sending successful popup should be displayed with text "Sending successful!\nYour report has been sent. Thank you for helping us to continuously improve OpenTalk."
-    And for "Alice" a request to glitchtip should have been send and a response with status code 200 should have been received
+    And for "Alice" a request to glitchtip should have been sent and a response with status code 200 should have been received
 
     When "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And "Alice" opens the "Report a bug" form
     And "Alice" sends a crash report
     Then for "Alice" the glitchTip popup should not be displayed
     And for "Alice" sending successful popup should be displayed with text "Sending successful!\nYour report has been sent. Thank you for helping us to continuously improve OpenTalk."
-    And for "Alice" a request to glitchtip should have been send and a response with status code 200 should have been received
+    And for "Alice" a request to glitchtip should have been sent and a response with status code 200 should have been received
