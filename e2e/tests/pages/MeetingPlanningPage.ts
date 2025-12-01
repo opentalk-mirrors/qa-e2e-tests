@@ -272,11 +272,11 @@ export class MeetingPlanningPage {
   }
 
   async setCustomRecurrenceEndDate(date: Date): Promise<void> {
+    await this.customMeetingRepetition.recurrenceEndDateYear.fill(String(date.getFullYear()));
+    await this.customMeetingRepetition.recurrenceEndDateDay.fill(String(date.getDate()).padStart(2, '0'));
     await this.customMeetingRepetition.recurrenceEndDateMonth.fill(
       String(date.getMonth() + 1).padStart(2, '0') // month starts with 0
     );
-    await this.customMeetingRepetition.recurrenceEndDateDay.fill(String(date.getDate()).padStart(2, '0'));
-    await this.customMeetingRepetition.recurrenceEndDateYear.fill(String(date.getFullYear()));
   }
 
   async getMeetingOccurrenceDropDownExpansonState(): Promise<string | null> {
