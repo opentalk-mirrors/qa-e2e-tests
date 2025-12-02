@@ -11,6 +11,7 @@ import { MuteParticipantsPage } from './ModeratorTools/MuteParticipantsPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TalkingStickPage } from './ModeratorTools/TalkingStickPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
+import { VotingRoomPage } from './ModeratorTools/VotingRoomPage';
 import { MoreOptionsPage } from './MoreOptionsPage';
 import { ParticipantTilePage } from './ParticipantTilePage';
 import { ViewOptionsPage } from './ViewOptionsPage';
@@ -46,6 +47,7 @@ export class MeetingRoomPage {
     timerButton: Locator;
     coffeeBreakButton: Locator;
     debriefingButton: Locator;
+    createVotingRoomsButton: Locator;
   };
 
   videoPreview: Locator;
@@ -125,6 +127,7 @@ export class MeetingRoomPage {
       timerButton: this.page.getByRole('tab', { name: 'Timer' }),
       coffeeBreakButton: this.page.getByRole('tab', { name: 'Coffee break' }),
       debriefingButton: this.page.getByRole('tab', { name: 'Debriefing' }),
+      createVotingRoomsButton: this.page.getByRole('tab', { name: 'Voting' }),
     };
 
     this.videoPreview = this.page.getByRole('complementary', { name: 'Tools' }).locator('video');
@@ -402,6 +405,13 @@ export class MeetingRoomPage {
     const muteParticipantsPage = new MuteParticipantsPage(this.page);
     await muteParticipantsPage.waitForPageToBeLoaded();
     return muteParticipantsPage;
+  }
+
+  public async startVotingRoomsModeratorTool(): Promise<VotingRoomPage> {
+    await this.moderationTools.createVotingRoomsButton.click();
+    const votingRoomPage = new VotingRoomPage(this.page);
+    await votingRoomPage.votingRoomHeading.waitFor({ state: 'visible' });
+    return votingRoomPage;
   }
 
   public async startBreakoutRooms(randomDistribution: boolean): Promise<void> {

@@ -91,13 +91,24 @@ Then(
 );
 
 Then(
-  'the heading in the open moderator tool for {string} should be {string}',
-  async function (this: CustomWorld, moderator: string, expectedHeading: string) {
+  /the "([^"]*)" in the open moderator tool for "([^"]*)" should be "([^"]*)"/,
+  async function (this: CustomWorld, type: string, moderator: string, expectedHeading: string) {
     const startedMeeting = this.getStartedMeeting(moderator).meeting;
     const moderatorPage = startedMeeting.meetingRoomPage;
     await moderatorPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: moderatorPage.page });
-    expect(await moderatorToolsPage?.getHeadingText()).toBe(expectedHeading);
+    switch (type) {
+      case 'heading':
+        expect(await moderatorToolsPage?.getHeadingText()).toBe(expectedHeading);
+        break;
+
+      case 'sub-heading':
+        expect(await moderatorToolsPage?.getSubHeadingText()).toBe(expectedHeading);
+        break;
+
+      default:
+        throw new Error(`Invalid type ${type}`);
+    }
   }
 );
 
