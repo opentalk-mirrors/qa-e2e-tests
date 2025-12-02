@@ -32,7 +32,7 @@ Feature: Meeting Room Voting Room
       """
       Activate or deactivate automatic exit once all votes have been cast
       """
-    And "Roll Call" should be selected as voting type in the voting type dropdown in the Create Voting moderator tool for "Alice"
+    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
     And these fields should be displayed in the open moderator tool for "Alice":
       | Title    |
       | Subtitle |
@@ -108,3 +108,63 @@ Feature: Meeting Room Voting Room
       """
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Create new voting |
+
+
+  Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic textFields
+    When "Alice" opens the Voting moderator tool
+    And "Alice" starts to create a new vote in the Voting moderator tool
+    Then "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
+
+    When "Alice" toggles "Allow Abstaining" in the open moderator tool
+    Then "allow abstaining toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
+
+    When "Alice" toggles "Allow Abstaining" in the open moderator tool
+    Then "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
+    And "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
+
+    # BUG: "Auto Close" has no accessible name; so using technical name "autoClose". See issue: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/issues/49
+    # needs to be updated after the bug is fixed
+    When "Alice" toggles "autoClose" in the open moderator tool
+    Then "auto close toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
+
+    When "Alice" toggles "autoClose" in the open moderator tool
+    Then "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
+    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
+
+    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
+    Then these "options" should be displayed in the open moderator tool for "Alice":
+      |  Roll Call            |
+      |  Roll Call - by name  |
+      |  Hidden Vote          |
+
+    When "Alice" selects "Roll Call" option in the open moderator tool
+    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
+    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
+
+    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
+    And "Alice" selects "Roll Call - by name" option in the open moderator tool
+    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
+    And "Roll Call - by name" should be selected as voting type in the Create Voting moderator tool for "Alice"
+
+    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
+    And "Alice" selects "Hidden Vote" option in the open moderator tool
+    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
+    And "Hidden Vote" should be selected as voting type in the Create Voting moderator tool for "Alice"
+
+    When "Alice" selects the "Title" field in the open moderator tool
+    Then the "Title" field with placeholder text "New vote" should be displayed in the open moderator tool for "Alice"
+
+    When "Alice" types text "Dummy Title" in the "Title" field in the open moderator tool
+    Then the text "Dummy Title" should be displayed in the "Title" field in the open moderator tool for "Alice"
+
+    When "Alice" selects the "Subtitle" field in the open moderator tool
+    Then the "Subtitle" field with placeholder text "Subtitle" should be displayed in the open moderator tool for "Alice"
+
+    When "Alice" types text "Dummy Subtitle" in the "Subtitle" field in the open moderator tool
+    Then the text "Dummy Subtitle" should be displayed in the "Subtitle" field in the open moderator tool for "Alice"
+
+    When "Alice" selects the "Topic" field in the open moderator tool
+    Then the "Topic" field with placeholder text "What is the vote about?" should be displayed in the open moderator tool for "Alice"
+
+    When "Alice" types text "Dummy Topic" in the "Topic" field in the open moderator tool
+    Then the text "Dummy Topic" should be displayed in the "Topic" field in the open moderator tool for "Alice"

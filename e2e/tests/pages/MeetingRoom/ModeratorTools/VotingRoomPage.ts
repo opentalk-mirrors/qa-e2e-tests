@@ -158,4 +158,8 @@ export class VotingRoomPage {
   public async decrementCustomDuration(): Promise<void> {
     await this.sessionDurationDialog.customDurationButtonInput.press('ArrowDown');
   }
+
+  public async openVotingTypeDropdown(): Promise<void> {
+    await this.createNewVoting.votingTypeDropdownInput.click();
+  }
 }

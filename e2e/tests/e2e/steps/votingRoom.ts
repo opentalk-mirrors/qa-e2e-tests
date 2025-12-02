@@ -57,6 +57,10 @@ Then(
       await expect(votingRoomPage.createNewVoting.allowAbstainingToggleButton).toBeChecked();
     } else if (button === 'auto close toggle' && status === 'OFF') {
       await expect(votingRoomPage.createNewVoting.autoCloseToggleButton).not.toBeChecked();
+    } else if (button === 'auto close toggle' && status === 'ON') {
+      await expect(votingRoomPage.createNewVoting.autoCloseToggleButton).toBeChecked();
+    } else if (button === 'allow abstaining toggle' && status === 'OFF') {
+      await expect(votingRoomPage.createNewVoting.allowAbstainingToggleButton).not.toBeChecked();
     }
   }
 );
@@ -80,11 +84,11 @@ Then(
 );
 
 Then(
-  '{string} should be selected as voting type in the voting type dropdown in the Create Voting moderator tool for {string}',
-  async function (this: CustomWorld, text: string, user: string) {
+  '{string} should be selected as voting type in the Create Voting moderator tool for {string}',
+  async function (this: CustomWorld, votingType: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
-    await expect(votingRoomPage.createNewVoting.votingTypeDropdownInput).toHaveText(text);
+    await expect(votingRoomPage.createNewVoting.votingTypeDropdownInput).toHaveText(votingType);
   }
 );
 
@@ -209,3 +213,21 @@ When('{string} exits the Create Voting moderator tool', async function (this: Cu
   votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
   await votingRoomPage.exitVotingRoomCreation();
 });
+
+When(
+  '{string} opens the voting type dropdown in the Create Voting moderator tool',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    await votingRoomPage.openVotingTypeDropdown();
+  }
+);
+
+Then(
+  'the voting type dropdown should not be displayed in the Create Voting moderator tool for {string}',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    await expect(votingRoomPage.createNewVoting.votingTypeDropdown).not.toBeVisible();
+  }
+);
