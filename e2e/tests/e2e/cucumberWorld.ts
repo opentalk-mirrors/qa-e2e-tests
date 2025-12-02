@@ -30,9 +30,13 @@ interface Meeting {
   meetingId: string;
 }
 
+export interface ParticipantMeetingRoomPages {
+  [key: string]: MeetingRoomPage;
+}
+
 interface StartedMeeting {
   meeting: Meeting;
-  guestMeetingRoomPages: MeetingRoomPage[];
+  participantMeetingRoomPages: ParticipantMeetingRoomPages;
   crashReportResponse?: Response;
 }
 
@@ -72,7 +76,7 @@ export class CustomWorld extends World {
     if (!this.startedMeetings) {
       this.startedMeetings = {};
     }
-    this.startedMeetings[user] = { meeting, guestMeetingRoomPages: [], crashReportResponse };
+    this.startedMeetings[user] = { meeting, participantMeetingRoomPages: {}, crashReportResponse };
   }
 
   setUsers(user: User) {
@@ -96,21 +100,22 @@ export class CustomWorld extends World {
     return this.startedMeetings[moderator];
   }
 
-  addGuestMeetingRooms(moderator: string, guestMeetingRoomPages: MeetingRoomPage[]) {
+  addParticipantMeetingRooms(moderator: string, participantMeetingRoomPages: ParticipantMeetingRoomPages) {
     if (!this.startedMeetings || !this.startedMeetings[moderator]) {
       throw new Error('No meeting has been created yet');
     }
-    this.startedMeetings[moderator].guestMeetingRoomPages =
-      this.startedMeetings[moderator].guestMeetingRoomPages.concat(guestMeetingRoomPages);
+    this.startedMeetings[moderator].participantMeetingRoomPages = {
+      ...participantMeetingRoomPages,
+      ...this.startedMeetings[moderator].participantMeetingRoomPages,
+    };
   }
 
-  removeGuestMeetingRoom(moderator: string, guestMeetingRoomPage: MeetingRoomPage) {
+  removeParticipantMeetingRoom(moderator: string, participant: string) {
     if (!this.startedMeetings || !this.startedMeetings[moderator]) {
       throw new Error('No meeting has been created yet');
     }
-    this.startedMeetings[moderator].guestMeetingRoomPages = this.startedMeetings[
-      moderator
-    ].guestMeetingRoomPages.filter((guestPage) => guestPage !== guestMeetingRoomPage);
+
+    delete this.startedMeetings[moderator].participantMeetingRoomPages[participant];
   }
 
   async init() {

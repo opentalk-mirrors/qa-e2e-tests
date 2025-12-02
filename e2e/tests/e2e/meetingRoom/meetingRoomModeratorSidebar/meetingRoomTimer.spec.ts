@@ -19,7 +19,8 @@ test.describe('Meeting Room_Timer', () => {
 
   test.beforeEach(async ({ page, context, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, 'guest1');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest1');
+    guestMeetingRoomPage = participantMeetingRoomPages['guest1'];
     const meetingRoomTimerPage: TimerPage = new TimerPage({ page: meetingRoomPage.page });
     const guestMeetingRoomTimerPage: TimerPage = new TimerPage({ page: guestMeetingRoomPage.page });
     meetingParticipantPages = [meetingRoomTimerPage, guestMeetingRoomTimerPage]; // need to add invitedGuest in future
@@ -375,7 +376,8 @@ test.describe('Meeting Room_Timer', () => {
       } while (i <= 3);
     }
 
-    const secondGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, 'guest2');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest2');
+    const secondGuestMeetingRoomPage = participantMeetingRoomPages['guest2'];
     const secondGuestMeetingRoomTimerPage = new TimerPage({ page: secondGuestMeetingRoomPage.page });
     await secondGuestMeetingRoomTimerPage.markMeAsDone();
 

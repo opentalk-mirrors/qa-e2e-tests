@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
-RETRY=1
+RETRY=0
 if [[ "$CI" == "true" ]]; then
   RETRY=2
 fi

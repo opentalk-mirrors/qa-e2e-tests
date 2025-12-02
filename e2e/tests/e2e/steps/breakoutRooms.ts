@@ -29,7 +29,7 @@ When(
     await moderatorPage.page.bringToFront();
     const moderatorNotification = new NotificationPage({ page: moderatorPage.page });
     await moderatorNotification.joinBreakoutRoom();
-    for (const guestPage of startedMeeting.guestMeetingRoomPages) {
+    for (const [_, guestPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
       const guestNotification = new NotificationPage({ page: guestPage.page });
       await guestPage.page.bringToFront();
       await guestNotification.joinBreakoutRoom();
@@ -52,7 +52,7 @@ When(
     await moderatorPage.page.bringToFront();
     const moderatorNotification = new NotificationPage({ page: moderatorPage.page });
     await moderatorNotification.leaveBreakoutRoom();
-    for (const guestPage of startedMeeting.guestMeetingRoomPages) {
+    for (const [_, guestPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
       const guestNotification = new NotificationPage({ page: guestPage.page });
       await guestPage.page.bringToFront();
       await guestNotification.leaveBreakoutRoom();
