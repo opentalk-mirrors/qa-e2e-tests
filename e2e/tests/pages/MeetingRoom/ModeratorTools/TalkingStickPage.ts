@@ -15,6 +15,8 @@ export class TalkingStickPage extends ModeratorToolsPage {
   public readonly showPossibleOrderSelectionsButton: Locator;
   private readonly participantNameSelector: Locator;
   private readonly participantTimeSelector: Locator;
+  public readonly includeModeratorSwitch: Locator;
+  public readonly activeSpeakerSVG: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
@@ -28,6 +30,8 @@ export class TalkingStickPage extends ModeratorToolsPage {
     this.showPossibleOrderSelectionsButton = this.page.locator('[data-sentry-element="Button"]');
     this.participantNameSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] p');
     this.participantTimeSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] span');
+    this.includeModeratorSwitch = this.page.getByRole('switch', { name: 'Include moderator' });
+    this.activeSpeakerSVG = this.page.locator('[aria-labelledby="active-speaker-icon-title-id"]');
   }
 
   public async openTalkingStickPage(): Promise<void> {
@@ -72,5 +76,10 @@ export class TalkingStickPage extends ModeratorToolsPage {
 
   public async getTotalParticipantsNumber(): Promise<number> {
     return (await this.getParticipantData('name')).length;
+  }
+
+  public async getIncludeModeratorSwitchValue(): Promise<boolean> {
+    const isValue = await this.includeModeratorSwitch.getAttribute('value');
+    return isValue === 'true';
   }
 }

@@ -102,3 +102,35 @@ Then(
     expect(guestCount).toEqual(await displayGuestCount);
   }
 );
+
+Then(
+  '"Include moderator" should be switched ON in the Talking Stick moderator tool for {string}',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
+    const moderatorSwitch = await talkingStickPage.getIncludeModeratorSwitchValue();
+    expect(moderatorSwitch).toBeTruthy();
+  }
+);
+
+Then(
+  'the participants joined time should have the format “Joined HH:MM” in the Talking Stick moderator tool for {string}',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
+    const displayGuestTimes = await talkingStickPage.getParticipantData('time');
+    const expectedFormatRegex = /^Joined (?:[01]\d|2[0-3]):[0-5]\d$/;
+    for (const timeString of displayGuestTimes) {
+      expect(timeString).toMatch(expectedFormatRegex);
+    }
+  }
+);
+
+Then(
+  'the audio status for each participant in the Meeting room should be turned off by default in the Talking Stick moderator tool for {string}',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
+    await expect(talkingStickPage.activeSpeakerSVG).not.toBeVisible();
+  }
+);
