@@ -23,6 +23,15 @@ export class NotificationPage {
     return await this.baseAlertLocator.innerText();
   }
 
+  public async getAllAlertNotificationsTexts(): Promise<string[]> {
+    await this.baseAlertLocator.first().waitFor();
+    const notificationTexts: string[] = [];
+    for (const alertLocator of await this.baseAlertLocator.all()) {
+      notificationTexts.push(await alertLocator.innerText());
+    }
+    return notificationTexts;
+  }
+
   public async joinBreakoutRoom(): Promise<void> {
     await this.transitionBreakoutRoom(this.joinBreakoutRoomLocator);
   }
