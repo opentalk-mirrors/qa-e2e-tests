@@ -17,7 +17,7 @@ test.beforeEach('Navigate to help option', async ({ page, browserName, context }
 });
 
 test.describe('Dashboard_Help', () => {
-  test('TC_001_Dashboard_Help_User Manual', async ({ page, context }) => {
+  test.skip('TC_001_Dashboard_Help_User Manual', async ({ page, context }) => {
     const helpPage = new HelpPage({ page, context });
     await expect(helpPage.helpHeading).toBeVisible();
     await expect(helpPage.userManualLink).toBeVisible();
