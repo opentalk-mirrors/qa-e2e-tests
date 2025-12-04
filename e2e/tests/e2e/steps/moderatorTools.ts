@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { DataTable, Then } from '@cucumber/cucumber';
+import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import assert from 'node:assert';
 
@@ -25,6 +25,10 @@ Then(
       case 'menu items':
         existingElements = await moderatorToolsPage.getAllMenuItemsInnerText();
         break;
+
+      case 'options':
+        existingElements = await moderatorToolsPage.getAllDropdownOptionsInnerText();
+        break;
     }
 
     for (const expectedElement of expectedElements.raw().flat()) {
@@ -46,7 +50,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await expect(await moderatorToolsPage.getTextboxByLabel(expectedField)).toBeVisible();
+    await expect(moderatorToolsPage.getTextboxByLabel(expectedField)).toBeVisible();
   }
 );
 
@@ -70,7 +74,61 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     for (const label of labels.raw().flat()) {
-      await expect(await moderatorToolsPage.getTextboxByLabel(label)).toBeVisible();
+      await expect(moderatorToolsPage.getTextboxByLabel(label)).toBeVisible();
     }
+  }
+);
+
+When(
+  '{string} selects the {string} field in the open moderator tool',
+  async function (this: CustomWorld, user: string, textField: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await moderatorToolsPage.selectField(textField);
+  }
+);
+
+Then(
+  'the {string} field with placeholder text {string} should be displayed in the open moderator tool for {string}',
+  async function (this: CustomWorld, textField: string, placeholder: string, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    expect(await moderatorToolsPage.getFieldPlaceholderValue(textField)).toBe(placeholder);
+  }
+);
+
+When(
+  '{string} types text {string} in the {string} field in the open moderator tool',
+  async function (this: CustomWorld, user: string, text: string, textField: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await moderatorToolsPage.enterFieldValue(textField, text);
+  }
+);
+
+Then(
+  'the text {string} should be displayed in the {string} field in the open moderator tool for {string}',
+  async function (this: CustomWorld, text: string, textField: string, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    expect(await moderatorToolsPage.getFieldInputValue(textField)).toBe(text);
+  }
+);
+
+When(
+  /"([^"]*)" toggles "([^"]*)" in the open moderator tool/,
+  async function (this: CustomWorld, user: string, switchName: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await moderatorToolsPage.toggleSwitch(switchName);
+  }
+);
+
+When(
+  '{string} selects {string} option in the open moderator tool',
+  async function (this: CustomWorld, user: string, option: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await moderatorToolsPage.selectDropdownOption(option);
   }
 );
