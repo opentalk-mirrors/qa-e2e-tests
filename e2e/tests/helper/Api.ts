@@ -94,7 +94,7 @@ export async function startAdhocMeetingAsModerator(
     e2e_encryption: false,
     is_adhoc: true,
     is_time_independent: true,
-    title: `${meetingTitlePrefix} ${new Date().toTimeString().slice(0, 5)}`,
+    title: `${meetingTitlePrefix}`,
     waiting_room: false,
   };
 

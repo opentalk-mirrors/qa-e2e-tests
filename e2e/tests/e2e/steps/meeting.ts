@@ -35,6 +35,16 @@ When(
 );
 
 When(
+  /^"([^"]*)" joins the meeting of "([^"]*)" as guest$/,
+  async function (this: CustomWorld, guest: string, username: string) {
+    const meeting = this.getStartedMeeting(username).meeting;
+    const context = this.getUser(username).context;
+    const guestRoom = await joinMeetingRoomAsGuest(context, meeting.guestLink, guest);
+    this.addGuestMeetingRooms(username, [guestRoom]);
+  }
+);
+
+When(
   '{int} guests join the meeting of {string}',
   async function (this: CustomWorld, numOfGuests: number, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
