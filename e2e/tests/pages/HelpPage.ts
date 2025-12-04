@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Page, Locator, BrowserContext } from '@playwright/test';
+import { BrowserContext, Locator, Page } from '@playwright/test';
 
 import { config } from '../config';
 import { navigateToExternalPage } from '../helper/externalPageHelper';
@@ -26,18 +26,15 @@ export class HelpPage {
 
   async navigateToHelpPage(): Promise<void> {
     await Promise.all([this.page.goto(config.INSTANCE_URL), this.page.waitForLoadState('load')]);
-
     const sidebarPage = new SidebarPage({ page: this.page });
     await sidebarPage.helpButton.click();
   }
 
   async navigateToUserManual(): Promise<Page> {
-    await this.userManualLink.click();
-    return await navigateToExternalPage(this.context, 'Index - OpenTalk Documentation');
+    return await navigateToExternalPage(this.context, this.userManualLink);
   }
 
   async navigateToSupport(): Promise<Page> {
-    await this.supportLink.click();
-    return await navigateToExternalPage(this.context, 'Contact our support team | OpenTalk');
+    return await navigateToExternalPage(this.context, this.supportLink);
   }
 }
