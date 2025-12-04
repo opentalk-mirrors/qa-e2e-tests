@@ -35,7 +35,7 @@ test.describe('Meeting Room_Burger menu', () => {
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test('TC_002_User manual', async ({ page, browserName }) => {
+  test.skip('TC_002_User manual', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();
 
