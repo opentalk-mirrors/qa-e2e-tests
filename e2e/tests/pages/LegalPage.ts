@@ -31,12 +31,10 @@ export class LegalPage {
   }
 
   public async navigateToImprintPage(): Promise<Page> {
-    await this.imprintLink.click();
-    return await navigateToExternalPage(this.context, 'Terms of Use for OpenTalk-as-a-Service | OpenTalk');
+    return await navigateToExternalPage(this.context, this.imprintLink);
   }
 
   public async navigateToDataProtectionPage(): Promise<Page> {
-    await this.dataProtectionLink.click();
-    return await navigateToExternalPage(this.context, 'Data Protection Notice | OpenTalk');
+    return await navigateToExternalPage(this.context, this.dataProtectionLink);
   }
 }

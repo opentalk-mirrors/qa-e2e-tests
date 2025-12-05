@@ -5,7 +5,6 @@
 // in the meeting room
 import { BrowserContext, Locator, Page } from '@playwright/test';
 
-import { navigateToExternalPage } from '../../helper/externalPageHelper';
 import { GlitchTipPage } from './GlitchTipPage';
 
 export class BurgerMenuPage {
@@ -29,13 +28,15 @@ export class BurgerMenuPage {
   }
 
   public async gotoAccessibilty(): Promise<Page> {
+    const pagePromise = this.context.waitForEvent('page');
     await this.accessibilityMenuItem.click();
-    return await navigateToExternalPage(this.context, 'Accessibility statement | OpenTalk');
+    return await pagePromise;
   }
 
   public async gotoUserManual(): Promise<Page> {
+    const pagePromise = this.context.waitForEvent('page');
     await this.userManualMenuItem.click();
-    return await navigateToExternalPage(this.context, 'Index - OpenTalk Documentation');
+    return await pagePromise;
   }
 
   public async openKeyboardShortcuts() {

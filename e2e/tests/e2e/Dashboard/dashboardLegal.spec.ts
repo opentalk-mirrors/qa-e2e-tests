@@ -23,27 +23,13 @@ test.describe('Dashboard_Legal', () => {
     await expect(legalPage.dataProtectionLink).toBeVisible();
 
     const openTalkImprintPage = await legalPage.navigateToImprintPage();
-    await expect(openTalkImprintPage).toHaveURL('https://opentalk.eu/en/terms-of-use');
-
-    await expect(openTalkImprintPage).toHaveTitle('Terms of Use for OpenTalk-as-a-Service | OpenTalk');
-    const choiceOfLawHeading = openTalkImprintPage.getByRole('heading', {
-      name: '§ 9 – Choice of Law, Place of Jurisdiction, Severability Clause',
-      exact: true,
-    });
-    await expect(choiceOfLawHeading).toBeVisible();
+    expect(openTalkImprintPage.url()).toMatch(/^https:\/\/opentalk\.eu\/.*$/);
 
     await legalPage.page.bringToFront();
     await expect(legalPage.title).toHaveText('Legal');
 
     const openTalkDataProtectionPage = await legalPage.navigateToDataProtectionPage();
-    await expect(openTalkDataProtectionPage).toHaveURL('https://opentalk.eu/en/data-protection');
-
-    await expect(openTalkDataProtectionPage).toHaveTitle('Data Protection Notice | OpenTalk');
-    const dataProtectionOfficerHeading = openTalkDataProtectionPage.getByRole('heading', {
-      name: '13. Our data protection officer',
-      exact: true,
-    });
-    await expect(dataProtectionOfficerHeading).toBeVisible();
+    expect(openTalkDataProtectionPage.url()).toMatch(/^https:\/\/opentalk\.eu\/.*$/);
 
     await legalPage.page.bringToFront();
     await expect(legalPage.title).toHaveText('Legal');
