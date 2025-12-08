@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { config } from '../../config';
+import { deleteMeetings } from '../../helper/Api';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -32,8 +34,7 @@ test.describe('Accessibility_General', () => {
       await closeWebkitPopUp({ page });
     }
 
-    // cleaning any meeting in dashboard
-    await homePage.deleteAllCreatedMeetings(meetingTitle);
+    await deleteMeetings(config.USER_NAME);
 
     const planMeetingPage = await homePage.planNewMeeting();
     await planMeetingPage.createNewMeeting(meetingTitle, meetingRoomPassword);

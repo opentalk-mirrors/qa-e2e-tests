@@ -4,6 +4,7 @@
 import { expect, test } from '@playwright/test';
 
 import { config } from '../../config';
+import { deleteMeetings } from '../../helper/Api';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
@@ -11,16 +12,16 @@ import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 let homePage: HomePage;
 const meetingTitle = 'Meeting room URL';
 
-test.beforeEach('Navigate to dashboard', async ({ page }) => {
-  homePage = new HomePage({ page });
-  await homePage.navigateToHomePage();
-  await homePage.deleteAllCreatedMeetings(meetingTitle);
+test.beforeEach('delete existing meetings', async () => {
+  await deleteMeetings(config.USER_NAME);
 });
 
 test.describe('Meeting room URL', async () => {
   test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
     const instanceUrl = new URL(config.INSTANCE_URL);
+    homePage = new HomePage({ page });
+    await homePage.navigateToHomePage();
 
     const UUIDRegexString = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     const meetingLinkRegex = new RegExp(instanceUrl.host + '/room/' + UUIDRegexString + '$');
