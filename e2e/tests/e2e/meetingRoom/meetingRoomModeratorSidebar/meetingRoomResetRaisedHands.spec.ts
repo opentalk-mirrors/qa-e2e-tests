@@ -14,6 +14,7 @@ import { ParticipantListWithCheckboxesPage } from '../../../pages/MeetingRoom/Mo
 import { ResetRaisedHandsPage } from '../../../pages/MeetingRoom/ModeratorTools/ResetRaisedHandsPage';
 import { ParticipantTilePage } from '../../../pages/MeetingRoom/ParticipantTilePage';
 import { NotificationPage } from '../../../pages/NotificationPage';
+import { ParticipantMeetingRoomPages } from '../../cucumberWorld';
 
 const NUMBER_OF_GUESTS = 2;
 const idleGuest = 'idleGuest';
@@ -23,7 +24,7 @@ const resetRaisedHandsNotificationText = 'Your raised hand was reset by the mode
 
 let meetingRoomPage: MeetingRoomPage,
   guestLink: string,
-  guestMeetingRoomPages: MeetingRoomPage[] = [],
+  guestMeetingRoomPages: ParticipantMeetingRoomPages,
   idleGuestMeetingRoomPage: MeetingRoomPage,
   resetRaisedHandsPage: ResetRaisedHandsPage;
 
@@ -37,18 +38,20 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.raiseYourHand();
     guestMeetingRoomPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
-    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+
+    for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
     }
-    idleGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    idleGuestMeetingRoomPage = participantMeetingRoomPages[idleGuest];
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
   });
 
   test('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
     await expect(meetingRoomPage.toolBar.handLowerButton).toBeEnabled();
     expect(await meetingRoomPage.isHandRaised()).toBeTruthy();
-    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+    for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
       expect(await guestMeetingRoomPage.isHandRaised()).toBeTruthy();
@@ -72,8 +75,8 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     }
     idleGuestTile = meetingRoomPage.getParticipantTileByName(idleGuest);
     expect(await idleGuestTile.isHandRaised()).toBeFalsy();
-    const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
-    const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
+    const firstGuestMeetingRoomPage = guestMeetingRoomPages['guest1'];
+    const secondGuestMeetingRoomPage = guestMeetingRoomPages['guest2'];
     await firstGuestMeetingRoomPage.page.bringToFront();
     moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USER_NAME);
     expect(await moderatorTile.isHandRaised()).toBeTruthy();
@@ -105,7 +108,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await expect(participantListWithCheckboxesPage.participantListCheckboxes).toHaveCount(0);
 
     await meetingRoomPage.raiseYourHand();
-    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+    for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
     }
@@ -134,17 +137,18 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
   test.beforeEach(async ({ page, context, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     guestMeetingRoomPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
-    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+    for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
     }
-    idleGuestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, idleGuest);
+    idleGuestMeetingRoomPage = participantMeetingRoomPages[idleGuest];
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
     resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
   });
 
   test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async () => {
-    for (const guestMeetingRoomPage of guestMeetingRoomPages) {
+    for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
       expect(await guestMeetingRoomPage.isHandRaised()).toBeTruthy();
@@ -168,8 +172,8 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     expect(await participantListWithCheckboxesPage.isParticipantCheckboxCheckedAt(0)).toBeTruthy();
 
     await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
-    const firstGuestMeetingRoomPage = guestMeetingRoomPages[0];
-    const secondGuestMeetingRoomPage = guestMeetingRoomPages[1];
+    const firstGuestMeetingRoomPage = guestMeetingRoomPages['guest1'];
+    const secondGuestMeetingRoomPage = guestMeetingRoomPages['guest2'];
     await firstGuestMeetingRoomPage.page.bringToFront();
     const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
     expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);

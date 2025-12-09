@@ -102,10 +102,8 @@ Then(
   'for {string} there should be a description in the chat area of the meeting room of {string} saying:',
   async function (this: CustomWorld, guest: string, moderator: string, description: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const [_, num] = guest.split(/(?=\d)/);
-    const index = parseInt(num) - 1;
-    await startedMeeting.guestMeetingRoomPages[index].page.bringToFront();
-    await expect(startedMeeting.guestMeetingRoomPages[index].chatHistoryDescription).toHaveText(description);
+    await startedMeeting.participantMeetingRoomPages[guest].page.bringToFront();
+    await expect(startedMeeting.participantMeetingRoomPages[guest].chatHistoryDescription).toHaveText(description);
   }
 );
 
@@ -213,9 +211,7 @@ Then(
   /^for "([^"]*)" no participants details about who joined the call should be displayed in the chat of the meeting room of "([^"]*)"/,
   async function (this: CustomWorld, guest: string, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const [_, num] = guest.split(/(?=\d)/);
-    const index = parseInt(num) - 1;
-    const joinedDetails = await startedMeeting.guestMeetingRoomPages[index].getParticipantsDetails();
+    const joinedDetails = await startedMeeting.participantMeetingRoomPages[guest].getParticipantsDetails();
     expect(joinedDetails).toEqual([]);
   }
 );
@@ -243,10 +239,8 @@ Then(
   /^for "([^"]*)" the last message in the chat in the meeting room of "([^"]*)" should be: "([^"]*)"/,
   async function (this: CustomWorld, guest: string, moderator: string, message: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    await startedMeeting.guestMeetingRoomPages[1].page.bringToFront();
-    const [_, num] = guest.split(/(?=\d)/);
-    const index = parseInt(num) - 1;
-    const chatListText = await startedMeeting.guestMeetingRoomPages[index].filterChatText(message);
+    await startedMeeting.participantMeetingRoomPages[guest].page.bringToFront();
+    const chatListText = await startedMeeting.participantMeetingRoomPages[guest].filterChatText(message);
     expect(chatListText).toContain(message);
   }
 );
@@ -443,11 +437,8 @@ When(
   /^"([^"]*)" leaves the meeting room of "([^"]*)"/,
   async function (this: CustomWorld, guest: string, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const [_, num] = guest.split(/(?=\d)/);
-    const index = parseInt(num) - 1;
-    await startedMeeting.guestMeetingRoomPages[index].page.bringToFront();
-
-    await startedMeeting.guestMeetingRoomPages[index].leaveMeeting();
-    this.removeGuestMeetingRoom(moderator, startedMeeting.guestMeetingRoomPages[index]);
+    await startedMeeting.participantMeetingRoomPages[guest].page.bringToFront();
+    await startedMeeting.participantMeetingRoomPages[guest].leaveMeeting();
+    this.removeParticipantMeetingRoom(moderator, guest);
   }
 );

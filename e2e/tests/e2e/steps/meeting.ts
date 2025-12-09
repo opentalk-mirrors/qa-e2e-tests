@@ -39,8 +39,7 @@ When(
   async function (this: CustomWorld, guest: string, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
     const context = this.getUser(username).context;
-    const guestRoom = await joinMeetingRoomAsGuest(context, meeting.guestLink, guest);
-    this.addGuestMeetingRooms(username, [guestRoom]);
+    this.addParticipantMeetingRooms(username, await joinMeetingRoomAsGuest(context, meeting.guestLink, guest));
   }
 );
 
@@ -50,7 +49,7 @@ When(
     const meeting = this.getStartedMeeting(username).meeting;
     const context = this.getUser(username).context;
     const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
-    this.addGuestMeetingRooms(username, guestRooms);
+    this.addParticipantMeetingRooms(username, guestRooms);
   }
 );
 
@@ -60,7 +59,7 @@ Given(
     const meeting = this.getStartedMeeting(user).meeting;
     const context = this.getUser(user).context;
     const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
-    this.addGuestMeetingRooms(user, guestRooms);
+    this.addParticipantMeetingRooms(user, guestRooms);
   }
 );
 
@@ -93,7 +92,7 @@ When(
     const context = this.getUser(user).context;
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
     const guestRoom = await joinMeetingRoomAsGuest(context, clipboardContent, 'guest_joined_inside_breakout_room');
-    this.addGuestMeetingRooms(user, [guestRoom]);
+    this.addParticipantMeetingRooms(user, guestRoom);
   }
 );
 
@@ -186,7 +185,9 @@ Given(
     const moderator = this.getUser(nameOfModerator);
     const userToJoin = this.getUser(nameOfUserToJoin);
     const meeting = await moderator.api.getMeetingByTitle(meetingTitle);
-    await joinMeeting(this, userToJoin, meeting, options);
+    this.addParticipantMeetingRooms(nameOfModerator, {
+      [nameOfUserToJoin]: await joinMeeting(this, userToJoin, meeting, options),
+    });
   }
 );
 
@@ -280,7 +281,7 @@ Given(
     const guestRooms = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', numOfGuests, {
       audio: options.Audio === 'enabled',
     });
-    this.addGuestMeetingRooms(moderator, guestRooms);
+    this.addParticipantMeetingRooms(moderator, guestRooms);
   }
 );
 

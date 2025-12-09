@@ -62,7 +62,8 @@ test.describe('Meeting Room_Burger menu', () => {
     test.skip(browserName === 'webkit');
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
-    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     const viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
     await meetingRoomPage.page.bringToFront();
 

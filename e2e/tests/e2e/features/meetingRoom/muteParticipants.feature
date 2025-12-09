@@ -29,3 +29,12 @@ Feature: Mute Participants
       | Bob    |
       | guest1 |
       | guest2 |
+      | guest3 |
+    When "Alice" mutes all participants in the Mute Participants moderator tool
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+      | user   | text                            |
+      | Bob    | You were muted by Alice Hansen. |
+      | guest1 | You were muted by Alice Hansen. |
+      | guest2 | You were muted by Alice Hansen. |
+      | guest3 | You were muted by Alice Hansen. |
+

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, expect, BrowserContext } from '@playwright/test';
 
+import { ParticipantMeetingRoomPages } from '../e2e/cucumberWorld';
 import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
@@ -46,7 +47,7 @@ export const joinMeetingRoomAsGuest = async (
   guestLink: string,
   guestName: string,
   options?: JoinMeetingOptions
-): Promise<MeetingRoomPage> => {
+): Promise<ParticipantMeetingRoomPages> => {
   // create new browser instance & launch OpenTalk with guest link
   const newPage = await context.newPage();
   await newPage.goto(guestLink);
@@ -70,7 +71,7 @@ export const joinMeetingRoomAsGuest = async (
   await guestMeetingRoomPage.meetingRoomName.waitFor();
   await expect(guestMeetingRoomPage.meetingRoomName).toBeVisible();
 
-  return guestMeetingRoomPage;
+  return { [guestName]: guestMeetingRoomPage };
 };
 
 class JoinMeetingOptions {
@@ -83,13 +84,13 @@ export const joinMeetingRoomWithNGuests = async (
   guestBaseName: string,
   numberOfGuests: number,
   options?: JoinMeetingOptions
-): Promise<MeetingRoomPage[]> => {
-  const guestMeetingRoomPages: MeetingRoomPage[] = [];
+): Promise<ParticipantMeetingRoomPages> => {
+  let guestMeetingRoomPages: ParticipantMeetingRoomPages = {};
 
   for (let i = 1; i <= numberOfGuests; i++) {
     const guestUserName = guestBaseName + i;
     const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, guestUserName, options);
-    guestMeetingRoomPages.push(guestMeetingRoomPage);
+    guestMeetingRoomPages = { ...guestMeetingRoomPage, ...guestMeetingRoomPages };
   }
 
   return guestMeetingRoomPages;
