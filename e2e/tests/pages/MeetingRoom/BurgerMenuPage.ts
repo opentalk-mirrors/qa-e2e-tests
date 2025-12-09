@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-// the popup that appears after clicking on more-options => invite guest
+// the pop-up that appears after clicking on more-options => invite guest
 // in the meeting room
 import { BrowserContext, Locator, Page } from '@playwright/test';
 

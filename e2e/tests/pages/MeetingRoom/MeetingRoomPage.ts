@@ -284,7 +284,7 @@ export class MeetingRoomPage {
     await this.toolBar.videoButton.waitFor({ timeout: 10_000 });
     await this.toolBar.videoButton.click();
     await this.page.waitForTimeout(1000); // to make sure camera is really activated
-    // it seems that in firefox, one has to give approval for use of camera (click 'Allow' in corresponding popup)
+    // it seems that in firefox, one has to give approval for use of camera (click 'Allow' in corresponding pop-up)
     return await this.toolBar.videoButtonOff.isVisible();
   }
 

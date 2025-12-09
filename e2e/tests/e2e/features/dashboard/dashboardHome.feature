@@ -14,27 +14,27 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
     And "Alice" has logged in
     And "Alice" has accepted the invitation for the meeting with the title "bob1" created by "Bob"
     And "Alice" has created a <meeting-type> meeting with the title "ali1"
-    When "Alice" checks the current meetings on the Home page
-    Then the following details should be displayed for meeting "ali1" on the Home page for "Alice":
+    When "Alice" checks the current meetings on the Home-Page
+    Then the following details should be displayed for meeting "ali1" on the Home-Page for "Alice":
       | detail        | value                       |
       | time          | <time>                      |
       | meeting title | ali1                        |
       | creator       | Created by Alice Hansen (Me) |
-    And the following buttons should be displayed for meeting "ali1" on the Home page for "Alice":
+    And the following buttons should be displayed for meeting "ali1" on the Home-Page for "Alice":
       | buttons      |
       | 3-dot option |
       | Start        |
-    And the following details should be displayed for meeting "bob1" on the Home page for "Alice":
+    And the following details should be displayed for meeting "bob1" on the Home-Page for "Alice":
       | detail        | value                 |
       | time          | <time>                |
       | meeting title | bob1                  |
       | creator       | Created by Bob Burton |
-    And the following buttons should be displayed for meeting "bob1" on the Home page for "Alice":
+    And the following buttons should be displayed for meeting "bob1" on the Home-Page for "Alice":
       | buttons      |
       | 3-dot option |
       | Start        |
-    When "Alice" checks more options for meeting "ali1" on the Home page
-    Then the following options should be displayed on the Home page for "Alice":
+    When "Alice" checks more options for meeting "ali1" on the Home-Page
+    Then the following options should be displayed on the Home-Page for "Alice":
       | options           |
       | Edit              |
       | Add to favorites  |
@@ -42,8 +42,8 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
       | Copy Meeting-Link |
       | Copy Guest-Link   |
       | Delete            |
-    When "Alice" checks more options for meeting "bob1" on the Home page
-    Then the following options should be displayed on the Home page for "Alice":
+    When "Alice" checks more options for meeting "bob1" on the Home-Page
+    Then the following options should be displayed on the Home-Page for "Alice":
       | options           |
       | Decline           |
       | Add to favorites  |

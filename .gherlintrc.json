@@ -1,6 +1,6 @@
 {
     "rules": {
-        "indentation": "error",
+        "indentation": ["error", 2],
         "no_repetitive_step_keyword": "error",
         "require_step": "error",
         "no_trailing_whitespace": "error",
@@ -9,6 +9,35 @@
         "only_given_step_in_background": "error",
         "newline_before_scenario": ["error", 2, true],
         "lowercase_title": "off",
-        "no_but_in_given_when": "error"
+        "no_but_in_given_when": "error",
+        "grammar_check": [
+          "warn",
+          "American",
+          ["EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
+          "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose", "min"
+          ],
+          {
+            "ExpandMinimum": false,
+            "ExpandTimeShorthands": false,
+            "PhrasalVerbAsCompoundNoun": false
+          },
+          [
+            ["\\n", " "],
+            ["%meeting_url_pattern%", ""]
+          ]
+        ],
+        "words_to_avoid": [
+          "error",
+          [
+            ["click", "Describe what the user is intending to do. Also, not all devices have a mouse to 'click'.", "Describe what the user is intending to do. Also, not all devices have a mouse to 'click'."],
+            ["clicks", "Describe what the user is intending to do. Also, not all devices have a mouse to 'click'."],
+            ["clicked", "Describe what the user is intending to do. Also, not all devices have a mouse to 'click'."],
+            ["clicking", "Describe what the user is intending to do. Also, not all devices have a mouse to 'click'."],
+            ["see", "Describe the behavior of the app, not what the user sees."],
+            ["sees", "Describe the behavior of the app, not what the user sees."],
+            ["seen", "Describe the behavior of the app, not what the user sees."],
+            ["seeing", "Describe the behavior of the app, not what the user sees."]
+          ]
+        ]
     }
 }

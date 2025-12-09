@@ -4,7 +4,7 @@
 import { Page } from '@playwright/test';
 
 export const closeWebkitPopUp = async ({ page }: { page: Page }) => {
-  // click the `OK` buttons on all popups (there might be multiple)
+  // click the `OK` buttons on all pop-ups (there might be multiple)
   // but start with the last one
   // because otherwise if we try to click the first one, that will be gone
   // by the time we're trying to click the second one

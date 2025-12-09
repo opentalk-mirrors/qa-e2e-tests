@@ -9,7 +9,7 @@ import { CustomWorld } from '../cucumberWorld';
 
 let glitchTipPage: GlitchTipPage;
 
-When('{string} closes the glitchTip popup', async function (this: CustomWorld, user: string) {
+When('{string} closes the GlitchTip pop-up', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
   glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
   await glitchTipPage.closePopup();
@@ -36,19 +36,19 @@ When(
   }
 );
 
-Then('for {string} no request should have been sent to glitchtip', async function (this: CustomWorld, user: string) {
+Then('for {string} no request should have been sent to GlitchTip', async function (this: CustomWorld, user: string) {
   expect(this.getStartedMeeting(user).crashReportResponse).toBeUndefined();
 });
 
 Then(
-  'for {string} a request to glitchtip should have been sent and a response with status code 200 should have been received',
+  'for {string} a request to GlitchTip should have been sent and a response with status code 200 should have been received',
   async function (this: CustomWorld, user: string) {
     expect(this.getStartedMeeting(user).crashReportResponse?.status()).toBe(200);
   }
 );
 
 Then(
-  'for {string} sending successful popup should be displayed with text {string}',
+  'for {string} sending successful pop-up should be displayed with text {string}',
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
