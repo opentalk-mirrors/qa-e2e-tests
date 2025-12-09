@@ -13,6 +13,12 @@ export class HomePage {
   planNewMeetingButton: Locator;
   startNewMeetingButton: Locator;
   joinExistingMeetingButton: Locator;
+  joinExistingMeetingDialog: Locator;
+  joinExistingMeetingHeading: Locator;
+  joinExistingMeetingInput: Locator;
+  joinExistingMeetingErrorLabel: Locator;
+  joinExistingMeetingJoinButton: Locator;
+  joinExistingMeetingCloseButton: Locator;
   currentMeetingsHeaderSelector: Locator;
   noFavoritesSelector: Locator;
   favoriteMeetingsHeaderSelector: Locator;
@@ -35,6 +41,12 @@ export class HomePage {
     this.planNewMeetingButton = this.page.getByRole('link', { name: 'Plan new' });
     this.startNewMeetingButton = this.page.getByRole('link', { name: /^(Start new|Meeting starten)$/ });
     this.joinExistingMeetingButton = this.page.getByRole('button', { name: 'Join existing' });
+    this.joinExistingMeetingDialog = this.page.getByRole('dialog', { name: 'Join a meeting now' });
+    this.joinExistingMeetingHeading = this.page.getByRole('heading', { name: 'Join a meeting now' });
+    this.joinExistingMeetingInput = this.page.locator('//*[@id="Join meeting input field"]');
+    this.joinExistingMeetingErrorLabel = this.page.locator('//*[@id="Join meeting input field-helper-text"]');
+    this.joinExistingMeetingJoinButton = this.page.getByRole('button', { name: 'Join' });
+    this.joinExistingMeetingCloseButton = this.page.getByRole('button', { name: 'Close dialog' });
     this.currentMeetingsHeaderSelector = this.page.getByText('Current meetings');
     this.noFavoritesSelector = this.page.getByText("You don't have any favorites yet.");
     this.favoriteMeetingsHeaderSelector = this.page.getByText(/^(My favorite meetings|Meine Favoriten)$/);

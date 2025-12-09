@@ -117,7 +117,6 @@ When(
 
 Then(
   /^(\d+) participants? should be in the (?:meeting|breakout) room of "([^"]*)"$/,
-
   async function (this: CustomWorld, expectedNumOfParticipants: number, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
@@ -485,5 +484,152 @@ Then(
         await expect(meetingTitleLocator).toBeVisible();
       }
     }
+  }
+);
+
+When(
+  '{string} starts to join an existing meeting from the Home-Page',
+  async function (this: CustomWorld, user: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await home.joinExistingMeetingButton.click();
+  }
+);
+
+Then(
+  'for {string} Join a meeting now popup should be visible on Home-Page with following details:',
+  async function (this: CustomWorld, user: string, dataTable: DataTable) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await expect(home.joinExistingMeetingDialog).toBeVisible();
+    const expectedDetails = dataTable.hashes();
+    for (let i = 0; i < expectedDetails.length; i++) {
+      switch (expectedDetails[i].details) {
+        case 'Join a meeting now':
+          await expect(home.joinExistingMeetingHeading).toBeVisible();
+          break;
+        case 'Meeting ID (URL)':
+          await expect(home.joinExistingMeetingInput).toBeVisible();
+          break;
+        case 'Join':
+          await expect(home.joinExistingMeetingJoinButton).toBeVisible();
+          break;
+        case 'Close':
+          await expect(home.joinExistingMeetingCloseButton).toBeVisible();
+          break;
+        default:
+          throw new Error(`${expectedDetails[i][0]} detail is not available`);
+      }
+    }
+  }
+);
+
+When(
+  '{string} enters {string} as Meeting ID in the Join-a-meeting-now popup on the Home-Page',
+  async function (this: CustomWorld, user: string, meetingLink: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    if (meetingLink === '') {
+      await home.joinExistingMeetingInput.fill('');
+    }
+    await home.joinExistingMeetingInput.fill(meetingLink);
+  }
+);
+
+Then(
+  'for {string} an error with the text {string} should be visible in the Join-a-meeting-now popup on the Home-Page',
+  async function (this: CustomWorld, user: string, errorMessage: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await expect(home.joinExistingMeetingErrorLabel).toContainText(errorMessage);
+  }
+);
+
+When(
+  /^"([^"]*)" (?:tries to |)join the meeting in the Join-a-meeting-now popup on the Home-Page$/,
+  async function (this: CustomWorld, user: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await home.page.screenshot({ path: 'beforeJoining.png' });
+    await home.joinExistingMeetingJoinButton.click();
+  }
+);
+
+When('{string} closes Join-existing-meeting popup on the Home-Page', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const home = new HomePage({ page: page });
+  await home.joinExistingMeetingCloseButton.click();
+});
+
+Then(
+  'for {string} join existing meeting popup should not be visible on Home-Page',
+  async function (this: CustomWorld, user: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    await expect(home.joinExistingMeetingDialog).not.toBeVisible();
+  }
+);
+
+When('{string} navigates back from Lobby-Page', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const lobbyRoomPage = new LobbyRoomPage({ page });
+  await lobbyRoomPage.backButton.click();
+});
+
+Then('{string} should be on the Home-Page', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const home = new HomePage({ page: page });
+  await expect(home.currentMeetingsHeaderSelector).toBeVisible();
+});
+
+When('{string} selects the OpenTalk logo on the Lobby-Page', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const lobbyRoomPage = new LobbyRoomPage({ page });
+  await lobbyRoomPage.openTalkLogo.click();
+});
+
+When(
+  /^"([^"]*)" enters the (meeting|guest) link of the meeting named "([^"]*)" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page$/,
+  async function (this: CustomWorld, user: string, linkType: string, meetingTitle: string) {
+    const page = this.getUser(user).page;
+    const api = this.getUser(user).api;
+    const home = new HomePage({ page: page });
+    const roomId = (await api.getMeetingByTitle(meetingTitle)).room.id;
+    if (linkType === 'meeting') {
+      await home.joinExistingMeetingInput.fill(`${config.INSTANCE_URL}/room/${roomId}`);
+      await home.joinExistingMeetingJoinButton.focus();
+    } else {
+      const guestlink = await api.getGuestLink(roomId);
+      await home.page.evaluate(`navigator.clipboard.writeText('${guestlink}')`);
+      await home.joinExistingMeetingInput.focus();
+      await home.page.keyboard.press('Control+V');
+    }
+  }
+);
+
+Then(
+  'for {string} only the room ID of the meeting named {string} should be visible in the input field of the Join-a-meeting-now popup on the Home-Page',
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
+    const page = this.getUser(user).page;
+    const api = this.getUser(user).api;
+    const home = new HomePage({ page: page });
+    const roomId = (await api.getMeetingByTitle(meetingTitle)).room.id;
+    await expect(home.joinExistingMeetingInput).toHaveValue(roomId);
+  }
+);
+
+Then('for {string} there should be no change in UI', async function (this: CustomWorld, user: string) {
+  const page = this.getUser(user).page;
+  const home = new HomePage({ page: page });
+  await expect(home.currentMeetingsHeaderSelector).toBeVisible();
+});
+
+When(
+  '{string} selects somewhere outside the join existing meeting popup',
+  async function (this: CustomWorld, user: string) {
+    const page = this.getUser(user).page;
+    await page.click('body', {
+      position: { x: 1, y: 1 },
+    });
   }
 );
