@@ -136,7 +136,7 @@ export class MeetingRoomPage {
       votingButton: this.page.getByRole('tab', { name: 'Voting' }),
       meetingNotesButton: this.page.getByRole('tab', { name: 'Meeting notes' }),
       whiteboardButton: this.page.getByRole('tab', { name: 'Whiteboard' }),
-      createBreakoutRoomsButton: this.page.getByRole('tab', { name: 'Create Breakout Rooms' }),
+      createBreakoutRoomsButton: this.page.getByRole('tab', { name: 'Create breakout rooms' }),
       timerButton: this.page.getByRole('tab', { name: 'Timer' }),
       coffeeBreakButton: this.page.getByRole('tab', { name: 'Coffee break' }),
       debriefingButton: this.page.getByRole('tab', { name: 'Debriefing' }),

@@ -19,7 +19,7 @@ variables:
     value: dev
   FRONTEND_TAG:
     description: The frontend version tag
-    value: latest
+    value: 2842_413-inconsistent-naming-case-profiling
   ETHERPAD_TAG:
     description: The etherpad version tag
     value: latest
