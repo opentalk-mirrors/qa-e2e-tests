@@ -11,7 +11,7 @@ Feature: Meeting Room Breakout Room
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And "Alice" opens the Breakout Rooms moderator tool
-    Then the "heading" in the open moderator tool for "Alice" should be "Breakout Rooms"
+    Then the "heading" in the open moderator tool for "Alice" should be "Breakout rooms"
     And these settings should be set in the Breakout Rooms moderator tool for "Alice"
       | setting             | value           |
       | Duration            | Unlimited Time  |
