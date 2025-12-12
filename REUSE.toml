@@ -36,7 +36,7 @@ path = [
     "e2e/.env-example",
     "pnpm-lock.yaml",
     ".knip.json",
-    "dummyMeetingAssest.pdf"
+    "dummyMeetingAsset.pdf"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "OpenTalk GmbH <mail@opentalk.eu>"

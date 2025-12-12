@@ -184,7 +184,7 @@ test.describe('Dashboard_Settings', () => {
     const fileExt = 'pdf';
     const kind = 'record';
     for (let i = 0; i < 6; i++) {
-      await createMeetingAsset('dummyMeetingAssest.pdf', roomId, `${eventTitle}${i}`, fileExt, kind);
+      await createMeetingAsset('dummyMeetingAsset.pdf', roomId, `${eventTitle}${i}`, fileExt, kind);
     }
 
     settingsPage = await sideBarPage.navigateToSettingsPage();
@@ -197,7 +197,7 @@ test.describe('Dashboard_Settings', () => {
     let myFilesPage = new MyFilesPage(storagePage.page);
     await expect(myFilesPage.filenameColumn).toBeVisible();
     await expect(myFilesPage.createdColumn).toBeVisible();
-    await expect(myFilesPage.sizeCoulmn).toBeVisible();
+    await expect(myFilesPage.sizeColumn).toBeVisible();
     await expect(myFilesPage.actionsColumn).toBeVisible();
 
     await myFilesPage.scrollFiles();

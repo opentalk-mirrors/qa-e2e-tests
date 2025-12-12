@@ -11,7 +11,7 @@ export class MyFilesPage {
   private readonly cellLocator: Locator;
   public readonly filenameColumn: Locator;
   public readonly createdColumn: Locator;
-  public readonly sizeCoulmn: Locator;
+  public readonly sizeColumn: Locator;
   public readonly actionsColumn: Locator;
   private readonly downloadButton: Locator;
   private readonly deleteButton: Locator;
@@ -23,7 +23,7 @@ export class MyFilesPage {
     this.cellLocator = this.page.getByRole('cell');
     this.filenameColumn = this.page.getByRole('columnheader', { name: 'Filename' });
     this.createdColumn = this.page.getByRole('columnheader', { name: 'Created' });
-    this.sizeCoulmn = this.page.getByRole('columnheader', { name: 'Size' });
+    this.sizeColumn = this.page.getByRole('columnheader', { name: 'Size' });
     this.actionsColumn = this.page.getByRole('columnheader', { name: 'Actions' });
     this.downloadButton = this.page.getByRole('button', { name: 'Download' });
     this.deleteButton = this.page.getByRole('button', { name: 'Delete' });
