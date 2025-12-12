@@ -4,7 +4,6 @@
 ---
 stages:
   - lint
-  - e2e-gherkin-tests
   - e2e-tests
   - testrail
 
@@ -386,7 +385,7 @@ e2e-gherkin-tests:
   parallel:
     matrix:
       - BROWSER: !reference [.template_vars, BROWSERS]
-  stage: e2e-gherkin-tests
+  stage: e2e-tests
   extends:
     - .services-template
   rules:
