@@ -1,7 +1,7 @@
 ---
 services:
   webapp:
-    image: ${FRONTEND_IMAGE:-git.opentalk.dev:5050/opentalk/frontend/web/web-app}:${FRONTEND_TAG:-latest}
+    image: ${FRONTEND_IMAGE:-git.opentalk.dev:5050/opentalk/frontend/web/web-app}:${FRONTEND_TAG:-dev}
     depends_on:
       controller:
         condition: service_healthy
