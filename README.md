@@ -97,6 +97,11 @@ Run a specific feature file (defaults in headed mode):
 npm run test:gherkin <path_to_your_feature_file>
 ```
 
+run only tests marked with the `@smoke` tag:
+```
+RUN_ONLY_SMOKE_TESTS=true npm run test:gherkin
+```
+
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
 These traces are a very useful tool to debug failed tests in CI, specially if they pass in the local environment.  

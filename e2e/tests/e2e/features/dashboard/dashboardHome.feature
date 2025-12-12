@@ -6,7 +6,7 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
   I want to distinguish my meetings from meetings created by other users
   So that I can manage my meetings
 
-
+  @smoke
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
     Given "Bob" has logged in
     And "Bob" has created a <meeting-type> meeting with the title "bob1"

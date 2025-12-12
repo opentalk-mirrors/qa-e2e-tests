@@ -6,7 +6,7 @@ Feature: Meeting Room Breakout Room
   I want to be able to create Breakout Rooms
   So that the participants can have discussions in smaller groups
 
-
+  @smoke
   Scenario: Meeting Room As Moderator Create Breakout Rooms Moderator sidebar tool
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator

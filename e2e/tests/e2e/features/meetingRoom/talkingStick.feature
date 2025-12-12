@@ -11,7 +11,7 @@ Feature: Meeting Room Talking stick
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And 3 guests have joined the meeting of "Alice"
 
-
+  @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Talking stick
     When "Alice" opens the Talking Stick moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Talking stick"

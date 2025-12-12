@@ -15,7 +15,7 @@ Feature: Meeting Room Home
     And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
       | Audio | disabled |
 
-
+  @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the options available in Home option of the Meeting Room
     When 2 guests join the meeting of "Alice"
     Then for "Alice" the home view of the moderator sidebar should be open on the Meeting Room page
@@ -25,7 +25,7 @@ Feature: Meeting Room Home
       | Messages  |
     And for "Alice" the chat tab should be selected in the sidebar on the Meeting Room page
 
-
+  @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the functionality of Chat option available in Home option of the Meeting Room
     When 2 guests join the meeting of "Alice"
     Then for "Alice" the chat option should be displayed on the Meeting Room page
