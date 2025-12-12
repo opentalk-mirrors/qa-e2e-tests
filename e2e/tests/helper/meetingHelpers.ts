@@ -108,6 +108,8 @@ export const planNewMeetingAndStartAsModerator = async (
   telephoneDialInNumber: string;
   conferenceId: string;
   conferencePin: string;
+  meetingRoomName: string;
+  roomId: string;
 }> => {
   const homePage = new HomePage({ page });
   await homePage.navigateToHomePage();
@@ -129,7 +131,9 @@ export const planNewMeetingAndStartAsModerator = async (
 
   const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
   await meetingRoomPage.meetingRoomName.isVisible();
-  expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitle);
+  const meetingRoomName = await meetingRoomPage.getMeetingRoomName();
+  expect(meetingRoomName).toContain(meetingTitle);
+
   return {
     meetingRoomPage,
     guestLink,
@@ -137,5 +141,7 @@ export const planNewMeetingAndStartAsModerator = async (
     telephoneDialInNumber,
     conferenceId,
     conferencePin,
+    meetingRoomName,
+    roomId,
   };
 };

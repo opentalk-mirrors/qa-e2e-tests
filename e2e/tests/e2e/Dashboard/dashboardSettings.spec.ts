@@ -4,15 +4,19 @@
 import { test, expect } from '@playwright/test';
 
 import { config } from '../../config';
-import { changeLanguage } from '../../helper/Api';
+import { changeLanguage, createMeetingAsset, deleteMeetings } from '../../helper/Api';
+import { planNewMeetingAndStartAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
+import { MeetingDetailsPage } from '../../pages/MeetingDetailsPage';
+import { MyFilesPage } from '../../pages/MyFilesPage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { AccountPage } from '../../pages/Settings/AccountPage';
 import { GeneralPage } from '../../pages/Settings/GeneralPage';
 import { ProfilePage } from '../../pages/Settings/ProfilePage';
 import { SettingsPage } from '../../pages/Settings/SettingsPage';
+import { StoragePage } from '../../pages/Settings/StoragePage';
 import { SidebarPage } from '../../pages/SidebarPage';
 
 const FIRSTNAME: string = config.USER_FIRSTNAME;
@@ -171,19 +175,72 @@ test.describe('Dashboard_Settings', () => {
     await expect(accountPage.familyNameTextbox).not.toBeEditable();
   });
 
-  test('TC_004_Dashboard_Settings_Storage option', async ({ page }) => {
-    //verify the options/details available in Account option of Settings option in Dashboard
-    const homePage = new HomePage({ page });
-    await homePage.navigateToHomePage();
-    await page.getByRole('link', { name: 'Settings', exact: true }).click();
-    await page.getByRole('link', { name: 'Storage', exact: true }).click();
+  test('TC_004_Dashboard_Settings_Storage option', async ({ page, context }) => {
+    const MEETING_TITLE = 'myMeeting';
+    const INDEX = 0;
+    const { meetingRoomName, roomId } = await planNewMeetingAndStartAsModerator(page, MEETING_TITLE, undefined);
 
-    await expect(page.getByRole('heading', { name: 'Storage', exact: true })).toBeVisible();
-    await expect(page.getByText('used')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'My Files' })).toBeVisible();
-    /*
-    todo for everything else we need dummy meetings and data https://git.opentalk.dev/opentalk/qa/reports/-/issues/79?show=5053
-    rest-api is needed to go on here https://git.opentalk.dev/opentalk/userstories/-/issues/15
-     */
+    const eventTitle = 'event';
+    const fileExt = 'pdf';
+    const kind = 'record';
+    for (let i = 0; i < 6; i++) {
+      await createMeetingAsset('dummyMeetingAssest.pdf', roomId, `${eventTitle}${i}`, fileExt, kind);
+    }
+
+    settingsPage = await sideBarPage.navigateToSettingsPage();
+    const storagePage: StoragePage = await settingsPage.navigateToStorage();
+    await storagePage.page.bringToFront();
+    await expect(storagePage.storageHeading).toBeVisible();
+    await expect(storagePage.storageUsedText).toBeVisible();
+    await expect(storagePage.myFilesHeading).toBeVisible();
+
+    let myFilesPage = new MyFilesPage(storagePage.page);
+    await expect(myFilesPage.filenameColumn).toBeVisible();
+    await expect(myFilesPage.createdColumn).toBeVisible();
+    await expect(myFilesPage.sizeCoulmn).toBeVisible();
+    await expect(myFilesPage.actionsColumn).toBeVisible();
+
+    await myFilesPage.scrollFiles();
+
+    const filenameRegex = new RegExp(
+      `^${eventTitle}\\d*_${kind}_\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}-UTC\\.${fileExt}$`
+    );
+    expect(await myFilesPage.getFileName(INDEX)).toMatch(filenameRegex);
+
+    expect(await myFilesPage.getFileCreated(INDEX)).toMatch(/^\d{2}:\d{2} \d{2}\.\d{2}\.\d{4}$/);
+
+    expect(await myFilesPage.getFileSize(INDEX)).toMatch(/^\d+(?:\.\d{2})? (Bytes|KB|MB)$/);
+
+    await expect(myFilesPage.getDownloadButtonLocator(INDEX)).toBeVisible();
+    await expect(myFilesPage.getDeleteButtonLocator(INDEX)).toBeVisible();
+
+    const downloadedFile = await myFilesPage.downloadFile(INDEX);
+    expect(downloadedFile).not.toBeNull();
+
+    expect(await myFilesPage.getContentOfFileAsText(downloadedFile)).toContain('Hello from OpenTalk!');
+
+    let filenameToDelete: string = await myFilesPage.getFileName(INDEX);
+    const filenameToBePresent = await myFilesPage.getFileName(INDEX + 1);
+    expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeTruthy();
+    await myFilesPage.deleteFile(filenameToDelete);
+    expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
+    expect(await myFilesPage.isFilePresent(filenameToBePresent)).toBeTruthy();
+
+    const newPage = await context.newPage();
+    const homePage: HomePage = new HomePage({ page: newPage });
+    await homePage.navigateToHomePage();
+    const meetingDetailsPage: MeetingDetailsPage = await homePage.showMeetingDetails(meetingRoomName);
+    myFilesPage = new MyFilesPage(meetingDetailsPage.page);
+    expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
+
+    filenameToDelete = await myFilesPage.getFileName(INDEX);
+    await myFilesPage.deleteFile(filenameToDelete);
+    expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
+    await storagePage.page.bringToFront();
+    await storagePage.page.reload();
+    expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
+
+    //cleanup
+    await deleteMeetings(config.USER_NAME);
   });
 });

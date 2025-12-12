@@ -4,7 +4,7 @@
 import { Page, Locator } from '@playwright/test';
 
 export class MeetingDetailsPage {
-  private page: Page;
+  public readonly page: Page;
   private readonly meetingLinkInput: Locator;
   private readonly guestLinkInput: Locator;
   private readonly copyMeetingLinkButton: Locator;
