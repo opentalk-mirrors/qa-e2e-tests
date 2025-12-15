@@ -53,6 +53,8 @@ export class MeetingRoomPage {
 
   videoPreview: Locator;
   videoPreviewName: Locator;
+  videoFullScreenButton: Locator;
+  videoFullScreenExitButton: Locator;
 
   toolBar: {
     toolBarPanel: Locator;
@@ -147,6 +149,8 @@ export class MeetingRoomPage {
     // video container that is nested inside 'aside' tag --> complementary is the role of the aside, see https://www.w3.org/TR/html-aria/#docconformance
 
     this.videoPreviewName = this.page.getByRole('complementary', { name: 'Tools' }).getByTestId('nameTile');
+    this.videoFullScreenButton = this.page.getByRole('button', { name: 'open fullscreen' });
+    this.videoFullScreenExitButton = this.page.getByRole('button', { name: 'close fullscreen' });
 
     this.toolBar = {
       toolBarPanel: this.page.getByTestId('fullscreen').getByLabel('Personal control panel'),
@@ -566,5 +570,16 @@ export class MeetingRoomPage {
     const talkingStickPage = new TalkingStickPage({ page: this.page });
     await talkingStickPage.heading.waitFor({ state: 'visible' });
     return talkingStickPage;
+  }
+
+  public async toggleFullScreen(): Promise<void> {
+    await this.videoFullScreenButton.click();
+  }
+
+  public async isVideoPlaying(): Promise<boolean | null> {
+    return await this.page.evaluate(async () => {
+      const video = document.querySelector('video');
+      return video && video.srcObject && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+    });
   }
 }
