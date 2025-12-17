@@ -202,7 +202,7 @@ Given(
 );
 
 When(
-  '{string} checks more options for meeting {string} on the Home page',
+  '{string} checks more options for meeting {string} on the Home-Page',
   async function (this: CustomWorld, user: string, meetingTitle: string) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
@@ -211,7 +211,7 @@ When(
 );
 
 Then(
-  'the following options should be displayed on the Home page for {string}:',
+  'the following options should be displayed on the Home-Page for {string}:',
   async function (this: CustomWorld, user: string, expectedDetailsDataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
@@ -247,7 +247,7 @@ Then(
   }
 );
 
-When('{string} checks the current meetings on the Home page', async function (this: CustomWorld, moderator: string) {
+When('{string} checks the current meetings on the Home-Page', async function (this: CustomWorld, moderator: string) {
   const page = this.getUser(moderator).page;
   const home = new HomePage({ page: page });
   await home.navigateToHomePage();
@@ -286,7 +286,7 @@ Given(
 );
 
 Then(
-  'the following details should be displayed for meeting {string} on the Home page for {string}:',
+  'the following details should be displayed for meeting {string} on the Home-Page for {string}:',
   async function (this: CustomWorld, meetingTitle: string, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
@@ -315,7 +315,7 @@ Then(
 );
 
 Then(
-  'the following buttons should be displayed for meeting {string} on the Home page for {string}:',
+  'the following buttons should be displayed for meeting {string} on the Home-Page for {string}:',
   async function (this: CustomWorld, meetingTitle: string, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });

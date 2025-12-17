@@ -10,7 +10,7 @@ import { CustomWorld } from '../cucumberWorld';
 let glitchTipPage: GlitchTipPage;
 
 Then(
-  /^for "([^"]*)" the glitchTip popup (should|should not) be displayed/,
+  /^for "([^"]*)" the GlitchTip pop-up (should|should not) be displayed/,
   async function (this: CustomWorld, user: string, actionType: 'should' | 'should not') {
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);

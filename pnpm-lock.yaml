@@ -40,8 +40,8 @@ importers:
         specifier: ^9.32.0
         version: 9.33.0
       '@gherlint/gherlint':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^2.0.0
+        version: 2.0.0
       '@playwright/test':
         specifier: ^1.53.2
         version: 1.54.2
@@ -334,9 +334,9 @@ packages:
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@gherlint/gherlint@1.1.0':
-    resolution: {integrity: sha512-TxJmxjI/Oxy1YM7uXtoQa6CMmRvAgcdftjT3U1yIk5Li/7LNE1W+rrpuSWoCMPTGm68WOuDQoIohCwqV0oaTfQ==}
-    engines: {node: '>=12'}
+  '@gherlint/gherlint@2.0.0':
+    resolution: {integrity: sha512-KbmGeHboJYoIQN9AgWv4DvDSqK4Q7skxMWTA/AHT5eO6cDRdw97DYfX9j7A9lfvGLQcf1GYptudgb+zR991Aww==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@humanfs/core@0.19.1':
@@ -1356,6 +1356,10 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  glob@13.0.0:
+    resolution: {integrity: sha512-tvZgpqk6fz4BaNZ66ZsRaZnbHvP/jG3uKJvAZOwEVUL4RTA5nJeeLYfyN9/VA8NX/V3IBG+hkeuGpKjvELkVhA==}
+    engines: {node: 20 || >=22}
+
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Glob versions prior to v9 are no longer supported
@@ -1386,6 +1390,9 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  harper.js@1.1.0:
+    resolution: {integrity: sha512-obWL85e66md8TqblS56X8G0raGBRxnAsmKYAl4pKExVDUIDBlbWkvyERMecoE6CJkWAMO59AjcZ4r4tUkZhJ1w==}
 
   has-ansi@4.0.1:
     resolution: {integrity: sha512-Qr4RtTm30xvEdqUXbSBVWDu+PrTokJOwe/FU+VdfJPk+MXAPoeOzKpRyrDTnZIJwAkQ4oBLTU53nu0HrkF/Z2A==}
@@ -1797,6 +1804,10 @@ packages:
 
   minimatch@10.0.3:
     resolution: {integrity: sha512-IPZ167aShDZZUMdRk66cyQAW3qr0WzbHkPdMYa8bzZhlHhO3jALbKdxcaak7W9FfT2rZNpQuUu4Od7ILEpXSaw==}
+    engines: {node: 20 || >=22}
+
+  minimatch@10.1.1:
+    resolution: {integrity: sha512-enIvLvRAFZYXJzkCYG5RKmPfrFArdLv+R+lbQ53BmIMLIry74bjKzX6iHAm8WYamJkhSSEabrWN5D97XnKObjQ==}
     engines: {node: 20 || >=22}
 
   minimatch@3.1.2:
@@ -3119,12 +3130,13 @@ snapshots:
       '@eslint/core': 0.15.2
       levn: 0.4.1
 
-  '@gherlint/gherlint@1.1.0':
+  '@gherlint/gherlint@2.0.0':
     dependencies:
       '@cucumber/gherkin': 24.1.0
       '@cucumber/messages': 22.0.0
       commander: 9.1.0
-      glob: 7.2.3
+      glob: 13.0.0
+      harper.js: 1.1.0
       husky: 8.0.3
       lodash: 4.17.21
       minimatch: 9.0.5
@@ -4245,6 +4257,12 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.0
 
+  glob@13.0.0:
+    dependencies:
+      minimatch: 10.1.1
+      minipass: 7.1.2
+      path-scurry: 2.0.0
+
   glob@7.2.3:
     dependencies:
       fs.realpath: 1.0.0
@@ -4273,6 +4291,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  harper.js@1.1.0: {}
 
   has-ansi@4.0.1:
     dependencies:
@@ -4647,6 +4667,10 @@ snapshots:
   mimic-function@5.0.1: {}
 
   minimatch@10.0.3:
+    dependencies:
+      '@isaacs/brace-expansion': 5.0.0
+
+  minimatch@10.1.1:
     dependencies:
       '@isaacs/brace-expansion': 5.0.0
 

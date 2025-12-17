@@ -42,8 +42,8 @@ Feature: Meeting Room Voting Room
       | Save     |
       | Continue |
 
-    And "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And the heading in the session duration dialog should be "Session Duration" in the Create Voting moderator tool for "Alice"
+    When "Alice" opens the session duration dialog in the Create Voting moderator tool
+    Then the heading in the session duration dialog should be "Session Duration" in the Create Voting moderator tool for "Alice"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
       | Unlimited Time |
       | 1 min          |
@@ -110,7 +110,7 @@ Feature: Meeting Room Voting Room
       | Create new voting |
 
 
-  Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic textFields
+  Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic text fields
     When "Alice" opens the Voting moderator tool
     And "Alice" starts to create a new vote in the Voting moderator tool
     Then "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
@@ -133,9 +133,9 @@ Feature: Meeting Room Voting Room
 
     When "Alice" opens the voting type dropdown in the Create Voting moderator tool
     Then these "options" should be displayed in the open moderator tool for "Alice":
-      |  Roll Call            |
-      |  Roll Call - by name  |
-      |  Hidden Vote          |
+      | Roll Call            |
+      | Roll Call - by name  |
+      | Hidden Vote          |
 
     When "Alice" selects "Roll Call" option in the open moderator tool
     Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"

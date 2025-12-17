@@ -19,7 +19,7 @@ When('{string} opens the "Report a bug" form', async function (this: CustomWorld
 });
 
 Then(
-  'for {string} the home view of the moderator sidebar should be open on the Meeting Room page',
+  'for {string} the home view of the moderator sidebar should be open on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -29,7 +29,7 @@ Then(
 );
 
 Then(
-  'for {string} these tabs should be displayed in the sidebar on the Meeting Room page:',
+  'for {string} these tabs should be displayed in the sidebar on the Meeting-Room-Page:',
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -61,7 +61,7 @@ Then(
 );
 
 Then(
-  'for {string} the chat tab should be selected in the sidebar on the Meeting Room page',
+  'for {string} the chat tab should be selected in the sidebar on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -71,7 +71,7 @@ Then(
 );
 
 Then(
-  'for {string} the chat option should be displayed on the Meeting Room page',
+  'for {string} the chat option should be displayed on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -80,7 +80,7 @@ Then(
 );
 
 Then(
-  'for {string} a search field should be displayed in the chat area on the Meeting Room page',
+  'for {string} a search field should be displayed in the chat area on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -89,7 +89,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the chat textfield should be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the chat textfield should be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -108,7 +108,7 @@ Then(
 );
 
 Then(
-  'for {string} the emoji selection button should be displayed in the chat area of the sidebar on the Meeting Room page',
+  'for {string} the emoji selection button should be displayed in the chat area of the sidebar on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -117,7 +117,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the textbox named "([^"]*)" should be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the textbox named "([^"]*)" should be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, name: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -126,7 +126,7 @@ Then(
 );
 
 Then(
-  'for {string} the chat submit button should be displayed on the Meeting Room page',
+  'for {string} the chat submit button should be displayed on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -135,7 +135,7 @@ Then(
 );
 
 When(
-  '{string} opens the emoji picker dialog on the Meeting Room page',
+  '{string} opens the emoji picker dialog on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -144,7 +144,7 @@ When(
 );
 
 When(
-  /^"([^"]*)" selects the "([^"]*)" emoji on the Meeting Room page/,
+  /^"([^"]*)" selects the "([^"]*)" emoji on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, emoji: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -153,7 +153,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the message "([^"]*)" should be displayed in the input textbox on the Meeting Room page/,
+  /^for "([^"]*)" the message "([^"]*)" should be displayed in the input textbox on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -162,7 +162,7 @@ Then(
 );
 
 When(
-  '{string} presses the escape button twice on the Meeting Room page',
+  '{string} presses the escape button twice on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -172,7 +172,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the emoji picker dialog (should|should not) be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the emoji picker dialog (should|should not) be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, actionType: 'should' | 'should not') {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -186,7 +186,7 @@ Then(
 );
 
 When(
-  '{string} sends the current chat message on the Meeting Room page',
+  '{string} sends the current chat message on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -195,7 +195,7 @@ When(
 );
 
 Then(
-  'for {string} there should be these participants listed in the chat as having joined the room on the Meeting Room page:',
+  'for {string} there should be these participants listed in the chat as having joined the room on the Meeting-Room-Page:',
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -217,7 +217,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the last message in the chat should be: "([^"]*)" on the Meeting Room page/,
+  /^for "([^"]*)" the last message in the chat should be: "([^"]*)" on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -227,7 +227,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the sent time of the last message in the chat should have the format "HH:MM" on the Meeting Room page/,
+  /^for "([^"]*)" the sent time of the last message in the chat should have the format "HH:MM" on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -246,7 +246,7 @@ Then(
 );
 
 When(
-  '{string} selects the chat input textbox on the Meeting Room page',
+  '{string} selects the chat input textbox on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -255,7 +255,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the chat label with placeholder text "([^"]*)" should be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the chat label with placeholder text "([^"]*)" should be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, placeholder: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -264,7 +264,7 @@ Then(
 );
 
 When(
-  /^"([^"]*)" types message "([^"]*)" in the chat input textbox on the Meeting Room page/,
+  /^"([^"]*)" types message "([^"]*)" in the chat input textbox on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -274,7 +274,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the error message "([^"]*)" (should|should not) be displayed below the chat input textbox on the Meeting Room page/,
+  /^for "([^"]*)" the error message "([^"]*)" (should|should not) be displayed below the chat input textbox on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, errorMessage: string, actionType: 'should' | 'should not') {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -287,7 +287,7 @@ Then(
 );
 
 Given(
-  '{string} has sent the following messages in the chat on the Meeting Room page:',
+  '{string} has sent the following messages in the chat on the Meeting-Room-Page:',
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -302,7 +302,7 @@ Given(
 );
 
 When(
-  '{string} selects the search in the chat textbox on the Meeting Room page',
+  '{string} selects the search in the chat textbox on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -311,7 +311,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the search in the chat label with placeholder "([^"]*)" should be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the search in the chat label with placeholder "([^"]*)" should be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, placeholder: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -320,7 +320,7 @@ Then(
 );
 
 When(
-  /^"([^"]*)" types "([^"]*)" in the search in the chat textbox on the Meeting Room page/,
+  /^"([^"]*)" types "([^"]*)" in the search in the chat textbox on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, text: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -329,7 +329,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" all the messages that closely match "([^"]*)" should be displayed in the chat overview on the Meeting Room page/,
+  /^for "([^"]*)" all the messages that closely match "([^"]*)" should be displayed in the chat overview on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -342,7 +342,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the participant name "([^"]*)" should be displayed for each message on the Meeting Room page$/,
+  /^for "([^"]*)" the participant name "([^"]*)" should be displayed for each message on the Meeting-Room-Page$/,
   async function (this: CustomWorld, user: string, participantName: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -355,7 +355,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the message sent time for all messages in the chat on the Meeting Room page should be "HH:MM"$/,
+  /^for "([^"]*)" the message sent time for all messages in the chat on the Meeting-Room-Page should be "HH:MM"$/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -368,7 +368,7 @@ Then(
 );
 
 When(
-  '{string} closes the search in the chat textbox on the Meeting Room page',
+  '{string} closes the search in the chat textbox on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -377,7 +377,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the text "([^"]*)" should be displayed in the chat overview on the Meeting Room page/,
+  /^for "([^"]*)" the text "([^"]*)" should be displayed in the chat overview on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, text: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -386,7 +386,7 @@ Then(
 );
 
 Then(
-  'for {string} the reset button should be displayed on the Meeting Room page',
+  'for {string} the reset button should be displayed on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -395,7 +395,7 @@ Then(
 );
 
 When(
-  '{string} resets the searched text in the chat overview on the Meeting Room page',
+  '{string} resets the searched text in the chat overview on the Meeting-Room-Page',
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -404,7 +404,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" search results should be cleared on the Meeting Room page/,
+  /^for "([^"]*)" search results should be cleared on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -413,7 +413,7 @@ Then(
 );
 
 Then(
-  /^for "([^"]*)" the chat overview should be displayed on the Meeting Room page/,
+  /^for "([^"]*)" the chat overview should be displayed on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -425,7 +425,7 @@ Then(
 );
 
 Then(
-  /the chat messages count for "([^"]*)" should be (\d+) on the Meeting Room page/,
+  /the chat messages count for "([^"]*)" should be (\d+) on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, count: number) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });

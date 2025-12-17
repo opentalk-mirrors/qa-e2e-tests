@@ -30,7 +30,7 @@
     "@eslint/js": "^9.32.0",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.8",
-    "@gherlint/gherlint": "^1.1.0",
+    "@gherlint/gherlint": "^2.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
