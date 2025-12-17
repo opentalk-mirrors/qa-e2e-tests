@@ -37,4 +37,10 @@ Feature: Mute Participants
       | guest1 | You were muted by Alice Hansen. |
       | guest2 | You were muted by Alice Hansen. |
       | guest3 | You were muted by Alice Hansen. |
-
+    And in the meeting of "Alice" these users should have the following audio status:
+      | user   | status   |
+      | Bob    | disabled |
+      | guest1 | disabled |
+      | guest2 | disabled |
+      | guest3 | disabled |
+    And 0 participants should be displayed with checkboxes in the open moderator tool for "Alice"

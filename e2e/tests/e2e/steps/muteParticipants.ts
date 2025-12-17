@@ -58,3 +58,25 @@ Then(
     }
   }
 );
+
+Then(
+  'in the meeting of {string} these users should have the following audio status:',
+  async function (this: CustomWorld, moderator: string, statusesTable: DataTable) {
+    const meeting = this.getStartedMeeting(moderator);
+    const statuses = statusesTable.hashes();
+    for (const status of statuses) {
+      if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[status.user]) {
+        await meeting.participantMeetingRoomPages[status.user].page.bringToFront();
+        if (status.status === 'enabled') {
+          expect(await meeting.participantMeetingRoomPages[status.user].isAudioOn()).toBeTruthy();
+        } else if (status.status === 'disabled') {
+          expect(await meeting.participantMeetingRoomPages[status.user].isAudioOn()).toBeFalsy();
+        } else {
+          throw new Error(`${status.status} is an invalid status, only "enabled" and "disabled" are accepted`);
+        }
+      } else {
+        throw new Error(`${status.user} did not join the meeting`);
+      }
+    }
+  }
+);

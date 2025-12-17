@@ -5,6 +5,7 @@ import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import assert from 'node:assert';
 
+import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -60,10 +61,22 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await waitForDomStopChanging(moderatorToolsPage.page);
     const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
     for (const participant of expectedParticipants.raw().flat()) {
       await expect(participantList.getParticipantItemByName(participant)).toBeVisible();
     }
+  }
+);
+
+Then(
+  '{int} participants should be displayed with checkboxes in the open moderator tool for {string}',
+  async function (this: CustomWorld, expectedCount: number, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
+    await expect(participantList.participantList).toHaveCount(expectedCount);
   }
 );
 
