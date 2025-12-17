@@ -6,7 +6,7 @@ import type { Locator, Page } from '@playwright/test';
 export class ParticipantListWithCheckboxesPage {
   public readonly participantList: Locator;
   public readonly participantListCheckboxes: Locator;
-  private page: Page;
+  page: Page;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
@@ -19,6 +19,13 @@ export class ParticipantListWithCheckboxesPage {
   public async selectParticipantByIndexes(indexes: number[]): Promise<void> {
     for (const index of indexes) {
       const checkbox = this.participantListCheckboxes.nth(index);
+      await checkbox.check();
+    }
+  }
+
+  public async selectParticipantByNames(names: string[]): Promise<void> {
+    for (const name of names) {
+      const checkbox = this.getParticipantItemByName(name).getByRole('checkbox');
       await checkbox.check();
     }
   }

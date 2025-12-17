@@ -6,6 +6,7 @@ import { expect } from '@playwright/test';
 
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { MuteParticipantsPage } from '../../pages/MeetingRoom/ModeratorTools/MuteParticipantsPage';
+import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -21,6 +22,22 @@ When(
     await meeting.meetingRoomPage.page.bringToFront();
     const muteParticipantsPage = new MuteParticipantsPage(meeting.meetingRoomPage.page);
     await muteParticipantsPage.muteAllParticipants();
+  }
+);
+
+When(
+  '{string} selects and mutes these participants in the Mute Participants moderator tool:',
+  async function (this: CustomWorld, moderator: string, participantsToMuteTable: DataTable) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const muteParticipantsPage = new MuteParticipantsPage(meeting.meetingRoomPage.page);
+    const participants = participantsToMuteTable.raw().map((participant) => participant[0]);
+    const participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({
+      page: meeting.meetingRoomPage.page,
+    });
+    await participantListWithCheckboxesPage.selectParticipantByNames(participants);
+    await muteParticipantsPage.muteSelectedParticipants();
+    await waitForDomStopChanging(meeting.meetingRoomPage.page);
   }
 );
 
@@ -60,23 +77,36 @@ Then(
 );
 
 Then(
-  'in the meeting of {string} these users should have the following audio status:',
+  'in the meeting of {string} these participants should have the following audio status:',
   async function (this: CustomWorld, moderator: string, statusesTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
     const statuses = statusesTable.hashes();
     for (const status of statuses) {
-      if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[status.user]) {
-        await meeting.participantMeetingRoomPages[status.user].page.bringToFront();
+      if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[status.participant]) {
+        await meeting.participantMeetingRoomPages[status.participant].page.bringToFront();
         if (status.status === 'enabled') {
-          expect(await meeting.participantMeetingRoomPages[status.user].isAudioOn()).toBeTruthy();
+          expect(await meeting.participantMeetingRoomPages[status.participant].isAudioOn()).toBeTruthy();
         } else if (status.status === 'disabled') {
-          expect(await meeting.participantMeetingRoomPages[status.user].isAudioOn()).toBeFalsy();
+          expect(await meeting.participantMeetingRoomPages[status.participant].isAudioOn()).toBeFalsy();
         } else {
           throw new Error(`${status.status} is an invalid status, only "enabled" and "disabled" are accepted`);
         }
       } else {
-        throw new Error(`${status.user} did not join the meeting`);
+        throw new Error(`${status.participant} did not join the meeting`);
       }
+    }
+  }
+);
+
+When(
+  '{string} unmutes himself in the meeting of {string}',
+  async function (this: CustomWorld, participant: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[participant]) {
+      await meeting.participantMeetingRoomPages[participant].page.bringToFront();
+      await meeting.participantMeetingRoomPages[participant].turnAudioOn();
+    } else {
+      throw new Error(`${participant} did not join the meeting`);
     }
   }
 );
