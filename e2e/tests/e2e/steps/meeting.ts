@@ -334,3 +334,12 @@ Then(
     }
   }
 );
+
+Then(
+  'there should be {int} meetings with the name {string} on the Home-Page for {string}',
+  async function (this: CustomWorld, expectedCountOfMeetings: number, meetingTitle: string, user: string) {
+    const page = this.getUser(user).page;
+    const home = new HomePage({ page: page });
+    expect((await home.getAllMeetingListItems(meetingTitle)).length).toBe(expectedCountOfMeetings);
+  }
+);

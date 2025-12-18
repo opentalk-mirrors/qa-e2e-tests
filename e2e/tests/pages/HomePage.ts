@@ -27,6 +27,7 @@ export class HomePage {
   acceptMeetingInvitationButton: Locator;
   deleteMenu: Locator;
   deleteButton: Locator;
+  private meetingListItem: Locator;
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.planNewMeetingButton = this.page.getByRole('link', { name: 'Plan new' });
@@ -49,6 +50,7 @@ export class HomePage {
       role: 'button',
       options: { name: 'More Options' },
     };
+    this.meetingListItem = this.page.getByRole('listitem');
   }
 
   async navigateToHomePage(): Promise<void> {
@@ -133,12 +135,19 @@ export class HomePage {
   }
 
   async getMeetingListItem(meetingTitle: string): Promise<Locator> {
-    return this.page
-      .getByRole('listitem')
+    return this.meetingListItem
       .filter({
         hasText: meetingTitle,
       })
       .first();
+  }
+
+  async getAllMeetingListItems(meetingTitle: string): Promise<Array<Locator>> {
+    return this.meetingListItem
+      .filter({
+        hasText: meetingTitle,
+      })
+      .all();
   }
 
   async showMoreOptions(meetingTitle: string): Promise<void> {
