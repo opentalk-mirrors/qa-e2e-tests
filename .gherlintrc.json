@@ -19,7 +19,8 @@
           {
             "ExpandMinimum": false,
             "ExpandTimeShorthands": false,
-            "PhrasalVerbAsCompoundNoun": false
+            "PhrasalVerbAsCompoundNoun": false,
+            "Spaces": false
           },
           [
             ["\\n", " "],
