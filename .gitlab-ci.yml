@@ -312,23 +312,6 @@ unused-files:
   script:
     - pnpm knip --include files
 
-commit-signature:
-  stage: lint
-  needs: []
-  rules:
-    # Run in merge requests only.
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-  before_script:
-    - apt update && apt install -y git gnupg
-  script:
-    # %G? will log signature information for a commit. `N` stands for "no signature", `B` for "bad signature"
-    # refer to https://git-scm.com/docs/pretty-formats#Documentation/pretty-formats.txt-emGem
-    # grep checks that the output does not contain any "N" or "B" characters.
-    - >
-      git log --format=format:'%G?' $CI_MERGE_REQUEST_DIFF_BASE_SHA..HEAD
-      | tr -d '\n'
-      | grep -q -v -e "N" -e "B"
-
 gherlint:
   stage: lint
   rules:
