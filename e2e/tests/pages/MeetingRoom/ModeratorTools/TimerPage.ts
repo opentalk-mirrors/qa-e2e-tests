@@ -8,21 +8,6 @@ import { Locator, Page } from '@playwright/test';
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class TimerPage extends ModeratorToolsPage {
-  public readonly duration: {
-    readonly durationSelectionButton: Locator;
-    readonly sessionDurationPopup: Locator;
-    readonly sessionDurationTitle: Locator;
-    readonly unlimitedTimeButton: Locator;
-    readonly oneMinuteButton: Locator;
-    readonly twoMinutesButton: Locator;
-    readonly fiveMinutesButton: Locator;
-    readonly customDuration: {
-      readonly customButton: Locator;
-      readonly spinButton: Locator;
-    };
-    readonly closeButton: Locator;
-    readonly saveButton: Locator;
-  };
   public readonly titleTextbox: Locator;
   public readonly participantsReadyCheckbox: Locator;
   public readonly createTimer: {
@@ -52,21 +37,6 @@ export class TimerPage extends ModeratorToolsPage {
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
-    this.duration = {
-      durationSelectionButton: this.page.getByRole('button', { name: 'Duration' }),
-      sessionDurationPopup: this.page.getByRole('dialog', { name: 'Session Duration' }),
-      sessionDurationTitle: this.page.getByText('Session Duration', { exact: true }),
-      unlimitedTimeButton: this.page.getByRole('button', { name: 'Unlimited duration' }),
-      oneMinuteButton: this.page.getByRole('button', { name: '1 minute' }),
-      twoMinutesButton: this.page.getByRole('button', { name: '2 minutes' }),
-      fiveMinutesButton: this.page.getByRole('button', { name: '5 minutes' }),
-      customDuration: {
-        customButton: this.page.getByRole('button', { name: 'Custom duration' }),
-        spinButton: this.page.getByRole('spinbutton'),
-      },
-      closeButton: this.page.getByRole('button', { name: 'Close' }),
-      saveButton: this.page.getByRole('button', { name: 'Save' }),
-    };
     this.titleTextbox = this.page.getByRole('textbox', { name: 'Title' });
     this.participantsReadyCheckbox = this.page
       .getByRole('tabpanel', {
@@ -107,55 +77,6 @@ export class TimerPage extends ModeratorToolsPage {
       timerStoppedAlert: this.page.getByRole('alert').getByText('The timer was stopped'),
       timerRanOutAlert: this.page.getByRole('alert').getByText('The timer ran out'),
     };
-  }
-
-  public async openDurationSelection() {
-    await this.duration.durationSelectionButton.click();
-  }
-
-  public async closeDurationSelection() {
-    await this.duration.closeButton.click();
-  }
-
-  public async selectTimerDuration(
-    duration: 'oneMinute' | 'twoMinutes' | 'fiveMinutes' | 'unlimited'
-  ): Promise<{ locator: Locator; accessibleName: string }> {
-    switch (duration) {
-      case 'oneMinute':
-        await this.duration.oneMinuteButton.click();
-        return { locator: this.duration.oneMinuteButton, accessibleName: 'Duration 1 minute' };
-
-      case 'twoMinutes':
-        await this.duration.twoMinutesButton.click();
-        return { locator: this.duration.twoMinutesButton, accessibleName: 'Duration 2 minutes' };
-
-      case 'fiveMinutes':
-        await this.duration.fiveMinutesButton.click();
-        return { locator: this.duration.fiveMinutesButton, accessibleName: 'Duration 5 minutes' };
-
-      case 'unlimited':
-        await this.duration.unlimitedTimeButton.click();
-        return { locator: this.duration.unlimitedTimeButton, accessibleName: 'Duration Unlimited Time' };
-    }
-  }
-
-  public async selectCustomDuration() {
-    await this.duration.customDuration.customButton.click();
-  }
-
-  public async isDurationSelected(locator: Locator): Promise<boolean> {
-    return await locator.evaluate((element) => element.getAttribute('aria-selected') === 'true');
-  }
-
-  public async saveSessionDuration() {
-    await this.duration.saveButton.click();
-  }
-
-  public async enterCustomDuration(value?: string) {
-    await this.duration.customDuration.spinButton.click();
-    if (value) {
-      await this.duration.customDuration.spinButton.fill(value);
-    }
   }
 
   public async selectTimerTitleInput() {

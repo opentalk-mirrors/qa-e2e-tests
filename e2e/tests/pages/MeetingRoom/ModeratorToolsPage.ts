@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
+import { SessionDurationDialog } from './ModeratorTools/SessionDurationDialog';
+
 export class ModeratorToolsPage {
   public readonly page: Page;
   public readonly heading: Locator;
@@ -10,6 +12,8 @@ export class ModeratorToolsPage {
   private readonly button: Locator;
   private readonly menuItem: Locator;
   private readonly dropdownOption: Locator;
+  protected readonly sessionDurationDialog: SessionDurationDialog;
+  public readonly durationButton: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
@@ -18,6 +22,9 @@ export class ModeratorToolsPage {
     this.button = this.page.getByRole('button');
     this.menuItem = this.page.getByRole('menuitem');
     this.dropdownOption = this.page.getByRole('option');
+    this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
+
+    this.sessionDurationDialog = new SessionDurationDialog(this.page);
   }
 
   private async getAllButtons(): Promise<Locator[]> {
@@ -93,5 +100,24 @@ export class ModeratorToolsPage {
 
   public async selectDropdownOption(votingType: string): Promise<void> {
     await this.getDropdownOptionByName(votingType).click();
+  }
+
+  public async getSessionDuration(): Promise<string> {
+    await this.durationButton.waitFor({ state: 'visible' });
+    const duration = await this.durationButton.innerText();
+    return duration.trim();
+  }
+
+  public async isSessionDurationDialogVisible(): Promise<boolean> {
+    return await this.sessionDurationDialog.dialogContainer.isVisible();
+  }
+
+  public async openSessionDurationDialog(): Promise<SessionDurationDialog> {
+    const dialogVisible = await this.isSessionDurationDialogVisible();
+    if (!dialogVisible) {
+      await this.durationButton.click();
+    }
+    await this.sessionDurationDialog.title.waitFor({ state: 'attached' });
+    return this.sessionDurationDialog;
   }
 }

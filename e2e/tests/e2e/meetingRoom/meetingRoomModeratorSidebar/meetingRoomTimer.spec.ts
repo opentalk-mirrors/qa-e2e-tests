@@ -32,63 +32,68 @@ test.describe('Meeting Room_Timer', () => {
     await meetingRoomPage.page.bringToFront();
     const timerPage: TimerPage = await meetingRoomPage.startTimerModeratorTool();
     expect(await timerPage.getHeadingText()).toBe('Timer');
-    await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName('Duration 1 minute');
+    await expect(timerPage.durationButton).toHaveAccessibleName('Duration 1 minute');
     await expect(timerPage.titleTextbox).toBeVisible();
     await expect(timerPage.participantsReadyCheckbox).toBeChecked();
     await expect(timerPage.createTimer.createTimerButton).toBeVisible();
   });
 
   test('TC_002_Meeting Room_As Moderator_Timer_Duration_Session Duration', async () => {
-    await timerPage.openDurationSelection();
-    await expect(timerPage.duration.sessionDurationTitle).toHaveText('Session Duration');
-    await expect(timerPage.duration.unlimitedTimeButton).toBeVisible();
-    await expect(timerPage.duration.oneMinuteButton).toBeVisible();
-    await expect(timerPage.duration.twoMinutesButton).toBeVisible();
-    await expect(timerPage.duration.fiveMinutesButton).toBeVisible();
-    await expect(timerPage.duration.customDuration.customButton).toBeVisible();
-    await expect(timerPage.duration.closeButton).toBeVisible();
-    await expect(timerPage.duration.saveButton).toBeVisible();
+    let sessionDurationDialog = await timerPage.openSessionDurationDialog();
+    await expect(sessionDurationDialog.title).toHaveText('Session Duration');
+    await expect(sessionDurationDialog.unlimitedTimeDurationButton).toBeVisible();
+    await expect(sessionDurationDialog.oneMinuteDurationButton).toBeVisible();
+    await expect(sessionDurationDialog.twoMinuteDurationButton).toBeVisible();
+    await expect(sessionDurationDialog.fiveMinuteDurationButton).toBeVisible();
+    await expect(sessionDurationDialog.customDurationButton).toBeVisible();
+    await expect(sessionDurationDialog.closeButton).toBeVisible();
+    await expect(sessionDurationDialog.saveButton).toBeVisible();
 
-    const durations = ['unlimited', 'oneMinute', 'twoMinutes', 'fiveMinutes'] as const;
+    const durations = [
+      { duration: 'Unlimited Time', accessibleName: 'Duration Unlimited Time' },
+      { duration: '1 min', accessibleName: 'Duration 1 minute' },
+      { duration: '2 min', accessibleName: 'Duration 2 minutes' },
+      { duration: '5 min', accessibleName: 'Duration 5 minutes' },
+    ] as const;
     for (const duration of durations) {
-      const { locator, accessibleName } = await timerPage.selectTimerDuration(duration);
-      expect(await timerPage.isDurationSelected(locator)).toBeTruthy();
+      await sessionDurationDialog.selectDuration(duration.duration);
+      expect(await sessionDurationDialog.getSelectedDurationText()).toBe(duration.duration);
 
-      await timerPage.saveSessionDuration();
-      await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-      await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName(accessibleName);
+      await sessionDurationDialog.save();
+      expect(await timerPage.isSessionDurationDialogVisible()).toBeFalsy();
+      await expect(timerPage.durationButton).toHaveAccessibleName(duration.accessibleName);
 
-      await timerPage.openDurationSelection();
-      await expect(timerPage.duration.sessionDurationPopup).toBeVisible();
+      sessionDurationDialog = await timerPage.openSessionDurationDialog();
+      await expect(sessionDurationDialog.dialogContainer).toBeVisible();
     }
 
-    await timerPage.selectCustomDuration();
-    expect(await timerPage.isDurationSelected(timerPage.duration.customDuration.customButton)).toBeTruthy();
-    await expect(timerPage.duration.customDuration.spinButton).toBeVisible();
-    await expect(timerPage.duration.customDuration.spinButton).toHaveValue('1');
+    await sessionDurationDialog.selectDuration('Custom');
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe('Custom');
+    await expect(sessionDurationDialog.customDurationButtonInput).toBeVisible();
+    await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue('1');
 
-    await timerPage.enterCustomDuration();
-    await expect(timerPage.duration.customDuration.spinButton).toBeFocused();
+    await sessionDurationDialog.activateCustomDurationInput();
+    await expect(sessionDurationDialog.customDurationButtonInput).toBeFocused();
 
-    await timerPage.enterCustomDuration('3');
-    await timerPage.saveSessionDuration();
-    await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-    await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName('Duration 3 minutes');
+    await sessionDurationDialog.setCustomDuration('3');
+    await sessionDurationDialog.save();
+    await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+    await expect(timerPage.durationButton).toHaveAccessibleName('Duration 3 minutes');
 
-    await timerPage.openDurationSelection();
-    await timerPage.selectTimerDuration('unlimited');
-    await timerPage.closeDurationSelection();
-    await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-    await expect(timerPage.duration.durationSelectionButton).not.toHaveAccessibleName('Duration Unlimited Time');
+    sessionDurationDialog = await timerPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration('Unlimited Time');
+    await sessionDurationDialog.close();
+    await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+    await expect(timerPage.durationButton).not.toHaveAccessibleName('Duration Unlimited Time');
   });
 
   test.describe('TC_003_Meeting Room_As Moderator_Timer_Create Timer_with different duration, with Title', () => {
     test('Create Timer (With Unlimited Time)', async () => {
-      await timerPage.openDurationSelection();
-      const { accessibleName } = await timerPage.selectTimerDuration('unlimited');
-      await timerPage.saveSessionDuration();
-      await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-      await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName(accessibleName);
+      const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+      await sessionDurationDialog.selectDuration('Unlimited Time');
+      await sessionDurationDialog.save();
+      await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+      await expect(timerPage.durationButton).toHaveAccessibleName('Duration Unlimited Time');
 
       await timerPage.selectTimerTitleInput();
       expect(await timerPage.getPlaceholderOfTimerTitleInput()).toBe('New timer');
@@ -134,11 +139,11 @@ test.describe('Meeting Room_Timer', () => {
     });
 
     test('Create Timer (With Duration 1min/2min/5min)', async () => {
-      await timerPage.openDurationSelection();
-      const { accessibleName } = await timerPage.selectTimerDuration('oneMinute');
-      await timerPage.saveSessionDuration();
-      await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-      await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName(accessibleName);
+      const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+      await sessionDurationDialog.selectDuration('1 min');
+      await sessionDurationDialog.save();
+      await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+      await expect(timerPage.durationButton).toHaveAccessibleName('Duration 1 minute');
 
       await timerPage.selectTimerTitleInput();
       expect(await timerPage.getPlaceholderOfTimerTitleInput()).toBe('New timer');
@@ -184,12 +189,12 @@ test.describe('Meeting Room_Timer', () => {
     });
 
     test('Create Timer (With Duration Custom)', async () => {
-      await timerPage.openDurationSelection();
-      await timerPage.selectCustomDuration();
-      await timerPage.enterCustomDuration('1');
-      await timerPage.saveSessionDuration();
-      await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-      await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName('Duration 1 minute');
+      const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+      await sessionDurationDialog.selectDuration('Custom');
+      await sessionDurationDialog.setCustomDuration('1');
+      await sessionDurationDialog.save();
+      await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+      await expect(timerPage.durationButton).toHaveAccessibleName('Duration 1 minute');
 
       await timerPage.enterTimerTitle(timerTitle);
       expect(await timerPage.getTimerTitleInputValue()).toBe(timerTitle);
@@ -233,11 +238,11 @@ test.describe('Meeting Room_Timer', () => {
   });
 
   test('TC_004_Meeting Room_As Moderator_Timer_Create Timer_without Title', async () => {
-    await timerPage.openDurationSelection();
-    await timerPage.selectTimerDuration('oneMinute');
-    await timerPage.saveSessionDuration();
-    await expect(timerPage.duration.sessionDurationPopup).not.toBeVisible();
-    await expect(timerPage.duration.durationSelectionButton).toHaveAccessibleName('Duration 1 minute');
+    const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration('1 min');
+    await sessionDurationDialog.save();
+    await expect(sessionDurationDialog.dialogContainer).not.toBeVisible();
+    await expect(timerPage.durationButton).toHaveAccessibleName('Duration 1 minute');
 
     expect(await timerPage.getTimerTitleInputValue()).toBe('');
 
@@ -282,9 +287,9 @@ test.describe('Meeting Room_Timer', () => {
   }) => {
     test.skip(browserName === 'webkit');
 
-    await timerPage.openDurationSelection();
-    await timerPage.selectTimerDuration('oneMinute');
-    await timerPage.saveSessionDuration();
+    const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration('1 min');
+    await sessionDurationDialog.save();
     await timerPage.enterTimerTitle(timerTitle);
 
     await timerPage.toggleAskParticipantsIfReady(false);
@@ -328,9 +333,9 @@ test.describe('Meeting Room_Timer', () => {
   }) => {
     test.skip(browserName === 'webkit');
 
-    await timerPage.openDurationSelection();
-    await timerPage.selectTimerDuration('oneMinute');
-    await timerPage.saveSessionDuration();
+    const sessionDurationDialog = await timerPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration('1 min');
+    await sessionDurationDialog.save();
     await timerPage.enterTimerTitle(timerTitle);
 
     await timerPage.toggleAskParticipantsIfReady(true);

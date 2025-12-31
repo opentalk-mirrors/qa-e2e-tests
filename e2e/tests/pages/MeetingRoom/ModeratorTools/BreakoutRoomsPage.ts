@@ -12,7 +12,6 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly participantsAvatar: Locator;
   private readonly selectionModeDropdown: Locator;
   private readonly selectionModeDropdownItems: Locator;
-  private readonly durationText: Locator;
   private readonly numberOfRoomsInput: Locator;
   private readonly roomsToBeCreatedRegex: RegExp;
   private readonly roomsToBeCreated: Locator;
@@ -28,7 +27,6 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     this.randomDistributionSwitch = this.page.locator('//input[@name="distribution"]');
     this.selectionModeDropdown = this.page.getByRole('combobox');
     this.selectionModeDropdownItems = this.page.getByRole('listbox');
-    this.durationText = this.page.locator('//*[@data-sentry-component="DurationField"]/button');
     this.numberOfRoomsInput = this.page.locator('//input[@name="rooms"]');
     this.roomsToBeCreatedRegex = /Create (\d+) Rooms/;
     this.roomsToBeCreated = this.page.getByText(this.roomsToBeCreatedRegex);
@@ -67,11 +65,6 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   public async setSelectionMode(mode: string) {
     await this.selectionModeDropdown.click();
     await this.selectionModeDropdownItems.getByText(mode).click();
-  }
-
-  public async getDuration(): Promise<string> {
-    const duration = await this.durationText.innerText();
-    return duration.trim();
   }
 
   public async getNumberOfRooms(): Promise<string> {

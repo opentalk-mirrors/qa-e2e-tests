@@ -24,7 +24,7 @@ Feature: Meeting Room Voting Room
 
     When "Alice" starts to create a new vote in the Voting moderator tool
     Then the "sub-heading" in the open moderator tool for "Alice" should be "Create Voting"
-    And the duration selection field with "1 min" as default should be displayed in the Create Voting moderator tool for "Alice"
+    And the duration field in the open moderator tool for "Alice" should be set to "1 min"
     And "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
     And "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
     When "Alice" hovers the "auto close toggle" in the Create Voting moderator tool
@@ -42,8 +42,8 @@ Feature: Meeting Room Voting Room
       | Save     |
       | Continue |
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    Then the heading in the session duration dialog should be "Session Duration" in the Create Voting moderator tool for "Alice"
+    When "Alice" opens the session duration dialog in the moderator tool
+    Then the heading in the session duration dialog should be "Session Duration" in the open moderator tool for "Alice"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
       | Unlimited Time |
       | 1 min          |
@@ -53,52 +53,52 @@ Feature: Meeting Room Voting Room
       | Save           |
       | Close          |
 
-    When "Alice" selects "Unlimited Time" duration in the Create Voting moderator tool
-    Then the "Unlimited Time" duration should be selected in the Create Voting moderator tool for "Alice"
+    When "Alice" selects "Unlimited Time" duration in the duration dialog in the moderator tool
+    Then the "Unlimited Time" duration should be selected in the duration dialog in the moderator tool for "Alice"
 
-    When "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the session duration dialog should not be displayed in the Create Voting moderator tool for "Alice"
-    And the duration field in the Create Voting moderator tool for "Alice" should be set to "Unlimited Time"
+    When "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the session duration dialog should not be displayed in the open moderator tool for "Alice"
+    And the duration field in the open moderator tool for "Alice" should be set to "Unlimited Time"
 
-    When "Alice" selects "1 min" duration in the Create Voting moderator tool
-    Then the "1 min" duration should be selected in the Create Voting moderator tool for "Alice"
-    When "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "1 min"
+    When "Alice" selects "1 min" duration in the duration dialog in the moderator tool
+    Then the "1 min" duration should be selected in the duration dialog in the moderator tool for "Alice"
+    When "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "1 min"
 
-    When "Alice" selects "2 min" duration in the Create Voting moderator tool
-    Then the "2 min" duration should be selected in the Create Voting moderator tool for "Alice"
-    When "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "2 min"
+    When "Alice" selects "2 min" duration in the duration dialog in the moderator tool
+    Then the "2 min" duration should be selected in the duration dialog in the moderator tool for "Alice"
+    When "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "2 min"
 
-    When "Alice" selects "5 min" duration in the Create Voting moderator tool
-    Then the "5 min" duration should be selected in the Create Voting moderator tool for "Alice"
-    When "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "5 min"
+    When "Alice" selects "5 min" duration in the duration dialog in the moderator tool
+    Then the "5 min" duration should be selected in the duration dialog in the moderator tool for "Alice"
+    When "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "5 min"
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And "Alice" selects "Custom" duration in the Create Voting moderator tool
-    Then the "Custom" duration should be selected in the Create Voting moderator tool for "Alice"
-    And the input box "Enter custom duration (min)" with default value "1" should be displayed in the Create Voting moderator tool for "Alice"
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" selects "Custom" duration in the duration dialog in the moderator tool
+    Then the "Custom" duration should be selected in the duration dialog in the moderator tool for "Alice"
+    And the input box "Enter custom duration (min)" with the value "1" should be displayed in the duration dialog in the moderator tool for "Alice"
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And "Alice" sets "9" as the custom duration in the Create Voting moderator tool
-    And "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "9 min"
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" sets "9" as the custom duration in the duration dialog in the moderator tool
+    And "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And "Alice" decrements the custom duration 2 times in the Create Voting moderator tool
-    And "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "7 min"
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" decrements the custom duration 2 times in the duration dialog in the moderator tool
+    And "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "7 min"
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And "Alice" increments the custom duration 2 times in the Create Voting moderator tool
-    And "Alice" saves the selected duration in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "9 min"
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" increments the custom duration 2 times in the duration dialog in the moderator tool
+    And "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
 
-    When "Alice" opens the session duration dialog in the Create Voting moderator tool
-    And "Alice" selects "1 min" duration in the Create Voting moderator tool
-    And "Alice" closes the session duration dialog in the Create Voting moderator tool
-    Then the duration field in the Create Voting moderator tool for "Alice" should be set to "9 min"
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" selects "1 min" duration in the duration dialog in the moderator tool
+    And "Alice" closes the session duration dialog in the open moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
 
     When "Alice" exits the Create Voting moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Voting"

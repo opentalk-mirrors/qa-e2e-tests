@@ -13,8 +13,10 @@
         "grammar_check": [
           "error",
           "American",
-          ["EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
-          "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose", "min"
+          [
+            "EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
+            "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose",
+            "auto-close","auto close", "min", "sub-heading"
           ],
           {
             "ExpandMinimum": false,
