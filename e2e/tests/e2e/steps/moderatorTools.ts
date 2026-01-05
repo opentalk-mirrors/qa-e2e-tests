@@ -145,3 +145,12 @@ When(
     await moderatorToolsPage.selectDropdownOption(option);
   }
 );
+
+When(
+  '{string} opens the session duration dialog in the moderator tool',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+    await moderatorToolsPage.openSessionDurationDialog();
+  }
+);

@@ -32,7 +32,7 @@ test.describe('Meeting room_Coffee break', async () => {
     // test start
     await expect(coffeeBreakPage.heading).toBeVisible();
     expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');
-    await expect(coffeeBreakPage.durationButton).toHaveText('5 min');
+    expect(await coffeeBreakPage.getSessionDuration()).toBe('5 min');
     await expect(coffeeBreakPage.startCoffeeBreakButton).toBeVisible();
   });
 
@@ -43,49 +43,49 @@ test.describe('Meeting room_Coffee break', async () => {
     coffeeBreakPage = await meetingRoomPage.selectCoffeeBreakModeratorTool();
 
     // test start
-    await coffeeBreakPage.openDurationDialog();
-    expect(await coffeeBreakPage.isDurationDialogOpen()).toBeTruthy();
-    await expect(coffeeBreakPage.sessionDurationTitle).toHaveText('Session Duration');
+    let sessionDurationDialog = await coffeeBreakPage.openSessionDurationDialog();
+    expect(await coffeeBreakPage.isSessionDurationDialogVisible()).toBeTruthy();
+    await expect(sessionDurationDialog.title).toHaveText('Session Duration');
     expect(await coffeeBreakPage.areAllDurationOptionsVisible()).toBeTruthy();
-    await expect(coffeeBreakPage.closeButton).toBeVisible();
-    await expect(coffeeBreakPage.saveButton).toBeVisible();
+    await expect(sessionDurationDialog.closeButton).toBeVisible();
+    await expect(sessionDurationDialog.saveButton).toBeVisible();
 
-    await coffeeBreakPage.selectDurationOption(fiveMinute);
-    expect(await coffeeBreakPage.getSelectedDurationText()).toBe(fiveMinute);
-    await coffeeBreakPage.selectDurationOption(tenMinute);
-    expect(await coffeeBreakPage.getSelectedDurationText()).toBe(tenMinute);
-    await coffeeBreakPage.selectDurationOption(fifteenMinute);
-    expect(await coffeeBreakPage.getSelectedDurationText()).toBe(fifteenMinute);
-    await coffeeBreakPage.selectDurationOption(thirtyMinute);
-    expect(await coffeeBreakPage.getSelectedDurationText()).toBe(thirtyMinute);
+    await sessionDurationDialog.selectDuration(fiveMinute);
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(fiveMinute);
+    await sessionDurationDialog.selectDuration(tenMinute);
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(tenMinute);
+    await sessionDurationDialog.selectDuration(fifteenMinute);
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(fifteenMinute);
+    await sessionDurationDialog.selectDuration(thirtyMinute);
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(thirtyMinute);
 
-    await coffeeBreakPage.save();
-    expect(await coffeeBreakPage.isDurationDialogClosed()).toBeTruthy();
+    await sessionDurationDialog.save();
+    expect(await coffeeBreakPage.isSessionDurationDialogVisible()).toBeFalsy();
     await expect(coffeeBreakPage.durationButton).toContainText(thirtyMinute);
 
-    await coffeeBreakPage.openDurationDialog();
-    await coffeeBreakPage.selectDurationOption(custom);
-    expect(await coffeeBreakPage.getSelectedDurationText()).toBe(custom);
-    await expect(coffeeBreakPage.customDurationLabel).toBeVisible();
-    await expect(coffeeBreakPage.customDurationField).toBeVisible();
-    await expect(coffeeBreakPage.customDurationField).toHaveValue('5');
+    sessionDurationDialog = await coffeeBreakPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration(custom);
+    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(custom);
+    await expect(sessionDurationDialog.customDurationLabel).toBeVisible();
+    await expect(sessionDurationDialog.customDurationButtonInput).toBeVisible();
+    await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue('5');
 
-    await coffeeBreakPage.selectCustomDurationField();
-    await expect(coffeeBreakPage.customDurationField).toBeFocused();
-    await expect(coffeeBreakPage.customDurationField).toBeEditable();
+    await sessionDurationDialog.activateCustomDurationInput();
+    await expect(sessionDurationDialog.customDurationButtonInput).toBeFocused();
+    await expect(sessionDurationDialog.customDurationButtonInput).toBeEditable();
 
-    await coffeeBreakPage.selectCustomValue('20');
-    await expect(coffeeBreakPage.customDurationField).toHaveValue('20');
-    await coffeeBreakPage.incrementCustomDuration();
-    await expect(coffeeBreakPage.customDurationField).toHaveValue('21');
-    await coffeeBreakPage.save();
-    expect(await coffeeBreakPage.isDurationDialogClosed()).toBeTruthy();
+    await sessionDurationDialog.setCustomDuration('20');
+    await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue('20');
+    await sessionDurationDialog.incrementCustomDuration();
+    await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue('21');
+    await sessionDurationDialog.save();
+    expect(await coffeeBreakPage.isSessionDurationDialogVisible()).toBeFalsy();
     await expect(coffeeBreakPage.durationButton).toContainText('21');
 
-    await coffeeBreakPage.openDurationDialog();
-    await coffeeBreakPage.selectDurationOption(fifteenMinute);
-    await coffeeBreakPage.close();
-    expect(await coffeeBreakPage.isDurationDialogClosed()).toBeTruthy();
+    sessionDurationDialog = await coffeeBreakPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration(fifteenMinute);
+    await sessionDurationDialog.close();
+    expect(await coffeeBreakPage.isSessionDurationDialogVisible()).toBeFalsy();
     await expect(coffeeBreakPage.durationButton).not.toContainText('15');
     await expect(coffeeBreakPage.durationButton).toContainText('21');
   });
@@ -115,15 +115,15 @@ test.describe('Meeting room_Coffee break', async () => {
     coffeeBreakPage = await meetingRoomPage.selectCoffeeBreakModeratorTool();
 
     // test start
-    await coffeeBreakPage.openDurationDialog();
-    await coffeeBreakPage.selectDurationOption(fiveMinute);
-    await coffeeBreakPage.save();
-    await coffeeBreakPage.openDurationDialog();
-    await coffeeBreakPage.selectDurationOption(custom);
-    await coffeeBreakPage.selectCustomDurationField();
-    await coffeeBreakPage.selectCustomValue('2');
-    await coffeeBreakPage.decrementCustomDuration();
-    await coffeeBreakPage.save();
+    let sessionDurationDialog = await coffeeBreakPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration(fiveMinute);
+    await sessionDurationDialog.save();
+    sessionDurationDialog = await coffeeBreakPage.openSessionDurationDialog();
+    await sessionDurationDialog.selectDuration(custom);
+    await sessionDurationDialog.activateCustomDurationInput();
+    await sessionDurationDialog.setCustomDuration('2');
+    await sessionDurationDialog.decrementCustomDuration();
+    await sessionDurationDialog.save();
     const coffeeBreakDialogPage = await coffeeBreakPage.selectStartCoffeeBreakButton();
     await assertCoffeeBreakDialog(coffeeBreakDialogPage);
     await guestMeetingRoomPage.page.bringToFront();
@@ -133,7 +133,7 @@ test.describe('Meeting room_Coffee break', async () => {
     await meetingRoomPage.page.bringToFront();
     await expect(coffeeBreakPage.heading).toBeVisible();
     expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');
-    await expect(coffeeBreakPage.durationLabel).toBeVisible();
+    await expect(sessionDurationDialog.durationLabel).toBeVisible();
     await expect(coffeeBreakPage.timerText).toBeVisible();
     await expect(coffeeBreakPage.timerText).toHaveText(/^$|^\d{2}\s*:\s*\d{2}$/);
     expect(await coffeeBreakPage.isTimerCountingDown()).toBeTruthy();

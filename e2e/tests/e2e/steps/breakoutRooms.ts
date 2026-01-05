@@ -134,7 +134,7 @@ Then(
     for (let i = 0; i < expectedSettingsTableHashes.length; i++) {
       switch (expectedSettingsTableHashes[i].setting) {
         case 'Duration':
-          expect(await breakoutRoomsPage?.getDuration()).toBe(expectedSettingsTableHashes[i].value);
+          expect(await breakoutRoomsPage?.getSessionDuration()).toBe(expectedSettingsTableHashes[i].value);
           break;
         case 'By number of':
           expect(await breakoutRoomsPage?.getSelectionMode()).toBe(expectedSettingsTableHashes[i].value);
