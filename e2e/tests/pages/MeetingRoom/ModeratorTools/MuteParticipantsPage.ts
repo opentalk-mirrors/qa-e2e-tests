@@ -8,18 +8,25 @@ import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class MuteParticipantsPage extends ModeratorToolsPage {
   private readonly muteAllButton: Locator;
+  private readonly muteSelectedButton: Locator;
 
   constructor(page: Page) {
     super({ page: page });
     this.muteAllButton = this.page.getByRole('button', { name: 'All', exact: true });
+    this.muteSelectedButton = this.page.getByRole('button', { name: 'Selected', exact: true });
   }
 
   public async waitForPageToBeLoaded(): Promise<void> {
     await waitForDomStopChanging(this.page);
   }
 
-  async muteAllParticipants() {
+  public async muteAllParticipants() {
     await this.muteAllButton.click();
+    await waitForDomStopChanging(this.page);
+  }
+
+  public async muteSelectedParticipants() {
+    await this.muteSelectedButton.click();
     await waitForDomStopChanging(this.page);
   }
 }

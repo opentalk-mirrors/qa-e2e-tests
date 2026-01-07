@@ -5,7 +5,6 @@ import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import assert from 'node:assert';
 
-import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -58,13 +57,10 @@ Then(
 Then(
   'these participants should be displayed with checkboxes in the open moderator tool for {string}:',
   async function (this: CustomWorld, user: string, expectedParticipants: DataTable) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await waitForDomStopChanging(moderatorToolsPage.page);
-    const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
-    for (const participant of expectedParticipants.raw().flat()) {
-      await expect(participantList.getParticipantItemByName(participant)).toBeVisible();
+    const participants = expectedParticipants.raw().flat();
+    const participantListPage = await expectParticipantListWithCheckboxesToHaveCount(this, user, participants.length);
+    for (const participant of participants) {
+      await expect(participantListPage.getParticipantItemByName(participant)).toBeVisible();
     }
   }
 );
@@ -72,13 +68,22 @@ Then(
 Then(
   '{int} participants should be displayed with checkboxes in the open moderator tool for {string}',
   async function (this: CustomWorld, expectedCount: number, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
-    await expect(participantList.participantList).toHaveCount(expectedCount);
+    await expectParticipantListWithCheckboxesToHaveCount(this, user, expectedCount);
   }
 );
+
+async function expectParticipantListWithCheckboxesToHaveCount(
+  world: CustomWorld,
+  moderator: string,
+  expectedCount: number
+): Promise<ParticipantListWithCheckboxesPage> {
+  const meeting = world.getStartedMeeting(moderator).meeting;
+  await meeting.meetingRoomPage.page.bringToFront();
+  const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+  const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
+  await expect(participantList.participantList).toHaveCount(expectedCount);
+  return participantList;
+}
 
 Then(
   'these fields should be displayed in the open moderator tool for {string}:',

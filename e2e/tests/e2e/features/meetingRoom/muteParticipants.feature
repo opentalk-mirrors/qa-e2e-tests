@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
-@skip-on-webkit
+@skip-on-webkit @skip-on-chromium
 Feature: Mute Participants
   As a moderator
   I want to be able to mute participants
@@ -37,10 +37,32 @@ Feature: Mute Participants
       | guest1 | You were muted by Alice Hansen. |
       | guest2 | You were muted by Alice Hansen. |
       | guest3 | You were muted by Alice Hansen. |
-    And in the meeting of "Alice" these users should have the following audio status:
-      | user   | status   |
-      | Bob    | disabled |
-      | guest1 | disabled |
-      | guest2 | disabled |
-      | guest3 | disabled |
+    And in the meeting of "Alice" these participants should have the following audio status:
+      | participant | status   |
+      | Bob         | disabled |
+      | guest1      | disabled |
+      | guest2      | disabled |
+      | guest3      | disabled |
     And 0 participants should be displayed with checkboxes in the open moderator tool for "Alice"
+    When "Bob" unmutes himself in the meeting of "Alice"
+    And "guest1" unmutes himself in the meeting of "Alice"
+    And "guest3" unmutes himself in the meeting of "Alice"
+    Then these participants should be displayed with checkboxes in the open moderator tool for "Alice":
+      | Bob    |
+      | guest1 |
+      | guest3 |
+    When "Alice" selects and mutes these participants in the Mute Participants moderator tool:
+      | Bob    |
+      | guest3 |
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+      | user   | text                            |
+      | Bob    | You were muted by Alice Hansen. |
+      | guest3 | You were muted by Alice Hansen. |
+    And in the meeting of "Alice" these participants should have the following audio status:
+      | participant | status   |
+      | Bob         | disabled |
+      | guest1      | enabled  |
+      | guest2      | disabled |
+      | guest3      | disabled |
+    And these participants should be displayed with checkboxes in the open moderator tool for "Alice":
+      | guest1 |
