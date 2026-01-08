@@ -94,16 +94,6 @@ Then(
 );
 
 Then(
-  '{int} participants should be displayed in the Talking Stick moderator tool for {string}',
-  async function (this: CustomWorld, guestCount: number, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    const displayGuestCount = talkingStickPage.getTotalParticipantsNumber();
-    expect(guestCount).toEqual(await displayGuestCount);
-  }
-);
-
-Then(
   '"Include moderator" should be switched ON in the Talking Stick moderator tool for {string}',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;

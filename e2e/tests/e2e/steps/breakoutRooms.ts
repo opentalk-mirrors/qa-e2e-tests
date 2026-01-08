@@ -25,14 +25,10 @@ When(
   'all participants in the meeting room of {string} join the Breakout Rooms',
   async function (this: CustomWorld, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const moderatorPage = startedMeeting.meeting.meetingRoomPage;
-    await moderatorPage.page.bringToFront();
-    const moderatorNotification = new NotificationPage({ page: moderatorPage.page });
-    await moderatorNotification.joinBreakoutRoom();
-    for (const [_, guestPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
-      const guestNotification = new NotificationPage({ page: guestPage.page });
-      await guestPage.page.bringToFront();
-      await guestNotification.joinBreakoutRoom();
+    for (const [_, participantPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
+      const participantNotification = new NotificationPage({ page: participantPage.page });
+      await participantPage.page.bringToFront();
+      await participantNotification.joinBreakoutRoom();
     }
   }
 );
@@ -48,14 +44,10 @@ When(
   'all participants in the meeting room of {string} leave the Breakout Rooms',
   async function (this: CustomWorld, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const moderatorPage = startedMeeting.meeting.meetingRoomPage;
-    await moderatorPage.page.bringToFront();
-    const moderatorNotification = new NotificationPage({ page: moderatorPage.page });
-    await moderatorNotification.leaveBreakoutRoom();
-    for (const [_, guestPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
-      const guestNotification = new NotificationPage({ page: guestPage.page });
-      await guestPage.page.bringToFront();
-      await guestNotification.leaveBreakoutRoom();
+    for (const [_, participantPage] of Object.entries(startedMeeting.participantMeetingRoomPages)) {
+      const participantNotification = new NotificationPage({ page: participantPage.page });
+      await participantPage.page.bringToFront();
+      await participantNotification.leaveBreakoutRoom();
     }
   }
 );

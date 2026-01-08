@@ -26,7 +26,8 @@
           },
           [
             ["\\n", " "],
-            ["%meeting_url_pattern%", ""]
+            ["%meeting_url_pattern%", ""],
+            ["config/opentalk-realm.json", ""]
           ]
         ],
         "words_to_avoid": [

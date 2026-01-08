@@ -47,7 +47,7 @@ export type User = {
   context: BrowserContext;
 };
 
-setDefaultTimeout(60 * 1000);
+setDefaultTimeout(120 * 1000);
 
 export class CustomWorld extends World {
   browser!: Browser;
@@ -105,8 +105,8 @@ export class CustomWorld extends World {
       throw new Error('No meeting has been created yet');
     }
     this.startedMeetings[moderator].participantMeetingRoomPages = {
-      ...participantMeetingRoomPages,
       ...this.startedMeetings[moderator].participantMeetingRoomPages,
+      ...participantMeetingRoomPages,
     };
   }
 

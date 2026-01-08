@@ -59,7 +59,7 @@ Feature: Meeting Room Talking stick
     And the order selection field with the "Random" button should be displayed in the Talking Stick moderator tool for "Alice"
     # Instead of checking the random order, just verify the number the guests in the meeting,
     # because the order is truly random. In some cases, it might match the initial order, which would cause the test to fail.
-    And 3 participants should be displayed in the Talking Stick moderator tool for "Alice"
+    And 3 participants should be displayed in the open moderator tool for "Alice"
 
     When "Alice" shows the possible order selections in the Talking Stick moderator tool
     And "Alice" orders the participants by "Name (A - Z)" in the Talking Stick moderator tool
