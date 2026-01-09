@@ -12,17 +12,10 @@ import { SidebarPage } from '../../pages/SidebarPage';
 
 const meetingTitle = 'test_meeting';
 const meetingRoomPassword = 'test1234';
-const createdMeetingStore: string[] = [];
 
 test.describe('Accessibility_General', () => {
-  test.afterEach(async ({ page }) => {
-    if (createdMeetingStore.length >= 1) {
-      const homePage = new HomePage({ page });
-      await homePage.navigateToHomePage();
-      await homePage.deleteMeeting(meetingTitle);
-      createdMeetingStore.pop();
-      await page.close();
-    }
+  test.afterEach(async () => {
+    await deleteMeetings(config.USER_NAME);
   });
 
   test('TC_001_Dashboard', async ({ page, browserName }) => {
@@ -34,11 +27,8 @@ test.describe('Accessibility_General', () => {
       await closeWebkitPopUp({ page });
     }
 
-    await deleteMeetings(config.USER_NAME);
-
     const planMeetingPage = await homePage.planNewMeeting();
     await planMeetingPage.createNewMeeting(meetingTitle, meetingRoomPassword);
-    createdMeetingStore.push(meetingTitle);
     await homePage.navigateToHomePage();
     await homePage.markMeetingAsFavourite(meetingTitle);
 
