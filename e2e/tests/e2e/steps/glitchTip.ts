@@ -11,13 +11,13 @@ let glitchTipPage: GlitchTipPage;
 
 When('{string} closes the GlitchTip pop-up', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
-  glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
+  glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
   await glitchTipPage.closePopup();
 });
 
 When('{string} sends a crash report', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
-  glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
+  glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
   this.getStartedMeeting(user).crashReportResponse = await glitchTipPage.sendCrashReport();
 });
 
@@ -25,7 +25,7 @@ When(
   '{string} sends a crash report with these details:',
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
-    glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
+    glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
 
     const { name, email, description } = dataTable.hashes()[0];
     await glitchTipPage.enterName(name);
@@ -51,7 +51,7 @@ Then(
   'for {string} sending successful pop-up should be displayed with text {string}',
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
+    glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
     await expect(glitchTipPage.sendingSuccessfulPopup).toBeVisible();
 
     const actualText = await glitchTipPage.getSendingSuccessfulPopupText();

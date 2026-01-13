@@ -9,7 +9,7 @@ export class StoragePage {
   public readonly storageUsedText: Locator;
   public readonly myFilesHeading: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.storageHeading = this.page.getByRole('heading', { name: 'Storage', exact: true });
     this.storageUsedText = this.page.getByRole('paragraph').getByText('used');

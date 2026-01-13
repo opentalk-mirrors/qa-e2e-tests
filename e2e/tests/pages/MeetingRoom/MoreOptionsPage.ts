@@ -11,7 +11,7 @@ export class MoreOptionsPage {
   page: Page;
   inviteGuestItem: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.inviteGuestItem = page.getByText('Invite guest');
   }

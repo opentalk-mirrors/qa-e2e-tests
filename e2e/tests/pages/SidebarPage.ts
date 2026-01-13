@@ -40,7 +40,7 @@ export class SidebarPage {
   public async navigateToSettingsPage(): Promise<SettingsPage> {
     await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.settingButton.click();
-    const settingsPage = new SettingsPage(this.page);
+    const settingsPage = new SettingsPage({ page: this.page });
     await settingsPage.settingsHeading.waitFor();
     return settingsPage;
   }

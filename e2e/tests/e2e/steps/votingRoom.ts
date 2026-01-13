@@ -18,7 +18,7 @@ Then(
   'the following description should be displayed in the Voting moderator tool for {string}:',
   async function (this: CustomWorld, user: string, description: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await expect(votingRoomPage.votingRoomMessage).toHaveText(description);
   }
 );
@@ -27,7 +27,7 @@ When(
   '{string} starts to create a new vote in the Voting moderator tool',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await votingRoomPage.createNewVotingRoom();
   }
 );
@@ -41,7 +41,7 @@ Then(
     user: string
   ) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     if (button === 'allow abstaining toggle' && status === 'ON') {
       await expect(votingRoomPage.createNewVoting.allowAbstainingToggleButton).toBeChecked();
     } else if (button === 'auto close toggle' && status === 'OFF') {
@@ -58,7 +58,7 @@ When(
   '{string} hovers the "auto close toggle" in the Create Voting moderator tool',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await votingRoomPage.hoverAutoCloseToggleButton();
   }
 );
@@ -67,7 +67,7 @@ Then(
   'the tooltip for the "auto close" switch on the Create Voting moderator tool for {string} should be:',
   async function (this: CustomWorld, user: string, tooltipDescription: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await expect(votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription).toHaveText(tooltipDescription);
   }
 );
@@ -76,14 +76,14 @@ Then(
   '{string} should be selected as voting type in the Create Voting moderator tool for {string}',
   async function (this: CustomWorld, votingType: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await expect(votingRoomPage.createNewVoting.votingTypeDropdownInput).toHaveText(votingType);
   }
 );
 
 When('{string} exits the Create Voting moderator tool', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
-  votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+  votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
   await votingRoomPage.exitVotingRoomCreation();
 });
 
@@ -91,7 +91,7 @@ When(
   '{string} opens the voting type dropdown in the Create Voting moderator tool',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await votingRoomPage.openVotingTypeDropdown();
   }
 );
@@ -100,7 +100,7 @@ Then(
   'the voting type dropdown should not be displayed in the Create Voting moderator tool for {string}',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage(meeting.meetingRoomPage.page);
+    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     await expect(votingRoomPage.createNewVoting.votingTypeDropdown).not.toBeVisible();
   }
 );

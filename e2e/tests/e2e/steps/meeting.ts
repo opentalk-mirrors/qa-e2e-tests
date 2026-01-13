@@ -99,7 +99,9 @@ When(
 );
 
 When('{string} copies the guest link into the clipboard', async function (this: CustomWorld, user: string) {
-  const inviteGuestPopupPage = new InviteGuestPopupPage(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
+  const inviteGuestPopupPage = new InviteGuestPopupPage({
+    page: this.getStartedMeeting(user).meeting.meetingRoomPage.page,
+  });
   await inviteGuestPopupPage.copyToClipboard();
 });
 
