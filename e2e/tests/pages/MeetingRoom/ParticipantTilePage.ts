@@ -7,7 +7,7 @@ export class ParticipantTilePage {
   private readonly participantTile: Locator;
   private readonly handRaisedIndicatorSelector: string;
 
-  constructor(tileLocator: Locator) {
+  constructor({ tileLocator }: { tileLocator: Locator }) {
     this.participantTile = tileLocator;
     this.handRaisedIndicatorSelector = '[data-sentry-component="HandRaisedIndicator"]';
   }

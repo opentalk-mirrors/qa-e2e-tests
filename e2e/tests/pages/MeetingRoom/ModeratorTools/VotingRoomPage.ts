@@ -19,7 +19,7 @@ export class VotingRoomPage {
     readonly votingTypeDropdown: Locator;
   };
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.votingRoomHeading = this.page.getByRole('heading', { name: 'Voting', exact: true });
     this.votingRoomMessage = this.page

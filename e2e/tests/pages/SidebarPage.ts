@@ -55,7 +55,7 @@ export class SidebarPage {
   public async navigateToMyMeetingsPage(): Promise<MyMeetingsPage> {
     await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.meetingsButton.click();
-    const myMeetingsPage = new MyMeetingsPage(this.page);
+    const myMeetingsPage = new MyMeetingsPage({ page: this.page });
     return myMeetingsPage;
   }
 

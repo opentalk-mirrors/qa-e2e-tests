@@ -10,7 +10,7 @@ export class InviteGuestPopupPage {
   private readonly copyToClipboardButton: Locator;
   private readonly guestLinkText: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.createInvitationButton = page.getByRole('button', { name: 'Create' });
     this.copyToClipboardButton = page.getByRole('button', { name: 'Copy to Clipboard' });
     this.guestLinkText = page.locator('css=.MuiDialogContent-root');

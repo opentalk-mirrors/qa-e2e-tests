@@ -18,7 +18,7 @@ const userCredentials: Record<string, { username: string; password: string; emai
 Given('{string} has logged in', async function (this: CustomWorld, username: string) {
   const context = await this.init();
   const page = await context.newPage();
-  const loginPage = new LoginPage(page);
+  const loginPage = new LoginPage({ page });
   const creds = userCredentials[username];
   if (!creds) {
     throw new Error(`No credentials found for user: ${username}`);

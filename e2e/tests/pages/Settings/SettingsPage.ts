@@ -28,14 +28,14 @@ export class SettingsPage {
 
   public async navigateToProfile(): Promise<ProfilePage> {
     await this.profileLink.click();
-    const profilePage = new ProfilePage(this.page);
+    const profilePage = new ProfilePage({ page: this.page });
     await profilePage.profilePictureHeading.waitFor();
     return profilePage;
   }
 
   public async navigateToAccount(): Promise<AccountPage> {
     await this.accountLink.click();
-    const accountPage = new AccountPage(this.page);
+    const accountPage = new AccountPage({ page: this.page });
     await accountPage.generalInformationHeading.waitFor();
     return accountPage;
   }

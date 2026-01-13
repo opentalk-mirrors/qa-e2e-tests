@@ -18,6 +18,6 @@ export class MoreOptionsPage {
 
   async inviteGuest(): Promise<InviteGuestPopupPage> {
     await this.inviteGuestItem.click();
-    return new InviteGuestPopupPage(this.page);
+    return new InviteGuestPopupPage({ page: this.page });
   }
 }

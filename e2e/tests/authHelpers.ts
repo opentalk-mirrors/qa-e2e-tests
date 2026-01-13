@@ -35,7 +35,7 @@ export async function globalSetup(): Promise<void> {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  const loginPage = new LoginPage(page);
+  const loginPage = new LoginPage({ page });
   await loginPage.gotoLoginPage();
   await loginPage.login(config.USER_NAME, config.PASSWORD);
 

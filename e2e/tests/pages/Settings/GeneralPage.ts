@@ -18,7 +18,7 @@ export class GeneralPage {
   public readonly saveButton: Locator;
   public readonly successMessage: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
 
     this.languageHeading = this.page.getByRole('heading', { name: /^(Sprache|Language)$/ });

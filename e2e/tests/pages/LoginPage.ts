@@ -12,7 +12,7 @@ export class LoginPage {
   usernameInputField: Locator;
   passwordInputField: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.signInButton = page.getByRole('button', { name: /^(Anmelden|Sign In)$/ });
     this.usernameInputField = page.getByRole('textbox', { name: 'Username or email' });

@@ -27,7 +27,7 @@ export class SessionDurationDialog {
   public readonly closeButton: Locator;
   public readonly selectedDurationLocator: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.dialogContainer = this.page.getByRole('dialog', { name: 'Session Duration', exact: true });
     this.title = this.page.locator('//p[@id="duration-field-popover-title"]');

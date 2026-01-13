@@ -16,7 +16,7 @@ export class DebriefingPage extends ModeratorToolsPage {
 
   public readonly debriefingInitAlert: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     super({ page: page });
     this.debriefingButton = this.page.getByRole('tab', { name: 'Debriefing' });
 

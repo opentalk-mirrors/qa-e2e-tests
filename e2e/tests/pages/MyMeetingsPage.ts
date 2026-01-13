@@ -9,7 +9,7 @@ export class MyMeetingsPage {
   public readonly myMeetingsHeading: Locator;
   public readonly planNewLink: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.myMeetingsHeading = this.page.getByRole('heading', { name: /^(My Meetings|Meine Meetings)$/ });
     this.planNewLink = this.page.getByRole('link', { name: /^(Plan new|Meeting planen)$/ });

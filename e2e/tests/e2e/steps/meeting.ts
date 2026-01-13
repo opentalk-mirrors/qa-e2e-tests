@@ -402,7 +402,7 @@ When('{string} selects {string} on the Home-Page', async function (this: CustomW
 
 Then('for {string} the Meetings list should be displayed', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
-  const myMeeting = new MyMeetingsPage(page);
+  const myMeeting = new MyMeetingsPage({ page });
   await expect(myMeeting.myMeetingsHeading).toBeVisible();
 });
 
