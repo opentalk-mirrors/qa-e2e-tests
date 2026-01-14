@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
+import { MeetingRoomPage } from './MeetingRoom/MeetingRoomPage';
+
 export class NotificationPage {
   private readonly page: Page;
   private readonly baseAlertLocator: Locator;
@@ -41,6 +43,8 @@ export class NotificationPage {
   }
 
   private async transitionBreakoutRoom(button: Locator): Promise<void> {
+    const meetingRoomPage = new MeetingRoomPage({ page: this.page });
+    const meetingRoomNameBefore = await meetingRoomPage.getMeetingRoomName();
     const responsePromise = this.page.waitForResponse(
       (response) =>
         (response.url().endsWith('/start') || response.url().endsWith('/start_invited')) &&
@@ -50,5 +54,9 @@ export class NotificationPage {
     await button.click();
     await responsePromise;
     await button.waitFor({ state: 'detached' });
+    let meetingRoomNameAfter: string;
+    do {
+      meetingRoomNameAfter = await meetingRoomPage.getMeetingRoomName();
+    } while (meetingRoomNameAfter === meetingRoomNameBefore);
   }
 }
