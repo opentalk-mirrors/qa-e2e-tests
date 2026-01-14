@@ -82,10 +82,8 @@ test.describe('Accessibility_General', () => {
     await expect(lobbyRoomPage.openTalkLogo).toBeFocused();
     await lobbyRoomPage.page.keyboard.press('Tab');
 
-    // speed-check is disabled in the test-setup
-    // see https://git.opentalk.dev/opentalk/qa/e2e-tests/-/issues/58
-    // await expect(lobbyRoomPage.speedTestButton).toBeFocused();
-    // await lobbyRoomPage.page.keyboard.press('Tab');
+    await expect(lobbyRoomPage.speedTestButton).toBeFocused();
+    await lobbyRoomPage.page.keyboard.press('Tab');
 
     await expect(lobbyRoomPage.threeDotMenuButton).toBeFocused();
     await lobbyRoomPage.page.keyboard.press('Tab');
