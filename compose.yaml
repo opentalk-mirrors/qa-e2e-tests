@@ -20,6 +20,7 @@ services:
       SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
       INSECURE: 'false'
       FEATURE_SHARED_FOLDER: 'true'
+      NDT_SERVER: ndt.mailbox.org
     healthcheck:
       test: 'wget "http://localhost:3000/manifest.json" -O - | grep ''"short_name": "OpenTalk"'''
       interval: 10s

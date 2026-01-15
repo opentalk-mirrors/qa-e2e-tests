@@ -68,6 +68,7 @@ variables:
         SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
         INSECURE: true
         FEATURE_SHARED_FOLDER: true
+        NDT_SERVER: ndt.mailbox.org
 
     - name: postgres:16-alpine
       pull_policy: if-not-present

@@ -21,10 +21,7 @@ test.describe('Conference', () => {
       );
     });
 
-    test.skip('show slow connection message with a slow connection', async ({ page, browserName }) => {
-      // speed-check is disabled in the test-setup
-      // see https://git.opentalk.dev/opentalk/qa/e2e-tests/-/issues/58
-
+    test('show slow connection message with a slow connection', async ({ page, browserName }) => {
       // throttling just works for chrome, so we need to skip the other browser
       test.skip(browserName === 'webkit' || browserName === 'firefox');
 
