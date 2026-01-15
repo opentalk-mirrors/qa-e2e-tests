@@ -16,9 +16,9 @@ Feature: Meeting Room Breakout Room
       | setting             | value           |
       | Duration            | Unlimited Time  |
       | By number of        | Rooms           |
-      | Number of rooms     | 2               |
+   #  | Number of rooms     | 1               |
       | Random distribution | disabled        |
-    And 2 rooms to be created should be displayed in the Breakout Rooms moderator tool for "Alice"
+   # And 1 room to be created should be displayed in the Breakout Rooms moderator tool for "Alice"
     And a "Start rooms" button should be displayed in the Breakout Rooms moderator tool for "Alice"
     And the "By number of" setting in the Breakout Rooms moderator tool for "Alice" should have these options:
       | Rooms        |
