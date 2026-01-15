@@ -243,7 +243,7 @@ export class MeetingRoomPage {
 
   async showMeetingDetails(): Promise<MeetingInfoPage> {
     await this.meetingInfoButton.click();
-    const meetingInfoPage = new MeetingInfoPage(this.page);
+    const meetingInfoPage = new MeetingInfoPage({ page: this.page });
     await meetingInfoPage.clipBoardButton.waitFor();
     return meetingInfoPage;
   }
@@ -324,7 +324,7 @@ export class MeetingRoomPage {
   // function related to burger menu
   async openBurgerMenu() {
     await this.burgerMenuButton.click();
-    const burgerMenuPage = new BurgerMenuPage(this.page);
+    const burgerMenuPage = new BurgerMenuPage({ page: this.page });
     await burgerMenuPage.burgerMenuDropdown.waitFor();
     return burgerMenuPage;
   }
@@ -409,7 +409,7 @@ export class MeetingRoomPage {
 
   async showMoreOptions() {
     await this.toolBar.moreOptionButton.click();
-    return new MoreOptionsPage(this.page);
+    return new MoreOptionsPage({ page: this.page });
   }
 
   // utility function
@@ -443,19 +443,19 @@ export class MeetingRoomPage {
 
   public async startBreakoutRoomsModeratorTool(): Promise<BreakoutRoomsPage> {
     await this.moderationTools.createBreakoutRoomsButton.click();
-    return new BreakoutRoomsPage(this.page);
+    return new BreakoutRoomsPage({ page: this.page });
   }
 
   public async startMuteParticipantsModeratorTool(): Promise<MuteParticipantsPage> {
     await this.moderationTools.muteParticipantsButton.click();
-    const muteParticipantsPage = new MuteParticipantsPage(this.page);
+    const muteParticipantsPage = new MuteParticipantsPage({ page: this.page });
     await muteParticipantsPage.waitForPageToBeLoaded();
     return muteParticipantsPage;
   }
 
   public async startVotingRoomsModeratorTool(): Promise<VotingRoomPage> {
     await this.moderationTools.createVotingRoomsButton.click();
-    const votingRoomPage = new VotingRoomPage(this.page);
+    const votingRoomPage = new VotingRoomPage({ page: this.page });
     await votingRoomPage.votingRoomHeading.waitFor({ state: 'visible' });
     return votingRoomPage;
   }
@@ -468,7 +468,7 @@ export class MeetingRoomPage {
 
   public getParticipantTileByName(name: string): ParticipantTilePage {
     const participantTileWithName = this.participantWindowLocator.filter({ hasText: name });
-    return new ParticipantTilePage(participantTileWithName);
+    return new ParticipantTilePage({ tileLocator: participantTileWithName });
   }
 
   public async selectCoffeeBreakModeratorTool(): Promise<CoffeeBreakPage> {
@@ -591,7 +591,7 @@ export class MeetingRoomPage {
 
   public async selectPeopleOption(): Promise<PeopleOptionPage> {
     await this.peopleButton.click();
-    const peopleOptionPage = new PeopleOptionPage(this.page);
+    const peopleOptionPage = new PeopleOptionPage({ page: this.page });
     await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });
     return peopleOptionPage;
   }

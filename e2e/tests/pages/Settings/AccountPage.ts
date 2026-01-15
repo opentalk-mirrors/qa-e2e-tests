@@ -10,7 +10,7 @@ export class AccountPage {
   public readonly emailTextbox: Locator;
   public readonly firstNameTextbox: Locator;
   public readonly familyNameTextbox: Locator;
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
 
     this.generalInformationHeading = this.page.getByRole('heading', { name: 'General Information' });

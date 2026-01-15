@@ -28,7 +28,7 @@ export class ModeratorToolsPage {
     this.participantTimeSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] span');
     this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
 
-    this.sessionDurationDialog = new SessionDurationDialog(this.page);
+    this.sessionDurationDialog = new SessionDurationDialog({ page: this.page });
   }
 
   private async getAllButtons(): Promise<Locator[]> {

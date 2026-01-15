@@ -21,7 +21,7 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public readonly microphonesStatus: Locator;
   public readonly sortByDropdown: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     super({ page: page });
     this.page = page;
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });

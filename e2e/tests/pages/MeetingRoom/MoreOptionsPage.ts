@@ -11,13 +11,13 @@ export class MoreOptionsPage {
   page: Page;
   inviteGuestItem: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.inviteGuestItem = page.getByText('Invite guest');
   }
 
   async inviteGuest(): Promise<InviteGuestPopupPage> {
     await this.inviteGuestItem.click();
-    return new InviteGuestPopupPage(this.page);
+    return new InviteGuestPopupPage({ page: this.page });
   }
 }

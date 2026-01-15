@@ -33,7 +33,7 @@ test.describe('Dashboard_Settings', () => {
     await changeLanguage('en-US');
     sideBarPage = new SidebarPage({ page });
     settingsPage = await sideBarPage.navigateToSettingsPage();
-    generalPage = new GeneralPage(settingsPage.page);
+    generalPage = new GeneralPage({ page: settingsPage.page });
 
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });
@@ -194,7 +194,7 @@ test.describe('Dashboard_Settings', () => {
     await expect(storagePage.storageUsedText).toBeVisible();
     await expect(storagePage.myFilesHeading).toBeVisible();
 
-    let myFilesPage = new MyFilesPage(storagePage.page);
+    let myFilesPage = new MyFilesPage({ page: storagePage.page });
     await expect(myFilesPage.filenameColumn).toBeVisible();
     await expect(myFilesPage.createdColumn).toBeVisible();
     await expect(myFilesPage.sizeColumn).toBeVisible();
@@ -230,7 +230,7 @@ test.describe('Dashboard_Settings', () => {
     const homePage: HomePage = new HomePage({ page: newPage });
     await homePage.navigateToHomePage();
     const meetingDetailsPage: MeetingDetailsPage = await homePage.showMeetingDetails(meetingRoomName);
-    myFilesPage = new MyFilesPage(meetingDetailsPage.page);
+    myFilesPage = new MyFilesPage({ page: meetingDetailsPage.page });
     expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
 
     filenameToDelete = await myFilesPage.getFileName(INDEX);

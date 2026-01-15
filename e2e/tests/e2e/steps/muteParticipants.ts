@@ -20,7 +20,7 @@ When(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    const muteParticipantsPage = new MuteParticipantsPage(meeting.meetingRoomPage.page);
+    const muteParticipantsPage = new MuteParticipantsPage({ page: meeting.meetingRoomPage.page });
     await muteParticipantsPage.muteAllParticipants();
   }
 );
@@ -30,7 +30,7 @@ When(
   async function (this: CustomWorld, moderator: string, participantsToMuteTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    const muteParticipantsPage = new MuteParticipantsPage(meeting.meetingRoomPage.page);
+    const muteParticipantsPage = new MuteParticipantsPage({ page: meeting.meetingRoomPage.page });
     const participants = participantsToMuteTable.raw().map((participant) => participant[0]);
     const participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({
       page: meeting.meetingRoomPage.page,

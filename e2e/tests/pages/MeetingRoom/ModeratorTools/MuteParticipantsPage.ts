@@ -10,7 +10,7 @@ export class MuteParticipantsPage extends ModeratorToolsPage {
   private readonly muteAllButton: Locator;
   private readonly muteSelectedButton: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     super({ page: page });
     this.muteAllButton = this.page.getByRole('button', { name: 'All', exact: true });
     this.muteSelectedButton = this.page.getByRole('button', { name: 'Selected', exact: true });

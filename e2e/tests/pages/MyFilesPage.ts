@@ -16,7 +16,7 @@ export class MyFilesPage {
   private readonly downloadButton: Locator;
   private readonly deleteButton: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.filesTable = this.page.getByText('OpenTalk LogoStorage').getByRole('table');
     this.rowLocator = this.page.getByRole('row');

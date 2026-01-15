@@ -14,7 +14,7 @@ export class ProfilePage {
   private readonly errorText: Locator;
   public readonly saveButton: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
 
     this.profilePictureHeading = this.page.getByRole('heading', {

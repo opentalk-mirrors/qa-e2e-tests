@@ -16,7 +16,7 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly roomsToBeCreatedRegex: RegExp;
   private readonly roomsToBeCreated: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     super({ page });
     this.startRoomsButton = this.page.getByRole('button', { name: 'Start rooms' });
     this.closeRoomButton = this.page.getByRole('button', { name: 'Close room' });

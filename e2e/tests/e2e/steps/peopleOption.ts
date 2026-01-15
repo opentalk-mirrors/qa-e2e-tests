@@ -16,7 +16,7 @@ Then(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const guestsName = dataTable.raw().map((guest) => guest[0]);
     for (const guest of guestsName) {
       expect(await peopleOptionPage.isGuest(guest)).toBeTruthy();
@@ -29,7 +29,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.participantsList).toBeVisible();
     for (let i = 0; i < (await peopleOptionPage.getNumberOfParticipants()); i++) {
       expect(await peopleOptionPage.getParticipantDetails(i)).toMatch(/Joined ([01]\d|2[0-3]):[0-5]\d/);
@@ -42,7 +42,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.participantsList).toBeVisible();
     for (let i = 0; i < (await peopleOptionPage.getNumberOfParticipants()); i++) {
       await expect(peopleOptionPage.microphonesStatus.nth(i)).toBeVisible();
@@ -55,7 +55,7 @@ When(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.selectSearchParticipant();
   }
 );
@@ -65,7 +65,7 @@ Then(
   async function (this: CustomWorld, user: string, placeholder: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     expect(await peopleOptionPage.getSearchParticipantPlaceholder()).toBe(placeholder);
   }
 );
@@ -75,7 +75,7 @@ When(
   async function (this: CustomWorld, user: string, searchText: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.typeInSearchParticipantTextbox(searchText);
   }
 );
@@ -85,7 +85,7 @@ When(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.clearTextInSearchParticipantTextbox();
   }
 );
@@ -95,7 +95,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     expect(await peopleOptionPage.getSearchParticipantTextboxValue()).toBe('');
   }
 );
@@ -105,7 +105,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     expect(await peopleOptionPage.getNumberOfParticipants()).toBe(0);
   }
 );
@@ -115,7 +115,7 @@ When(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.showPossibleOrderSelections();
   }
 );
@@ -125,7 +125,7 @@ Then(
   async function (this: CustomWorld, user: string, expectedElements: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     let existingElements: string[] = [];
     existingElements = await peopleOptionPage.getAllMenuItemsInnerText();
     for (const expectedElement of expectedElements.raw().flat()) {
@@ -146,7 +146,7 @@ When(
   async function (this: CustomWorld, user: string, sortOption: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.sortParticipants(sortOption);
   }
 );
@@ -156,7 +156,7 @@ Then(
   async function (this: CustomWorld, user: string, sortOption: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     switch (sortOption) {
       case 'Ascending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
@@ -203,7 +203,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.sortByDropdown).not.toBeVisible();
   }
 );
@@ -213,7 +213,7 @@ When(
   async function (this: CustomWorld, user: string, switchName: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.toggleSwitch(switchName);
   }
 );
@@ -223,7 +223,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.withoutGroupButton).toBeVisible();
     await expect(peopleOptionPage.withoutGroupExpandButton).toBeVisible();
   }
@@ -234,7 +234,7 @@ When(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.toggleWithoutGroup();
   }
 );
@@ -244,7 +244,7 @@ Then(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const participantsName: string[] = await peopleOptionPage.getAllParticipantsNames();
     const participants = dataTable.raw().map((participant) => participant[0]);
     expect(participantsName.length).toBe(participants.length);
@@ -259,7 +259,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage(meeting.meetingRoomPage.page);
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     expect(await peopleOptionPage.getNumberOfParticipants()).toBe(0);
   }
 );

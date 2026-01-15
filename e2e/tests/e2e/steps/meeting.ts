@@ -99,7 +99,9 @@ When(
 );
 
 When('{string} copies the guest link into the clipboard', async function (this: CustomWorld, user: string) {
-  const inviteGuestPopupPage = new InviteGuestPopupPage(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
+  const inviteGuestPopupPage = new InviteGuestPopupPage({
+    page: this.getStartedMeeting(user).meeting.meetingRoomPage.page,
+  });
   await inviteGuestPopupPage.copyToClipboard();
 });
 
@@ -402,7 +404,7 @@ When('{string} selects {string} on the Home-Page', async function (this: CustomW
 
 Then('for {string} the Meetings list should be displayed', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
-  const myMeeting = new MyMeetingsPage(page);
+  const myMeeting = new MyMeetingsPage({ page });
   await expect(myMeeting.myMeetingsHeading).toBeVisible();
 });
 

@@ -15,7 +15,7 @@ When('{string} clicks on "Debriefing" button', async function (this: CustomWorld
   }
   const meeting = this.getStartedMeeting(username).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
-  debriefingPage = new DebriefingPage(this.page);
+  debriefingPage = new DebriefingPage({ page: this.page });
   await debriefingPage.startDebriefingModeratorTool();
 });
 

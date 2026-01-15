@@ -16,7 +16,7 @@ export class SettingsPage {
   public readonly accountLink: Locator;
   public readonly storageLink: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.settingsLink = this.page.getByRole('link', { name: /^(Einstellungen|Settings)$/ });
     this.settingsHeading = this.page.getByRole('heading', { name: /^(Einstellungen|Settings)$/, exact: true });
@@ -28,14 +28,14 @@ export class SettingsPage {
 
   public async navigateToProfile(): Promise<ProfilePage> {
     await this.profileLink.click();
-    const profilePage = new ProfilePage(this.page);
+    const profilePage = new ProfilePage({ page: this.page });
     await profilePage.profilePictureHeading.waitFor();
     return profilePage;
   }
 
   public async navigateToAccount(): Promise<AccountPage> {
     await this.accountLink.click();
-    const accountPage = new AccountPage(this.page);
+    const accountPage = new AccountPage({ page: this.page });
     await accountPage.generalInformationHeading.waitFor();
     return accountPage;
   }
@@ -47,7 +47,7 @@ export class SettingsPage {
 
   public async navigateToStorage(): Promise<StoragePage> {
     await this.storageLink.click();
-    const storagePage: StoragePage = new StoragePage(this.page);
+    const storagePage: StoragePage = new StoragePage({ page: this.page });
     await storagePage.storageHeading.waitFor();
     return storagePage;
   }

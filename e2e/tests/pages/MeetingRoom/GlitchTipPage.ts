@@ -15,7 +15,7 @@ export class GlitchTipPage {
   private readonly descriptionTextbox: Locator;
   public readonly sendingSuccessfulPopup: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.glitchTipPopup = this.page.getByRole('dialog', { name: `Oh, it looks like we're having issues.` }).nth(0);
     this.closeButton = this.page.getByRole('button', { name: 'Close dialog' });

@@ -16,7 +16,7 @@ When(
     if (!(await moderatorRoomPage.isSessionDurationDialogVisible())) {
       await moderatorRoomPage.openSessionDurationDialog();
     }
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await sessionDurationDialog.selectDuration(duration);
   }
 );
@@ -25,7 +25,7 @@ When(
   '{string} saves the selected duration in the duration dialog in the moderator tool',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await sessionDurationDialog.save();
   }
 );
@@ -34,7 +34,7 @@ When(
   '{string} sets {string} as the custom duration in the duration dialog in the moderator tool',
   async function (this: CustomWorld, user: string, duration: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await sessionDurationDialog.setCustomDuration(duration);
   }
 );
@@ -43,7 +43,7 @@ When(
   /"([^"]*)" (decrements|increments) the custom duration (\d+) times in the duration dialog in the moderator tool/,
   async function (this: CustomWorld, user: string, method: 'increments' | 'decrements', times: number) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
 
     if (method === 'decrements') {
       for (let i = 0; i < times; i++) {
@@ -61,7 +61,7 @@ When(
   '{string} closes the session duration dialog in the open moderator tool',
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await sessionDurationDialog.close();
   }
 );
@@ -70,7 +70,7 @@ Then(
   'the heading in the session duration dialog should be {string} in the open moderator tool for {string}',
   async function (this: CustomWorld, title: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await expect(sessionDurationDialog.title).toHaveText(title);
   }
 );
@@ -88,7 +88,7 @@ Then(
   'the {string} duration should be selected in the duration dialog in the moderator tool for {string}',
   async function (this: CustomWorld, duration: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     expect(await sessionDurationDialog.getSelectedDurationText()).toBe(duration);
   }
 );
@@ -106,7 +106,7 @@ Then(
   'the input box {string} with the value {string} should be displayed in the duration dialog in the moderator tool for {string}',
   async function (this: CustomWorld, text: string, expectedValue: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const sessionDurationDialog = new SessionDurationDialog(meeting.meetingRoomPage.page);
+    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await expect(sessionDurationDialog.customDurationLabel).toHaveText(text);
     await expect(sessionDurationDialog.customDurationButtonInput).toBeVisible();
     await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue(expectedValue);

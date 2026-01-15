@@ -21,7 +21,7 @@ export class MeetingInfoPage {
   public readonly passwordCopiedToClipboardPopup: Locator;
   public readonly detailsCopiedToClipboardPopup: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.inviteLinkInputField = this.page.getByRole('textbox', { name: 'Invite Link' });
     this.dialInNumberInputField = this.page.getByRole('textbox', { name: 'Dial-in Number' });

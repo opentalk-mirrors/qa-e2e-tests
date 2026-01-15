@@ -24,7 +24,7 @@ test.describe('Meeting Room_Debriefing', () => {
   });
 
   test('TC_001_Meeting room_Debriefing_For moderator + registered user', async ({ page }) => {
-    debriefingPage = new DebriefingPage(page);
+    debriefingPage = new DebriefingPage({ page });
     await debriefingPage.startDebriefingModeratorTool();
     await expect(debriefingPage.debriefingOptions.endOfTheConferenceOption).toBeVisible();
     await expect(debriefingPage.debriefingOptions.forModeratorOption).toBeVisible();
@@ -45,7 +45,7 @@ test.describe('Meeting Room_Debriefing', () => {
   });
 
   test('TC_002_Meeting room_Debriefing_For moderator', async ({ page }) => {
-    debriefingPage = new DebriefingPage(page);
+    debriefingPage = new DebriefingPage({ page });
     await debriefingPage.startDebriefingModeratorTool();
     await debriefingPage.selectDebriefingOption(debriefingPage.debriefingOptions.forModeratorOption);
     await expect(debriefingPage.debriefingInitAlert).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('Meeting Room_Debriefing', () => {
   });
 
   test('TC_003_Meeting room_Debriefing_End of the conference', async ({ page }) => {
-    debriefingPage = new DebriefingPage(page);
+    debriefingPage = new DebriefingPage({ page });
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(2);
     await debriefingPage.startDebriefingModeratorTool();
     await debriefingPage.selectDebriefingOption(debriefingPage.debriefingOptions.endOfTheConferenceOption);

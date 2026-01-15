@@ -13,7 +13,7 @@ Then(
   /^for "([^"]*)" the GlitchTip pop-up (should|should not) be displayed/,
   async function (this: CustomWorld, user: string, actionType: 'should' | 'should not') {
     const meeting = this.getStartedMeeting(user).meeting;
-    glitchTipPage = new GlitchTipPage(meeting.meetingRoomPage.page);
+    glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
     if (actionType === 'should') {
       expect(await glitchTipPage.glitchTipPopup).toBeVisible();
     } else {

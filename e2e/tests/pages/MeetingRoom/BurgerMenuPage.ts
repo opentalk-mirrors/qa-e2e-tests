@@ -17,7 +17,7 @@ export class BurgerMenuPage {
   public readonly keyboardShortcutsMenuItem: Locator;
   public readonly reportABugMenuItem: Locator;
 
-  constructor(page: Page) {
+  constructor({ page }: { page: Page }) {
     this.page = page;
     this.context = this.page.context();
     this.burgerMenuDropdown = this.page.getByRole('menu', { name: 'My meeting' });
@@ -45,7 +45,7 @@ export class BurgerMenuPage {
 
   public async openReportABug(): Promise<GlitchTipPage> {
     await this.reportABugMenuItem.click();
-    const glitchTipPage = new GlitchTipPage(this.page);
+    const glitchTipPage = new GlitchTipPage({ page: this.page });
     await glitchTipPage.glitchTipPopup.waitFor({ state: 'visible' });
     return glitchTipPage;
   }
