@@ -18,13 +18,8 @@ if [ -z "$OIDC_ISSUER" ]; then
   exit 1
 fi
 
-<<<<<<< HEAD
 if [ -z "$CONTROLLER_HOST" ]; then
   echo "Error: CONTROLLER_HOST variable is not set."
-=======
-if [ -z "$LIVEKIT_URL" ]; then
-  echo "Error: LIVEKIT_URL variable is not set."
->>>>>>> 18b4aed (ci: wait for livekit before starting tests)
   exit 1
 fi
 
@@ -62,7 +57,6 @@ do
   sleep 1;
 done
 
-<<<<<<< HEAD
 while [ "$(curl "$CONTROLLER_HOST"/v1/auth/login -k | grep 'oidc' -q; echo $?)" -ne 0 ];
 do
   (( counter++ )) || true
@@ -71,15 +65,5 @@ do
     exit 1
   fi;
   echo "waiting for controller to start"
-=======
-counter=0;
-while ! curl -sfk $LIVEKIT_URL > /dev/null; do
-  (( counter++ )) || true
-  if [ $counter -gt "$TIMEOUT" ]; then
-    echo "timeout waiting for livekit to start"
-    exit 1
-  fi;
-  echo "waiting for livekit to start"
->>>>>>> 18b4aed (ci: wait for livekit before starting tests)
   sleep 1;
 done

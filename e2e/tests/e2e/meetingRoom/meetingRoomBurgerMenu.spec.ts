@@ -8,7 +8,7 @@ import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { TalkingStickPage } from '../../pages/MeetingRoom/ModeratorTools/TalkingStickPage';
 import { ViewOptionsPage } from '../../pages/MeetingRoom/ViewOptionsPage';
 
-test.describe('Meeting Room_Burger menu', () => {
+test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
   test('TC_001_Accessibility', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();

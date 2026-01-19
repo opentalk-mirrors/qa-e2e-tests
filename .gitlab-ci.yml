@@ -366,7 +366,9 @@ e2e-tests:
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "$BROWSER")
     - echo "RUNS $PROJECTS project"
-    - BROWSER=$PROJECTS pnpm run test:playwright --workers=1
+    - NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$PROJECTS --workers=1 --grep-invert @late
+    - NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$PROJECTS --workers=1 --grep @late
+
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml
