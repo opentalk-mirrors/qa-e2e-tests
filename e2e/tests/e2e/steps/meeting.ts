@@ -55,7 +55,7 @@ When(
 );
 
 Given(
-  '{int} guests have joined the meeting of {string}',
+  /^(\d+) guests? ha(?:s|ve) joined the meeting of "(.+)"$/,
   async function (this: CustomWorld, numOfGuests: number, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const context = this.getUser(user).context;

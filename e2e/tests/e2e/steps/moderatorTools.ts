@@ -7,6 +7,7 @@ import assert from 'node:assert';
 
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
+import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
 Then(
@@ -187,5 +188,14 @@ Then(
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     const actualParticipantsCount = await moderatorToolsPage.getTotalParticipantsNumber();
     expect(participantsCount).toEqual(actualParticipantsCount);
+  }
+);
+
+Then(
+  'a notification should be displayed in the meeting room of {string} with the text {string}',
+  async function (this: CustomWorld, user: string, text: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorNotification = new NotificationPage({ page: meeting.meetingRoomPage.page });
+    expect(await moderatorNotification.getAlertNotificationText()).toBe(text);
   }
 );
