@@ -5,6 +5,7 @@ Feature: GlitchTip_General
    As a user
    I want to send crash report
    So that I can report errors
+   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/236
 
   Background:
     Given "Alice" has logged in
@@ -12,6 +13,7 @@ Feature: GlitchTip_General
 
 
   Scenario: TC_001_manual report creating & submitting
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/238
     When "Alice" opens the "Report a bug" form
     Then for "Alice" the GlitchTip pop-up should be displayed
 

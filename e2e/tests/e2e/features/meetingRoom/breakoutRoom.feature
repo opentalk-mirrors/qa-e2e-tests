@@ -5,9 +5,11 @@ Feature: Meeting Room Breakout Room
   As a moderator
   I want to be able to create Breakout Rooms
   So that the participants can have discussions in smaller groups
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/19
 
   @smoke
   Scenario: Meeting Room As Moderator Create Breakout Rooms Moderator sidebar tool
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/244
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And "Alice" opens the Breakout Rooms moderator tool
@@ -26,6 +28,7 @@ Feature: Meeting Room Breakout Room
 
 
   Scenario: Meeting Room As Moderator random distribution option
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/248
     Given "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     When "Alice" opens the Breakout Rooms moderator tool
