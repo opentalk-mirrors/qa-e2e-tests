@@ -474,7 +474,6 @@ export class Api {
       e2e_encryption: e2e_encryption,
       starts_at: starts_at,
       ends_at: ends_at,
-      is_all_day: is_all_day,
     };
 
     if (password !== undefined) {
@@ -489,6 +488,7 @@ export class Api {
       };
       (payload as MyFunctionParams).starts_at = starts_at;
       (payload as MyFunctionParams).ends_at = starts_at;
+      (payload as MyFunctionParams).is_all_day = is_all_day;
     }
     const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin, meetingId } =
       await this.createMeeting(payload);
