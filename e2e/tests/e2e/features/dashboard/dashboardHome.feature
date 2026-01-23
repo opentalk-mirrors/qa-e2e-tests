@@ -89,3 +89,41 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
       | meeting 4 |
     When "Alice" selects meeting "meeting 1" on the Home-Page
     Then "Alice" should be on the Lobby-Page of the meeting named "meeting 1"
+
+
+  Scenario: TC_012_Dashboard_Home_Join existing button
+    Given "Alice" has logged in
+    And "Alice" has created an unscheduled meeting with the title "Alice"
+    When "Alice" starts to join an existing meeting from the Home-Page
+    Then for "Alice" Join a meeting now popup should be visible on Home-Page with following details:
+      | details            |
+      | Join a meeting now |
+      | Meeting ID (URL)   |
+      | Join               |
+      | Close              |
+    When "Alice" enters "Alice" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
+    Then for "Alice" an error with the text 'Error: Invalid Meeting ID' should be visible in the Join-a-meeting-now popup on the Home-Page
+    When "Alice" tries to join the meeting in the Join-a-meeting-now popup on the Home-Page
+    Then for "Alice" there should be no change in UI
+    When "Alice" closes Join-existing-meeting popup on the Home-Page
+    Then for "Alice" join existing meeting popup should not be visible on Home-Page
+    When "Alice" starts to join an existing meeting from the Home-Page
+    And "Alice" selects somewhere outside the join existing meeting popup
+    Then for "Alice" join existing meeting popup should not be visible on Home-Page
+    When "Alice" starts to join an existing meeting from the Home-Page
+    And "Alice" enters "random" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
+    And "Alice" enters "" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
+    Then for "Alice" an error with the text 'Error: "Meeting ID (URL)"' should be visible in the Join-a-meeting-now popup on the Home-Page
+    When "Alice" enters the meeting link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
+    Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page
+    When "Alice" join the meeting in the Join-a-meeting-now popup on the Home-Page
+    Then "Alice" should be on the Lobby-Page of the meeting named "Alice"
+    When "Alice" navigates back from Lobby-Page
+    Then "Alice" should be on the Home-Page
+    When "Alice" starts to join an existing meeting from the Home-Page
+    And "Alice" enters the guest link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
+    Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page
+    When "Alice" join the meeting in the Join-a-meeting-now popup on the Home-Page
+    Then "Alice" should be on the Lobby-Page of the meeting named "Alice"
+    When "Alice" selects the OpenTalk logo on the Lobby-Page
+    Then "Alice" should be on the Home-Page

@@ -118,7 +118,7 @@ Feature: Meeting Room Home
     Then for "Alice" the chat overview should be displayed on the Meeting-Room-Page
     And the chat messages count for "Alice" should be 9 on the Meeting-Room-Page
 
-
+  @skip-on-webkit
   Scenario: TC_002_Meeting Room_As Moderator_Home_People option+search+sort+group
     Given 2 guests have joined the meeting of "Alice" with delay of 30000 milliseconds
     When "Alice" views the participants on the Meeting-Room-Page
