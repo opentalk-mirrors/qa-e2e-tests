@@ -92,7 +92,7 @@ addr = "0.0.0.0"
 [oidc]
 # Base url for the OIDC authority. Will be used for frontend and controller unless overwritten by
 # `oidc.frontend.authority` or `oidc.controller.authority`.
-authority = "http://accounts.opentalk.test/auth/realms/OPENTALK"
+authority = "https://accounts.opentalk.test/auth/realms/OPENTALK"
 # authority = "http://keycloak:8080/auth/realms/OPENTALK"
 
 [oidc.frontend]
@@ -120,7 +120,7 @@ client_secret = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv"
 backend = "keycloak_webapi"
 
 # Base URL of the Keycloak web api.
-api_base_url = "http://accounts.opentalk.test/auth/admin/realms/OPENTALK"
+api_base_url = "https://accounts.opentalk.test/auth/admin/realms/OPENTALK"
 # api_base_url = "http://keycloak:8080/auth/realms/OPENTALK"
 
 # Client id that is used to authenticate against the user search API.
@@ -146,8 +146,8 @@ users_find_behavior = "from_user_search_backend"
 
 # LiveKit WebRTC SFU
 [livekit]
-public_url = "http://livekit.opentalk.test"
-service_url = "http://livekit.opentalk.test"
+public_url = "https://livekit.opentalk.test"
+service_url = "https://livekit.opentalk.test"
 
 api_key = "Controller"
 api_secret = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv"

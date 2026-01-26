@@ -18,6 +18,11 @@ if [ -z "$OIDC_ISSUER" ]; then
   exit 1
 fi
 
+if [ -z "$CONTROLLER_HOST" ]; then
+  echo "Error: CONTROLLER_HOST variable is not set."
+  exit 1
+fi
+
 WEBAPP_BASE=$INSTANCE_URL
 
 if [ -z "$1" ]; then
@@ -49,5 +54,16 @@ do
     exit 1
   fi;
   echo "waiting for webapp to start"
+  sleep 1;
+done
+
+while [ "$(curl "$CONTROLLER_HOST"/v1/auth/login -k | grep 'oidc' -q; echo $?)" -ne 0 ];
+do
+  (( counter++ )) || true
+  if [ $counter -gt "$TIMEOUT" ]; then
+    echo "timeout waiting for controller to start"
+    exit 1
+  fi;
+  echo "waiting for controller to start"
   sleep 1;
 done

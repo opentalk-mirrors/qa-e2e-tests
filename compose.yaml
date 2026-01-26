@@ -136,8 +136,8 @@ services:
           sleep 10;
           cat /builds/config/controller-config.toml | \
           sed 's/www\.opentalk\.test/localhost\:8443/g' > /tmp/controller-config.toml
-          sed -i 's|http://accounts\.opentalk\.test/|https://localhost:7443/|g' /tmp/controller-config.toml
-          sed -i 's|http://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
+          sed -i 's|https://accounts\.opentalk\.test/|https://localhost:7443/|g' /tmp/controller-config.toml
+          sed -i 's|https://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
           sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
           sed -i 's/\/minio\:/\/localhost\:/g' /tmp/controller-config.toml
@@ -219,7 +219,7 @@ services:
       - |
         cat /builds/config/test_env | \
         sed 's/https\:\/\/www\.opentalk\.test/https\:\/\/localhost\:8443/g' >  /builds/e2e/.env;
-        sed -i 's|http://controller.opentalk.test|https://localhost:21311|g'  /builds/e2e/.env;
+        sed -i 's|https://controller.opentalk.test|https://localhost:21311|g'  /builds/e2e/.env;
         npm ci
         npx playwright install
         bash
