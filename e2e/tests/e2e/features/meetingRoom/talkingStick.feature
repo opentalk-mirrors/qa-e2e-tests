@@ -5,6 +5,7 @@ Feature: Meeting Room Talking stick
   As a meeting moderator
   I want to enforce speaking in turns
   So that all participants have a fair chance to contribute during the meeting.
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/194
 
   Background:
     Given "Alice" has logged in
@@ -13,6 +14,7 @@ Feature: Meeting Room Talking stick
 
   @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Talking stick
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/195
     When "Alice" opens the Talking Stick moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Talking stick"
     And the order selection field with the "Name (A - Z)" button should be displayed in the Talking Stick moderator tool for "Alice"
@@ -25,6 +27,7 @@ Feature: Meeting Room Talking stick
 
 
   Scenario: TC_002_Meeting Room_As Moderator_Talking stick_Order selection field
+    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/196
     When "Alice" opens the Talking Stick moderator tool
     And "Alice" shows the possible order selections in the Talking Stick moderator tool
     Then these "menu items" should be displayed in the open moderator tool for "Alice":

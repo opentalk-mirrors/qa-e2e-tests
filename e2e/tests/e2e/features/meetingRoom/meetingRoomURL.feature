@@ -6,9 +6,11 @@ Feature: Meeting room URL
   As a user
   I want every link to the meeting room be correct
   So that I and other invited participants can easily join
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/191
 
   @smoke
   Scenario: TC_002_URL route in Breakout room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/193
     Given "Alice" has logged in
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And 3 guests join the meeting of "Alice"

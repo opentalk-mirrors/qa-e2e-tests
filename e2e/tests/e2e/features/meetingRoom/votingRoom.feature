@@ -6,6 +6,7 @@ Feature: Meeting Room Voting Room
   As a moderator
   I want to know participants' opinion through voting
   So that I can make the correct decision
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/20
 
   Background:
     Given "Alice" has logged in
@@ -13,6 +14,7 @@ Feature: Meeting Room Voting Room
 
 
   Scenario: Meeting Room As Moderator Voting_Overview+Duration+Back button
+    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/111
     When "Alice" opens the Voting moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Voting"
     And the following description should be displayed in the Voting moderator tool for "Alice":
@@ -111,6 +113,7 @@ Feature: Meeting Room Voting Room
 
 
   Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic text fields
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/151
     When "Alice" opens the Voting moderator tool
     And "Alice" starts to create a new vote in the Voting moderator tool
     Then "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"

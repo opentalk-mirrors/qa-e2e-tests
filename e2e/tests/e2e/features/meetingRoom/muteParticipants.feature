@@ -6,9 +6,10 @@ Feature: Mute Participants
   As a moderator
   I want to be able to mute participants
   So that I can moderate the meeting effectively without background noise or unwanted interruptions
-
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/27
 
   Scenario: As Moderator_Mute participants_All button, Selected button
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/107
     Given "Alice" has logged in
     And "Alice" has created an unscheduled meeting with the title "with-alice"
     And "Alice" has joined the meeting with the title "with-alice" as moderator

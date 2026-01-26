@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
-Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
+Feature: Dashboard Home
   As a user
   I want to distinguish my meetings from meetings created by other users
   So that I can manage my meetings
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/14
 
   @smoke
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
+    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/41
     Given "Bob" has logged in
     And "Bob" has created a <meeting-type> meeting with the title "bob1"
     And "Bob" has invited "Alice" to meeting "bob1"
@@ -58,6 +60,7 @@ Feature: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own
 
 
   Scenario: TC_011_Dashboard_Home_My favorite meetings_if empty list (and) also with presence of favorite meetings list
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/43
     Given "Alice" has logged in
     And "Alice" has created a scheduled meeting with the title "meeting 1"
     And "Alice" has created a scheduled meeting with the title "meeting 2"

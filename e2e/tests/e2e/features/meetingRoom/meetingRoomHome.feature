@@ -5,6 +5,7 @@ Feature: Meeting Room Home
   As a user
   I want to send messages, search messages, and see participants in the meeting room
   So that I can be more interactive in the meeting
+  # https://git.opentalk.dev/opentalk/qa/reports/-/issues/110
 
   Background:
     Given "Alice" has logged in
@@ -17,6 +18,7 @@ Feature: Meeting Room Home
 
   @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the options available in Home option of the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/115
     When 2 guests join the meeting of "Alice"
     Then for "Alice" the home view of the moderator sidebar should be open on the Meeting-Room-Page
     And for "Alice" these tabs should be displayed in the sidebar on the Meeting-Room-Page:
@@ -27,6 +29,7 @@ Feature: Meeting Room Home
 
   @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the functionality of Chat option available in Home option of the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/115
     When 2 guests join the meeting of "Alice"
     Then for "Alice" the chat option should be displayed on the Meeting-Room-Page
     And for "Alice" a search field should be displayed in the chat area on the Meeting-Room-Page
@@ -50,6 +53,7 @@ Feature: Meeting Room Home
 
 
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the functionality of Chat input textbox in Chat option available in Home option of the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/115
     When 2 guests join the meeting of "Alice"
     Then for "Alice" the chat textfield should be displayed on the Meeting-Room-Page
     And for "Alice" the emoji selection button should be displayed in the chat area of the sidebar on the Meeting-Room-Page
@@ -85,6 +89,7 @@ Feature: Meeting Room Home
 
 
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the functionality of Search input textbox in Chat option available in Home option of the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/115
     Given 2 guests have joined the meeting of "Alice"
     And "Alice" has sent the following messages in the chat on the Meeting-Room-Page:
       | Test12345  |
@@ -120,6 +125,7 @@ Feature: Meeting Room Home
 
   @skip-on-webkit
   Scenario: TC_002_Meeting Room_As Moderator_Home_People option+search+sort+group
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/118
     Given 2 guests have joined the meeting of "Alice" with delay of 30000 milliseconds
     When "Alice" views the participants on the Meeting-Room-Page
     Then for "Alice" these participants should be labeled as guests on the People-Option-Page:
