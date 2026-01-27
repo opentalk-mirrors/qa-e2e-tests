@@ -24,8 +24,9 @@ test.describe('MeetingRoom - adjust participant view', () => {
       'Grid-View',
       'Speaker-View',
       'Fullscreen',
-      'Activated camera first',
-      'Moderator(s) first',
+      'Join time',
+      'Camera status',
+      'Role',
     ]);
     for (const option of await viewOptionsPage.getOptionsList()) {
       await expect(option).toBeVisible();
