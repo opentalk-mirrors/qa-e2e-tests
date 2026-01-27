@@ -147,7 +147,7 @@ export class CustomWorld extends World {
 
         await user.context.close();
         this.currentUser = undefined;
-        api.deleteMeetings();
+        await api.deleteMeetings();
       }
     }
   }
