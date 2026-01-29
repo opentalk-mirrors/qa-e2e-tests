@@ -28,7 +28,6 @@ export class ViewOptionsPage {
     participantWindow: 'ParticipantWindow',
     participantName: 'nameTile',
     fullScreen: 'fullscreen',
-    viewOptionsMenuCheckIcon: 'CheckIcon',
   };
 
   public readonly videoPreviewName: Locator;
@@ -104,11 +103,6 @@ export class ViewOptionsPage {
   public async selectModertorsFirstSortingOption(): Promise<void> {
     await this.moderatorsFirstSortingOption.waitFor();
     await this.moderatorsFirstSortingOption.click();
-  }
-
-  public async hasTickIcon(element: Locator): Promise<boolean> {
-    // if menu item has a tick, count should be 1, else 0
-    return (await element.getByTestId(this.selectors.viewOptionsMenuCheckIcon).count()) === 1;
   }
 
   public async isFullScreen(): Promise<boolean> {

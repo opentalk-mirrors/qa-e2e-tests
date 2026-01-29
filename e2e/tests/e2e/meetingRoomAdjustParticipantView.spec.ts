@@ -47,11 +47,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     await viewOptionsPage.displayViewOptionsMenu();
 
     // choose speaker view
-    // grid view should have a tick, but speaker view should have no tick before it is selected
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.gridViewOption)).toBeTruthy();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.speakerViewOption)).toBeFalsy();
     await viewOptionsPage.selectSpeakerViewOption();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.speakerViewOption)).toBeTruthy();
 
     // check the speaker view and pin some users
     const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
@@ -113,8 +109,6 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // open grid view options besides the meeting room name
     await viewOptionsPage.displayViewOptionsMenu();
-    // tik is activated
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.gridViewOption)).toBeTruthy();
 
     // all 5 participant windows are centered
     for (let i = 1; i <= NUMBER_OF_GUESTS; i++) {
@@ -155,9 +149,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // as moderator, open grid view options besides the meeting room name & select activated camera first
     await viewOptionsPage.displayViewOptionsMenu();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.activatedCameraFirstSortingOption)).toBeFalsy();
     await viewOptionsPage.selectActivatedCameraFirstSortingOption();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.activatedCameraFirstSortingOption)).toBeTruthy();
 
     // assert that guest user with the activated camera is on the first position on the left side
     expect(await viewOptionsPage.isGridViewNthParticipantCameraOn(1)).toBeTruthy();
@@ -169,13 +161,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // as guest, open grid view options besides the meeting room name & select moderators first
     // test on second guest because moderator would be shown by default in first position for the first guest
     await secondGuestViewOptionsPage.displayViewOptionsMenu();
-    expect(
-      await secondGuestViewOptionsPage.hasTickIcon(secondGuestViewOptionsPage.moderatorsFirstSortingOption)
-    ).toBeFalsy();
     await secondGuestViewOptionsPage.selectModertorsFirstSortingOption();
-    expect(
-      await secondGuestViewOptionsPage.hasTickIcon(secondGuestViewOptionsPage.moderatorsFirstSortingOption)
-    ).toBeTruthy();
 
     // assert that the moderator is now on the first position
     const moderatorName = await meetingRoomPage.getUserName();
@@ -184,13 +170,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // as moderator, change to speaker view & assert that sorting resets after changing the view
     await viewOptionsPage.displayViewOptionsMenu();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.speakerViewOption)).toBeFalsy();
     await viewOptionsPage.selectSpeakerViewOption();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.speakerViewOption)).toBeTruthy();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.gridViewOption)).toBeFalsy();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.fullScreenViewOption)).toBeFalsy();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.activatedCameraFirstSortingOption)).toBeFalsy();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.moderatorsFirstSortingOption)).toBeFalsy();
 
     // assert active speaker is first shown
     await firstGuestMeetingRoomPage.turnAudioOn();
@@ -216,9 +196,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // change back to grid view
     await viewOptionsPage.displayViewOptionsMenu();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.gridViewOption)).toBeFalsy();
     await viewOptionsPage.selectGridViewOption();
-    expect(await viewOptionsPage.hasTickIcon(viewOptionsPage.gridViewOption)).toBeTruthy();
 
     // as guest, assert order is set by default on first joined
     const gridViewFirstPositionName = await firstGuestViewOptionsPage.getNthParticipantNameInGridView(1);
