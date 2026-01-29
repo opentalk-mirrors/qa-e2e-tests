@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { Page, Locator, BrowserContext } from '@playwright/test';
+import { Page, Locator, BrowserContext, expect } from '@playwright/test';
 
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { BurgerMenuPage } from './BurgerMenuPage';
@@ -112,6 +112,13 @@ export class MeetingRoomPage {
   private closePopupDialogButton: Locator;
   private isKeyboardShortcutOn: boolean = true;
 
+  coffeeBreakDialog: {
+    coffeeBreakPopover: Locator;
+    coffeeBreakIcon: Locator;
+    durationLabel: Locator;
+    timerText: Locator;
+  };
+
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.context = this.page.context();
@@ -208,6 +215,14 @@ export class MeetingRoomPage {
       checkbox: this.page.getByRole('switch', { name: 'Hotkeys' }),
     };
     this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });
+
+    const coffeeBreakPopover = this.page.getByRole('alert', { name: 'Coffee break ...' });
+    this.coffeeBreakDialog = {
+      coffeeBreakPopover: coffeeBreakPopover,
+      coffeeBreakIcon: coffeeBreakPopover.locator('svg').nth(0),
+      durationLabel: coffeeBreakPopover.locator('[data-sentry-component="TimerDuration"] p').nth(0),
+      timerText: coffeeBreakPopover.getByTestId('timer-display'),
+    };
   }
 
   async renderMeetingRoom(): Promise<void> {
@@ -476,6 +491,35 @@ export class MeetingRoomPage {
     const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
     await coffeeBreakPage.heading.waitFor({ state: 'visible' });
     return coffeeBreakPage;
+  }
+
+  public async isCoffeeBreakPopoverOpen(): Promise<boolean> {
+    return await this.coffeeBreakDialog.coffeeBreakPopover.isVisible();
+  }
+
+  public async waitForCoffeeBreakPopoverToClose(): Promise<void> {
+    await this.coffeeBreakDialog.coffeeBreakPopover.waitFor({ state: 'hidden' });
+  }
+
+  public async isCoffeeBreakPopoverClosed(): Promise<boolean> {
+    return !(await this.coffeeBreakDialog.coffeeBreakPopover.isVisible());
+  }
+
+  public async isTimerCountingDown(timerText: Locator): Promise<boolean> {
+    const initialText = await timerText.textContent();
+    if (!initialText) {
+      throw new Error('Timer text not found');
+    }
+    await expect(timerText).not.toHaveText(initialText, { timeout: 3000 });
+    const [initialMin, initialSec] = initialText.trim().split(':').map(Number);
+    const initialTotalSec = initialMin * 60 + initialSec;
+    const updatedText = await timerText.textContent();
+    if (!updatedText) {
+      return false;
+    }
+    const [updatedMin, updatedSec] = updatedText.trim().split(':').map(Number);
+    const updatedTotalSec = updatedMin * 60 + updatedSec;
+    return updatedTotalSec < initialTotalSec;
   }
 
   public async isOptionSelected(locator: Locator): Promise<boolean> {

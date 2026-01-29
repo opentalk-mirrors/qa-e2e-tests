@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { CoffeeBreakDialogPage } from '../CoffeeBreakDialogPage';
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
@@ -41,20 +41,7 @@ export class CoffeeBreakPage extends ModeratorToolsPage {
     return coffeeBreakDialogPage;
   }
 
-  public async isTimerCountingDown(): Promise<boolean> {
-    const initialText = await this.timerText.textContent();
-    if (!initialText) {
-      throw new Error('Timer text not found');
-    }
-    await expect(this.timerText).not.toHaveText(initialText, { timeout: 3000 });
-    const [initialMin, initialSec] = initialText.trim().split(':').map(Number);
-    const initialTotalSec = initialMin * 60 + initialSec;
-    const updatedText = await this.timerText.textContent();
-    if (!updatedText) {
-      return false;
-    }
-    const [updatedMin, updatedSec] = updatedText.trim().split(':').map(Number);
-    const updatedTotalSec = updatedMin * 60 + updatedSec;
-    return updatedTotalSec < initialTotalSec;
+  public async stopCoffeeBreak(): Promise<void> {
+    await this.stopCoffeeBreakButton.click();
   }
 }

@@ -97,7 +97,7 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(dialogPage.coffeeBreakText).toHaveText('Coffee break! Time left:');
     await expect(dialogPage.timerText).toBeVisible();
     await expect(dialogPage.timerText).toHaveText(/^$|^\d{2}\s*:\s*\d{2}$/);
-    expect(await dialogPage.isTimerCountingDown()).toBeTruthy();
+    expect(await meetingRoomPage.isTimerCountingDown(dialogPage.timerText)).toBeTruthy();
     await expect(dialogPage.backToConferenceButton).toBeVisible();
   }
 
@@ -136,7 +136,7 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(sessionDurationDialog.durationLabel).toBeVisible();
     await expect(coffeeBreakPage.timerText).toBeVisible();
     await expect(coffeeBreakPage.timerText).toHaveText(/^$|^\d{2}\s*:\s*\d{2}$/);
-    expect(await coffeeBreakPage.isTimerCountingDown()).toBeTruthy();
+    expect(await meetingRoomPage.isTimerCountingDown(coffeeBreakPage.timerText)).toBeTruthy();
     await expect(coffeeBreakPage.stopCoffeeBreakButton).toBeVisible();
     await expect(meetingRoomPage.moderationTools.timerButton).toBeDisabled();
 
