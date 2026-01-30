@@ -1,19 +1,27 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { DataTable, Then, When } from '@cucumber/cucumber';
+import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
+Given('{string} has opened the Breakout Rooms moderator tool', async function (this: CustomWorld, user: string) {
+  await openBreakoutRoomsModeratorTool(this, user);
+});
+
 When('{string} opens the Breakout Rooms moderator tool', async function (this: CustomWorld, user: string) {
-  const meeting = this.getStartedMeeting(user).meeting;
+  await openBreakoutRoomsModeratorTool(this, user);
+});
+
+async function openBreakoutRoomsModeratorTool(world: CustomWorld, user: string) {
+  const meeting = world.getStartedMeeting(user).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
   const breakoutRoomsPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
   meeting.moderatorTools = { breakoutRooms: { breakoutRoomsPage } };
-});
+}
 
 When('{string} creates Breakout Rooms with random distribution', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
