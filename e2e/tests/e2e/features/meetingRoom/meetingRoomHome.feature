@@ -14,7 +14,8 @@ Feature: Meeting Room Home
     And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
     And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
-      | Audio | disabled |
+      | setting | value    |
+      | Audio   | disabled |
 
   @smoke
   Scenario: TC_001_Meeting Room_As Moderator_Home_Chat+Message+Search - verify the options available in Home option of the Meeting Room

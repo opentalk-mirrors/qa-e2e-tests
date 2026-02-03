@@ -4,6 +4,7 @@
 import { When, Then, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { validateDataTableHeaders } from '../../helper/helper';
 import { GlitchTipPage } from '../../pages/MeetingRoom/GlitchTipPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -26,7 +27,8 @@ When(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
-
+    const expectedHeaders = ['name', 'email', 'description'];
+    validateDataTableHeaders(dataTable, expectedHeaders);
     const { name, email, description } = dataTable.hashes()[0];
     await glitchTipPage.enterName(name);
     await glitchTipPage.enterEmail(email);

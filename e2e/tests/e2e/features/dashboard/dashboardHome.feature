@@ -24,7 +24,6 @@ Feature: Dashboard Home
       | meeting title | ali1                         |
       | creator       | Created by Alice Hansen (Me) |
     And the following buttons should be displayed for meeting "ali1" on the Home-Page for "Alice":
-      | buttons      |
       | 3-dot option |
       | Start        |
     And there should be 1 meeting with the name "bob1" on the Home-Page for "Alice"
@@ -34,12 +33,10 @@ Feature: Dashboard Home
       | meeting title | bob1                  |
       | creator       | Created by Bob Burton |
     And the following buttons should be displayed for meeting "bob1" on the Home-Page for "Alice":
-      | buttons      |
       | 3-dot option |
       | Start        |
     When "Alice" checks more options for meeting "ali1" on the Home-Page
     Then the following options should be displayed on the Home-Page for "Alice":
-      | options           |
       | Edit              |
       | Add to favorites  |
       | Details           |
@@ -48,7 +45,6 @@ Feature: Dashboard Home
       | Delete            |
     When "Alice" checks more options for meeting "bob1" on the Home-Page
     Then the following options should be displayed on the Home-Page for "Alice":
-      | options           |
       | Decline           |
       | Add to favorites  |
       | Details           |
@@ -68,7 +64,6 @@ Feature: Dashboard Home
     And "Alice" has created a scheduled meeting with the title "meeting 4"
     When "Alice" navigates to the Home-Page
     Then for "Alice" following details should be displayed on Home-Page
-      | details                   |
       | no-favorite-meetings-text |
       | bookmark icon             |
     When "Alice" hovers over "no-favorite-meetings-text" on the Home-Page
@@ -85,7 +80,6 @@ Feature: Dashboard Home
     Then for "Alice" the meeting "meeting 4" should be marked as favorite on the Home-Page
     When "Alice" navigates to the Home-Page
     Then for "Alice" these meetings should be displayed under the My favorite meetings label with a bookmark icon on the Home-Page:
-      | meeting   |
       | meeting 1 |
       | meeting 2 |
       | meeting 3 |
@@ -99,7 +93,6 @@ Feature: Dashboard Home
     And "Alice" has created an unscheduled meeting with the title "Alice"
     When "Alice" starts to join an existing meeting from the Home-Page
     Then for "Alice" Join a meeting now popup should be visible on Home-Page with following details:
-      | details            |
       | Join a meeting now |
       | Meeting ID (URL)   |
       | Join               |

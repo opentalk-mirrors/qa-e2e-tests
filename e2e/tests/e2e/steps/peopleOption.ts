@@ -17,7 +17,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    const guestsName = dataTable.raw().map((guest) => guest[0]);
+    const guestsName = dataTable.raw().map(([guest]) => guest);
     for (const guest of guestsName) {
       expect(await peopleOptionPage.isGuest(guest)).toBeTruthy();
     }
@@ -246,7 +246,7 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const participantsName: string[] = await peopleOptionPage.getAllParticipantsNames();
-    const participants = dataTable.raw().map((participant) => participant[0]);
+    const participants = dataTable.raw().map(([participant]) => participant);
     expect(participantsName.length).toBe(participants.length);
     for (let i = 0; i < participants.length; i++) {
       expect(participantsName[i]).toContain(participants[i]);

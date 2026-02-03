@@ -34,7 +34,7 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
 
-    const tabs = dataTable.raw().map((tab) => tab[0]);
+    const tabs = dataTable.raw().map(([value]) => value);
     for (const tab of tabs) {
       switch (tab) {
         case 'Chat':
@@ -200,10 +200,10 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     const joinedDetails = await meetingRoomPage.getParticipantsDetails();
-    const participants = dataTable.raw().map((participant) => participant[0]);
-    for (let i = 0; i < participants.length; i++) {
-      expect(joinedDetails[i].trim()).toMatch(new RegExp(`^${participants[i]}joined the call at \\d{2}:\\d{2}$`));
-    }
+    const participants = dataTable.raw().map(([participant]) => participant);
+    participants.forEach((participant, index) => {
+      expect(joinedDetails[index].trim()).toMatch(new RegExp(`^${participant}joined the call at \\d{2}:\\d{2}$`));
+    });
   }
 );
 
@@ -292,7 +292,7 @@ Given(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     await meetingRoomPage.page.bringToFront();
-    const messagesList = dataTable.raw().map((message) => message[0]);
+    const messagesList = dataTable.raw().map(([message]) => message);
     for (const message of messagesList) {
       await meetingRoomPage.selectChatTextbox();
       await meetingRoomPage.typeMessage(message);
@@ -446,7 +446,7 @@ When(
 When(
   'these participants raise their hands in the Meeting room of {string} with delay of {int} milliseconds:',
   async function (this: CustomWorld, moderator: string, delay: number, dataTable: DataTable) {
-    const participants = dataTable.raw().map((guest) => guest[0]);
+    const participants = dataTable.raw().map(([guest]) => guest);
     const startedMeeting = this.getStartedMeeting(moderator);
     for (let i = 0; i < participants.length; i++) {
       await startedMeeting.participantMeetingRoomPages[participants[i]].page.bringToFront();
@@ -459,7 +459,7 @@ When(
 When(
   'these participants lower their hands in the Meeting room of {string}:',
   async function (this: CustomWorld, moderator: string, dataTable: DataTable) {
-    const participants = dataTable.raw().map((guest) => guest[0]);
+    const participants = dataTable.raw().map(([guest]) => guest);
     const startedMeeting = this.getStartedMeeting(moderator);
     for (let i = 0; i < participants.length; i++) {
       await startedMeeting.participantMeetingRoomPages[participants[i]].page.bringToFront();
