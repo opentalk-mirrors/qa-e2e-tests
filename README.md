@@ -116,3 +116,34 @@ To access the traces of a specific CI run:
 Alternatively to steps 3 & 4 you can also browse content of the artifacts on git.opentalk.dev and find & download the needed `trace.zip` directly.  
 
 More documentation about the trace viewer can be found in the [playwright docs](https://playwright.dev/docs/trace-viewer#trace-viewer-features).
+
+## Fix CI when changes happen across repositories
+Generally the whole stack is spread across three repositories
+1. [controller](https://git.opentalk.dev/opentalk/backend/services/controller)
+2. [web-app](https://git.opentalk.dev/opentalk/frontend/web/web-app)
+3. [e2e-tests](https://git.opentalk.dev/opentalk/qa/e2e-tests)
+
+The CI in the `e2e-tests` repo runs the full E2E test suite. The CI in the `web-app` repo runs some E2E smoke tests and (when requested) can run the full E2E test suite. The CI in the `controller` repo does not run any E2E tests.
+
+Changes in any of these repositories can cause E2E tests to fail or pass. Sometimes, changes in multiple repositories must be coordinated to get CI green again. This is the case for example, when app functionality changes that is already covered by E2E tests.
+
+In that case:
+1. Create a branch and an MR in the `controller` or `web-app` repo that will contain the functional change.
+2. Get the image tag for the `controller`/`web-app` build from CI:
+   - For `web-app`: from the `container` step of the pipeline.
+   - For `controller`: from the `package:container-controller-mr` step of the pipeline.
+3. In the `e2e-tests` repo, create a new branch and MR with:
+   1. `.gitlab-ci.yml` updated so `FRONTEND_TAG` and/or `CONTROLLER_TAG` match your branch/MR in `controller`/`web-app`.
+   2. Updated expectations in the tests.
+      The first pipeline run for this MR is expected to fail, but it will run against the images from your `controller` and/or `web-app` branch that contain all changes you make in those branches.
+4. Implement the functional change in the `controller`/`web-app` branch. The CI in the `web-app` repo will still fail at this point because it uses the E2E tests from the `main` branch of the `e2e-tests` repo.
+5. Keep re-running CI in the `e2e-tests` repo and fixing the code in `controller` and/or `web-app` until the tests in the `e2e-tests` repo pass.
+6. Merge the MR in the `e2e-tests` repo so the updated test expectations land on `main`.
+7. Re-run CI in the `web-app` repo. If there are only changes in the `controller` repo, you can skip this step. Make sure that:
+   - You re-run the complete CI (not only the `e2e-tests` job), for example, by rebasing the branch. Otherwise, CI might use an older `web-app` commit.
+   - You also run the `run-full-e2e-tests` pipeline manually.
+8. Merge the MR in the `controller` and/or `web-app` repo.
+9. Create a new MR in the `e2e-tests` repo that sets `FRONTEND_TAG` and/or `CONTROLLER_TAG` in `.gitlab-ci.yml` back to `dev`.  
+   This will run all E2E tests again. If everything is correct, the pipeline should pass.
+10. Merge the MR in the `e2e-tests` repo.  
+    Try to complete steps 6–10 quickly after each other to reduce confusion for other developers, since tests may fail unexpectedly during this window.
