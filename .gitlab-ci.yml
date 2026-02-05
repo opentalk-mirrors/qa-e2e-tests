@@ -337,7 +337,8 @@ e2e-tests:
     - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
 
   before_script:
-    - npm install
+    - *setup-pnpm
+    - pnpm install
     - npx playwright install --only-shell --with-deps $BROWSER
     - cp config/test_env e2e/.env
     - set -a
@@ -350,7 +351,7 @@ e2e-tests:
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "$BROWSER")
     - echo "RUNS $PROJECTS project"
-    - BROWSER=$PROJECTS npm run test:playwright --workers=1
+    - BROWSER=$PROJECTS pnpm run test:playwright --workers=1
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml
@@ -383,15 +384,16 @@ e2e-gherkin-tests:
     HEADLESS: true
     OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
   before_script:
-    - npm install
-    - npx playwright install --only-shell --with-deps $BROWSER
+    - *setup-pnpm
+    - pnpm install
+    - pnpm exec playwright install --only-shell --with-deps $BROWSER
     - cp config/test_env e2e/.env
     - set -a
     - source config/test_env
     - /builds/$CI_PROJECT_PATH/scripts/wait-for-services.sh
 
   script:
-    - npm run test:gherkin e2e/tests/e2e/features/
+    - pnpm run test:gherkin e2e/tests/e2e/features/
   artifacts:
     when: always
     paths:

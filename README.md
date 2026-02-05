@@ -76,30 +76,30 @@ docker compose exec test-runner npx playwright show-report
 
 Run all playwright tests (defaults in headed mode):
 ```
-npm run test:playwright
+pnpm run test:playwright
 ```
 
 Runs a specific playwright test (defaults in headed mode):
 ```
-FILEPATH=<your_file_path> npm run test:playwright
+FILEPATH=<your_file_path> pnpm run test:playwright
 ```
 
 ### Gherkin Tests
 Run all gherkin tests (defaults in headed mode):
 
 ```
-npm run test:gherkin e2e/tests/e2e/features/
+pnpm run test:gherkin e2e/tests/e2e/features/
 ```
 
 Run a specific feature file (defaults in headed mode):
 
 ```
-npm run test:gherkin <path_to_your_feature_file>
+pnpm run test:gherkin <path_to_your_feature_file>
 ```
 
 run only tests marked with the `@smoke` tag:
 ```
-RUN_ONLY_SMOKE_TESTS=true npm run test:gherkin
+RUN_ONLY_SMOKE_TESTS=true pnpm run test:gherkin
 ```
 
 ## View traces of CI runs
