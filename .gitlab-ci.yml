@@ -12,7 +12,7 @@ variables:
   POSTGRES_PASSWORD: password123
   POSTGRES_HOST_AUTH_METHOD: trust
   FF_NETWORK_PER_BUILD: true
-  # CI_DEBUG_SERVICES: true
+  # CI_DEBUG_SERVICES: true  # uncomment it to view services containers logs
   CONTROLLER_TAG:
     description: The controller version tag
     value: dev
@@ -57,16 +57,16 @@ variables:
       alias: webapp
       variables:
         PORT: 8080
-        LIVEKIT_SERVER_URL: http://livekit.opentalk.test
+        LIVEKIT_SERVER_URL: https://livekit.opentalk.test
         CONTROLLER_HOST: controller.opentalk.test
         BASE_URL: https://www.opentalk.test
         HELPDESK_URL: https://opentalk.eu
         CONTACT_SUPPORT_URL: https://opentalk.eu
         IMPRINT_URL: https://opentalk.eu/en/terms-of-use
         DATA_PROTECTION_URL: https://opentalk.eu/en/data-protection
-        OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
+        OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
         SENTRY_DSN: https://f7a67208e78b4bf6a8fe79ee5a110c24@crash-report.opentalk.eu/5
-        INSECURE: true
+        INSECURE: false
         FEATURE_SHARED_FOLDER: true
         NDT_SERVER: ndt.mailbox.org
 
@@ -127,21 +127,29 @@ variables:
           /usr/bin/docker-entrypoint.sh server /data --address ":9000"
 
     - name: git.opentalk.dev:5050/opentalk/backend/services/controller:$CONTROLLER_TAG
-      # pull_policy: if-not-present
       alias: controller
+      variables:
+        SSL_CERT_FILE: /tmp/certs/cert.crt
       entrypoint:
         - /bin/bash
         - -c
         - |
-          while true; do
-            until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do
-              echo waiting for "/builds/$CI_PROJECT_PATH/config/controller-config.toml";
-              sleep 1;
-            done;
-            sleep 5;
-            /controller/opentalk-controller -c /builds/$CI_PROJECT_PATH/config/controller-config.toml;
+          until [ -f "/builds/$CI_PROJECT_PATH/config/controller-config.toml" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/config/controller-config.toml";
+            sleep 1;
           done;
-
+          until [ -f "/builds/$CI_PROJECT_PATH/certs/cert.crt" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/certs/cert.crt";
+            sleep 1;
+          done;
+          mkdir -p /tmp/certs;
+          cp /builds/$CI_PROJECT_PATH/certs/cert.crt /tmp/certs/;
+          cp /builds/$CI_PROJECT_PATH/certs/cert_key /tmp/certs/cert.key;
+          sleep 5;
+          while true; do
+            /controller/opentalk-controller -c /builds/$CI_PROJECT_PATH/config/controller-config.toml;
+            sleep 2;
+          done;
     # - name: git.opentalk.dev:5050/opentalk/backend/services/smtp-mailer:dev
     #   pull_policy: if-not-present
     #   alias: mailer
@@ -180,10 +188,14 @@ variables:
         KC_BOOTSTRAP_ADMIN_USERNAME: admin
         KC_BOOTSTRAP_ADMIN_PASSWORD: admin
         KC_HTTP_RELATIVE_PATH: /auth
-        KC_HTTP_ENABLED: true
-        KC_HOSTNAME_PORT: 8080
-        KC_HOSTNAME_STRICT: false
-        KC_HOSTNAME_STRICT_HTTPS: false
+        KC_HTTP_ENABLED: 'false'
+        KC_HTTPS_PORT: 443
+        KC_HOSTNAME: accounts.opentalk.test
+        KC_HOSTNAME_STRICT: 'true'
+        KC_HOSTNAME_STRICT_HTTPS: 'true'
+        KC_PROXY_HEADERS: xforwarded
+        KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/cert.crt
+        KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/cert.key
       entrypoint:
         - /bin/bash
         - -c
@@ -192,6 +204,8 @@ variables:
             echo waiting for "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json";
             sleep 1;
           done;
+          cp -r /builds/$CI_PROJECT_PATH/certs /opt/keycloak/;
+          mv /opt/keycloak/certs/cert_key /opt/keycloak/certs/cert.key;
           mkdir -p /opt/keycloak/data/import;
           cp /builds/$CI_PROJECT_PATH/config/opentalk-realm.json /opt/keycloak/data/import;
           /opt/keycloak/bin/kc.sh start-dev --import-realm
@@ -347,7 +361,8 @@ e2e-tests:
   variables:
     BROWSER: $BROWSER
     HEADLESS: true
-    OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
+    OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
+    CONTROLLER_HOST: https://controller.opentalk.test
   script:
     - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "$BROWSER")
     - echo "RUNS $PROJECTS project"
@@ -382,7 +397,8 @@ e2e-gherkin-tests:
   variables:
     BROWSER: $BROWSER
     HEADLESS: true
-    OIDC_ISSUER: http://accounts.opentalk.test/auth/realms/OPENTALK
+    OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
+    CONTROLLER_HOST: https://controller.opentalk.test
   before_script:
     - *setup-pnpm
     - pnpm install

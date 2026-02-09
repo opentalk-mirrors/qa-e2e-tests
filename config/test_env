@@ -4,4 +4,4 @@ USER_FIRSTNAME=Alice
 USER_FAMILYNAME=Hansen
 USER_EMAIL=alice@example.com
 INSTANCE_URL=https://www.opentalk.test
-CONTROLLER_HOST=http://controller.opentalk.test
+CONTROLLER_HOST=https://controller.opentalk.test
