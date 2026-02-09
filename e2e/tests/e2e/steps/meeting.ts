@@ -6,6 +6,7 @@ import { expect } from '@playwright/test';
 
 import { config } from '../../config';
 import { OpenTalkEvent } from '../../helper/Api';
+import { assert } from '../../helper/assertion';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { substituteInLineCodes, validateDataTableHeaders } from '../../helper/helper';
 import {
@@ -122,7 +123,12 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     await meeting.meetingRoomPage.selectModeratorToolHome();
     const actualNumOfParticipants = await meeting.meetingRoomPage.getNumberOfParticipantsInMeeting();
-    expect(actualNumOfParticipants).toBe(expectedNumOfParticipants);
+    assert(
+      actualNumOfParticipants,
+      'toBe',
+      expectedNumOfParticipants,
+      `Expected to have ${expectedNumOfParticipants} participants but found ${expectedNumOfParticipants} participants`
+    );
   }
 );
 
@@ -131,7 +137,12 @@ Then(
   async function (this: CustomWorld, user: string, regexToMatch: string) {
     regexToMatch = substituteInLineCodes(regexToMatch);
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
-    expect(clipboardContent).toMatch(new RegExp(regexToMatch));
+    assert(
+      clipboardContent,
+      'toMatch',
+      regexToMatch,
+      `Expected clipboard content to match '${regexToMatch}' but got '${clipboardContent}'`
+    );
   }
 );
 
@@ -372,7 +383,13 @@ Then(
   async function (this: CustomWorld, expectedCountOfMeetings: number, meetingTitle: string, user: string) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    expect((await home.getAllMeetingListItems(meetingTitle)).length).toBe(expectedCountOfMeetings);
+    const actualMeetingCount = (await home.getAllMeetingListItems(meetingTitle)).length;
+    assert(
+      actualMeetingCount,
+      'toBe',
+      expectedCountOfMeetings,
+      `Expected to have ${expectedCountOfMeetings} meetings with the name ${meetingTitle} but got ${actualMeetingCount} meetings`
+    );
   }
 );
 
