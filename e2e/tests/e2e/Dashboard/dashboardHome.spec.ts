@@ -192,33 +192,33 @@ test.describe('Dashboard_Home', () => {
 
     // Select the Daily option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Daily');
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Daily');
 
     // Click on the dropdown field and select the Weekly option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Weekly');
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Weekly');
 
     // Again click on the dropdown field and select the Bi-Weekly option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Bi-Weekly');
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Bi-Weekly');
 
     // Click on the dropdown field and select the Monthly option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Monthly');
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Monthly');
 
     // Again click on the dropdown field and select the No repetition option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('No repetition');
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('No repetition');
 
     // Click on the No repetition dropdown field and select the Custom ... option available in the dropdown menu
     await planMeetingPage.selectMeetingRepetition('Custom');
-    await expect(planMeetingPage.customMeetingDiaglog).toBeVisible();
-    await expect(planMeetingPage.customMeetingRepetition.customMeetingDiaglogTitle).toBeVisible();
+    await expect(planMeetingPage.customMeetingDialog).toBeVisible();
+    await expect(planMeetingPage.customMeetingRepetition.customMeetingDialogTitle).toBeVisible();
     // Description as “Repeat every”
     await expect(planMeetingPage.customMeetingRepetition.repeatEveryLabel).toBeVisible();
     expect(await planMeetingPage.getNumberOfRepetitions()).toBe('1');
@@ -235,7 +235,7 @@ test.describe('Dashboard_Home', () => {
     await planMeetingPage.saveCustomMeetingRepetition();
 
     // Custom meeting repetition dialogue box should be closed
-    await expect(planMeetingPage.customMeetingDiaglog).not.toBeVisible();
+    await expect(planMeetingPage.customMeetingDialog).not.toBeVisible();
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Every day');
 
     // Open the Custom meeting repetition dialogue again and For Repeat every, choose 1 Week
@@ -280,7 +280,7 @@ test.describe('Dashboard_Home', () => {
 
     await planMeetingPage.saveCustomMeetingRepetition();
 
-    await expect(planMeetingPage.customMeetingDiaglog).not.toBeVisible();
+    await expect(planMeetingPage.customMeetingDialog).not.toBeVisible();
 
     // Dropdown field name is updated as Every week on Monday, Wednesday, Friday
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText(
@@ -306,7 +306,7 @@ test.describe('Dashboard_Home', () => {
     await planMeetingPage.saveCustomMeetingRepetition();
 
     // Custom meeting repetition dialogue box should be closed
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
 
     // Dropdown field name is updated as Every month on the [X] day
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText(/Every month on the \d\w+ \w+/);
@@ -318,7 +318,7 @@ test.describe('Dashboard_Home', () => {
     await planMeetingPage.saveCustomMeetingRepetition();
 
     // Custom meeting repetition dialogue box should be closed
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
 
     // Dropdown field name is updated as Every year
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText('Every year');
@@ -346,7 +346,7 @@ test.describe('Dashboard_Home', () => {
 
     await planMeetingPage.saveCustomMeetingRepetition();
 
-    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansonState()).toBe('false');
+    expect(await planMeetingPage.getMeetingOccurrenceDropDownExpansionState()).toBe('false');
 
     // Dropdown button name is updated as Every 2 days until Month DD, YYYY
     await expect(planMeetingPage.meetingOccurrenceOptions.selectedOption).toHaveText(/Every 2 days until \w+ \d+, \d+/);

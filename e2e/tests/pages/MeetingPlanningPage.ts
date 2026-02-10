@@ -54,10 +54,10 @@ export class MeetingPlanningPage {
     selectedOption: Locator;
   };
 
-  customMeetingDiaglog: Locator;
+  customMeetingDialog: Locator;
 
   customMeetingRepetition: {
-    customMeetingDiaglogTitle: Locator;
+    customMeetingDialogTitle: Locator;
     repeatEveryLabel: Locator;
     recurrenceEndLabel: Locator;
     never: Locator;
@@ -126,9 +126,9 @@ export class MeetingPlanningPage {
       monthly: this.page.getByRole('option', { name: 'Monthly' }),
       custom: this.page.getByRole('option', { name: 'Custom' }),
     };
-    this.customMeetingDiaglog = this.page.getByRole('dialog', { name: 'Custom meeting repetition' });
+    this.customMeetingDialog = this.page.getByRole('dialog', { name: 'Custom meeting repetition' });
     this.customMeetingRepetition = {
-      customMeetingDiaglogTitle: this.page.getByRole('heading', { name: 'Custom meeting repetition' }),
+      customMeetingDialogTitle: this.page.getByRole('heading', { name: 'Custom meeting repetition' }),
       repeatEveryLabel: this.page.getByText('Repeat every'),
       recurrenceEndLabel: this.page.getByText('Recurrence end'),
       never: this.page.getByRole('radio', { name: 'Never' }),
@@ -205,9 +205,9 @@ export class MeetingPlanningPage {
     await this.meetingOccurrenceDropDown.click();
   }
 
-  async selectMeetingRepetition(repetationInterval?: string): Promise<void> {
+  async selectMeetingRepetition(repetitionInterval?: string): Promise<void> {
     await this.meetingOccurrenceDropDown.click();
-    switch (repetationInterval) {
+    switch (repetitionInterval) {
       case 'Custom':
         await this.meetingOccurrenceOptions.custom.click();
         break;
@@ -229,9 +229,9 @@ export class MeetingPlanningPage {
     }
   }
 
-  async selectCustomMeetingRepetition(repetationInterval?: string): Promise<void> {
+  async selectCustomMeetingRepetition(repetitionInterval?: string): Promise<void> {
     await this.customMeetingRepetition.recurrenceInterval.click();
-    switch (repetationInterval) {
+    switch (repetitionInterval) {
       case 'Day':
         await this.customMeetingRepetition.day.click();
         break;
@@ -279,7 +279,7 @@ export class MeetingPlanningPage {
     await this.customMeetingRepetition.recurrenceEndDateDay.fill(String(date.getDate()).padStart(2, '0'));
   }
 
-  async getMeetingOccurrenceDropDownExpansonState(): Promise<string | null> {
+  async getMeetingOccurrenceDropDownExpansionState(): Promise<string | null> {
     return await this.meetingOccurrenceDropDown.getAttribute('aria-expanded');
   }
 }

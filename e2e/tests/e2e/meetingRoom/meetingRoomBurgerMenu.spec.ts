@@ -18,16 +18,16 @@ test.describe('Meeting Room_Burger menu', () => {
     await expect(burgerMenuPage.keyboardShortcutsMenuItem).toBeVisible();
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
-    const accessibiltyPage = await burgerMenuPage.gotoAccessibilty();
-    const accessibilityHeading = accessibiltyPage.getByRole('heading', {
+    const accessibilityPage = await burgerMenuPage.gotoAccessibility();
+    const accessibilityHeading = accessibilityPage.getByRole('heading', {
       name: 'Accessibility statement',
       exact: true,
     });
-    const openTalkInformationHeading = accessibiltyPage.getByRole('heading', {
+    const openTalkInformationHeading = accessibilityPage.getByRole('heading', {
       name: 'Accessibility statement for the OpenTalk video conferencing solution',
       exact: true,
     });
-    expect(accessibiltyPage.url()).toBe('https://opentalk.eu/en/accessibility-statement');
+    expect(accessibilityPage.url()).toBe('https://opentalk.eu/en/accessibility-statement');
     await expect(accessibilityHeading).toBeVisible();
     await expect(openTalkInformationHeading).toBeVisible();
 

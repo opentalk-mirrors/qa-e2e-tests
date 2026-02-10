@@ -100,7 +100,7 @@ export class ViewOptionsPage {
     await this.activatedCameraFirstSortingOption.click();
   }
 
-  public async selectModertorsFirstSortingOption(): Promise<void> {
+  public async selectModeratorsFirstSortingOption(): Promise<void> {
     await this.moderatorsFirstSortingOption.waitFor();
     await this.moderatorsFirstSortingOption.click();
   }

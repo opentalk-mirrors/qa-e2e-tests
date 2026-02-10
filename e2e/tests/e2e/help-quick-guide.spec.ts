@@ -27,8 +27,8 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     const dashboardQuickGuidePage = await dashboardQuickGuidePagePromise;
     await dashboardQuickGuidePage.waitForLoadState();
 
-    // evalute the size of the image, to have a full screenshot
-    // unforunately, it's not straightforward to use an external funciton in page.evaluate()
+    // evaluate the size of the image, to have a full screenshot
+    // unfortunately, it's not straightforward to use an external function in page.evaluate()
     // https://stackoverflow.com/questions/73710551/function-is-not-defined-when-called-in-page-evaluate
     const dashboardQuickGuideSize = await dashboardQuickGuidePage.evaluate(() => {
       const image = document.querySelector('svg');
@@ -60,7 +60,7 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     const conferenceQuickGuidePage = await conferenceQuickGuidePagePromise;
     await conferenceQuickGuidePage.waitForLoadState();
 
-    // evalute the size of the image, to have a full screenshot
+    // evaluate the size of the image, to have a full screenshot
     const conferenceQuickGuideSize = await conferenceQuickGuidePage.evaluate(() => {
       const image = document.querySelector('svg');
       if (!image) {
@@ -134,7 +134,7 @@ test.describe.skip('203_Help_Quick_Guide', () => {
     // go to the menu item again, now, using keyboard
     await myMeetingMenu.focus();
     await page.keyboard.press('Enter');
-    // currently guick guide menu item is the first element in the menu, so we press enter again
+    // currently quick guide menu item is the first element in the menu, so we press enter again
     await page.keyboard.press('Enter');
     await expect(quickGuide).toBeVisible();
     // The label of the button is buggy, will be fixed in https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/1815

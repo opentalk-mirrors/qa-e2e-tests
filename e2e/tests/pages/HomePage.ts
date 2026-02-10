@@ -128,8 +128,8 @@ export class HomePage {
     await meetingMenu.click();
     const ariaLabel = `Add ${meetingTitle} to favorites`;
     await this.page.getByRole('menuitem', { name: ariaLabel }).click();
-    const favoriteMeetingSeletor = await this.getFavouriteMeetingSelector(meetingTitle);
-    await favoriteMeetingSeletor.waitFor({ state: 'visible', timeout: 10_000 });
+    const favoriteMeetingSelector = await this.getFavouriteMeetingSelector(meetingTitle);
+    await favoriteMeetingSelector.waitFor({ state: 'visible', timeout: 10_000 });
   }
 
   async getFavouriteMeetingSelector(meetingTitle: string): Promise<Locator> {
