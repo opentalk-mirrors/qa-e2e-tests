@@ -134,8 +134,8 @@ When(
 
 Then(
   'the saved voting list for {string} should be displayed in the following order in the open moderator tool:',
-  async function (this: CustomWorld, user: string, displayedVotingsTabel: DataTable) {
-    const expected = displayedVotingsTabel.hashes();
+  async function (this: CustomWorld, user: string, displayedVotingsTable: DataTable) {
+    const expected = displayedVotingsTable.hashes();
 
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
@@ -185,8 +185,8 @@ When(
 
 Then(
   'the following saved voting details should be displayed on the Update Voting screen for {string}:',
-  async function (this: CustomWorld, user: string, lastCreatedVotingsTabel: DataTable) {
-    const lastCreatedVotingDetails = lastCreatedVotingsTabel.rowsHash();
+  async function (this: CustomWorld, user: string, lastCreatedVotingsTable: DataTable) {
+    const lastCreatedVotingDetails = lastCreatedVotingsTable.rowsHash();
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     const actual = await votingRoomPage.getVotingFormValues();

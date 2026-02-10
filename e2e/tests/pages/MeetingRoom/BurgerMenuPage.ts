@@ -27,7 +27,7 @@ export class BurgerMenuPage {
     this.reportABugMenuItem = this.page.getByRole('menuitem', { name: 'Report a bug' });
   }
 
-  public async gotoAccessibilty(): Promise<Page> {
+  public async gotoAccessibility(): Promise<Page> {
     const pagePromise = this.context.waitForEvent('page');
     await this.accessibilityMenuItem.click();
     return await pagePromise;

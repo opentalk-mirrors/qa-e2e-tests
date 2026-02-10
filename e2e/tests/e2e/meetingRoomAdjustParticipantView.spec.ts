@@ -161,7 +161,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // as guest, open grid view options besides the meeting room name & select moderators first
     // test on second guest because moderator would be shown by default in first position for the first guest
     await secondGuestViewOptionsPage.displayViewOptionsMenu();
-    await secondGuestViewOptionsPage.selectModertorsFirstSortingOption();
+    await secondGuestViewOptionsPage.selectModeratorsFirstSortingOption();
 
     // assert that the moderator is now on the first position
     const moderatorName = await meetingRoomPage.getUserName();
