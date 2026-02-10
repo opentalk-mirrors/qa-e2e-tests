@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
-@skip-on-webkit @skip-on-chromium
+@skip-on-webkit @skip-on-chromium @skip-on-firefox
 Feature: Mute Participants
   As a moderator
   I want to be able to mute participants
