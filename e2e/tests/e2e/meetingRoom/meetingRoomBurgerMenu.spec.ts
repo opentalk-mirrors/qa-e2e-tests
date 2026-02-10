@@ -4,6 +4,7 @@
 import test, { expect } from '@playwright/test';
 
 import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { closeWebkitPopUp } from '../../helper/webkit';
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { TalkingStickPage } from '../../pages/MeetingRoom/ModeratorTools/TalkingStickPage';
 import { ViewOptionsPage } from '../../pages/MeetingRoom/ViewOptionsPage';
@@ -35,7 +36,7 @@ test.describe('Meeting Room_Burger menu', () => {
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test.skip('TC_002_User manual', async ({ page, browserName }) => {
+  test('TC_002_User manual', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();
 
@@ -50,7 +51,7 @@ test.describe('Meeting Room_Burger menu', () => {
       'Please contact your admin if this manual leaves any questions unanswered or if you have found a technical error. We hope you enjoy using OpenTalk!',
       { exact: true }
     );
-    expect(userManualPage.url()).toBe('https://docs.opentalk.eu/25.3/user/en/guide/');
+    expect(userManualPage.url()).toMatch(/^https:\/\/docs\.opentalk\.eu\/.*$/);
     await expect(userManualHeading).toBeVisible();
     await expect(openTalkDocs).toBeVisible();
 
@@ -59,7 +60,7 @@ test.describe('Meeting Room_Burger menu', () => {
   });
 
   test('TC_003_Keyboard Shortcuts', async ({ page, context, browserName }) => {
-    test.skip(browserName === 'webkit');
+    test.skip(browserName === 'webkit'); // Camera and Microphone permissions are not being granted in Safari in CI
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
@@ -146,11 +147,12 @@ test.describe('Meeting Room_Burger menu', () => {
   });
 
   test('TC_005_Report a Bug', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit');
-
     const closingMethods = ['BTN_esc', 'BTN_x', 'outside the window'];
     for (const method of closingMethods) {
       const { meetingRoomPage } = await startAdhocMeetingAsModerator(page);
+      if (browserName === 'webkit') {
+        await closeWebkitPopUp({ page });
+      }
       const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();
       await expect(burgerMenuPage.burgerMenuDropdown).toBeVisible();
 

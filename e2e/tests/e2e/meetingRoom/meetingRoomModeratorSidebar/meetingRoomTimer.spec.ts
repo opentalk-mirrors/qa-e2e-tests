@@ -4,6 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { closeWebkitPopUp } from '../../../helper/webkit';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { TimerPage } from '../../../pages/MeetingRoom/ModeratorTools/TimerPage';
 
@@ -19,6 +20,9 @@ test.describe('Meeting Room_Timer', () => {
 
   test.beforeEach(async ({ page, context, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
+    if (browserName === 'webkit') {
+      await closeWebkitPopUp({ page });
+    }
     const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest1');
     guestMeetingRoomPage = participantMeetingRoomPages['guest1'];
     const meetingRoomTimerPage: TimerPage = new TimerPage({ page: meetingRoomPage.page });
@@ -282,11 +286,7 @@ test.describe('Meeting Room_Timer', () => {
     await expect(meetingRoomPage.moderationTools.coffeeBreakButton).toBeEnabled();
   });
 
-  test('TC_005_Meeting Room_As Moderator_Timer_Create Timer_With “Ask participants if they are ready” toggle button as ON/OFF', async ({
-    browserName,
-  }) => {
-    test.skip(browserName === 'webkit');
-
+  test('TC_005_Meeting Room_As Moderator_Timer_Create Timer_With “Ask participants if they are ready” toggle button as ON/OFF', async () => {
     const sessionDurationDialog = await timerPage.openSessionDurationDialog();
     await sessionDurationDialog.selectDuration('1 min');
     await sessionDurationDialog.save();
@@ -327,12 +327,7 @@ test.describe('Meeting Room_Timer', () => {
     await expect(meetingRoomPage.moderationTools.coffeeBreakButton).toBeEnabled();
   });
 
-  test('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({
-    browserName,
-    context,
-  }) => {
-    test.skip(browserName === 'webkit');
-
+  test('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({ context }) => {
     const sessionDurationDialog = await timerPage.openSessionDurationDialog();
     await sessionDurationDialog.selectDuration('1 min');
     await sessionDurationDialog.save();
