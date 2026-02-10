@@ -4,6 +4,7 @@
 import { When, Then, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { validateDataTableHeaders } from '../../helper/helper';
 import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -117,7 +118,10 @@ When(
   async function (this: CustomWorld, user: string, votingsTable: DataTable) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-
+    // Note: DataTable headers are capitalized here because the voting form field labels
+    // in the UI are capitalized. In other steps, headers remain lowercase.
+    const expectedHeaders = ['Title', 'Subtitle', 'Topic'];
+    validateDataTableHeaders(votingsTable, expectedHeaders);
     const votes = votingsTable.hashes();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
 
@@ -134,8 +138,10 @@ When(
 
 Then(
   'the saved voting list for {string} should be displayed in the following order in the open moderator tool:',
-  async function (this: CustomWorld, user: string, displayedVotingsTable: DataTable) {
-    const expected = displayedVotingsTable.hashes();
+  async function (this: CustomWorld, user: string, displayedVotingsTabel: DataTable) {
+    const expectedHeaders = ['title', 'topic'];
+    validateDataTableHeaders(displayedVotingsTabel, expectedHeaders);
+    const expected = displayedVotingsTabel.hashes();
 
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
@@ -144,8 +150,8 @@ Then(
     expect(actual.length).toBe(expected.length);
 
     for (let i = 0; i < expected.length; i++) {
-      expect(actual[i].title).toBe(expected[i].Title);
-      expect(actual[i].topic).toBe(expected[i].Topic);
+      expect(actual[i].title).toBe(expected[i].title);
+      expect(actual[i].topic).toBe(expected[i].topic);
     }
   }
 );
@@ -185,8 +191,10 @@ When(
 
 Then(
   'the following saved voting details should be displayed on the Update Voting screen for {string}:',
-  async function (this: CustomWorld, user: string, lastCreatedVotingsTable: DataTable) {
-    const lastCreatedVotingDetails = lastCreatedVotingsTable.rowsHash();
+  async function (this: CustomWorld, user: string, lastCreatedVotingsTabel: DataTable) {
+    const expectedHeaders = ['field', 'value'];
+    validateDataTableHeaders(lastCreatedVotingsTabel, expectedHeaders);
+    const lastCreatedVotingDetails = lastCreatedVotingsTabel.hashes();
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     const actual = await votingRoomPage.getVotingFormValues();
@@ -202,7 +210,7 @@ Then(
     };
 
     const expected = Object.fromEntries(
-      Object.entries(lastCreatedVotingDetails).map(([key, value]) => [key, normalizeValue(value)])
+      lastCreatedVotingDetails.map(({ field, value }) => [field, normalizeValue(value)])
     );
     expect(actual).toEqual(expected);
   }

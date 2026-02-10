@@ -7,7 +7,7 @@ import { expect } from '@playwright/test';
 import { config } from '../../config';
 import { OpenTalkEvent } from '../../helper/Api';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
-import { substituteInLineCodes } from '../../helper/helper';
+import { substituteInLineCodes, validateDataTableHeaders } from '../../helper/helper';
 import {
   joinMeetingRoomAsGuest,
   joinMeetingRoomWithNGuests,
@@ -202,7 +202,9 @@ Given(
     nameOfModerator: string,
     optionsTable: DataTable
   ) {
-    const options = optionsTable.rowsHash();
+    const expectedHeaders = ['setting', 'value'];
+    validateDataTableHeaders(optionsTable, expectedHeaders);
+    const options = optionsTable.hashes()[0];
     const moderator = this.getUser(nameOfModerator);
     const userToJoin = this.getUser(nameOfUserToJoin);
     const meeting = await moderator.api.getMeetingByTitle(meetingTitle);
@@ -236,9 +238,9 @@ Then(
   async function (this: CustomWorld, user: string, expectedDetailsDataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    const expectedDetails = expectedDetailsDataTable.hashes();
-    for (let i = 0; i < expectedDetails.length; i++) {
-      switch (expectedDetails[i].options) {
+    const expectedDetails = expectedDetailsDataTable.raw().map(([value]) => value);
+    for (const option of expectedDetails) {
+      switch (option) {
         case 'Edit':
           await expect(home.editMenuItem).toBeVisible();
           break;
@@ -261,7 +263,7 @@ Then(
           await expect(home.declineMenuItem).toBeVisible();
           break;
         default:
-          throw new Error(`'${expectedDetails[i].options}' option is not available in 3-dot button menu`);
+          throw new Error(`'${option}' option is not available in 3-dot button menu`);
       }
     }
     await page.keyboard.press('Escape');
@@ -298,7 +300,9 @@ Given(
     moderator: string,
     optionsTable: DataTable
   ) {
-    const options = optionsTable.rowsHash();
+    const expectedHeaders = ['setting', 'value'];
+    validateDataTableHeaders(optionsTable, expectedHeaders);
+    const options = optionsTable.hashes()[0];
 
     const api = this.getUser(moderator).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
@@ -317,6 +321,8 @@ Then(
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
     const meetingItem = await home.getMeetingListItem(meetingTitle);
+    const expectedHeaders = ['detail', 'value'];
+    validateDataTableHeaders(dataTable, expectedHeaders);
     const expectedDetails = dataTable.hashes();
     for (let i = 0; i < expectedDetails.length; i++) {
       switch (expectedDetails[i].detail) {
@@ -345,9 +351,9 @@ Then(
   async function (this: CustomWorld, meetingTitle: string, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    const expectedDetails = dataTable.hashes();
-    for (let i = 0; i < expectedDetails.length; i++) {
-      switch (expectedDetails[i].buttons) {
+    const expectedDetails = dataTable.raw().map(([value]) => value);
+    for (const button of expectedDetails) {
+      switch (button) {
         case '3-dot option':
           await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
           break;
@@ -355,7 +361,7 @@ Then(
           await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
           break;
         default:
-          throw new Error(`${expectedDetails[i].options} button is not available`);
+          throw new Error(`${button} button is not available`);
       }
     }
   }
@@ -375,9 +381,9 @@ Then(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    const expectedDetails = dataTable.hashes();
-    for (let i = 0; i < expectedDetails.length; i++) {
-      switch (expectedDetails[i].details) {
+    const expectedDetails = dataTable.raw().map(([value]) => value);
+    for (const detail of expectedDetails) {
+      switch (detail) {
         case 'no-favorite-meetings-text':
           await expect(home.noFavoritesSelector).toBeVisible();
           break;
@@ -385,7 +391,7 @@ Then(
           expect(await home.favoriteMeetingsIcons.count()).toBe(1);
           break;
         default:
-          throw new Error(`${expectedDetails[i].details} is a typo or an unexpected detail`);
+          throw new Error(`${detail} is a typo or an unexpected detail`);
       }
     }
   }
@@ -454,9 +460,9 @@ Then(
   'for {string} these meetings should be displayed under the My favorite meetings label with a bookmark icon on the Home-Page:',
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const home = await navigateToHomePage(this, user);
-    const expectedMeetings = dataTable.hashes();
-    for (let i = 0; i < expectedMeetings.length; i++) {
-      await expect(await home.getFavouriteMeetingSelector(expectedMeetings[i].meeting)).toBeVisible();
+    const expectedMeetings = dataTable.raw().map(([value]) => value);
+    for (const meeting of expectedMeetings) {
+      await expect(await home.getFavouriteMeetingSelector(meeting)).toBeVisible();
     }
     await expect(home.favoriteMeetingsIcons).toBeVisible();
   }
@@ -502,9 +508,9 @@ Then(
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
     await expect(home.joinExistingMeetingDialog).toBeVisible();
-    const expectedDetails = dataTable.hashes();
-    for (let i = 0; i < expectedDetails.length; i++) {
-      switch (expectedDetails[i].details) {
+    const expectedDetails = dataTable.raw().map(([value]) => value);
+    for (const detail of expectedDetails) {
+      switch (detail) {
         case 'Join a meeting now':
           await expect(home.joinExistingMeetingHeading).toBeVisible();
           break;
@@ -518,7 +524,7 @@ Then(
           await expect(home.joinExistingMeetingCloseButton).toBeVisible();
           break;
         default:
-          throw new Error(`${expectedDetails[i][0]} detail is not available`);
+          throw new Error(`${detail} detail is not available`);
       }
     }
   }

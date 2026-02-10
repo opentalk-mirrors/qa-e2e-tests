@@ -4,6 +4,7 @@
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { validateDataTableHeaders } from '../../helper/helper';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -117,10 +118,7 @@ Then(
   async function (this: CustomWorld, moderator: string, expectedOptionsTable: DataTable) {
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    const expectedOptions = [];
-    for (let i = 0; i < expectedOptionsTable.raw().length; i++) {
-      expectedOptions.push(expectedOptionsTable.raw()[i][0]);
-    }
+    const expectedOptions = expectedOptionsTable.raw().map(([value]) => value);
     expect(await breakoutRoomsPage?.getSelectionModeOptions()).toEqual(expectedOptions);
   }
 );
@@ -128,6 +126,8 @@ Then(
 Then(
   'these settings should be set in the Breakout Rooms moderator tool for {string}',
   async function (this: CustomWorld, moderator: string, expectedSettingsTable: DataTable) {
+    const expectedHeaders = ['setting', 'value'];
+    validateDataTableHeaders(expectedSettingsTable, expectedHeaders);
     const expectedSettingsTableHashes = expectedSettingsTable.hashes();
     const meeting = this.getStartedMeeting(moderator).meeting;
     const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;

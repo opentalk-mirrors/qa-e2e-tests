@@ -37,12 +37,15 @@ Feature: Meeting Room Breakout Room
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     When "Alice" opens the Breakout Rooms moderator tool
     Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | setting             | value    |
       | Random distribution | disabled |
     When "Alice" enables "Random distribution" in the Breakout Rooms moderator tool
     Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | setting             | value    |
       | Random distribution | enabled |
     When "Alice" disables "Random distribution" in the Breakout Rooms moderator tool
     Then these settings should be set in the Breakout Rooms moderator tool for "Alice"
+      | setting             | value    |
       | Random distribution | disabled |
 
 

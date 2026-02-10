@@ -4,6 +4,7 @@
 import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { validateDataTableHeaders } from '../../helper/helper';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { MuteParticipantsPage } from '../../pages/MeetingRoom/ModeratorTools/MuteParticipantsPage';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
@@ -31,7 +32,7 @@ When(
     const meeting = this.getStartedMeeting(moderator).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const muteParticipantsPage = new MuteParticipantsPage({ page: meeting.meetingRoomPage.page });
-    const participants = participantsToMuteTable.raw().map((participant) => participant[0]);
+    const participants = participantsToMuteTable.raw().map(([participant]) => participant);
     const participantListWithCheckboxesPage = new ParticipantListWithCheckboxesPage({
       page: meeting.meetingRoomPage.page,
     });
@@ -45,6 +46,8 @@ Then(
   'in the meeting of {string} these alert notifications should be displayed for the respected users:',
   async function (this: CustomWorld, moderator: string, messageTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
+    const expectedHeaders = ['user', 'text'];
+    validateDataTableHeaders(messageTable, expectedHeaders);
     const messages = messageTable.hashes();
     for (const message of messages) {
       if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[message.user]) {
@@ -80,6 +83,8 @@ Then(
   'in the meeting of {string} these participants should have the following audio status:',
   async function (this: CustomWorld, moderator: string, statusesTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
+    const expectedHeaders = ['participant', 'status'];
+    validateDataTableHeaders(statusesTable, expectedHeaders);
     const statuses = statusesTable.hashes();
     for (const status of statuses) {
       if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[status.participant]) {

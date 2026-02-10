@@ -178,7 +178,8 @@ Feature: Meeting Room Voting Room
     And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
     And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
-      | Audio | disabled |
+      | setting | value    |
+      | Audio   | disabled |
     And 1 guest has joined the meeting of "Alice"
     When "Alice" opens the Voting moderator tool
     And "Alice" starts to create a new vote in the Voting moderator tool
@@ -220,7 +221,7 @@ Feature: Meeting Room Voting Room
       | Budget Approval Vote | Q1 Financial Review | Finance |
       | Team Outing Vote     | Annual Team Event   | HR      |
     Then the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
-      | Title                | Topic        |
+      | title                | topic        |
       | Dummy Title          | Dummy Topic  |
       | Budget Approval Vote | Finance      |
       | Team Outing Vote     | HR           |
@@ -232,6 +233,7 @@ Feature: Meeting Room Voting Room
     When "Alice" "expands" the saved voting section in the open moderator tool
     And "Alice" selects the last voting from the list in the open moderator tool
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
+      | field           | value              |
       | duration        | 1 min              |
       | allowAbstaining | true               |
       | autoClose       | false              |
