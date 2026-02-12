@@ -458,6 +458,7 @@ export class MeetingRoomPage {
 
   public async startBreakoutRoomsModeratorTool(): Promise<BreakoutRoomsPage> {
     await this.moderationTools.createBreakoutRoomsButton.click();
+    await waitForDomStopChanging(this.page);
     return new BreakoutRoomsPage({ page: this.page });
   }
 
@@ -475,9 +476,17 @@ export class MeetingRoomPage {
     return votingRoomPage;
   }
 
-  public async startBreakoutRooms(randomDistribution: boolean): Promise<void> {
+  public async startBreakoutRooms(
+    randomDistribution: boolean | null = null,
+    mode: string | null = null
+  ): Promise<void> {
     const breakoutRoomPage = await this.startBreakoutRoomsModeratorTool();
-    await breakoutRoomPage.setRandomDistribution(randomDistribution);
+    if (randomDistribution != null) {
+      await breakoutRoomPage.setRandomDistribution(randomDistribution);
+    }
+    if (mode !== null) {
+      await breakoutRoomPage.setSelectionMode(mode);
+    }
     await breakoutRoomPage.startRooms();
   }
 

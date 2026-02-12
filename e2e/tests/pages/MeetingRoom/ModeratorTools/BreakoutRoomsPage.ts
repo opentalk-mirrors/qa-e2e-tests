@@ -15,12 +15,14 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly numberOfRoomsInput: Locator;
   private readonly roomsToBeCreatedRegex: RegExp;
   private readonly roomsToBeCreated: Locator;
+  private readonly createdRoomsDropdown: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page });
     this.startRoomsButton = this.page.getByRole('button', { name: 'Start rooms' });
     this.closeRoomButton = this.page.getByRole('button', { name: 'Close room' });
     this.participantsAvatar = this.page.getByRole('tabpanel').getByTestId('participantAvatar');
+    this.createdRoomsDropdown = this.page.getByRole('tabpanel').getByText(/Room \d+/);
 
     // this is not a nice locator, but the corresponding label is pointing to nowhere
     // see https://git.opentalk.dev/opentalk/qa/reports/-/issues/407
@@ -67,7 +69,7 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     await this.selectionModeDropdownItems.getByText(mode).click();
   }
 
-  public async getNumberOfRooms(): Promise<string> {
+  public async getNumberOfRoomsSetting(): Promise<string> {
     const numberOfRooms = await this.numberOfRoomsInput.inputValue();
     return numberOfRooms.trim();
   }
@@ -80,5 +82,9 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     const fullText = await this.roomsToBeCreated.innerText();
     const matchNoRooms = fullText.match(this.roomsToBeCreatedRegex);
     return matchNoRooms ? parseInt(matchNoRooms[1], 10) : 0;
+  }
+
+  public async countCreatedRooms(): Promise<number> {
+    return (await this.createdRoomsDropdown.all()).length;
   }
 }

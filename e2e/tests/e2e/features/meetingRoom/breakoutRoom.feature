@@ -114,3 +114,37 @@ Feature: Meeting Room Breakout Room
     And "Alice" selects "5 min" duration in the duration dialog in the moderator tool
     And "Alice" closes the session duration dialog in the open moderator tool
     Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
+
+  @skip-on-webkit
+  # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
+  Scenario Outline: Create Breakout Rooms with random distribution
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/248
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/249
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/256
+    Given 3 guests have joined the meeting of "Alice"
+    And "Alice" has opened the Breakout Rooms moderator tool
+    When "Alice" creates Breakout Rooms with these settings:
+      | setting             | value          |
+      | Random distribution | enabled        |
+      | By number of        | <By number of> |
+    And these participants in the meeting room of "Alice" join the Breakout Rooms:
+      | Alice  |
+      | guest1 |
+      | guest3 |
+    Then all together 3 participants should be in the Breakout Rooms in the meeting room of "Alice"
+    When "Alice" waits for 60 seconds
+    Then 2 Breakout Rooms should have been created in the meeting of "Alice"
+    And 2 participants should be in the breakout room of "Alice"
+    And all together 4 participants should be in the Breakout Rooms in the meeting room of "Alice"
+    When "Alice" closes the Breakout Rooms
+    And these participants in the meeting room of "Alice" leave the Breakout Rooms:
+      | Alice  |
+      | guest1 |
+      | guest3 |
+    Then 3 participants should be in the meeting room of "Alice"
+    When "Alice" waits for 60 seconds
+    Then 4 participants should be in the meeting room of "Alice"
+    Examples:
+      | By number of |
+      | Rooms        |
+      | Participants |

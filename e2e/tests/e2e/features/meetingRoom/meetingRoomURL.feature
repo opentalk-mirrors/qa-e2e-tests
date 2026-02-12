@@ -15,7 +15,9 @@ Feature: Meeting room URL
     When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And 3 guests join the meeting of "Alice"
     Then 4 participants should be in the meeting room of "Alice"
-    When "Alice" creates Breakout Rooms with random distribution
+    When "Alice" creates Breakout Rooms with these settings:
+      | setting             | value   |
+      | Random distribution | enabled |
     And all participants in the meeting room of "Alice" join the Breakout Rooms
     Then 2 participants should be in the breakout room of "Alice"
     And all together 4 participants should be in the Breakout Rooms in the meeting room of "Alice"
