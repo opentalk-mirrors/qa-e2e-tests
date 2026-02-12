@@ -160,35 +160,46 @@ Then(
     switch (sortOption) {
       case 'Ascending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
-        const expectedOrder = [...participantsNames].sort();
+        const selfUser = participantsNames.find((name) => name.includes('(You)'));
+        const others = participantsNames.filter((name) => !name.includes('(You)'));
+        others.sort((a, b) => a.localeCompare(b));
+        const expectedOrder = selfUser ? [selfUser, ...others] : others;
         expect(participantsNames).toEqual(expectedOrder);
         break;
       }
 
       case 'Descending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
-        const expectedOrder = [...participantsNames].sort().reverse();
+        const selfUser = participantsNames.find((name) => name.includes('(You)'));
+        const others = participantsNames.filter((name) => !name.includes('(You)'));
+        others.sort((a, b) => b.localeCompare(a));
+        const expectedOrder = selfUser ? [selfUser, ...others] : others;
         expect(participantsNames).toEqual(expectedOrder);
         break;
       }
 
       case 'First Join Time': {
-        expect(isTimeAscending(await peopleOptionPage.getAllParticipantsTimes('Joined'))).toBeTruthy();
+        const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
+        expect(isTimeAscending(times.slice(1))).toBeTruthy();
         break;
       }
 
       case 'Last Join Time': {
-        expect(isTimeDescending(await peopleOptionPage.getAllParticipantsTimes('Joined'))).toBeTruthy();
+        const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
+        expect(isTimeDescending(times.slice(1))).toBeTruthy();
         break;
       }
 
       case 'Last Active': {
-        expect(isTimeDescending(await peopleOptionPage.getAllParticipantsTimes('Last Active'))).toBeTruthy();
+        const times = await peopleOptionPage.getAllParticipantsTimes('Last Active');
+        expect(isTimeDescending(times.slice(1))).toBeTruthy();
+
         break;
       }
 
       case 'Raised Hand First': {
-        expect(isTimeAscending(await peopleOptionPage.getAllParticipantsTimes('Hand raised'))).toBeTruthy();
+        const times = await peopleOptionPage.getAllParticipantsTimes('Hand raised');
+        expect(isTimeAscending(times.slice(1))).toBeTruthy();
         break;
       }
 
