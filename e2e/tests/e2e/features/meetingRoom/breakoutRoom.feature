@@ -50,6 +50,7 @@ Feature: Meeting Room Breakout Room
 
 
   Scenario: Meeting Room As Moderator duration option
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/246
     Given "Alice" has opened the Breakout Rooms moderator tool
     When "Alice" opens the session duration dialog in the moderator tool
     Then the heading in the session duration dialog should be "Session Duration" in the open moderator tool for "Alice"
