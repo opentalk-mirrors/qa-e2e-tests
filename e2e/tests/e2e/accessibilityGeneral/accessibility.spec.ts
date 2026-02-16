@@ -13,7 +13,7 @@ import { SidebarPage } from '../../pages/SidebarPage';
 const meetingTitle = 'test_meeting';
 const meetingRoomPassword = 'test1234';
 
-test.describe('Accessibility_General', () => {
+test.describe('Accessibility_General', { tag: '@late' }, () => {
   test.afterEach(async () => {
     await deleteMeetings(config.USER_NAME);
   });
@@ -27,6 +27,7 @@ test.describe('Accessibility_General', () => {
       await closeWebkitPopUp({ page });
     }
 
+    await deleteMeetings(config.USER_NAME);
     const planMeetingPage = await homePage.planNewMeeting();
     await planMeetingPage.createNewMeeting(meetingTitle, meetingRoomPassword);
     await homePage.navigateToHomePage();
