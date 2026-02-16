@@ -185,7 +185,7 @@ export class MeetingRoomPage {
     this.messagesButton = this.page.getByRole('tab', { name: 'Messages' });
 
     this.chatOption = this.page.getByTestId('chat');
-    this.searchInChatButton = this.page.getByLabel('Search in chat');
+    this.searchInChatButton = this.page.getByRole('textbox', { name: 'Search in chat' });
     this.closeSearchInChatButton = this.page.getByRole('button', { name: 'Clear' });
     this.chatHistoryDescription = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('paragraph');
     this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
