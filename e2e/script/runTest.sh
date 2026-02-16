@@ -16,9 +16,9 @@ if [[ $TEST == "gherkin" ]]; then
   fi
   NODE_TLS_REJECT_UNAUTHORIZED=0 npx cucumber-js --require-module ts-node/register --require e2e/tests/e2e/cucumberWorld.ts --require e2e/tests/e2e/hooks.ts --require e2e/tests/e2e/steps/**/*.ts --format @cucumber/pretty-formatter --tags "$tags_string" --retry $RETRY "$1" $FILEPATH
 elif [[ $TEST == "playwright" && $HEADLESS == "true" ]]; then
-  NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test $FILEPATH --project=$BROWSER
+  npx playwright test $FILEPATH --project=$BROWSER
 elif [[ $TEST == "playwright" ]]; then
-  NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test $FILEPATH --project=$BROWSER --headed
+  npx playwright test $FILEPATH --project=$BROWSER --headed
 else
   echo "Error: TEST env. variable needs to be set"
 fi

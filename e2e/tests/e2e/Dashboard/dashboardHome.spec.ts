@@ -48,7 +48,7 @@ test.beforeEach('Navigate to dashboard', async ({ page, browserName }) => {
   }
 });
 
-test.describe('Dashboard_Home', { tag: '@late' }, () => {
+test.describe('Dashboard_Home', () => {
   test('TC_001_Dashboard_Home_Start new', async ({ page, browserName }) => {
     const homePage = new HomePage({ page });
     await homePage.navigateToHomePage();
