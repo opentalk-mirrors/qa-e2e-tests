@@ -14,7 +14,7 @@
     "deps:unused": "knip --include dependencies,files",
     "prepare": "husky",
     "test:gherkin": "TEST=gherkin bash e2e/script/runTest.sh",
-    "test:playwright": "TEST=playwright bash e2e/script/runTest.sh",
+    "test:playwright": "NODE_TLS_REJECT_UNAUTHORIZED=0 TEST=playwright bash e2e/script/runTest.sh",
     "fmt:gherkin": "gherlint e2e/tests/e2e/features -c .gherlintrc.json",
     "fmt:gherkin-fix": "gherlint --fix e2e/tests/e2e/features -c .gherlintrc.json"
   },
