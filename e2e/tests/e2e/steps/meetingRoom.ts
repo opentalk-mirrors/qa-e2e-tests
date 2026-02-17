@@ -6,6 +6,7 @@ import { expect } from '@playwright/test';
 
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
+import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
 let meetingRoomPage: MeetingRoomPage;
@@ -320,7 +321,7 @@ Then(
 );
 
 When(
-  /^"([^"]*)" types "([^"]*)" in the search in the chat textbox on the Meeting-Room-Page/,
+  /^"([^"]*)" (?:types|searches for) "([^"]*)" in the (?:search in the chat textbox|chat) on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, text: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -329,7 +330,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" all the messages that closely match "([^"]*)" should be displayed in the chat overview on the Meeting-Room-Page/,
+  /^for "([^"]*)" all the messages that closely match "([^"]*)" should be displayed in the chat (?:overview |)on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -368,7 +369,7 @@ Then(
 );
 
 When(
-  '{string} closes the search in the chat textbox on the Meeting-Room-Page',
+  /"([^"]*)" (?:closes|clears) the search in the chat (?:textbox |)on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -377,7 +378,7 @@ When(
 );
 
 Then(
-  /^for "([^"]*)" the text "([^"]*)" should be displayed in the chat overview on the Meeting-Room-Page/,
+  /^for "([^"]*)" the text "([^"]*)" should be displayed in the chat (?:overview |)on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, text: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -395,7 +396,7 @@ Then(
 );
 
 When(
-  '{string} resets the searched text in the chat overview on the Meeting-Room-Page',
+  /"([^"]*)" resets the (?:searched text|search) in the chat (?:overview |)on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
@@ -472,3 +473,50 @@ When('{string} views the participants on the Meeting-Room-Page', async function 
   const meeting = this.getStartedMeeting(moderator).meeting;
   await meeting.meetingRoomPage.selectPeopleOption();
 });
+
+Then(
+  '{string} should be notified with {string} in the meeting room of {string}',
+  async function (this: CustomWorld, receiver: string, notification: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
+    const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
+    expect(await notificationPage.getAlertNotificationText()).toBe(notification);
+  }
+);
+
+Then(
+  'for {string} the unread message indicator should be displayed in the meeting room of {string}',
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    expect(await meeting.participantMeetingRoomPages[user].isMessageUnread()).toBeTruthy();
+  }
+);
+
+When(
+  '{string} tries to send an empty message on the Meeting-Room-Page',
+  async function (this: CustomWorld, user: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.submitChat();
+  }
+);
+
+Then(
+  'for {string} the error {string} should be displayed on the Meeting-Room-Page',
+  async function (this: CustomWorld, user: string, errorMessage: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    expect(await meeting.meetingRoomPage.getEmptyMessageErrorText()).toBe(errorMessage);
+  }
+);
+
+When(
+  '{string} sends a message {string} on the Meeting-Room-Page',
+  async function (this: CustomWorld, user: string, message: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.typeMessage(message);
+    await meeting.meetingRoomPage.submitChat();
+  }
+);

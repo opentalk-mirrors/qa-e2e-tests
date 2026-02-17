@@ -648,4 +648,8 @@ export class MeetingRoomPage {
     await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });
     return peopleOptionPage;
   }
+
+  public async isMessageUnread(): Promise<boolean> {
+    return this.messagesButton.evaluate((el) => el.classList.contains('MuiTab-labelIcon'));
+  }
 }
