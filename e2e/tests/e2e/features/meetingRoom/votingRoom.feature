@@ -174,6 +174,7 @@ Feature: Meeting Room Voting Room
 
 
   Scenario: Meeting Room_As Moderator_Voting_Create new voting_Save button
+    #https://git.opentalk.dev/opentalk/qa/reports/-/issues/156
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
@@ -241,6 +242,106 @@ Feature: Meeting Room Voting Room
       | title           | Team Outing Vote   |
       | subtitle        | Annual Team Event  |
       | topic           | HR                 |
+    And this "button" should be displayed in the open moderator tool for "Alice":
+      | Back |
+    And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
+    And these "buttons" should be displayed in the open moderator tool for "Alice":
+      | Save     |
+      | Continue |
+
+
+  Scenario: Meeting Room_As Moderator_Voting_Update voting
+    #https://git.opentalk.dev/opentalk/qa/reports/-/work_items/282
+    Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
+    And "Bob" has logged in
+    And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
+    And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
+      | setting | value    |
+      | Audio   | disabled |
+    And 1 guest has joined the meeting of "Alice"
+
+    When "Alice" opens the Voting moderator tool
+    Then the "heading" in the open moderator tool for "Alice" should be "Voting"
+    When "Alice" creates the following Votes in the open moderator tool:
+      | Title                | Subtitle            | Topic   |
+      | Budget Approval Vote | Q1 Financial Review | Finance |
+      | Team Outing Vote     | Annual Team Event   | HR      |
+    Then the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
+      | title                | topic        |
+      | Budget Approval Vote | Finance      |
+      | Team Outing Vote     | HR           |
+
+    When "Alice" selects the last voting from the list in the open moderator tool
+    Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
+      | field           | value              |
+      | duration        | 1 min              |
+      | allowAbstaining | true               |
+      | autoClose       | false              |
+      | votingType      | Roll Call          |
+      | title           | Team Outing Vote   |
+      | subtitle        | Annual Team Event  |
+      | topic           | HR                 |
+    And this "button" should be displayed in the open moderator tool for "Alice":
+      | Back |
+    And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
+    And these "buttons" should be displayed in the open moderator tool for "Alice":
+      | Save     |
+      | Continue |
+
+    When "Alice" opens the session duration dialog in the moderator tool
+    And "Alice" selects "2 min" duration in the duration dialog in the moderator tool
+    And "Alice" saves the selected duration in the duration dialog in the moderator tool
+    Then the duration field in the open moderator tool for "Alice" should be set to "2 min"
+
+    When "Alice" toggles "Allow Abstaining" in the open moderator tool
+    Then "allow abstaining toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
+
+    When "Alice" toggles "autoClose" in the open moderator tool
+    Then "auto close toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
+
+    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
+    And "Alice" selects "Roll Call - by name" option in the open moderator tool
+    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
+    And "Roll Call - by name" should be selected as voting type in the Create Voting moderator tool for "Alice"
+
+    When "Alice" selects the "Title" field in the open moderator tool
+    And "Alice" types text "Dummy Title" in the "Title" field in the open moderator tool
+    Then the text "Dummy Title" should be displayed in the "Title" field in the open moderator tool for "Alice"
+
+    When "Alice" selects the "Subtitle" field in the open moderator tool
+    And "Alice" types text "Dummy Subtitle" in the "Subtitle" field in the open moderator tool
+    Then the text "Dummy Subtitle" should be displayed in the "Subtitle" field in the open moderator tool for "Alice"
+
+    When "Alice" selects the "Topic" field in the open moderator tool
+    And "Alice" types text "Dummy Topic" in the "Topic" field in the open moderator tool
+    Then the text "Dummy Topic" should be displayed in the "Topic" field in the open moderator tool for "Alice"
+
+    When "Alice" saves the voting in the Create Voting moderator tool
+    Then a notification should be displayed in the meeting room of "Alice" with the text "Your vote form was saved successfully"
+
+    When "Alice" exits the Create Voting moderator tool
+    Then the "heading" in the open moderator tool for "Alice" should be "Voting"
+    And this "button" should be displayed in the open moderator tool for "Alice":
+      | Saved Votings |
+    And the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
+      | title                | topic        |
+      | Budget Approval Vote | Finance      |
+      | Dummy Title          | Dummy Topic  |
+    When "Alice" "collapses" the saved voting section in the open moderator tool
+    Then the saved voting list should be hidden for "Alice" in the open moderator tool
+    And this "button" should be displayed in the open moderator tool for "Alice":
+      | Create new voting |
+    When "Alice" "expands" the saved voting section in the open moderator tool
+    And "Alice" selects the last voting from the list in the open moderator tool
+    Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
+      | field           | value               |
+      | duration        | 2 min               |
+      | allowAbstaining | false               |
+      | autoClose       | true                |
+      | votingType      | Roll Call - by name |
+      | title           | Dummy Title         |
+      | subtitle        | Dummy Subtitle      |
+      | topic           | Dummy Topic         |
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Back |
     And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
