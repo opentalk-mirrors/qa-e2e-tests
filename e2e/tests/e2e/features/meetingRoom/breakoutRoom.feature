@@ -132,7 +132,7 @@ Feature: Meeting Room Breakout Room
       | guest1 |
       | guest3 |
     Then all together 3 participants should be in the Breakout Rooms in the meeting room of "Alice"
-    When "Alice" waits for 60 seconds
+    When "Alice" waits for the participants to be allocated to the Breakout Rooms
     Then 2 Breakout Rooms should have been created in the meeting of "Alice"
     And 2 participants should be in the breakout room of "Alice"
     And all together 4 participants should be in the Breakout Rooms in the meeting room of "Alice"
@@ -142,7 +142,7 @@ Feature: Meeting Room Breakout Room
       | guest1 |
       | guest3 |
     Then 3 participants should be in the meeting room of "Alice"
-    When "Alice" waits for 60 seconds
+    When "Alice" waits for the participants to be moved to the Main Room
     Then 4 participants should be in the meeting room of "Alice"
     Examples:
       | By number of |

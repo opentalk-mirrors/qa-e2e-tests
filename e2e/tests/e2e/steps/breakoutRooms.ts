@@ -9,6 +9,8 @@ import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
 
+const breakoutRoomAlocationTimeoutInS = 60;
+
 Given('{string} has opened the Breakout Rooms moderator tool', async function (this: CustomWorld, user: string) {
   await openBreakoutRoomsModeratorTool(this, user);
 });
@@ -242,5 +244,13 @@ Then(
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
     expect(await breakoutRoomsPage?.countCreatedRooms()).toBe(expectedNoOfRooms);
+  }
+);
+
+When(
+  /^"([^"]*)" waits for the participants to be (?:allocated|moved) to the (?:Main Room|Breakout Rooms)$/,
+  async function (this: CustomWorld, moderator: string) {
+    const page = this.getUser(moderator).page;
+    await page.waitForTimeout(breakoutRoomAlocationTimeoutInS * 1000);
   }
 );
