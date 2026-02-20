@@ -28,7 +28,7 @@ let meetingRoomPage: MeetingRoomPage,
   idleGuestMeetingRoomPage: MeetingRoomPage,
   resetRaisedHandsPage: ResetRaisedHandsPage;
 
-test.describe('Meeting Room_Reset raised hands selected button', () => {
+test.describe('Meeting Room_Reset raised hands selected button', { tag: '@late' }, () => {
   const guestName = [guest1, guest2];
 
   let guestTile: ParticipantTilePage, moderatorTile: ParticipantTilePage, idleGuestTile: ParticipantTilePage;

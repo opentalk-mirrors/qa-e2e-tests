@@ -364,9 +364,16 @@ e2e-tests:
     OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
     CONTROLLER_HOST: https://controller.opentalk.test
   script:
-    - PROJECTS=$([[ $RUN_ONLY_SMOKE_TESTS == "true" ]] && echo "smoke-$BROWSER" || echo "$BROWSER")
-    - echo "RUNS $PROJECTS project"
-    - BROWSER=$PROJECTS pnpm run test:playwright --workers=1
+    - |
+      if [ "$RUN_ONLY_SMOKE_TESTS" == "true" ]; then
+        PROJECTS=smoke-$BROWSER
+        echo "RUNS $PROJECTS project"
+        BROWSER=$PROJECTS pnpm run test:playwright --workers=1
+      else
+        NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$BROWSER --workers=1 --grep-invert @late
+        NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$BROWSER --workers=1 --grep @late
+      fi
+
   after_script:
     - export PLAYWRIGHT_JUNIT_INPUT_FILE=./junit/test-results.xml
     - export PLAYWRIGHT_JUNIT_OUTPUT_FILE=./junit/junit-${BROWSER}.xml

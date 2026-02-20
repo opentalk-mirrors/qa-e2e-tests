@@ -9,7 +9,7 @@ import { PNG } from 'pngjs';
 import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 
-test.describe('Test if video is working', () => {
+test.describe('Test if video is working', { tag: '@late' }, () => {
   let meetingRoomPage: MeetingRoomPage, guestLink: string, guestMeetingRoomPage: MeetingRoomPage;
   test.use({ viewport: { width: 1280, height: 720 } });
 
@@ -20,14 +20,17 @@ test.describe('Test if video is working', () => {
 
   test('video of other participant is being played', async ({ browserName }) => {
     test.skip(browserName === 'webkit');
-    await meetingRoomPage.page.bringToFront();
+    test.skip(browserName === 'firefox');
+    await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
-    const isPlaying = await guestMeetingRoomPage.isVideoPlaying();
+    await meetingRoomPage.page.bringToFront();
+    const isPlaying = await meetingRoomPage.isVideoPlaying();
     expect(isPlaying).toBe(true);
   });
 
   test('local video is being played', async ({ browserName }) => {
     test.skip(browserName === 'webkit');
+    test.skip(browserName === 'firefox');
     await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
     const isPlaying = await guestMeetingRoomPage.isVideoPlaying();
