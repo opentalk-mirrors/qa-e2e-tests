@@ -1,4 +1,4 @@
 {
   "*.{js,jsx,ts,tsx}": [ "pnpm lint:pre-commit", "pnpm fmt:pre-commit"],
-  "*.feature": [ "gherlint e2e/tests/e2e/features -c .gherlintrc.json" ]
+  "*.feature": [ "pnpm fmt:gherkin" ]
 }
