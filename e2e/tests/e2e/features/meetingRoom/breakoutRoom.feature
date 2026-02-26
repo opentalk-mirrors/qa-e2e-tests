@@ -127,20 +127,14 @@ Feature: Meeting Room Breakout Room
       | setting             | value          |
       | Random distribution | enabled        |
       | By number of        | <By number of> |
-    And these participants in the meeting room of "Alice" join the Breakout Rooms:
-      | Alice  |
-      | guest1 |
-      | guest3 |
+    And 3 of the participants in the meeting room of "Alice" join the Breakout Rooms
     Then all together 3 participants should be in the Breakout Rooms in the meeting room of "Alice"
     When "Alice" waits for the participants to be allocated to the Breakout Rooms
     Then 2 Breakout Rooms should have been created in the meeting of "Alice"
     And 2 participants should be in the breakout room of "Alice"
     And all together 4 participants should be in the Breakout Rooms in the meeting room of "Alice"
     When "Alice" closes the Breakout Rooms
-    And these participants in the meeting room of "Alice" leave the Breakout Rooms:
-      | Alice  |
-      | guest1 |
-      | guest3 |
+    And 3 of the participants in the meeting room of "Alice" leave the Breakout Rooms
     Then 3 participants should be in the meeting room of "Alice"
     When "Alice" waits for the participants to be moved to the Main Room
     Then 4 participants should be in the meeting room of "Alice"

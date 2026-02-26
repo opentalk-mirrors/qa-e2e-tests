@@ -72,12 +72,16 @@ When(
 );
 
 When(
-  /^these participants in the meeting room of "([^"]*)" (join|leave) the Breakout Rooms:$/,
-  async function (this: CustomWorld, moderator: string, action: string, participantsTable: DataTable) {
+  /^(\d?) of the participants in the meeting room of "([^"]*)" (join|leave) the Breakout Rooms$/,
+  async function (this: CustomWorld, participantCount: number, moderator: string, action: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
-    const participantNames = participantsTable.raw().map(([name]) => name);
 
-    for (const participantName of participantNames) {
+    let i = 1;
+    for (const participantName in startedMeeting.participantMeetingRoomPages) {
+      if (i > participantCount) {
+        break;
+      }
+      i++;
       const participantPage = startedMeeting.participantMeetingRoomPages[participantName];
       if (!participantPage) {
         throw new Error(`Participant "${participantName}" not found in meeting room of "${moderator}"`);
