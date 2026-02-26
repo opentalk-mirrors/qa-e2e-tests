@@ -12,8 +12,9 @@ Feature: Meeting Room Voting Room
     Given "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
 
-
+  @skip-on-chromium @skip-on-firefox @skip-on-webkit
   Scenario: Meeting Room As Moderator Voting_Overview+Duration+Back button
+    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/111
     When "Alice" opens the Voting moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Voting"
@@ -172,8 +173,9 @@ Feature: Meeting Room Voting Room
     When "Alice" types text "Dummy Topic" in the "Topic" field in the open moderator tool
     Then the text "Dummy Topic" should be displayed in the "Topic" field in the open moderator tool for "Alice"
 
-
+  @skip-on-chromium @skip-on-firefox @skip-on-webkit
   Scenario: Meeting Room_As Moderator_Voting_Create new voting_Save button
+    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     #https://git.opentalk.dev/opentalk/qa/reports/-/issues/156
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in
@@ -249,8 +251,9 @@ Feature: Meeting Room Voting Room
       | Save     |
       | Continue |
 
-
+  @skip-on-chromium @skip-on-firefox @skip-on-webkit
   Scenario: Meeting Room_As Moderator_Voting_Update voting
+    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     #https://git.opentalk.dev/opentalk/qa/reports/-/work_items/282
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in
