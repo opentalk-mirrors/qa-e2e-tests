@@ -33,7 +33,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test.skip('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, context, browserName }) => {
+  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, context, browserName }) => {
     test.skip(browserName === 'webkit');
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page);
@@ -42,7 +42,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // join with 5 guests (in separate browser instances)
     await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
-
+    await meetingRoomPage.page.bringToFront();
     // open grid view options besides the meeting room name
     await viewOptionsPage.displayViewOptionsMenu();
 
@@ -53,14 +53,14 @@ test.describe('MeetingRoom - adjust participant view', () => {
     const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
     // speaker is in first place
     expect(await viewOptionsPage.getFirstParticipantNameInSpeakerView()).toBe(defaultPinnedParticipant);
-    // pinned user is shown first among all participant thumbs
-    expect(await viewOptionsPage.getThumbsNthParticipantNameInSpeakerView(1)).toBe(defaultPinnedParticipant);
+    // pinned user is shown at top and the user that joined after pinned user is shown at first among all participant thumbs
+    expect(await viewOptionsPage.getThumbsNthParticipantNameInSpeakerView(1)).toBe('guest2');
     // pin some user (3rd participant)
-    const pinnedParticipant = await viewOptionsPage.pinNthParticipantInSpeakerView(3);
+    const pinnedParticipant = await viewOptionsPage.pinNthParticipantInSpeakerView('guest3');
     expect(defaultPinnedParticipant).not.toBe(pinnedParticipant);
     expect(await viewOptionsPage.getPinnedParticipantNameInSpeakerView()).toBe(pinnedParticipant);
     // pin another user (2nd participant)
-    const pinnedParticipant2 = await viewOptionsPage.pinNthParticipantInSpeakerView(2);
+    const pinnedParticipant2 = await viewOptionsPage.pinNthParticipantInSpeakerView('guest2');
     expect(await viewOptionsPage.getPinnedParticipantNameInSpeakerView()).toBe(pinnedParticipant2);
   });
 

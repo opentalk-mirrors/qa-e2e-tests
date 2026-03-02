@@ -15,6 +15,7 @@ test.describe('Meeting Room_Debriefing', () => {
     debriefingPage: DebriefingPage;
 
   test.beforeEach(async ({ page, context, browserName }) => {
+    // skipped in webkit due to https://git.opentalk.dev/opentalk/qa/reports/-/issues/418
     test.skip(browserName === 'webkit');
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
