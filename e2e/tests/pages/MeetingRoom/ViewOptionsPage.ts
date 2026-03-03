@@ -118,11 +118,15 @@ export class ViewOptionsPage {
   }
 
   //functions (related to how participants are displayed)
-  public async pinNthParticipantInSpeakerView(nth: number): Promise<string> {
+  public async pinNthParticipantInSpeakerView(participantName: string): Promise<string> {
     const participantsThumbs = await this.page.getByTestId(this.selectors.speakerViewParticipantsThumbsHolder);
-    const nthParticipantWindow = await participantsThumbs.getByTestId(this.selectors.participantWindow).nth(nth - 1); // minus 1 because nth(0) is the first element
+    const nthParticipantWindow = await participantsThumbs
+      .getByTestId(this.selectors.participantWindow)
+      .filter({ hasText: participantName });
+    // after participant gets pinned, it gets to top and order is changed, so storing the participant to be pinned before pinning
+    const pinnedParticipant = await this.getNameTileText(nthParticipantWindow);
     await nthParticipantWindow.click();
-    return await this.getNameTileText(nthParticipantWindow);
+    return pinnedParticipant;
   }
 
   public async getPinnedParticipantNameInSpeakerView(): Promise<string> {

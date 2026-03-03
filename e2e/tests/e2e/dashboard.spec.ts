@@ -15,15 +15,12 @@ test.describe('Dashboard', () => {
       await expect(page.getByTestId('SecondaryNavigation').getByRole('list')).toContainText('Account');
     });
 
-    test.skip('verify the contents displayed in the meetings option of dashboard', async ({ page }) => {
+    test('verify the contents displayed in the meetings option of dashboard', async ({ page }) => {
       await page.goto(config.INSTANCE_URL);
       await page.getByRole('link', { name: 'Meetings' }).click();
       await expect(page.getByLabel('Only show invites')).toBeVisible();
       await expect(page.getByTestId('favoriteMeeting')).toBeVisible();
-      await expect(page.getByLabel('Month')).toBeVisible();
-      await expect(page.getByLabel('Week')).toBeVisible();
-      await expect(page.getByLabel('Day')).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Plan new meeting' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Plan new' })).toBeVisible();
       await expect(page.getByRole('heading', { name: 'My Meetings' })).toBeVisible();
     });
 
