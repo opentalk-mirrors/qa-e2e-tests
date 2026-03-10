@@ -8,7 +8,9 @@ import { config } from '../config';
 test.describe('Conference', () => {
   test.describe.configure({ mode: 'serial', timeout: 120_000 });
   test.describe('SpeedTest', () => {
-    test.skip('show stable connection message with a good connection', async ({ page }) => {
+    test('show stable connection message with a good connection', async ({ page, browserName }) => {
+      test.skip(browserName === 'webkit');
+
       await page.goto(config.INSTANCE_URL);
       await page.getByRole('link', { name: 'Start new' }).click();
       const conferencePagePromise = page.waitForEvent('popup');

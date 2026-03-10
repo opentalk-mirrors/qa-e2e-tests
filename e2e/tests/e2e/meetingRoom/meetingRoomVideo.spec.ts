@@ -20,7 +20,6 @@ test.describe('Test if video is working', { tag: '@late' }, () => {
 
   test('video of other participant is being played', async ({ browserName }) => {
     test.skip(browserName === 'webkit');
-    test.skip(browserName === 'firefox');
     await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
     await meetingRoomPage.page.bringToFront();
@@ -30,7 +29,6 @@ test.describe('Test if video is working', { tag: '@late' }, () => {
 
   test('local video is being played', async ({ browserName }) => {
     test.skip(browserName === 'webkit');
-    test.skip(browserName === 'firefox');
     await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
     const isPlaying = await guestMeetingRoomPage.isVideoPlaying();

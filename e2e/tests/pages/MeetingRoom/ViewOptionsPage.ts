@@ -44,10 +44,10 @@ export class ViewOptionsPage {
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
     this.activatedCameraFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
-      name: 'Activated camera first',
+      name: 'Camera status',
     });
     this.moderatorsFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
-      name: 'Moderator(s) first',
+      name: 'Role',
     });
     this.gridViewContainer = this.page.getByTestId(this.selectors.gridViewContainer);
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
@@ -149,7 +149,7 @@ export class ViewOptionsPage {
       .getByTestId(this.selectors.speakerViewParticipantsThumbsHolder)
       .getByTestId(this.selectors.participantWindow)
       .nth(nth - 1); // minus 1 because nth(0) is the first element
-    return await this.getNameTileText(participantWindow);
+    return (await this.getNameTileText(participantWindow)).trim();
   }
 
   public async getNthParticipantNameInGridView(nth: number): Promise<string> {

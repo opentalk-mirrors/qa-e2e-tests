@@ -34,9 +34,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
   });
 
   test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, context, browserName }) => {
-    test.skip(browserName === 'webkit');
-
-    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page);
+    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
@@ -121,10 +119,9 @@ test.describe('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test.skip('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, context, browserName }) => {
+  test('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, context, browserName }) => {
     test.skip(browserName === 'webkit');
-    test.skip(browserName === 'firefox');
-    // in firefox one needs to give permission to turn camera on therefore skip firefox until solution for this is found
+    // in webkit one needs to give permission to turn camera on therefore skip webkit until solution for this is found
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     const firstJoinedParticipantName = await meetingRoomPage.getUserName();
@@ -134,8 +131,8 @@ test.describe('MeetingRoom - adjust participant view', () => {
     const guestPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
-    const firstGuestMeetingRoomPage = guestPages[0];
-    const secondGuestMeetingRoomPage = guestPages[1];
+    const firstGuestMeetingRoomPage = guestPages['guest1'];
+    const secondGuestMeetingRoomPage = guestPages['guest2'];
 
     const firstGuestViewOptionsPage = new ViewOptionsPage({ page: firstGuestMeetingRoomPage.page });
     const secondGuestViewOptionsPage = new ViewOptionsPage({ page: secondGuestMeetingRoomPage.page });
@@ -144,10 +141,12 @@ test.describe('MeetingRoom - adjust participant view', () => {
     expect(await meetingRoomPage.isCameraOn()).toBeFalsy();
     expect(await firstGuestMeetingRoomPage.isCameraOn()).toBeFalsy();
     expect(await secondGuestMeetingRoomPage.isCameraOn()).toBeFalsy();
+    await firstGuestMeetingRoomPage.page.bringToFront();
     await firstGuestMeetingRoomPage.turnCameraOn();
     expect(await firstGuestMeetingRoomPage.isCameraOn()).toBeTruthy();
 
     // as moderator, open grid view options besides the meeting room name & select activated camera first
+    await meetingRoomPage.page.bringToFront();
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectActivatedCameraFirstSortingOption();
 
