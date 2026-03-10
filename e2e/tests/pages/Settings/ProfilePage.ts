@@ -33,7 +33,7 @@ export class ProfilePage {
       .getByText(
         'Enter a name (such as your first name, full name, or a nickname) that will be visible to others on OpenTalk.'
       );
-    this.errorText = this.page.getByText('OpenTalk LogoProfile').getByRole('paragraph').nth(1);
+    this.errorText = this.page.locator('form[data-sentry-component="ProfileNameForm"] p').nth(0);
     this.saveButton = this.page.getByRole('button', { name: 'Save' });
   }
 
