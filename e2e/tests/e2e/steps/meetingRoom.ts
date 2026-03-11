@@ -4,6 +4,7 @@
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { NotificationPage } from '../../pages/NotificationPage';
@@ -475,12 +476,26 @@ When('{string} views the participants on the Meeting-Room-Page', async function 
 });
 
 Then(
-  '{string} should be notified with {string} in the meeting room of {string}',
-  async function (this: CustomWorld, receiver: string, notification: string, moderator: string) {
+  '{string} should be notified with the following text in the meeting room of {string}:',
+  async function (this: CustomWorld, receiver: string, moderator: string, notification: string) {
     const meeting = this.getStartedMeeting(moderator);
     await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
     const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
-    expect(await notificationPage.getAlertNotificationText()).toBe(notification);
+    const notificationText = await notificationPage.getAlertNotificationText();
+    assert(notificationText, 'toBe', notification, `Expected ${notificationText} to be ${notification}`);
+    await notificationPage.closeNotificationAlert();
+  }
+);
+
+Then(
+  '{string} should receive a notification containing the following text in the meeting room of {string}:',
+  async function (this: CustomWorld, receiver: string, moderator: string, notification: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
+    const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
+    const notificationText = await notificationPage.getAlertNotificationText();
+    assert(notificationText, 'toContain', notification, `Expected ${notificationText} to contain ${notification}`);
+    await notificationPage.closeNotificationAlert();
   }
 );
 
@@ -518,5 +533,33 @@ When(
     await meeting.meetingRoomPage.page.bringToFront();
     await meeting.meetingRoomPage.typeMessage(message);
     await meeting.meetingRoomPage.submitChat();
+  }
+);
+
+Then(
+  /for "([^"]*)" the waiting room indicator should show (\d+) (?:participant|participants) on the Meeting-Room-Page/,
+  async function (this: CustomWorld, moderator: string, count: number) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const totalNumOfWaitingParticipants = await meeting.meetingRoomPage.getTotalWaitingParticipants();
+    assert(totalNumOfWaitingParticipants, 'toBe', count, `Expected ${totalNumOfWaitingParticipants} to be ${count}`);
+  }
+);
+
+When(
+  '{string} accepts the participation of {string} into the meeting room',
+  async function (this: CustomWorld, moderator: string, userToAccept: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.acceptParticipant(userToAccept);
+  }
+);
+
+Then(
+  '{string} should be on the Meeting-Room-Page of the meeting named {string} created by {string}',
+  async function (this: CustomWorld, user: string, meetingTitle: string, moderator: string) {
+    const page = this.getStartedMeeting(moderator).participantMeetingRoomPages[user].page;
+    const meetingRoomPage = new MeetingRoomPage({ page: page });
+    const meetingRoomName = await meetingRoomPage.getMeetingRoomName();
+    assert(meetingRoomName, 'toContain', meetingTitle, `Expected ${meetingRoomName} to contain ${meetingTitle}`);
   }
 );

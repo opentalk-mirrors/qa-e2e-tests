@@ -28,6 +28,9 @@ export class MeetingRoomPage {
   meetingInfoButton: Locator;
 
   public readonly viewOptionsButton: Locator;
+  private readonly waitingListButton: Locator;
+  private readonly waitingParticipantsIndicator: Locator;
+  private readonly waitingParticipants: Locator;
 
   public readonly participantWindowLocator: Locator;
 
@@ -129,6 +132,11 @@ export class MeetingRoomPage {
     this.meetingInfoButton = this.page.getByRole('button', { name: 'Share meeting details' });
 
     this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
+    this.waitingListButton = this.page.getByTestId('waiting-list-button');
+    this.waitingParticipantsIndicator = this.page
+      .locator('//*[@data-sentry-component="WaitingParticipantsPopover"]')
+      .locator('span');
+    this.waitingParticipants = this.page.locator('//*[@data-sentry-element="ScrollableBox"]');
 
     this.participantWindowLocator = this.page.getByTestId('ParticipantWindow');
 
@@ -659,5 +667,18 @@ export class MeetingRoomPage {
 
   public async isMessageUnread(): Promise<boolean> {
     return this.messagesButton.evaluate((el) => el.classList.contains('MuiTab-labelIcon'));
+  }
+
+  public async getTotalWaitingParticipants(): Promise<number> {
+    return Number(await this.waitingParticipantsIndicator.innerText());
+  }
+
+  public async acceptParticipant(participantName: string): Promise<void> {
+    await this.waitingListButton.click();
+    const approveWaitingParticipantLocator = this.waitingParticipants
+      .filter({ hasText: participantName })
+      .locator('button');
+    await approveWaitingParticipantLocator.click();
+    await approveWaitingParticipantLocator.waitFor({ state: 'detached' });
   }
 }
