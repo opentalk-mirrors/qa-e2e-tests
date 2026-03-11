@@ -98,9 +98,9 @@ Feature: Dashboard Home
       | Join               |
       | Close              |
     When "Alice" enters "Alice" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
+    And "Alice" tries to join the meeting in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" an error with the text 'Error: Invalid Meeting ID' should be visible in the Join-a-meeting-now popup on the Home-Page
-    When "Alice" tries to join the meeting in the Join-a-meeting-now popup on the Home-Page
-    Then for "Alice" there should be no change in UI
+    And for "Alice" there should be no change in UI
     When "Alice" closes Join-existing-meeting popup on the Home-Page
     Then for "Alice" join existing meeting popup should not be visible on Home-Page
     When "Alice" starts to join an existing meeting from the Home-Page
@@ -109,6 +109,7 @@ Feature: Dashboard Home
     When "Alice" starts to join an existing meeting from the Home-Page
     And "Alice" enters "random" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
     And "Alice" enters "" as Meeting ID in the Join-a-meeting-now popup on the Home-Page
+    And "Alice" tries to join the meeting in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" an error with the text 'Error: "Meeting ID (URL)"' should be visible in the Join-a-meeting-now popup on the Home-Page
     When "Alice" enters the meeting link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page

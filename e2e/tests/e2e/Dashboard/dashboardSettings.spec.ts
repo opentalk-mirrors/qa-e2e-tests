@@ -121,6 +121,7 @@ test.describe('Dashboard_Settings', () => {
 
       await profilePage.clearProfileName();
       expect(await profilePage.getPlaceholderValueOfProfileNameTextbox()).toBe('John Doe');
+      await profilePage.page.keyboard.press('Tab');
       expect(await profilePage.getErrorText()).toBe('Error: "Profile Name" is a required field');
 
       expect(await profilePage.saveProfile()).toBeFalsy();
