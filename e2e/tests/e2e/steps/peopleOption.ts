@@ -136,7 +136,11 @@ Then(
           break;
         }
       }
-      await assert(elementFound, 'toBe', true, `could not find the element '${expectedElement}'`);
+    await assert(
+      elementFound,
+      'toBe',
+      true,
+      `could not find the element '${expectedElement}'`);
     }
   }
 );

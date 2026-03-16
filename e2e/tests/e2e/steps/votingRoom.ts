@@ -230,3 +230,34 @@ Then(
     await assert(actual, 'toEqual', expected, 'Expected the actual voting list to match the expected voting list');
   }
 );
+
+Then(
+  'these voting details for {string} should be displayed in the following order in the open moderator tool:',
+  async function (this: CustomWorld, user: string, detailsTabel: DataTable) {
+    const expectedHeaders = ['title', 'topic'];
+    validateDataTableHeaders(detailsTabel, expectedHeaders);
+    const expected = detailsTabel.hashes();
+
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+
+    const actual = await moderatorToolPage.getSavedDetails();
+
+    for (let i = 0; i < expected.length; i++) {
+      const [title, topic] = actual[i];
+      const rowNumber = i + 1;
+      await assert(
+        title,
+        'toBe',
+        expected[i].title,
+        `Voting row ${rowNumber}: title mismatch. Expected "${expected[i].title}", but found "${title}".`
+      );
+      await assert(
+        topic,
+        'toBe',
+        expected[i].topic,
+        `Voting row ${rowNumber}: topic mismatch. Expected "${expected[i].topic}", but found "${topic}".`
+      );
+    }
+  }
+);

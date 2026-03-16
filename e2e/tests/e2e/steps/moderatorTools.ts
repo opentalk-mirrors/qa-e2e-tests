@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import assert from 'node:assert';
 
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
+import { assert } from '../../helper/assertion';
 
 Then(
   /(?:these|this) "([^"]*)" should be displayed in the open moderator tool for "([^"]*)":/,
@@ -44,7 +44,11 @@ Then(
           break;
         }
       }
-      assert(elementFound, `could not find the element '${expectedElement}'`);
+    await assert(
+      elementFound,
+      'toBe',
+      true,
+      `Could not find the element '${expectedElement}'`);
     }
   }
 );
