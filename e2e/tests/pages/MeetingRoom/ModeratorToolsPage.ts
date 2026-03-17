@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
+import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { SessionDurationDialog } from './ModeratorTools/SessionDurationDialog';
 
 export class ModeratorToolsPage {
   public readonly page: Page;
+  private readonly tabPanel: Locator;
   public readonly heading: Locator;
   public readonly subHeading: Locator;
   private readonly button: Locator;
@@ -14,18 +16,25 @@ export class ModeratorToolsPage {
   private readonly dropdownOption: Locator;
   protected readonly sessionDurationDialog: SessionDurationDialog;
   public readonly durationButton: Locator;
+  public readonly listItem: Locator;
   private readonly participantNameSelector: Locator;
   private readonly participantTimeSelector: Locator;
+  private readonly participantMessageSelector: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.heading = this.page.getByRole('tabpanel').getByRole('heading').first();
-    this.subHeading = this.page.getByRole('tabpanel').getByRole('paragraph').first();
+    this.tabPanel = this.page.getByRole('tabpanel');
+    this.heading = this.tabPanel.getByRole('heading').first();
+    this.subHeading = this.tabPanel.getByRole('paragraph').first();
     this.button = this.page.getByRole('button');
     this.menuItem = this.page.getByRole('menuitem');
     this.dropdownOption = this.page.getByRole('option');
-    this.participantNameSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] p');
-    this.participantTimeSelector = this.page.getByRole('listitem').locator('[data-sentry-element="ListItemText"] span');
+    this.listItem = this.tabPanel.getByRole('listitem');
+    this.participantNameSelector = this.listItem.locator('[data-sentry-element="ListItemText"] p');
+    this.participantTimeSelector = this.listItem
+      .getByRole('listitem')
+      .locator('[data-sentry-element="ListItemText"] span');
+    this.participantMessageSelector = this.listItem.locator('//*[@data-sentry-element="ContentTypography"]');
     this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
 
     this.sessionDurationDialog = new SessionDurationDialog({ page: this.page });
@@ -129,8 +138,9 @@ export class ModeratorToolsPage {
     return this.sessionDurationDialog;
   }
 
-  public async getParticipantData(childType: 'name' | 'time'): Promise<string[]> {
+  public async getParticipantData(childType: 'name' | 'time' | 'message'): Promise<string[]> {
     let allTexts: string[];
+    await waitForDomStopChanging(this.page);
     switch (childType) {
       case 'name':
         allTexts = await this.participantNameSelector.allInnerTexts();
@@ -138,11 +148,23 @@ export class ModeratorToolsPage {
       case 'time':
         allTexts = await this.participantTimeSelector.allInnerTexts();
         break;
+      case 'message':
+        allTexts = await this.participantMessageSelector.allInnerTexts();
+        break;
     }
     return allTexts;
   }
 
   public async getTotalParticipantsNumber(): Promise<number> {
     return (await this.getParticipantData('name')).length;
+  }
+
+  public async getParticipantDetails(index: number): Promise<string> {
+    await waitForDomStopChanging(this.page);
+    return (await this.listItem.nth(index)).innerText();
+  }
+
+  public async getAllParticipantsDetails(): Promise<string[]> {
+    return await this.listItem.allInnerTexts();
   }
 }

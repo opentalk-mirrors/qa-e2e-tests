@@ -13,13 +13,14 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public readonly withoutGroupButton: Locator;
   public readonly withoutGroupExpandButton: Locator;
   public readonly participantsList: Locator;
-  public readonly participantDetail: Locator;
   public readonly participantName: Locator;
   public readonly participantTime: Locator;
   public readonly participantAvatar: Locator;
   public readonly guestLabel: Locator;
   public readonly microphonesStatus: Locator;
   public readonly sortByDropdown: Locator;
+  private readonly threeDotButton: Locator;
+  private readonly sendDirectMessageMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
@@ -29,25 +30,16 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     this.withoutGroupButton = this.page.getByRole('button', { name: 'without group' });
     this.withoutGroupExpandButton = this.page.getByRole('button', { name: 'without group' }).locator('svg');
     this.participantsList = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list');
-    this.participantDetail = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('listitem');
     this.participantName = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list').locator('p');
     this.participantTime = this.page.locator('//*[@data-sentry-element="ListItemText"]').locator('span');
-    this.participantAvatar = this.page.getByRole('listitem').getByTestId('participantAvatar');
-    this.guestLabel = this.page.getByRole('listitem').getByText('Guest');
+    this.participantAvatar = this.listItem.getByTestId('participantAvatar');
+    this.guestLabel = this.listItem.getByText('Guest');
     this.microphonesStatus = this.page.getByRole('img', { name: /^(Microphone is on|Microphone is off)$/ });
     this.sortByDropdown = this.page
       .getByRole('menu')
       .filter({ has: this.page.getByRole('menuitem', { name: 'Name (A - Z)' }) });
-  }
-
-  public async getNumberOfParticipants(): Promise<number> {
-    await waitForDomStopChanging(this.page);
-    return (await this.participantDetail.all()).length;
-  }
-
-  public async getParticipantDetails(index: number): Promise<string> {
-    await waitForDomStopChanging(this.page);
-    return (await this.participantDetail.nth(index)).innerText();
+    this.threeDotButton = this.page.getByRole('button', { name: 'Open participant menu' });
+    this.sendDirectMessageMenuItem = this.page.getByRole('menuitem', { name: 'Send direct message' });
   }
 
   public async getAllParticipantsNames(): Promise<string[]> {
@@ -66,14 +58,6 @@ export class PeopleOptionPage extends ModeratorToolsPage {
       participantsTime.push(await participant.innerText());
     }
     return participantsTime.map((text) => text.split(' ')[2] ?? text.split(' ')[1]);
-  }
-
-  public async getAllParticipantsDetails(): Promise<string[]> {
-    const participantsTexts = [];
-    for (const participant of await this.participantDetail.all()) {
-      participantsTexts.push(await participant.innerText());
-    }
-    return participantsTexts;
   }
 
   public async selectSearchParticipant(): Promise<void> {
@@ -124,5 +108,17 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public async isGuest(name: string): Promise<boolean> {
     const guest = (await this.getAllParticipantsDetails()).filter((guest) => guest.includes(name))[0];
     return guest.includes('Guest');
+  }
+
+  public async hoverParticipantsList(to: string): Promise<void> {
+    await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).hover();
+  }
+
+  public async getParticipantMenu(to: string): Promise<void> {
+    await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).click();
+  }
+
+  public async navigateToDirectMessage(): Promise<void> {
+    await this.sendDirectMessageMenuItem.click();
   }
 }

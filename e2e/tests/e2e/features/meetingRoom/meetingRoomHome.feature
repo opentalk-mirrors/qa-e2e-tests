@@ -213,3 +213,33 @@ Feature: Meeting Room Home
     And 4 participants should be displayed in the open moderator tool for "Alice"
     And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
     And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
+
+
+  Scenario: Guest users can send direct messages to other participants from the list in People tab in the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    When "Alice" sends a direct message "Hello" to "guest1" on the Meeting-Room-Page
+    Then "guest1" should be notified with "You have a new message" in the meeting room of "Alice"
+    And for "guest1" the unread message indicator should be displayed in the meeting room of "Alice"
+    When "Alice" tries to send an empty message on the Meeting-Room-Page
+    Then for "Alice" the error "Error: Empty messages are not allowed" should be displayed on the Meeting-Room-Page
+    When "Alice" sends a message "Hi" on the Meeting-Room-Page
+    Then for "Alice" "Hi" should be the last message in the chat on the Messages-Page
+    When "Alice" searches for "Hi" in the chat on the Meeting-Room-Page
+    Then for "Alice" all the messages that closely match "Hi" should be displayed in the chat on the Meeting-Room-Page
+    When "Alice" clears the search in the chat on the Meeting-Room-Page
+    Then for "Alice" the following messages should be displayed in the chat on the Messages-Page
+      | Hello |
+      | Hi    |
+    When "Alice" searches for "Hey" in the chat on the Meeting-Room-Page
+    Then for "Alice" the text "No messages matching the criteria" should be displayed in the chat on the Meeting-Room-Page
+    When "Alice" resets the search in the chat on the Meeting-Room-Page
+    Then for "Alice" the following messages should be displayed in the chat on the Messages-Page
+      | Hello |
+      | Hi    |
+    When "Alice" navigates to the Messages-Page from the Meeting-Room-Page
+    Then for "Alice" the message thread with "guest1" showing the last message "Hi" should be displayed on the Messages-Page
+    When "Alice" opens the chat with "guest1" on the Messages-Page
+    Then for "Alice" the following messages should be displayed in the chat on the Messages-Page
+      | Hello |
+      | Hi    |

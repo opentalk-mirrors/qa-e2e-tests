@@ -31,7 +31,7 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.participantsList).toBeVisible();
-    for (let i = 0; i < (await peopleOptionPage.getNumberOfParticipants()); i++) {
+    for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
       expect(await peopleOptionPage.getParticipantDetails(i)).toMatch(/Joined ([01]\d|2[0-3]):[0-5]\d/);
     }
   }
@@ -44,7 +44,7 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await expect(peopleOptionPage.participantsList).toBeVisible();
-    for (let i = 0; i < (await peopleOptionPage.getNumberOfParticipants()); i++) {
+    for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
       await expect(peopleOptionPage.microphonesStatus.nth(i)).toBeVisible();
     }
   }
@@ -106,7 +106,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getNumberOfParticipants()).toBe(0);
+    expect(await peopleOptionPage.getTotalParticipantsNumber()).toBe(0);
   }
 );
 
@@ -271,6 +271,21 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getNumberOfParticipants()).toBe(0);
+    expect(await peopleOptionPage.getTotalParticipantsNumber()).toBe(0);
+  }
+);
+
+When(
+  /"([^"]*)" sends a direct message "([^"]*)" to "([^"]*)" on the Meeting-Room-Page/,
+  async function (this: CustomWorld, user: string, message: string, to: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.selectPeopleOption();
+    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    await peopleOptionPage.hoverParticipantsList(to);
+    await peopleOptionPage.getParticipantMenu(to);
+    await peopleOptionPage.navigateToDirectMessage();
+    await meeting.meetingRoomPage.typeMessage(message);
+    await meeting.meetingRoomPage.submitChat();
   }
 );
