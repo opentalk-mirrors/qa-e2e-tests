@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, expect, BrowserContext } from '@playwright/test';
 
+import { config } from '../config';
 import { ParticipantMeetingRoomPages } from '../e2e/cucumberWorld';
 import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
@@ -51,7 +52,7 @@ export const joinMeetingRoomAsGuest = async (
   // create new browser instance & launch OpenTalk with guest link
   const newPage = await context.newPage();
   await newPage.goto(guestLink);
-  await newPage.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+  await newPage.waitForLoadState('domcontentloaded', { timeout: config.MEDIUM_TIMEOUT });
 
   // Close warning button in safari
   if (context.browser()?.browserType().name() === 'webkit') {

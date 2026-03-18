@@ -37,6 +37,6 @@ export class LoginPage {
     await responsePromise;
 
     const homePage = new HomePage({ page: this.page });
-    await homePage.currentMeetingsHeaderSelector.waitFor({ timeout: 30_000 });
+    await homePage.currentMeetingsHeaderSelector.waitFor({ timeout: config.LONG_TIMEOUT });
   }
 }

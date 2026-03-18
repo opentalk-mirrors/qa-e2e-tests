@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { LobbyRoomPage } from './LobbyRoomPage';
 
 export class MeetingInvitationPage {
@@ -122,7 +123,10 @@ export class MeetingInvitationPage {
   async navigateToMeetingLobby(): Promise<LobbyRoomPage> {
     await this.meetingLinkInputField.isVisible();
     const meetingLink = await this.meetingLinkInputField.inputValue();
-    await Promise.all([this.page.goto(meetingLink), this.page.waitForLoadState('load', { timeout: 10_000 })]);
+    await Promise.all([
+      this.page.goto(meetingLink),
+      this.page.waitForLoadState('load', { timeout: config.MEDIUM_TIMEOUT }),
+    ]);
     const lobbyRoomPage = new LobbyRoomPage({ page: this.page });
     await lobbyRoomPage.renderLobbyPage();
     return lobbyRoomPage;
@@ -166,7 +170,7 @@ export class MeetingInvitationPage {
   async fillUserDetailForMeetingInvitation(userName: string): Promise<void> {
     await this.inviteParticipantsInputField.fill(userName);
     // it takes some time for user to appear in dropdown
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(config.SHORT_TIMEOUT);
   }
 
   async sendMeetingInvitation(): Promise<void> {

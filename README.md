@@ -126,6 +126,16 @@ Run only tests marked with the `@smoke` tag:
 RUN_ONLY_SMOKE_TESTS=true pnpm run test:gherkin
 ```
 
+#### Timeouts
+
+Some tests naturally take longer than others, so we configure timeouts instead of relying on fixed delays. To keep things consistent and maintainable, we use environment variables rather than hard-coded values:
+```shell
+LONG_TIMEOUT # defaults to 30s
+MEDIUM_TIMEOUT # defaults to 10s
+SHORT_TIMEOUT # defaults to 5s
+```
+This approach makes it easier to adjust timing across the entire test suite without changing individual tests, and helps keep our Playwright tests clean and flexible.
+
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
 These traces are a very useful tool to debug failed tests in CI, specially if they pass in the local environment.  
