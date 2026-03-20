@@ -9,6 +9,7 @@ import { MeetingInfoPage } from './MeetingInfoPage';
 import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
 import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
 import { MuteParticipantsPage } from './ModeratorTools/MuteParticipantsPage';
+import { PollPage } from './ModeratorTools/PollPage';
 import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TalkingStickPage } from './ModeratorTools/TalkingStickPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
@@ -500,6 +501,13 @@ export class MeetingRoomPage {
     const coffeeBreakPage = new CoffeeBreakPage({ page: this.page });
     await coffeeBreakPage.heading.waitFor({ state: 'visible' });
     return coffeeBreakPage;
+  }
+
+  public async startPollModeratorTool(): Promise<PollPage> {
+    await this.moderationTools.pollButton.click();
+    const pollPage = new PollPage({ page: this.page });
+    await pollPage.pollHeading.waitFor({ state: 'visible' });
+    return pollPage;
   }
 
   public async isCoffeeBreakPopoverOpen(): Promise<boolean> {
