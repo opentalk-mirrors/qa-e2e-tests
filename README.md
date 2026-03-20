@@ -74,30 +74,48 @@ Visit last test reports:
 docker compose exec test-runner npx playwright show-report
 ```
 
-Run all playwright tests (defaults in headed mode):
+Run all playwright tests (defaults to `chromium` in headed mode):
 ```
 pnpm run test:playwright
 ```
 
-Runs a specific playwright test (defaults in headed mode):
+Runs a specific playwright test (defaults to `chromium` in headed mode):
 ```
 FILEPATH=<your_file_path> pnpm run test:playwright
 ```
 
-### Gherkin Tests
-Run all gherkin tests (defaults in headed mode):
+Run all playwright tests in a specific browser:
+```
+BROWSER=firefox pnpm run test:playwright
+```
 
+Run all playwright tests in headless mode:
+```
+HEADLESS=true pnpm run test:playwright
+```
+
+### Gherkin Tests
+Run all gherkin tests (defaults to `chromium` in headed mode):
 ```
 pnpm run test:gherkin e2e/tests/e2e/features/
 ```
 
-Run a specific feature file (defaults in headed mode):
-
+Run a specific feature file (defaults to `chromium` in headed mode):
 ```
 pnpm run test:gherkin <path_to_your_feature_file>
 ```
 
-run only tests marked with the `@smoke` tag:
+Run all gherkin tests in a specific browser:
+```
+BROWSER=firefox pnpm run test:gherkin e2e/tests/e2e/features/
+```
+
+Run all gherkin tests in headless mode:
+```
+HEADLESS=true pnpm run test:gherkin e2e/tests/e2e/features/
+```
+
+Run only tests marked with the `@smoke` tag:
 ```
 RUN_ONLY_SMOKE_TESTS=true pnpm run test:gherkin
 ```
