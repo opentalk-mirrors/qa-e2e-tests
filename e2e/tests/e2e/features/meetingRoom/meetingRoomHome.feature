@@ -314,3 +314,59 @@ Feature: Meeting Room Home
       Your presenter role has been revoked
       """
     And "guest1" should not be allowed to share screen in the meeting room of "Alice"
+
+  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  Scenario: Any user can mark participants as whisper partner in Participants list of People tab in the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    When "Alice" marks "guest1" as whisper partner in the meeting room
+    Then for "Alice" these participants should have the following whisper partner status in the meeting room of "Alice":
+      | participant | status    |
+      | Alice       | confirmed |
+      | guest1      | pending   |
+    And for "guest1" these participants should have the following whisper partner status in the meeting room of "Alice":
+      | participant | status    |
+      | Alice       | confirmed |
+      | guest1      | pending   |
+    And "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      Alice Hansen invited you to a whisper group.
+      """
+    When "guest1" declines the invitation to a whisper group in the meeting room of "Alice"
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+      | user  | text                                                |
+      | Alice | Your whisper group has been disbanded.              |
+      | Alice | guest1 declined your invitation to a whisper group. |
+    And for "Alice" these participants should not be labeled as whisper partners in the meeting room of "Alice":
+      | Alice  |
+      | guest1 |
+    And for "guest1" these participants should not be labeled as whisper partners in the meeting room of "Alice":
+      | Alice  |
+      | guest1 |
+    When "Alice" marks "guest2" as whisper partner in the meeting room
+    And "guest2" accepts the invitation to a whisper group in the meeting room of "Alice"
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      guest2 accepted your whisper group invitation. Press and hold the W key to whisper.
+      """
+    And for "Alice" these participants should have the following whisper partner status in the meeting room of "Alice":
+      | participant | status    |
+      | Alice       | confirmed |
+      | guest2      | confirmed |
+    And for "guest2" these participants should have the following whisper partner status in the meeting room of "Alice":
+      | participant | status    |
+      | Alice       | confirmed |
+      | guest2      | confirmed |
+    # Test for moderator and selected participant should be audible only to each other should be done manually for now
+    # Test for green border highlighted around their name when actively speaking should be done manually for now
+    When "Alice" leaves the whisper group in the meeting room of "Alice"
+    Then "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      Your whisper group has been disbanded.
+      """
+    And for "Alice" these participants should not be labeled as whisper partners in the meeting room of "Alice":
+      | Alice  |
+      | guest2 |
+    And for "guest2" these participants should not be labeled as whisper partners in the meeting room of "Alice":
+      | Alice  |
+      | guest2 |

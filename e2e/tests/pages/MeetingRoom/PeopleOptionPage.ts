@@ -30,6 +30,10 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   private readonly renameErrorText: Locator;
   private readonly revokePresenterRoleMenuItem: Locator;
   private readonly grantPresenterRoleMenuItem: Locator;
+  private readonly markAsWhisperPartnerMenuItem: Locator;
+  private readonly confirmedWhisperPartnerStatus: Locator;
+  private readonly pendingWhisperPartnerStatus: Locator;
+  private readonly leaveWhisperGroupMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
@@ -58,6 +62,10 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     this.renameErrorText = this.page.getByRole('dialog', { name: 'Rename participant' }).getByRole('paragraph');
     this.revokePresenterRoleMenuItem = this.page.getByRole('menuitem', { name: 'Revoke presenter role', exact: true });
     this.grantPresenterRoleMenuItem = this.page.getByRole('menuitem', { name: 'Grant presenter role', exact: true });
+    this.markAsWhisperPartnerMenuItem = this.page.getByRole('menuitem', { name: 'Mark as whisper partner' });
+    this.confirmedWhisperPartnerStatus = this.page.getByTestId('RecordVoiceOverIcon');
+    this.pendingWhisperPartnerStatus = this.page.getByTestId('RecordVoiceOverOutlinedIcon');
+    this.leaveWhisperGroupMenuItem = this.page.getByRole('menuitem', { name: 'Leave whisper group' });
   }
 
   public async getAllParticipantsNames(): Promise<string[]> {
@@ -125,15 +133,15 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   }
 
   public async hoverParticipantsList(to: string): Promise<void> {
-    await this.getParticipantLocator(to).locator(this.threeDotButton).hover();
+    await this.getParticipantByName(to).locator(this.threeDotButton).hover();
   }
 
   public async selectParticipantMenu(to: string): Promise<void> {
-    await this.getParticipantLocator(to).locator(this.threeDotButton).click();
+    await this.getParticipantByName(to).locator(this.threeDotButton).click();
   }
 
-  public getParticipantLocator(name: string): Locator {
-    return this.listItem.filter({ has: this.page.getByText(name, { exact: true }) });
+  public getParticipantByName(name: string): Locator {
+    return this.listItem.filter({ hasText: name });
   }
 
   public async navigateToDirectMessage(): Promise<void> {
@@ -177,5 +185,23 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     // added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
     await this.page.keyboard.press('Escape');
     // await this.revokePresenterRoleMenuItem.waitFor({ state: 'visible' });
+  }
+
+  public async markAsWhisperPartner(userToMark: string): Promise<void> {
+    await this.selectParticipantMenu(userToMark);
+    await this.markAsWhisperPartnerMenuItem.click();
+    await this.participantMenu.waitFor({ state: 'detached' });
+  }
+
+  public async leaveWhisperGroup(user: string): Promise<void> {
+    await this.selectParticipantMenu(user);
+    await this.leaveWhisperGroupMenuItem.click();
+    await this.participantMenu.waitFor({ state: 'detached' });
+  }
+
+  public getWhisperPartnerStatusLocator(name: string, status: 'confirmed' | 'pending'): Locator {
+    const statusLocator =
+      status === 'confirmed' ? this.confirmedWhisperPartnerStatus : this.pendingWhisperPartnerStatus;
+    return this.getParticipantByName(name).locator(statusLocator);
   }
 }
