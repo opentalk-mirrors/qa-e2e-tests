@@ -24,6 +24,12 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   private readonly removeParticipantDialog: Locator;
   private readonly removeParticipantConfirmButton: Locator;
   private readonly moveParticipantMenuItem: Locator;
+  private readonly renameParticipantMenuItem: Locator;
+  private readonly newNameTextbox: Locator;
+  private readonly saveNewNameButton: Locator;
+  private readonly renameErrorText: Locator;
+  private readonly revokePresenterRoleMenuItem: Locator;
+  private readonly grantPresenterRoleMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
@@ -46,6 +52,12 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     this.removeParticipantDialog = this.page.getByRole('dialog', { name: 'Remove participant' });
     this.removeParticipantConfirmButton = this.page.getByRole('button', { name: 'Confirm' });
     this.moveParticipantMenuItem = this.page.getByRole('menuitem', { name: 'Move participant to waiting room' });
+    this.renameParticipantMenuItem = this.page.getByRole('menuitem', { name: 'Rename participant' });
+    this.newNameTextbox = this.page.getByRole('textbox', { name: 'New name', exact: true });
+    this.saveNewNameButton = this.page.getByRole('button', { name: 'Save' });
+    this.renameErrorText = this.page.getByRole('dialog', { name: 'Rename participant' }).getByRole('paragraph');
+    this.revokePresenterRoleMenuItem = this.page.getByRole('menuitem', { name: 'Revoke presenter role', exact: true });
+    this.grantPresenterRoleMenuItem = this.page.getByRole('menuitem', { name: 'Grant presenter role', exact: true });
   }
 
   public async getAllParticipantsNames(): Promise<string[]> {
@@ -113,11 +125,15 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   }
 
   public async hoverParticipantsList(to: string): Promise<void> {
-    await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).hover();
+    await this.getParticipantLocator(to).locator(this.threeDotButton).hover();
   }
 
   public async selectParticipantMenu(to: string): Promise<void> {
-    await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).click();
+    await this.getParticipantLocator(to).locator(this.threeDotButton).click();
+  }
+
+  public getParticipantLocator(name: string): Locator {
+    return this.listItem.filter({ has: this.page.getByText(name, { exact: true }) });
   }
 
   public async navigateToDirectMessage(): Promise<void> {
@@ -133,5 +149,29 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public async moveParticipant(): Promise<void> {
     await this.moveParticipantMenuItem.click();
     await this.participantMenu.waitFor({ state: 'detached' });
+  }
+
+  public async renameParticipant(newName: string): Promise<void> {
+    await this.renameParticipantMenuItem.click();
+    await this.newNameTextbox.fill(newName);
+    await this.saveNewNameButton.click();
+    await Promise.any([
+      this.newNameTextbox.waitFor({ state: 'hidden' }),
+      this.renameErrorText.waitFor({ state: 'visible' }),
+    ]);
+  }
+
+  public async getRenameErrorText(): Promise<string> {
+    return await this.renameErrorText.innerText();
+  }
+
+  public async revokePresenterRole(): Promise<void> {
+    await this.revokePresenterRoleMenuItem.click();
+    await this.grantPresenterRoleMenuItem.waitFor({ state: 'visible' });
+  }
+
+  public async grantPresenterRole(): Promise<void> {
+    await this.grantPresenterRoleMenuItem.click();
+    await this.revokePresenterRoleMenuItem.waitFor({ state: 'visible' });
   }
 }

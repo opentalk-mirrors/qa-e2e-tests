@@ -75,7 +75,9 @@ test.describe('Meeting Room_Reset raised hands selected button', { tag: '@late' 
     const firstGuestMeetingRoomPage = guestMeetingRoomPages['guest1'];
     const secondGuestMeetingRoomPage = guestMeetingRoomPages['guest2'];
     await firstGuestMeetingRoomPage.page.bringToFront();
-    moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(config.USER_NAME);
+    moderatorTile = firstGuestMeetingRoomPage.getParticipantTileByName(
+      `${config.USER_FIRSTNAME} ${config.USER_FAMILYNAME}`
+    );
     expect(await moderatorTile.isHandRaised()).toBeTruthy();
 
     await meetingRoomPage.page.bringToFront();

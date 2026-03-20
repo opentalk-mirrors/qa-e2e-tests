@@ -67,6 +67,7 @@ export class MeetingRoomPage {
     handRaiseButton: Locator;
     handLowerButton: Locator;
     turnOnScreenShareButton: Locator;
+    disabledScreenShareButton: Locator;
     microphoneButton: Locator;
     microphoneButtonOff: Locator;
     microphoneMoreOptionsMenuButton: Locator;
@@ -176,6 +177,9 @@ export class MeetingRoomPage {
       handRaiseButton: this.page.getByRole('button', { name: 'Raise Your Hand' }),
       handLowerButton: this.page.getByRole('button', { name: 'Lower Your Hand' }),
       turnOnScreenShareButton: this.page.getByRole('button', { name: 'Turn On Screen Share' }),
+      disabledScreenShareButton: this.page.getByRole('button', {
+        name: 'Ask a moderator to allow to share your screen',
+      }),
       microphoneButton: this.page.getByRole('button', { name: 'Turn On Audio', exact: true }),
       microphoneButtonOff: this.page.getByRole('button', { name: 'Turn Off Audio', exact: true }),
       microphoneMoreOptionsMenuButton: this.page.getByRole('button', { name: 'additional options microphone' }),
@@ -292,6 +296,13 @@ export class MeetingRoomPage {
 
   public async isHandRaised(): Promise<boolean> {
     return await this.toolBar.handLowerButton.isVisible();
+  }
+
+  public async isScreenShareAllowed(): Promise<boolean> {
+    return (
+      !(await this.toolBar.disabledScreenShareButton.isVisible()) &&
+      (await this.toolBar.turnOnScreenShareButton.isVisible())
+    );
   }
 
   async isAudioOn(): Promise<boolean> {
@@ -442,6 +453,7 @@ export class MeetingRoomPage {
 
   // utility function
   async pressEscape() {
+    await this.page.keyboard.press('Tab'); // to focus on the page
     await this.page.keyboard.press('Escape');
   }
 
@@ -503,9 +515,14 @@ export class MeetingRoomPage {
     await breakoutRoomPage.startRooms();
   }
 
+  public getParticipantTileLocatorByName(name: string): Locator {
+    return this.participantWindowLocator.filter({
+      has: this.page.getByText(name, { exact: true }),
+    });
+  }
+
   public getParticipantTileByName(name: string): ParticipantTilePage {
-    const participantTileWithName = this.participantWindowLocator.filter({ hasText: name });
-    return new ParticipantTilePage({ tileLocator: participantTileWithName });
+    return new ParticipantTilePage({ tileLocator: this.getParticipantTileLocatorByName(name) });
   }
 
   public async selectCoffeeBreakModeratorTool(): Promise<CoffeeBreakPage> {
@@ -555,7 +572,15 @@ export class MeetingRoomPage {
     return await locator.evaluate((el) => el.classList.contains('Mui-selected'));
   }
 
+  public async selectChatTab(): Promise<void> {
+    if (!(await this.isOptionSelected(this.chatButton))) {
+      await this.chatButton.click();
+    }
+    await this.searchInChatButton.waitFor({ state: 'visible' });
+  }
+
   public async getParticipantsDetails(): Promise<string[]> {
+    await waitForDomStopChanging(this.page);
     return (await this.chatListItems.allInnerTexts()).filter((chat) => chat.includes('joined'));
   }
 
@@ -663,7 +688,10 @@ export class MeetingRoomPage {
   }
 
   public async selectPeopleOption(): Promise<PeopleOptionPage> {
-    await this.peopleButton.click();
+    await this.page.bringToFront();
+    if (!(await this.isOptionSelected(this.peopleButton))) {
+      await this.peopleButton.click();
+    }
     const peopleOptionPage = new PeopleOptionPage({ page: this.page });
     await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });
     return peopleOptionPage;
