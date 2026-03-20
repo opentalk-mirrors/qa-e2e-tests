@@ -2,6 +2,12 @@
 
 Start a new [pipeline](https://git.opentalk.dev/opentalk/qa/e2e-tests/-/pipelines/new) and define the image tags to be tested.
 
+## Prerequisite for local testing environment
+1. run ```npx playwright install```
+2. run ```pnpm install```
+3. create `.env` file in the `e2e` directory
+4. fill in your variables (look at `.env-example` or in the table)
+
 ## Setup a local testing environment
 
 Start all needed containers:
