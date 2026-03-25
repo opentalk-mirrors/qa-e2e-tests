@@ -107,7 +107,7 @@ export class HomePage {
     await this.page.waitForLoadState('load');
     await Promise.all([eventsTimeMinResponse, eventsPerPageResponse, tariffResponse]);
     // for dashboard page to be fully loaded, favorite meeting box should be rendered fully
-    await this.currentMeetingsHeaderSelector.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.currentMeetingsHeaderSelector.waitFor();
   }
 
   async planNewMeeting(): Promise<MeetingPlanningPage> {
@@ -124,12 +124,12 @@ export class HomePage {
 
   async markMeetingAsFavourite(meetingTitle: string): Promise<void> {
     const meetingMenu = await this.getThreeDotMenuOfMeeting(meetingTitle);
-    await meetingMenu.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await meetingMenu.waitFor();
     await meetingMenu.click();
     const ariaLabel = `Add ${meetingTitle} to favorites`;
     await this.page.getByRole('menuitem', { name: ariaLabel }).click();
     const favoriteMeetingSelector = await this.getFavouriteMeetingSelector(meetingTitle);
-    await favoriteMeetingSelector.waitFor({ state: 'visible', timeout: config.MEDIUM_TIMEOUT });
+    await favoriteMeetingSelector.waitFor({ state: 'visible' });
   }
 
   async getFavouriteMeetingSelector(meetingTitle: string): Promise<Locator> {
@@ -194,7 +194,7 @@ export class HomePage {
       '[data-sentry-component="MeetingPopover"] [href*="' + meetingLink + '"]'
     );
     const meetingMenu = await this.getThreeDotMenuOfMeeting(meetingTitle);
-    await meetingMenu.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await meetingMenu.waitFor();
     const deleteResponsePromise = this.page.waitForResponse(
       (response) =>
         response.request().url().includes('/events/') &&
