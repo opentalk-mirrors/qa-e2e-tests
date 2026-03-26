@@ -482,7 +482,7 @@ Then(
     await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
     const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
     const notificationText = await notificationPage.getAlertNotificationText();
-    assert(notificationText, 'toBe', notification, `Expected ${notificationText} to be ${notification}`);
+    await assert(notificationText, 'toBe', notification, `Expected ${notificationText} to be ${notification}`);
     await notificationPage.closeNotificationAlert();
   }
 );
@@ -494,7 +494,12 @@ Then(
     await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
     const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
     const notificationText = await notificationPage.getAlertNotificationText();
-    assert(notificationText, 'toContain', notification, `Expected ${notificationText} to contain ${notification}`);
+    await assert(
+      notificationText,
+      'toContain',
+      notification,
+      `Expected ${notificationText} to contain ${notification}`
+    );
     await notificationPage.closeNotificationAlert();
   }
 );
@@ -541,7 +546,12 @@ Then(
   async function (this: CustomWorld, moderator: string, count: number) {
     const meeting = this.getStartedMeeting(moderator).meeting;
     const totalNumOfWaitingParticipants = await meeting.meetingRoomPage.getTotalWaitingParticipants();
-    assert(totalNumOfWaitingParticipants, 'toBe', count, `Expected ${totalNumOfWaitingParticipants} to be ${count}`);
+    await assert(
+      totalNumOfWaitingParticipants,
+      'toBe',
+      count,
+      `Expected ${totalNumOfWaitingParticipants} to be ${count}`
+    );
   }
 );
 
@@ -560,6 +570,6 @@ Then(
     const page = this.getStartedMeeting(moderator).participantMeetingRoomPages[user].page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     const meetingRoomName = await meetingRoomPage.getMeetingRoomName();
-    assert(meetingRoomName, 'toContain', meetingTitle, `Expected ${meetingRoomName} to contain ${meetingTitle}`);
+    await assert(meetingRoomName, 'toContain', meetingTitle, `Expected ${meetingRoomName} to contain ${meetingTitle}`);
   }
 );
