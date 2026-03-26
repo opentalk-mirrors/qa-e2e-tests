@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { MeetingInvitationPage } from './MeetingInvitationPage';
 
 export class MeetingPlanningPage {
@@ -169,7 +170,7 @@ export class MeetingPlanningPage {
     // wait for meeting invitation page to fully render in frontend
     await this.page.waitForLoadState('load');
     const meetingInvitationPage = new MeetingInvitationPage({ page: this.page });
-    await meetingInvitationPage.meetingLinkInputField.waitFor({ state: 'visible', timeout: 30_000 });
+    await meetingInvitationPage.meetingLinkInputField.waitFor({ state: 'visible', timeout: config.LONG_TIMEOUT });
     return meetingInvitationPage;
   }
 

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { config } from '../config';
 import { startAdhocMeetingAsModerator, joinMeetingRoomWithNGuests } from '../helper/meetingHelpers';
 import { ViewOptionsPage } from '../pages/MeetingRoom/ViewOptionsPage';
 
@@ -81,9 +82,9 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // assert that nothing else is shown except for the meeting room options, plus they should fade out after 3 sec
     // click mouse somewhere to trigger toolbar to become visible again (toolbar might already have faded out bc time spent on assertions above)
     await meetingRoomPage.page.mouse.click(100, 100);
-    await meetingRoomPage.page.waitForTimeout(1000); // wait for a little moment because toolbar fades in
+    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT); // wait for a little moment because toolbar fades in
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeVisible();
-    await meetingRoomPage.page.waitForTimeout(4000);
+    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT);
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden();
 
     // exit full screen mode
@@ -186,7 +187,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     await firstGuestMeetingRoomPage.turnAudioOff();
     await secondGuestMeetingRoomPage.displayViewOptionsMenu();
     await secondGuestMeetingRoomPage.selectSpeakerViewOption();
-    await secondGuestMeetingRoomPage.page.waitForTimeout(10_000); // without timeout this seems to make CI fail
+    await secondGuestMeetingRoomPage.page.waitForTimeout(config.MEDIUM_TIMEOUT); // without timeout this seems to make CI fail
     const speakerViewNoActiveParticipantFirstPositionName =
       await secondGuestMeetingRoomPage.getPinnedParticipantNameInSpeakerView();
     await expect(speakerViewNoActiveParticipantFirstPositionName).toBe(moderatorName);

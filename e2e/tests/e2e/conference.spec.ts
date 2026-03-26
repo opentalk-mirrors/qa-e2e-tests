@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 import { config } from '../config';
 
 test.describe('Conference', () => {
-  test.describe.configure({ mode: 'serial', timeout: 120_000 });
+  test.describe.configure({ mode: 'serial' });
   test.describe('SpeedTest', () => {
     test('show stable connection message with a good connection', async ({ page, browserName }) => {
       test.skip(browserName === 'webkit');
@@ -19,7 +19,7 @@ test.describe('Conference', () => {
       await conferencePage.getByLabel('Start Speed-Test').click();
       await expect(conferencePage.getByLabel('Speed-Test', { exact: true })).toContainText(
         'Your internet connection is stable.You can join the call without any limitations.',
-        { timeout: 30_000 }
+        { timeout: config.LONG_TIMEOUT }
       );
     });
 
@@ -48,7 +48,7 @@ test.describe('Conference', () => {
       await conferencePage.getByLabel('Start Speed-Test').click();
       await expect(conferencePage.getByLabel('Speed-Test', { exact: true })).toContainText(
         'Your internet connection is slow.You can join the call with some limitations.',
-        { timeout: 30_000 }
+        { timeout: config.LONG_TIMEOUT }
       );
     });
   });

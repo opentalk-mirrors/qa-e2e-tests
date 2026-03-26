@@ -5,6 +5,7 @@
 // in the meeting room
 import { Locator, Page } from '@playwright/test';
 
+import { config } from '../../../config';
 import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class TimerPage extends ModeratorToolsPage {
@@ -160,11 +161,17 @@ export class TimerPage extends ModeratorToolsPage {
 
   public async markMeAsDone() {
     await this.createTimer.timerStartedPopup.markMeAsDoneButton.click();
-    await this.createTimer.timerStartedPopup.unmarkMeAsDoneButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.createTimer.timerStartedPopup.unmarkMeAsDoneButton.waitFor({
+      state: 'visible',
+      timeout: config.SHORT_TIMEOUT,
+    });
   }
 
   public async unmarkMeAsDone() {
     await this.createTimer.timerStartedPopup.unmarkMeAsDoneButton.click();
-    await this.createTimer.timerStartedPopup.markMeAsDoneButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.createTimer.timerStartedPopup.markMeAsDoneButton.waitFor({
+      state: 'visible',
+      timeout: config.SHORT_TIMEOUT,
+    });
   }
 }

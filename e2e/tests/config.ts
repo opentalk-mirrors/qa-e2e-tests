@@ -17,4 +17,8 @@ export const config = {
   browser: process.env.BROWSER ?? 'chromium',
   headless: process.env.HEADLESS === 'true',
   slowMo: Number(process.env.SLOW_MO) || 0,
+  TIMEOUT: Number(process.env.TIMEOUT) || 120 * 1000,
+  LONG_TIMEOUT: Number(process.env.LONG_TIMEOUT) || 30 * 1000,
+  MEDIUM_TIMEOUT: Number(process.env.MEDIUM_TIMEOUT) || 10 * 1000,
+  SHORT_TIMEOUT: Number(process.env.SHORT_TIMEOUT) || 5 * 1000,
 };
