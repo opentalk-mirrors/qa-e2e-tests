@@ -85,7 +85,7 @@ Feature: Dashboard Home
       | meeting 3 |
       | meeting 4 |
     When "Alice" selects meeting "meeting 1" on the Home-Page
-    Then "Alice" should be on the Lobby-Page of the meeting named "meeting 1"
+    Then "Alice" should be on the Lobby-Page of the meeting named "meeting 1" created by "Alice"
 
 
   Scenario: TC_012_Dashboard_Home_Join existing button
@@ -114,13 +114,13 @@ Feature: Dashboard Home
     When "Alice" enters the meeting link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page
     When "Alice" join the meeting in the Join-a-meeting-now popup on the Home-Page
-    Then "Alice" should be on the Lobby-Page of the meeting named "Alice"
+    Then "Alice" should be on the Lobby-Page of the meeting named "Alice" created by "Alice"
     When "Alice" navigates back from Lobby-Page
     Then "Alice" should be on the Home-Page
     When "Alice" starts to join an existing meeting from the Home-Page
     And "Alice" enters the guest link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page
     When "Alice" join the meeting in the Join-a-meeting-now popup on the Home-Page
-    Then "Alice" should be on the Lobby-Page of the meeting named "Alice"
+    Then "Alice" should be on the Lobby-Page of the meeting named "Alice" created by "Alice"
     When "Alice" selects the OpenTalk logo on the Lobby-Page
     Then "Alice" should be on the Home-Page

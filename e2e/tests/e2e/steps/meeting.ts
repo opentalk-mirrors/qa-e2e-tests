@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import { config } from '../../config';
 import { OpenTalkEvent } from '../../helper/Api';
@@ -495,10 +495,15 @@ When(
 );
 
 Then(
-  '{string} should be on the Lobby-Page of the meeting named {string}',
-  async function (this: CustomWorld, user: string, meetingTitle: string) {
-    const context = this.getUser(user).context;
-    const pages = context.pages();
+  '{string} should be on the Lobby-Page of the meeting named {string} created by {string}',
+  async function (this: CustomWorld, user: string, meetingTitle: string, moderator: string) {
+    let pages: Page[];
+    try {
+      const context = this.getUser(user).context;
+      pages = context.pages();
+    } catch (_e) {
+      pages = [this.getStartedMeeting(moderator).participantMeetingRoomPages[user].page];
+    }
     for (const page of pages) {
       const title = await page.title();
       if (title === `OpenTalk Meeting Invitation - "${meetingTitle}"`) {

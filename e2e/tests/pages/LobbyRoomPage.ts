@@ -21,6 +21,9 @@ export class LobbyRoomPage {
   joinMeetingButton: Locator;
   imprintLink: Locator;
   dataProtectionLink: Locator;
+  public readonly waitingRoomText: Locator;
+  public readonly joinMeetingAutomaticallyLabel: Locator;
+  public readonly joinMeetingAutomaticallyCheckbox: Locator;
 
   conferenceCloseAlerts: {
     conferenceCloseAlertNotification: Locator;
@@ -43,6 +46,11 @@ export class LobbyRoomPage {
     this.joinMeetingButton = this.page.getByRole('button', { name: 'Enter now' });
     this.imprintLink = this.page.getByRole('link', { name: 'Imprint' });
     this.dataProtectionLink = this.page.getByRole('link', { name: 'Data protection' });
+    this.waitingRoomText = this.page.getByText('You are currently in the waiting room', { exact: true });
+    this.joinMeetingAutomaticallyLabel = this.page.getByLabel('Join meeting automatically without confirmation');
+    this.joinMeetingAutomaticallyCheckbox = this.page.getByRole('checkbox', {
+      name: 'Join meeting automatically without confirmation',
+    });
 
     this.conferenceCloseAlerts = {
       conferenceCloseAlertNotification: this.page.getByText('The conference was closed by the moderator.', {
@@ -66,8 +74,11 @@ export class LobbyRoomPage {
     return await this.microphoneButton.isEnabled();
   }
 
-  async enterMeetingRoom(): Promise<MeetingRoomPage> {
+  async enterMeetingRoom(name?: string): Promise<MeetingRoomPage> {
     await this.renderLobbyPage();
+    if (name) {
+      await this.nameInputField.fill(name);
+    }
     await this.joinMeetingButton.isVisible();
     await this.joinMeetingButton.click();
     await this.page.waitForLoadState('load');

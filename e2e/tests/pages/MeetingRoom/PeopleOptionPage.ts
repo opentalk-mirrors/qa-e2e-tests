@@ -20,7 +20,12 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public readonly microphonesStatus: Locator;
   public readonly sortByDropdown: Locator;
   private readonly threeDotButton: Locator;
+  private readonly participantMenu: Locator;
   private readonly sendDirectMessageMenuItem: Locator;
+  private readonly removeParticipantMenuItem: Locator;
+  private readonly removeParticipantDialog: Locator;
+  private readonly removeParticipantConfirmButton: Locator;
+  private readonly moveParticipantMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
@@ -39,7 +44,12 @@ export class PeopleOptionPage extends ModeratorToolsPage {
       .getByRole('menu')
       .filter({ has: this.page.getByRole('menuitem', { name: 'Name (A - Z)' }) });
     this.threeDotButton = this.page.getByRole('button', { name: 'Open participant menu' });
+    this.participantMenu = this.page.getByRole('menu', { name: 'Participant menu' });
     this.sendDirectMessageMenuItem = this.page.getByRole('menuitem', { name: 'Send direct message' });
+    this.removeParticipantMenuItem = this.page.getByRole('menuitem', { name: 'Remove participant' });
+    this.removeParticipantDialog = this.page.getByRole('dialog', { name: 'Remove participant' });
+    this.removeParticipantConfirmButton = this.page.getByRole('button', { name: 'Confirm' });
+    this.moveParticipantMenuItem = this.page.getByRole('menuitem', { name: 'Move participant to waiting room' });
   }
 
   public async getAllParticipantsNames(): Promise<string[]> {
@@ -114,11 +124,22 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).hover();
   }
 
-  public async getParticipantMenu(to: string): Promise<void> {
+  public async selectParticipantMenu(to: string): Promise<void> {
     await this.listItem.filter({ hasText: to }).locator(this.threeDotButton).click();
   }
 
   public async navigateToDirectMessage(): Promise<void> {
     await this.sendDirectMessageMenuItem.click();
+  }
+
+  public async removeParticipant(): Promise<void> {
+    await this.removeParticipantMenuItem.click();
+    await this.removeParticipantConfirmButton.click();
+    await this.removeParticipantDialog.waitFor({ state: 'detached' });
+  }
+
+  public async moveParticipant(): Promise<void> {
+    await this.moveParticipantMenuItem.click();
+    await this.participantMenu.waitFor({ state: 'detached' });
   }
 }

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
+import { waitForDomStopChanging } from '../helper/waitingHelpers';
 import { MeetingRoomPage } from './MeetingRoom/MeetingRoomPage';
 
 export class NotificationPage {
@@ -11,6 +12,7 @@ export class NotificationPage {
   private readonly breakoutRoomAlertLocator: Locator;
   private readonly joinBreakoutRoomLocator: Locator;
   private readonly leaveBreakoutRoomLocator: Locator;
+  private readonly closeButton: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
@@ -18,6 +20,7 @@ export class NotificationPage {
     this.breakoutRoomAlertLocator = this.page.getByRole('alertdialog');
     this.joinBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Join Room' });
     this.leaveBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Leave Room' });
+    this.closeButton = this.page.getByRole('alert').getByRole('button', { name: 'Close' });
   }
 
   public async getAlertNotificationText(): Promise<string> {
@@ -58,5 +61,11 @@ export class NotificationPage {
     do {
       meetingRoomNameAfter = await meetingRoomPage.getMeetingRoomName();
     } while (meetingRoomNameAfter === meetingRoomNameBefore);
+  }
+
+  public async closeNotificationAlert(): Promise<void> {
+    await this.baseAlertLocator.waitFor();
+    await this.closeButton.click();
+    await waitForDomStopChanging(this.page);
   }
 }

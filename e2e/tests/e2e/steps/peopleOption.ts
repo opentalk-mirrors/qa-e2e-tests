@@ -283,9 +283,33 @@ When(
     await meeting.meetingRoomPage.selectPeopleOption();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await peopleOptionPage.hoverParticipantsList(to);
-    await peopleOptionPage.getParticipantMenu(to);
+    await peopleOptionPage.selectParticipantMenu(to);
     await peopleOptionPage.navigateToDirectMessage();
     await meeting.meetingRoomPage.typeMessage(message);
     await meeting.meetingRoomPage.submitChat();
+  }
+);
+
+When(
+  '{string} removes {string} from the meeting room',
+  async function (this: CustomWorld, moderator: string, userToRemove: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    await peopleOptionPage.selectParticipantMenu(userToRemove);
+    await peopleOptionPage.removeParticipant();
+  }
+);
+
+When(
+  '{string} moves {string} to the waiting room from the meeting room',
+  async function (this: CustomWorld, moderator: string, userToMove: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    await peopleOptionPage.selectParticipantMenu(userToMove);
+    await peopleOptionPage.moveParticipant();
   }
 );

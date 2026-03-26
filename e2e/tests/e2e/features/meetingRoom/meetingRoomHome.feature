@@ -219,7 +219,10 @@ Feature: Meeting Room Home
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
     When "Alice" sends a direct message "Hello" to "guest1" on the Meeting-Room-Page
-    Then "guest1" should be notified with "You have a new message" in the meeting room of "Alice"
+    Then "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      You have a new message
+      """
     And for "guest1" the unread message indicator should be displayed in the meeting room of "Alice"
     When "Alice" tries to send an empty message on the Meeting-Room-Page
     Then for "Alice" the error "Error: Empty messages are not allowed" should be displayed on the Meeting-Room-Page
@@ -243,3 +246,49 @@ Feature: Meeting Room Home
     Then for "Alice" the following messages should be displayed in the chat on the Messages-Page
       | Hello |
       | Hi    |
+
+  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  Scenario: Moderator can remove participants and accept them back into the meeting
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    When "Alice" removes "guest2" from the meeting room
+    Then "Alice" should receive a notification containing the following text in the meeting room of "Alice":
+      """
+      You successfully removed guest2 from the meeting
+      """
+    And "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      You were removed from the meeting
+      """
+    And "guest2" should be on the Lobby-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
+    When "guest2" tries to rejoin the meeting room of "Alice"
+    Then "guest2" should be in the waiting room of the meeting named "Ad-hoc Meeting" created by "Alice"
+    And for "Alice" the waiting room indicator should show 1 participant on the Meeting-Room-Page
+    When "Alice" accepts the participation of "guest2" into the meeting room
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      You successfully accepted guest2 in the meeting
+      """
+    And "guest2" should be on the Meeting-Room-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
+
+  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  Scenario: Moderator can move participants to the waiting room and accept them back into the meeting
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    When "Alice" moves "guest2" to the waiting room from the meeting room
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      The waiting room is activated. The participant has been successfully moved to the waiting room.
+      """
+    And for "Alice" the waiting room indicator should show 1 participant on the Meeting-Room-Page
+    And "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      You have been moved to the waiting room. Please wait for a moment, you will be brought back shortly.
+      """
+    And "guest2" should be in the waiting room of the meeting named "Ad-hoc Meeting" created by "Alice"
+    When "Alice" accepts the participation of "guest2" into the meeting room
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      You successfully accepted guest2 in the meeting
+      """
+    And "guest2" should be on the Meeting-Room-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
