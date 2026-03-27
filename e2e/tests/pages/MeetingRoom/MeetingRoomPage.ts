@@ -20,6 +20,13 @@ import { ParticipantTilePage } from './ParticipantTilePage';
 import { PeopleOptionPage } from './PeopleOptionPage';
 import { ViewOptionsPage } from './ViewOptionsPage';
 
+export interface BreakoutRoomsOptions {
+  randomDistribution?: boolean;
+  mode?: string;
+  participantsPerRoom?: string;
+  allowToFail?: boolean;
+}
+
 export class MeetingRoomPage {
   page: Page;
   context: BrowserContext;
@@ -502,20 +509,6 @@ export class MeetingRoomPage {
     const votingRoomPage = new VotingRoomPage({ page: this.page });
     await votingRoomPage.votingRoomHeading.waitFor({ state: 'visible' });
     return votingRoomPage;
-  }
-
-  public async startBreakoutRooms(
-    randomDistribution: boolean | null = null,
-    mode: string | null = null
-  ): Promise<void> {
-    const breakoutRoomPage = await this.startBreakoutRoomsModeratorTool();
-    if (randomDistribution != null) {
-      await breakoutRoomPage.setRandomDistribution(randomDistribution);
-    }
-    if (mode !== null) {
-      await breakoutRoomPage.setSelectionMode(mode);
-    }
-    await breakoutRoomPage.startRooms();
   }
 
   public getParticipantTileLocatorByName(name: string): Locator {

@@ -117,6 +117,10 @@ export class ModeratorToolsPage {
     await this.getSwitchByName(switchName).click();
   }
 
+  public async setSwitch(switchName: string, on = false): Promise<void> {
+    await this.getSwitchByName(switchName).setChecked(on);
+  }
+
   public async getSessionDuration(): Promise<string> {
     await this.durationButton.waitFor({ state: 'visible' });
     const duration = await this.durationButton.innerText();
