@@ -123,7 +123,7 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     await meeting.meetingRoomPage.selectModeratorToolHome();
     const actualNumOfParticipants = await meeting.meetingRoomPage.getNumberOfParticipantsInMeeting();
-    assert(
+    await assert(
       actualNumOfParticipants,
       'toBe',
       expectedNumOfParticipants,
@@ -137,7 +137,7 @@ Then(
   async function (this: CustomWorld, user: string, regexToMatch: string) {
     regexToMatch = substituteInLineCodes(regexToMatch);
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
-    assert(
+    await assert(
       clipboardContent,
       'toMatch',
       regexToMatch,
@@ -384,7 +384,7 @@ Then(
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
     const actualMeetingCount = (await home.getAllMeetingListItems(meetingTitle)).length;
-    assert(
+    await assert(
       actualMeetingCount,
       'toBe',
       expectedCountOfMeetings,
