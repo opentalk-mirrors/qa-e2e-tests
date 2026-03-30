@@ -298,21 +298,21 @@ export class MeetingRoomPage {
   }
 
   async turnAudioOn(): Promise<boolean> {
-    await this.toolBar.microphoneButton.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.toolBar.microphoneButton.waitFor();
     await this.toolBar.microphoneButton.click();
     await this.page.waitForTimeout(1000); // to make sure microphone is really activated
     return await this.toolBar.microphoneButtonOff.isVisible();
   }
 
   async turnAudioOff(): Promise<boolean> {
-    await this.toolBar.microphoneButtonOff.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.toolBar.microphoneButtonOff.waitFor();
     await this.toolBar.microphoneButtonOff.click();
     await this.page.waitForTimeout(1000); // to make sure microphone is really deactivated
     return await this.toolBar.microphoneButton.isVisible();
   }
 
   async turnCameraOn(): Promise<boolean> {
-    await this.toolBar.videoButton.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.toolBar.videoButton.waitFor();
     await this.toolBar.videoButton.click();
     await this.page.waitForTimeout(1000); // to make sure camera is really activated
     // it seems that in firefox, one has to give approval for use of camera (click 'Allow' in corresponding pop-up)
@@ -320,7 +320,7 @@ export class MeetingRoomPage {
   }
 
   async turnCameraOff(): Promise<boolean> {
-    await this.toolBar.videoButtonOff.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.toolBar.videoButtonOff.waitFor();
     await this.toolBar.videoButtonOff.click();
     await this.page.waitForTimeout(1000); // to make sure camera is really deactivated
     return await this.toolBar.videoButton.isVisible();
@@ -332,7 +332,7 @@ export class MeetingRoomPage {
   }
 
   async selectPeopleTab(): Promise<void> {
-    await this.peopleButton.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+    await this.peopleButton.waitFor();
     await this.peopleButton.click();
   }
 
@@ -367,9 +367,9 @@ export class MeetingRoomPage {
       switch (key) {
         case 'v': {
           if (!cameraOn) {
-            await this.toolBar.videoButtonOff.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+            await this.toolBar.videoButtonOff.waitFor();
           } else {
-            await this.toolBar.videoButton.waitFor({ timeout: config.MEDIUM_TIMEOUT });
+            await this.toolBar.videoButton.waitFor();
           }
           break;
         }
@@ -536,7 +536,7 @@ export class MeetingRoomPage {
     if (!initialText) {
       throw new Error('Timer text not found');
     }
-    await expect(timerText).not.toHaveText(initialText, { timeout: config.SHORT_TIMEOUT });
+    await expect(timerText).not.toHaveText(initialText);
     const [initialMin, initialSec] = initialText.trim().split(':').map(Number);
     const initialTotalSec = initialMin * 60 + initialSec;
     const updatedText = await timerText.textContent();
