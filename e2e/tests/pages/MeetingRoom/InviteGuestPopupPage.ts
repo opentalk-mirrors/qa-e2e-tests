@@ -18,7 +18,7 @@ export class InviteGuestPopupPage {
 
   async createInvitation() {
     await this.createInvitationButton.click();
-    await this.copyToClipboardButton.waitFor();
+    await this.copyToClipboardButton.waitFor({ state: 'visible' });
   }
 
   async copyToClipboard() {
