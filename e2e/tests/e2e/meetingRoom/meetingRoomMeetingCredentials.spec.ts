@@ -31,12 +31,12 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
   });
   test('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // clipboard access is not available in webKit headless mode
-    const { meetingRoomPage, guestLink, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin } =
+    const { meetingRoomPage, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin, meetingLink } =
       await planNewMeetingAndStartAsModerator(page, meetingTitle, meetingPassword, browserName);
     await expect(meetingRoomPage.meetingInfoButton).toBeVisible();
 
     const meetingInfoPage: MeetingInfoPage = await meetingRoomPage.showMeetingDetails();
-    await expect(meetingInfoPage.inviteLinkInputField).toBeVisible();
+    await expect(meetingInfoPage.meetingLinkInputField).toBeVisible();
     await expect(meetingInfoPage.dialInNumberInputField).toBeVisible();
     await expect(meetingInfoPage.clipBoardButton).toBeVisible();
     await expect(meetingInfoPage.eMailButton).toBeVisible();
@@ -50,7 +50,7 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     expect(clipboardContent).toContain(`Title: ${meetingTitle}`);
     // expect(clipboardContent).toContain('You can join the meeting using one of the following means:');
     expect(clipboardContent).toContain('meeting-details-dialog-join-line'); // This is a bug reported in https://git.opentalk.dev/opentalk/qa/reports/-/issues/403
-    expect(clipboardContent).toContain(`Meeting-Link: ${guestLink}`);
+    expect(clipboardContent).toContain(`Meeting-Link: ${meetingLink}`);
     expect(clipboardContent).toContain(`Password: ${meetingPassword}`);
     expect(clipboardContent).toContain(`Telephone dial-in\nNumber: ${telephoneDialInNumber}`);
     expect(clipboardContent).toContain(`Conference-ID: ${conferenceId}`);
@@ -61,7 +61,7 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
 
     await meetingInfoPage.copyInviteLinkToClipboard();
     await expect(meetingInfoPage.linkCopiedToClipboardPopup).toBeVisible();
-    expect(await getClipboardContent(page)).toContain(guestLink);
+    expect(await getClipboardContent(page)).toContain(meetingLink);
 
     await meetingInfoPage.copyDialInNumberToClipboard();
     await expect(meetingInfoPage.dialInCopiedToClipboardPopup).toBeVisible();

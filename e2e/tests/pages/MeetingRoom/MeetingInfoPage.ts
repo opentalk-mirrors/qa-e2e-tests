@@ -6,12 +6,12 @@
 import { Locator, Page } from '@playwright/test';
 
 export class MeetingInfoPage {
-  private readonly copyInviteLinkButton: Locator;
+  private readonly copyMeetingLinkButton: Locator;
   private readonly copyDialInNumButton: Locator;
   private readonly copyPasswordButton: Locator;
 
   public readonly page: Page;
-  public readonly inviteLinkInputField: Locator;
+  public readonly meetingLinkInputField: Locator;
   public readonly dialInNumberInputField: Locator;
   public readonly passwordInputField: Locator;
   public readonly clipBoardButton: Locator;
@@ -23,12 +23,12 @@ export class MeetingInfoPage {
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.inviteLinkInputField = this.page.getByRole('textbox', { name: 'Invite Link' });
+    this.meetingLinkInputField = this.page.getByRole('textbox', { name: 'Meeting Link' });
     this.dialInNumberInputField = this.page.getByRole('textbox', { name: 'Dial-in Number' });
     this.passwordInputField = this.page.getByRole('textbox', { name: 'Password' });
     this.clipBoardButton = this.page.getByRole('button', { name: 'Clipboard' });
     this.eMailButton = this.page.getByRole('button', { name: 'E-Mail' });
-    this.copyInviteLinkButton = this.page.getByRole('button', { name: 'Copy Invite Link for ' });
+    this.copyMeetingLinkButton = this.page.getByRole('button', { name: 'Copy Meeting Link for ' });
     this.copyDialInNumButton = this.page.getByRole('button', { name: 'Copy Dial-in Number for ' });
     this.copyPasswordButton = this.page.getByRole('button', { name: 'Copy Password for ' });
     this.linkCopiedToClipboardPopup = this.page.getByText('The link was copied to your clipboard');
@@ -38,7 +38,7 @@ export class MeetingInfoPage {
   }
 
   public async copyInviteLinkToClipboard() {
-    await this.copyInviteLinkButton.click();
+    await this.copyMeetingLinkButton.click();
   }
 
   public async copyDialInNumberToClipboard() {

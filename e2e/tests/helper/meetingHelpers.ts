@@ -93,6 +93,7 @@ export const planNewMeetingAndStartAsModerator = async (
   conferencePin: string;
   meetingRoomName: string;
   roomId: string;
+  meetingLink: string;
 }> => {
   // Warning button in safari blocks the selector for creating new meeting
   if (browserName === 'webkit') {
@@ -122,5 +123,6 @@ export const planNewMeetingAndStartAsModerator = async (
     conferencePin,
     meetingRoomName,
     roomId,
+    meetingLink,
   };
 };
