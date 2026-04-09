@@ -71,7 +71,7 @@ services:
       - -c
       - |
         until [ -f "/builds/scripts/livekit-init.sh" ]; do true; done;
-        cp /builds//scripts/livekit-init.sh /usr/local/bin;
+        cp /builds/scripts/livekit-init.sh /usr/local/bin;
         livekit-init.sh;
     healthcheck:
       test: wget "http://localhost:7880" -O -
@@ -138,6 +138,7 @@ services:
           sed 's/www\.opentalk\.test/localhost\:8443/g' > /tmp/controller-config.toml
           sed -i 's|https://accounts\.opentalk\.test/|https://localhost:7443/|g' /tmp/controller-config.toml
           sed -i 's|https://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
+          sed -i 's|https://roomserver\.opentalk\.test|https://localhost:11333|g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
           sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
           sed -i 's/\/minio\:/\/localhost\:/g' /tmp/controller-config.toml
@@ -233,11 +234,13 @@ services:
       - 8443:443
       - 7880:7880
       - 21311:11311
+      - 11333:11333
     extra_hosts:
       - host.docker.internal:host-gateway
     depends_on:
       - webapp
       - controller
+      - roomserver
 
   certs:
     image: mcr.microsoft.com/playwright:v1.56.0-noble
@@ -261,6 +264,34 @@ services:
         fi
         find /certs -xtype l -delete
         chmod 644 /certs/*.pem
+
+  roomserver:
+    image: git.opentalk.dev:5050/opentalk/backend/services/roomserver:dev
+    volumes:
+      - ./:/builds/:rw,Z
+    environment:
+      - RUST_LOG=opentalk=debug
+    healthcheck:
+      test: [CMD, /opentalk-roomserver/opentalk-roomserver, health]
+      start_period: 1s
+      start_interval: 1s
+    depends_on:
+      livekit:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          echo "Wait for repo data";
+          until [ -f "/builds/config/roomserver.toml" ]; do true; done;
+          sleep 10;
+          cat /builds/config/roomserver.toml | \
+          sed 's/https\:\/\/controller\.opentalk\.test/https\:\/\/localhost\:21311/g' > /tmp/roomserver.toml
+          sed -i 's|https://roomserver\.opentalk\.test|https://localhost:11333|g' /tmp/roomserver.toml
+          echo "Try to start roomserver";
+          /opentalk-roomserver/opentalk-roomserver -c /tmp/roomserver.toml;
+        done;
 
 volumes:
   certs-volume:

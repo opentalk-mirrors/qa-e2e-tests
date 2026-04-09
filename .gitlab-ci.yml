@@ -37,6 +37,9 @@ variables:
   RUN_ONLY_SMOKE_TESTS:
     description: If only smoked tests should run set this variable to `true`
     value: 'false'
+  ROOMSERVER_TAG:
+    description: The roomserver version tag
+    value: dev
 
 .setup-pnpm: &setup-pnpm
   - npm install -g corepack@latest
@@ -134,6 +137,22 @@ variables:
           mkdir -p /data/controller &&
           /usr/bin/docker-entrypoint.sh server /data --address ":9000"
 
+    - name: git.opentalk.dev:5050/opentalk/backend/services/roomserver:$ROOMSERVER_TAG
+      pull_policy: if-not-present
+      alias: roomserver
+      entrypoint:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for config file...";
+          until [ -f "/builds/$CI_PROJECT_PATH/config/roomserver.toml" ]; do
+            echo "waiting for /builds/$CI_PROJECT_PATH/config/roomserver.toml";
+            sleep 1;
+          done;
+
+          echo "Starting roomserver...";
+          /opentalk-roomserver/opentalk-roomserver -c /builds/$CI_PROJECT_PATH/config/roomserver.toml
+
     - name: git.opentalk.dev:5050/opentalk/backend/services/controller:$CONTROLLER_TAG
       alias: controller
       variables:
@@ -220,7 +239,7 @@ variables:
 
     - name: nginx:1.29
       pull_policy: if-not-present
-      alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test
+      alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test,roomserver.opentalk.test
       entrypoint:
         - /bin/bash
         - -c
