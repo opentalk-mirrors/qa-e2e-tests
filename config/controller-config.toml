@@ -177,8 +177,8 @@ api_secret = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv"
 public_url = "https://livekit.opentalk.test"
 service_url = "https://livekit.opentalk.test"
 [roomserver.modules.meeting_notes]
-# api_key = "secret"
-# base_url = "http://localhost:9001"
+ api_key = "secret"
+ base_url = "http://localhost:9001"
 [roomserver.modules.meeting_report]
 [roomserver.modules.moderation]
 [roomserver.modules.polls]
@@ -188,8 +188,8 @@ service_url = "https://livekit.opentalk.test"
 [roomserver.modules.timer]
 [roomserver.modules.training_participation_report]
 [roomserver.modules.whiteboard]
-# api_key = "noop2zu3OovooXeeb8theesi"
-# base_url = "http://localhost:9666"
+ api_key = "noop2zu3OovooXeeb8theesi"
+ base_url = "http://localhost:9666"
 
 [rabbit_mq]
 # The URL to use to connect to the rabbit mq broker

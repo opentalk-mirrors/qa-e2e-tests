@@ -129,6 +129,8 @@ test.describe('Accessibility_General', { tag: '@late' }, () => {
     await expect(meetingRoomPage.jumpLinks.skipToPersonalControlPanelLink).toBeFocused();
 
     await meetingRoomPage.page.keyboard.press('Tab');
+    await expect(meetingRoomPage.meetingInfoButton).toBeFocused();
+    await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.viewOptionsButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.securityMonitorButton).toBeFocused();
