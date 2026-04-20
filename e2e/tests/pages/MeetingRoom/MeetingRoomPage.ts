@@ -111,7 +111,7 @@ export class MeetingRoomPage {
   };
 
   keyboardShortcuts: {
-    keyboardShortcutsPopup: Locator;
+    hotkeySettingsPopup: Locator;
     checkbox: Locator;
   };
   private closePopupDialogButton: Locator;
@@ -221,7 +221,7 @@ export class MeetingRoomPage {
     };
 
     this.keyboardShortcuts = {
-      keyboardShortcutsPopup: this.page.getByRole('dialog', { name: 'Hotkeys' }),
+      hotkeySettingsPopup: this.page.getByRole('dialog', { name: 'Hotkey Settings' }),
       checkbox: this.page.getByRole('switch', { name: 'Hotkeys' }),
     };
     this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });

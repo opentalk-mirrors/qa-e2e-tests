@@ -14,7 +14,7 @@ export class BurgerMenuPage {
   public readonly burgerMenuDropdown: Locator;
   public readonly accessibilityMenuItem: Locator;
   public readonly userManualMenuItem: Locator;
-  public readonly keyboardShortcutsMenuItem: Locator;
+  public readonly hotkeySettingsMenuItem: Locator;
   public readonly reportABugMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
@@ -23,7 +23,7 @@ export class BurgerMenuPage {
     this.burgerMenuDropdown = this.page.getByRole('menu', { name: 'My meeting' });
     this.accessibilityMenuItem = this.page.getByRole('menuitem', { name: 'Accessibility Open in new tab' });
     this.userManualMenuItem = this.page.getByRole('menuitem', { name: 'User manual Open in new tab' });
-    this.keyboardShortcutsMenuItem = this.page.getByRole('menuitem', { name: 'Hotkeys' });
+    this.hotkeySettingsMenuItem = this.page.getByRole('menuitem', { name: 'Hotkey Settings' });
     this.reportABugMenuItem = this.page.getByRole('menuitem', { name: 'Report a bug' });
   }
 
@@ -40,7 +40,7 @@ export class BurgerMenuPage {
   }
 
   public async openKeyboardShortcuts() {
-    await this.keyboardShortcutsMenuItem.click();
+    await this.hotkeySettingsMenuItem.click();
   }
 
   public async openReportABug(): Promise<GlitchTipPage> {
