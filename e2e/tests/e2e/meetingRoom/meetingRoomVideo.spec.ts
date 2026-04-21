@@ -6,16 +6,17 @@ import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { joinGuestToMeeting } from '../../helper/playwrightMeetingHelpers';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 
 test.describe('Test if video is working', { tag: '@late' }, () => {
   let meetingRoomPage: MeetingRoomPage, guestLink: string, guestMeetingRoomPage: MeetingRoomPage;
   test.use({ viewport: { width: 1280, height: 720 } });
 
-  test.beforeEach(async ({ page, context, browserName }) => {
+  test.beforeEach(async ({ page, browser, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPage = (await joinMeetingRoomAsGuest(context, guestLink, 'guest1'))['guest1'];
+    guestMeetingRoomPage = (await joinGuestToMeeting(browser, guestLink, 'guest1'))['guest1'];
   });
 
   test('video of other participant is being played', async ({ browserName }) => {

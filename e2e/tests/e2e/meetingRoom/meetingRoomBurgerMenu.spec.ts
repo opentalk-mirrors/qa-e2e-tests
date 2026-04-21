@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import test, { expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { joinGuestToMeeting } from '../../helper/playwrightMeetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { TalkingStickPage } from '../../pages/MeetingRoom/ModeratorTools/TalkingStickPage';
@@ -59,11 +60,11 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test('TC_003_Keyboard Shortcuts', async ({ page, context, browserName }) => {
+  test('TC_003_Keyboard Shortcuts', async ({ page, browser, browserName }) => {
     test.skip(browserName === 'webkit'); // Camera and Microphone permissions are not being granted in Safari in CI
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest');
     const guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     const viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
     await meetingRoomPage.page.bringToFront();

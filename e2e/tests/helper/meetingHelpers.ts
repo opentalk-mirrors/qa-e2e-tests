@@ -74,27 +74,9 @@ export const joinMeetingRoomAsGuest = async (
   return { [guestName]: guestMeetingRoomPage };
 };
 
-class JoinMeetingOptions {
+export class JoinMeetingOptions {
   audio: boolean = false;
 }
-
-export const joinMeetingRoomWithNGuests = async (
-  context: BrowserContext,
-  guestLink: string,
-  guestBaseName: string,
-  numberOfGuests: number,
-  options?: JoinMeetingOptions
-): Promise<ParticipantMeetingRoomPages> => {
-  let guestMeetingRoomPages: ParticipantMeetingRoomPages = {};
-
-  for (let i = 1; i <= numberOfGuests; i++) {
-    const guestUserName = guestBaseName + i;
-    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, guestUserName, options);
-    guestMeetingRoomPages = { ...guestMeetingRoomPage, ...guestMeetingRoomPages };
-  }
-
-  return guestMeetingRoomPages;
-};
 
 export const planNewMeetingAndStartAsModerator = async (
   page: Page,

@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { joinGuestToMeeting } from '../../../helper/playwrightMeetingHelpers';
 import { CoffeeBreakDialogPage } from '../../../pages/MeetingRoom/CoffeeBreakDialogPage';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { CoffeeBreakPage } from '../../../pages/MeetingRoom/ModeratorTools/CoffeeBreakPage';
@@ -103,12 +104,12 @@ test.describe('Meeting room_Coffee break', async () => {
 
   test('TC_003_Meeting Room_As Moderator_Coffee break_Start coffee break_with different Durations', async ({
     page,
-    context,
+    browser,
     browserName,
   }) => {
     // preconditions
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();

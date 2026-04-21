@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { joinGuestToMeeting } from '../../../helper/playwrightMeetingHelpers';
 import { closeWebkitPopUp } from '../../../helper/webkit';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { TimerPage } from '../../../pages/MeetingRoom/ModeratorTools/TimerPage';
@@ -18,12 +19,12 @@ test.describe('Meeting Room_Timer', () => {
     meetingParticipantPages: TimerPage[],
     timerPage: TimerPage;
 
-  test.beforeEach(async ({ page, context, browserName }) => {
+  test.beforeEach(async ({ page, browser, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });
     }
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest1');
+    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest1');
     guestMeetingRoomPage = participantMeetingRoomPages['guest1'];
     const meetingRoomTimerPage: TimerPage = new TimerPage({ page: meetingRoomPage.page });
     const guestMeetingRoomTimerPage: TimerPage = new TimerPage({ page: guestMeetingRoomPage.page });
@@ -327,7 +328,7 @@ test.describe('Meeting Room_Timer', () => {
     await expect(meetingRoomPage.moderationTools.coffeeBreakButton).toBeEnabled();
   });
 
-  test('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({ context }) => {
+  test('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({ browser }) => {
     const sessionDurationDialog = await timerPage.openSessionDurationDialog();
     await sessionDurationDialog.selectDuration('1 min');
     await sessionDurationDialog.save();
@@ -376,7 +377,7 @@ test.describe('Meeting Room_Timer', () => {
       } while (i <= 3);
     }
 
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest2');
+    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest2');
     const secondGuestMeetingRoomPage = participantMeetingRoomPages['guest2'];
     const secondGuestMeetingRoomTimerPage = new TimerPage({ page: secondGuestMeetingRoomPage.page });
     await secondGuestMeetingRoomTimerPage.markMeAsDone();

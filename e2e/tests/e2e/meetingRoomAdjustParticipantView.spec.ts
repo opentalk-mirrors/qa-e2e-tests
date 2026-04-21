@@ -4,7 +4,8 @@
 import { test, expect } from '@playwright/test';
 
 import { config } from '../config';
-import { startAdhocMeetingAsModerator, joinMeetingRoomWithNGuests } from '../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../helper/meetingHelpers';
+import { joinGuestsToMeeting } from '../helper/playwrightMeetingHelpers';
 import { ViewOptionsPage } from '../pages/MeetingRoom/ViewOptionsPage';
 
 const NUMBER_OF_GUESTS = 5;
@@ -34,12 +35,12 @@ test.describe('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, context, browserName }) => {
+  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinGuestsToMeeting(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
     // open grid view options besides the meeting room name
@@ -63,12 +64,12 @@ test.describe('MeetingRoom - adjust participant view', () => {
     expect(await viewOptionsPage.getPinnedParticipantNameInSpeakerView()).toBe(pinnedParticipant2);
   });
 
-  test('TC_003_VideoRoom_ParticipantViewSettings_List_FullScreen', async ({ page, context, browserName }) => {
+  test('TC_003_VideoRoom_ParticipantViewSettings_List_FullScreen', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 2 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', SMALL_NUMBER_OF_GUESTS);
+    await joinGuestsToMeeting(browser, guestLink, 'guest', SMALL_NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.peopleButton.click();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(SMALL_NUMBER_OF_GUESTS + 1);
@@ -97,12 +98,12 @@ test.describe('MeetingRoom - adjust participant view', () => {
     );
   });
 
-  test('TC_004_VideoRoom_ParticipantViewSettings_List_GridView', async ({ page, context, browserName }) => {
+  test('TC_004_VideoRoom_ParticipantViewSettings_List_GridView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinGuestsToMeeting(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
 
@@ -120,7 +121,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, context, browserName }) => {
+  test('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, browser, browserName }) => {
     test.skip(browserName === 'webkit');
     // in webkit one needs to give permission to turn camera on therefore skip webkit until solution for this is found
 
@@ -129,7 +130,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    const guestPages = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', NUMBER_OF_GUESTS);
+    const guestPages = await joinGuestsToMeeting(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
     const firstGuestMeetingRoomPage = guestPages['guest1'];
