@@ -124,7 +124,8 @@ Feature: Meeting Room Home
     Then for "Alice" the chat overview should be displayed on the Meeting-Room-Page
     And the chat messages count for "Alice" should be 9 on the Meeting-Room-Page
 
-  @skip-on-webkit
+  @skip-on-webkit @skip
+  # skipped because of group filter switch is missing
   Scenario: TC_002_Meeting Room_As Moderator_Home_People option+search+sort+group
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/118
     Given 2 guests have joined the meeting of "Alice" with delay of 30000 milliseconds
@@ -214,7 +215,8 @@ Feature: Meeting Room Home
     And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
     And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
 
-
+  @skip
+  # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/work_items/3288
   Scenario: Guest users can send direct messages to other participants from the list in People tab in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"

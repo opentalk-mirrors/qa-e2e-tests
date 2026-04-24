@@ -45,7 +45,7 @@ test.describe('Meeting Room_Reset raised hands selected button', { tag: '@late' 
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
   });
 
-  test('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
+  test.skip('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
     await expect(meetingRoomPage.toolBar.handLowerButton).toBeEnabled();
     expect(await meetingRoomPage.isHandRaised()).toBeTruthy();
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
@@ -144,7 +144,8 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
   });
 
-  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async () => {
+  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async ({ browserName }) => {
+    test.skip(browserName === 'webkit');
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();

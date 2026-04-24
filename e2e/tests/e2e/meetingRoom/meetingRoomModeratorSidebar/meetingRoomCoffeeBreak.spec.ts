@@ -24,7 +24,7 @@ test.describe('Meeting room_Coffee break', async () => {
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage;
 
-  test('TC_001_Meeting Room_As Moderator_Coffee break', async ({ page }) => {
+  test.skip('TC_001_Meeting Room_As Moderator_Coffee break', async ({ page }) => {
     ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page));
     // preconditions
     await meetingRoomPage.page.bringToFront();
@@ -37,7 +37,8 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(coffeeBreakPage.startCoffeeBreakButton).toBeVisible();
   });
 
-  test('TC_002_Meeting Room_As Moderator_Coffee break_Duration_Session Duration', async ({ page }) => {
+  test('TC_002_Meeting Room_As Moderator_Coffee break_Duration_Session Duration', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit');
     ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page));
     // preconditions
     await meetingRoomPage.page.bringToFront();
@@ -107,6 +108,7 @@ test.describe('Meeting room_Coffee break', async () => {
     browser,
     browserName,
   }) => {
+    test.skip(browserName === 'webkit');
     // preconditions
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest');

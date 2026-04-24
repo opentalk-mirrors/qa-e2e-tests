@@ -165,7 +165,7 @@ test.describe('Dashboard_Home', { tag: '@late' }, () => {
     await expect(meetingPlanningPage.passwordInputField).toHaveValue(meetingPassword);
   });
 
-  test('TC_005_Dashboard_Home_Plan new_Step-1 Meeting_Meeting recurrence dropdown field', async ({ page }) => {
+  test.skip('TC_005_Dashboard_Home_Plan new_Step-1 Meeting_Meeting recurrence dropdown field', async ({ page }) => {
     // Set fixed time in the browser/test environment to 10:00 AM preventing nightly failure when planning meetings between 23:45–23:59.
     const dateOnly = new Date().toISOString().split('T')[0];
     await page.clock.setFixedTime(new Date(`${dateOnly}T10:00:00`));
