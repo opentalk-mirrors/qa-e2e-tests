@@ -9,7 +9,8 @@ import { CustomWorld } from './cucumberWorld';
 
 let browser: Browser;
 
-Before(async function (this: CustomWorld) {
+Before(async function (this: CustomWorld, scenario) {
+  this.testId = scenario.pickle.id;
   const browserName = config.browser;
   let browserType: BrowserType<Browser>;
   let args = [

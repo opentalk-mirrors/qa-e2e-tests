@@ -398,10 +398,9 @@ e2e-playwright-tests:
       if [ "$RUN_ONLY_SMOKE_TESTS" == "true" ]; then
         PROJECTS=smoke-$BROWSER
         echo "RUNS $PROJECTS project"
-        BROWSER=$PROJECTS pnpm run test:playwright --workers=1
+        BROWSER=$PROJECTS pnpm run test:playwright
       else
-        NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$BROWSER --workers=1 --grep-invert @late
-        NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --project=$BROWSER --workers=1 --grep @late
+        BROWSER=$BROWSER pnpm run test:playwright
       fi
 
   after_script:

@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../../authHelpers';
+import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { closeWebkitPopUp } from '../../../helper/webkit';
@@ -13,13 +15,19 @@ const timerTitle = 'MyTimer';
 const NUMBER_OF_GUESTS = 1;
 
 test.describe('Meeting Room_Timer', () => {
+  let userId = '';
   let meetingRoomPage: MeetingRoomPage,
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
     meetingParticipantPages: TimerPage[],
     timerPage: TimerPage;
 
-  test.beforeEach(async ({ page, browser, browserName }) => {
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+
+  test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });

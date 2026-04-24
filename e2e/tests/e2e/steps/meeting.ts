@@ -10,7 +10,6 @@ import { assert } from '../../helper/assertion';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
 import { joinMeetingRoomWithNGuests, joinMeetingRoomAsGuest } from '../../helper/gherkinMeetingHelpers';
 import { substituteInLineCodes, validateDataTableHeaders } from '../../helper/helper';
-import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -61,7 +60,7 @@ Given(
   '{int} guests have joined the meeting of {string} with delay of {int} milliseconds',
   async function (this: CustomWorld, numOfGuests: number, user: string, delay: number) {
     const meeting = this.getStartedMeeting(user).meeting;
-    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests, undefined, delay);
+    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests, { audio: false }, delay);
   }
 );
 
@@ -129,11 +128,40 @@ Then(
 );
 
 async function startAdhocMeeting(world: CustomWorld, username: string) {
-  const page = world.getUser(username).page;
-  world.setStartedMeeting(username, await startAdhocMeetingAsModerator(page));
+  const user = world.getUser(username);
+  world.setStartedMeeting(username, await startAdhocMeetingAsModerator(user));
   world.addParticipantMeetingRooms(username, {
     [username]: world.getStartedMeeting(username).meeting.meetingRoomPage,
   });
+}
+
+async function startAdhocMeetingAsModerator(
+  user: User,
+  browserName?: 'webkit' | 'chromium' | 'firefox',
+  meetingTitlePrefix: string = 'Ad-hoc Meeting'
+) {
+  const page = user.page;
+  const { meetingLink, roomId, meetingId } = await user.api.startAdhocMeetingAsModerator(meetingTitlePrefix);
+  const guestLink = await user.api.getGuestLink(roomId);
+  await page.goto(meetingLink);
+  const lobbyRoomPage = new LobbyRoomPage({ page });
+  await lobbyRoomPage.renderLobbyPage();
+  // Close warning button in safari
+  if (browserName === 'webkit') {
+    await closeWebkitPopUp({ page });
+  }
+
+  // enter meeting room & assert meeting room is shown
+  const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
+
+  await meetingRoomPage.meetingRoomName.waitFor({ state: 'visible' });
+  expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
+  await assert(await meetingRoomPage.getMeetingRoomName(), 'toContain', meetingTitlePrefix);
+
+  // only moderator is present before guests join
+  expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
+  await assert(await meetingRoomPage.getNumberOfParticipantsInMeeting(), 'toBe', 1);
+  return { meetingRoomPage, guestLink, meetingId };
 }
 
 Given(
@@ -212,7 +240,7 @@ Given(
   async function (this: CustomWorld, moderator: string, invitedUser: string, meetingTitle: string) {
     const api = this.getUser(moderator).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
-    const user = await api.getUser(invitedUser);
+    const user = await api.getUser(invitedUser.toLowerCase() + this.testId);
     await api.inviteUser(meeting.id, user[0].email);
   }
 );
@@ -277,10 +305,11 @@ async function navigateToHomePage(world: CustomWorld, moderator: string) {
 Given(
   '{string} has accepted the invitation for the meeting with the title {string} created by {string}',
   async function (this: CustomWorld, invitee: string, meetingTitle: string, moderator: string) {
-    const api = this.getUser(invitee).api;
+    const api = this.getUser(moderator).api;
+    const apiInvitee = this.getUser(invitee).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
     expect(meeting.created_by.firstname).toBe(moderator);
-    await api.acceptInvite(meeting.id);
+    await apiInvitee.acceptInvite(meeting.id);
   }
 );
 
@@ -309,7 +338,8 @@ Given(
 Then(
   'the following details should be displayed for meeting {string} on the Home-Page for {string}:',
   async function (this: CustomWorld, meetingTitle: string, user: string, dataTable: DataTable) {
-    const page = this.getUser(user).page;
+    const userObj = this.getUser(user);
+    const page = userObj.page;
     const home = new HomePage({ page: page });
     const meetingItem = await home.getMeetingListItem(meetingTitle);
     const expectedHeaders = ['detail', 'value'];

@@ -8,7 +8,8 @@ Feature: GlitchTip_General
    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/236
 
   Background:
-    Given "Alice" has logged in
+    Given user "Alice" has been created
+    And "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
 
 
@@ -22,7 +23,7 @@ Feature: GlitchTip_General
 
     And for "Alice" no request should have been sent to GlitchTip
 
-    Given "Alice" has started an ad-hoc meeting and joined the meeting as moderator
+    When "Alice" starts an ad-hoc meeting and joins the meeting as moderator
     And "Alice" opens the "Report a bug" form
     And "Alice" sends a crash report with these details:
       | name  | email             | description          |

@@ -3,14 +3,29 @@
 // SPDX-License-Identifier: EUPL-1.2
 import test, { expect } from '@playwright/test';
 
+import { globalSetup } from '../../authHelpers';
+import { config } from '../../config';
+import { deleteUser } from '../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
+import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { ViewOptionsPage } from '../../pages/MeetingRoom/ViewOptionsPage';
 
 test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
-  test('TC_001_Accessibility', async ({ page, browserName }) => {
-    const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
+  let userId = '';
+  let meetingRoomPage: MeetingRoomPage;
+
+  test.beforeEach(async ({ page, context, browserName }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+    meetingRoomPage = (await startAdhocMeetingAsModerator(page, browserName)).meetingRoomPage;
+  });
+
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+
+  test('TC_001_Accessibility', async () => {
     const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
@@ -35,8 +50,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test('TC_002_User manual', async ({ page, browserName }) => {
-    const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
+  test('TC_002_User manual', async () => {
     const burgerMenuPage: BurgerMenuPage = await meetingRoomPage.openBurgerMenu();
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
@@ -51,17 +65,16 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
       { exact: true }
     );
     expect(userManualPage.url()).toMatch(/^https:\/\/docs\.opentalk\.eu\/.*$/);
-    await expect(userManualHeading).toBeVisible();
+    await expect(userManualHeading).toBeVisible({ timeout: config.SHORT_TIMEOUT });
     await expect(openTalkDocs).toBeVisible();
 
     await meetingRoomPage.page.bringToFront();
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test('TC_003_Keyboard Shortcuts', async ({ page, browserName }) => {
+  test('TC_003_Keyboard Shortcuts', async ({ browserName }) => {
     test.skip(browserName === 'webkit'); // Camera and Microphone permissions are not being granted in Safari in CI
 
-    const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     // The test has been temporarily commented out due to:
     // https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/142
     // const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
@@ -197,6 +210,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
 
       await meetingRoomPage.closePopupDialog(method);
       await expect(meetingRoomPage.reportABug.manualGlitchtipPopup).not.toBeVisible();
+      await meetingRoomPage.closeBurgerMenu();
     }
   });
 });

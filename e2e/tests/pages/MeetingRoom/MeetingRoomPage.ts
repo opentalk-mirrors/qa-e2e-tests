@@ -370,6 +370,10 @@ export class MeetingRoomPage {
     return burgerMenuPage;
   }
 
+  async closeBurgerMenu(): Promise<void> {
+    await this.pressEscape();
+  }
+
   // functions related to keyboard shortcuts
   async useKeyboardShortcut(key: string): Promise<void> {
     const cameraOn: boolean = await this.isCameraOn();

@@ -7,6 +7,11 @@ Feature: Dashboard Home
   So that I can manage my meetings
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/14
 
+  Background:
+    Given these users have been created:
+      | Alice |
+      | Bob   |
+
   @skip @smoke
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/41
@@ -20,7 +25,7 @@ Feature: Dashboard Home
     Then there should be 1 meeting with the name "ali1" on the Home-Page for "Alice"
     And the following details should be displayed for meeting "ali1" on the Home-Page for "Alice":
       | detail        | value                        |
-      | time          | <time>                      |
+      | time          | <time>                       |
       | meeting title | ali1                         |
       | creator       | Created by Alice Hansen (Me) |
     And the following buttons should be displayed for meeting "ali1" on the Home-Page for "Alice":

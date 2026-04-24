@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../../authHelpers';
+import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { LobbyRoomPage } from '../../../pages/LobbyRoomPage';
@@ -14,9 +16,11 @@ test.describe.skip('Meeting Room_Debriefing', () => {
   let meetingRoomPage: MeetingRoomPage,
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
-    debriefingPage: DebriefingPage;
+    debriefingPage: DebriefingPage,
+    userId: string;
 
-  test.beforeEach(async ({ page, browser, browserName }) => {
+  test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
     // skipped in webkit due to https://git.opentalk.dev/opentalk/qa/reports/-/issues/418
     test.skip(browserName === 'webkit');
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
@@ -24,6 +28,9 @@ test.describe.skip('Meeting Room_Debriefing', () => {
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();
+  });
+  test.afterEach(async () => {
+    await deleteUser(userId);
   });
 
   test('TC_001_Meeting room_Debriefing_For moderator + registered user', async ({ page }) => {

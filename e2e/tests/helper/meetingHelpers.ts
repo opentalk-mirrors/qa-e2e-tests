@@ -4,7 +4,6 @@
 import { Page, expect, BrowserContext } from '@playwright/test';
 
 import { ParticipantMeetingRoomPages } from '../e2e/cucumberWorld';
-import { HomePage } from '../pages/HomePage';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
 import { getGuestLink, planMeetingAsModerator, startAdhocMeetingAsModerator as startMeeting } from './Api';
@@ -95,15 +94,11 @@ export const planNewMeetingAndStartAsModerator = async (
   meetingRoomName: string;
   roomId: string;
 }> => {
-  const homePage = new HomePage({ page });
-  await homePage.navigateToHomePage();
-
   // Warning button in safari blocks the selector for creating new meeting
   if (browserName === 'webkit') {
     await closeWebkitPopUp({ page });
   }
 
-  await homePage.planNewMeeting();
   const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin } = await planMeetingAsModerator(
     meetingTitle,
     meetingPassword

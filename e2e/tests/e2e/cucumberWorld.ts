@@ -13,6 +13,7 @@ import * as dotenv from 'dotenv';
 import path from 'path';
 
 import { Api } from '../helper/Api';
+import { deleteUser } from '../helper/keycloak';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
 import { BreakoutRoomsPage } from '../pages/MeetingRoom/ModeratorTools/BreakoutRoomsPage';
 
@@ -41,10 +42,13 @@ interface StartedMeeting {
 }
 
 export type User = {
-  firstname: string;
+  userName: string;
+  password: string;
+  id: string;
   api: Api;
   page: Page;
   context: BrowserContext;
+  type: string;
 };
 
 setDefaultTimeout(120 * 1000);
@@ -54,6 +58,7 @@ export class CustomWorld extends World {
   context!: BrowserContext;
   page!: Page;
   currentUser?: string;
+  testId?: string;
 
   // key is the username of the moderator who created the meeting
   startedMeetings?: {
@@ -83,10 +88,11 @@ export class CustomWorld extends World {
     if (!this.users) {
       this.users = {};
     }
-    this.users[user.firstname] = user;
+    this.users[user.userName] = user;
   }
 
   getUser(user: string): User {
+    user = `${user.toLowerCase()}_${this.testId}`;
     if (!this.users || !this.users[user]) {
       throw new Error('No users have been saved');
     }
@@ -139,7 +145,6 @@ export class CustomWorld extends World {
   async cleanup(scenario: ITestCaseHookParameter) {
     if (this.users) {
       for (const [_key, user] of Object.entries(this.users)) {
-        const { api: api } = user;
         if (scenario.result?.status === 'FAILED') {
           await user.context?.tracing.stop({
             path: `playwright-report/${scenario.pickle.name.replaceAll(' ', '-')}${new Date().toISOString().replaceAll(/[:.,]/g, '-')}.zip`,
@@ -150,8 +155,8 @@ export class CustomWorld extends World {
 
         await user.context.close();
         this.currentUser = undefined;
-        if (api.accessToken) {
-          await api.deleteMeetings();
+        if (user.type === 'user') {
+          await deleteUser(user.id);
         }
       }
     }

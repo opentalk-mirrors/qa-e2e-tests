@@ -3,20 +3,27 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { expect, test } from '@playwright/test';
 
+import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
-import { deleteMeetings } from '../../helper/Api';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
+import { deleteUser } from '../../helper/keycloak';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 
 let homePage: HomePage;
 const meetingTitle = 'Meeting room URL';
 
-test.beforeEach('delete existing meetings', async () => {
-  await deleteMeetings(config.USER_NAME);
-});
-
 test.describe('Meeting room URL', async () => {
+  let userId = '';
+
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+  });
+
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+
   test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
     // Set fixed time in the browser/test environment to 10:00 AM preventing nightly failures

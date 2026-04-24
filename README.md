@@ -127,6 +127,17 @@ Run only tests marked with the `@smoke` tag:
 RUN_ONLY_SMOKE_TESTS=true pnpm run test:gherkin
 ```
 
+Keycloak
+
+Playwright and Gherkin tests create a dedicated user for each test. Therefore, the following Keycloak configuration is required.
+
+The default values are:
+```
+KC_HOST='https://localhost:7443'
+KC_ADMIN='admin'
+KC_ADMIN_PASSWORD='admin'
+KC_REALM='OPENTALK'
+```
 #### Timeouts
 
 Some tests naturally take longer than others, so we configure timeouts instead of relying on fixed delays. To keep things consistent and maintainable, we use environment variables rather than hard-coded values:

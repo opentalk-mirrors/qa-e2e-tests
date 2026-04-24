@@ -8,7 +8,8 @@ Feature: Meeting room_Coffee break
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/214
 
   Background:
-    Given "Alice" has logged in
+    Given user "Alice" has been created
+    And "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And 1 guest has joined the meeting of "Alice"
     And "Alice" has opened the Coffee break option in the moderator sidebar

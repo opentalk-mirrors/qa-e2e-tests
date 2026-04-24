@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
+import util from 'util';
 
+import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
-import { changeLanguage, createMeetingAsset, deleteMeetings } from '../../helper/Api';
+import { createMeetingAsset } from '../../helper/Api';
+import { deleteUser } from '../../helper/keycloak';
 import { planNewMeetingAndStartAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -27,10 +30,11 @@ test.describe('Dashboard_Settings', () => {
     settingsPage: SettingsPage,
     generalPage: GeneralPage,
     homePage: HomePage,
-    myMeetingsPage: MyMeetingsPage;
+    myMeetingsPage: MyMeetingsPage,
+    userId: string;
 
-  test.beforeEach(async ({ page, browserName }) => {
-    await changeLanguage('en-US');
+  test.beforeEach(async ({ page, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
     sideBarPage = new SidebarPage({ page });
     settingsPage = await sideBarPage.navigateToSettingsPage();
     generalPage = new GeneralPage({ page: settingsPage.page });
@@ -38,6 +42,9 @@ test.describe('Dashboard_Settings', () => {
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });
     }
+  });
+  test.afterEach(async () => {
+    await deleteUser(userId);
   });
 
   test('TC_001_Dashboard_Settings_General', async () => {
@@ -134,25 +141,10 @@ test.describe('Dashboard_Settings', () => {
       expect(await notificationPage.getAlertNotificationText()).toBe('Your settings have been saved successfully.');
       await expect(sideBarPage.profileName).toHaveText(myProfileName);
     });
-
-    //cleanup
-    test.afterAll(async ({ browser }) => {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-
-      const sideBarPage = new SidebarPage({ page });
-      const settingsPage = await sideBarPage.navigateToSettingsPage();
-
-      const profilePage: ProfilePage = await settingsPage.navigateToProfile();
-      await profilePage.enterProfileName(FIRSTNAME + ' ' + FAMILYNAME);
-      await profilePage.saveProfile();
-
-      await context.close();
-    });
   });
 
-  test('TC_003_Dashboard_Settings_Account option', async () => {
-    const USER_EMAIL: string = process.env.USER_EMAIL!;
+  test('TC_003_Dashboard_Settings_Account option', async ({ page: _ }, testInfo) => {
+    const USER_EMAIL: string = util.format(config.USER_EMAIL, testInfo.workerIndex);
 
     const accountPage: AccountPage = await settingsPage.navigateToAccount();
     await expect(accountPage.generalInformationHeading).toBeVisible();
@@ -179,7 +171,7 @@ test.describe('Dashboard_Settings', () => {
   test('TC_004_Dashboard_Settings_Storage option', async ({ page, context }) => {
     const MEETING_TITLE = 'myMeeting';
     const INDEX = 0;
-    const { meetingRoomName, roomId } = await planNewMeetingAndStartAsModerator(page, MEETING_TITLE, undefined);
+    const { meetingRoomName, roomId } = await planNewMeetingAndStartAsModerator(page, MEETING_TITLE);
 
     const eventTitle = 'event';
     const fileExt = 'pdf';
@@ -240,8 +232,5 @@ test.describe('Dashboard_Settings', () => {
     await storagePage.page.bringToFront();
     await storagePage.page.reload();
     expect(await myFilesPage.isFilePresent(filenameToDelete)).toBeFalsy();
-
-    //cleanup
-    await deleteMeetings(config.USER_NAME);
   });
 });

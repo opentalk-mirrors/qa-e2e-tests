@@ -3,16 +3,24 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../authHelpers';
+import { deleteUser } from '../../helper/keycloak';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { LegalPage } from '../../pages/LegalPage';
 
-test.beforeEach(async ({ page, browserName, context }) => {
+let userId = '';
+
+test.beforeEach(async ({ page, browserName, context }, testInfo) => {
+  userId = await globalSetup(page, context, testInfo);
   const legalPage = new LegalPage({ page, context });
   await legalPage.navigateToLegalPage();
 
   if (browserName === 'webkit') {
     await closeWebkitPopUp({ page });
   }
+});
+test.afterEach(async () => {
+  await deleteUser(userId);
 });
 
 test.describe('Dashboard_Legal', () => {

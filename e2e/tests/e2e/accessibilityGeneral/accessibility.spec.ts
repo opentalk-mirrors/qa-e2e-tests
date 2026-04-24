@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
-import { config } from '../../config';
-import { deleteMeetings } from '../../helper/Api';
+import { globalSetup } from '../../authHelpers';
+import { deleteUser } from '../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -14,8 +14,12 @@ const meetingTitle = 'test_meeting';
 const meetingRoomPassword = 'test1234';
 
 test.describe('Accessibility_General', { tag: '@late' }, () => {
+  let userId = '';
   test.afterEach(async () => {
-    await deleteMeetings(config.USER_NAME);
+    await deleteUser(userId);
+  });
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
   });
 
   test('TC_001_Dashboard', async ({ page, browserName }) => {
@@ -27,7 +31,6 @@ test.describe('Accessibility_General', { tag: '@late' }, () => {
       await closeWebkitPopUp({ page });
     }
 
-    await deleteMeetings(config.USER_NAME);
     const planMeetingPage = await homePage.planNewMeeting();
     await planMeetingPage.createNewMeeting(meetingTitle, meetingRoomPassword);
     await homePage.navigateToHomePage();
