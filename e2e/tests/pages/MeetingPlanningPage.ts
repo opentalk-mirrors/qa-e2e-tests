@@ -147,7 +147,10 @@ export class MeetingPlanningPage {
       recurrenceEndDateDay: this.page.getByRole('spinbutton', { name: 'Day' }),
       recurrenceEndDateYear: this.page.getByRole('spinbutton', { name: 'Year' }),
       recurrenceEndDateInputField: this.page.getByRole('group').locator('input'),
-      recurrenceInterval: this.page.locator('//div[@role="combobox"]').nth(1),
+      recurrenceInterval: this.page
+        .getByRole('dialog', { name: 'Custom meeting repetition' })
+        .getByRole('combobox')
+        .nth(0),
     };
   }
 
