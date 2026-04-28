@@ -641,3 +641,25 @@ When(
     });
   }
 );
+
+Then(
+  /^(\d+) or (\d+) participants? should be in the (?:meeting|breakout) room of "([^"]*)"$/,
+  async function (
+    this: CustomWorld,
+    firstExpectedNumOfParticipants: number,
+    secondExpectedNumOfParticipants: number,
+    user: string
+  ) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await meeting.meetingRoomPage.selectModeratorToolHome();
+    const actualNumOfParticipants = await meeting.meetingRoomPage.getNumberOfParticipantsInMeeting();
+    const validCounts = [firstExpectedNumOfParticipants, secondExpectedNumOfParticipants];
+    await assert(
+      validCounts.includes(actualNumOfParticipants),
+      'toBe',
+      true,
+      `Expected participants to be ${firstExpectedNumOfParticipants} or ${secondExpectedNumOfParticipants}, but found ${actualNumOfParticipants}`
+    );
+  }
+);

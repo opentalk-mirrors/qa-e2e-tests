@@ -48,14 +48,9 @@ export class NotificationPage {
   private async transitionBreakoutRoom(button: Locator): Promise<void> {
     const meetingRoomPage = new MeetingRoomPage({ page: this.page });
     const meetingRoomNameBefore = await meetingRoomPage.getMeetingRoomName();
-    const responsePromise = this.page.waitForResponse(
-      (response) =>
-        (response.url().endsWith('/start') || response.url().endsWith('/start_invited')) &&
-        response.status() === 200 &&
-        response.request().method() === 'POST'
-    );
+    const wsPromise = this.page.waitForEvent('websocket');
     await button.click();
-    await responsePromise;
+    await wsPromise;
     await button.waitFor({ state: 'detached' });
     let meetingRoomNameAfter: string;
     do {

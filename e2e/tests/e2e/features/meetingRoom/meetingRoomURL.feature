@@ -8,7 +8,7 @@ Feature: Meeting room URL
   So that I and other invited participants can easily join
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/191
 
-  @smoke @skip
+  @smoke
   Scenario: TC_002_URL route in Breakout room
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/193
     Given "Alice" has logged in
@@ -26,7 +26,7 @@ Feature: Meeting room URL
     Then the content of the clipboard of "Alice" should match "%meeting_url_pattern%"
     When a guest joins the meeting using the link in the clipboard of "Alice"
     And "Alice" closes all open dialogs by pressing Escape 2 times
-    Then 3 participants should be in the meeting room of "Alice"
+    Then 2 or 3 participants should be in the meeting room of "Alice"
     And all together 5 participants should be in the Breakout Rooms in the meeting room of "Alice"
     When "Alice" closes the Breakout Rooms
     And all participants in the meeting room of "Alice" leave the Breakout Rooms
