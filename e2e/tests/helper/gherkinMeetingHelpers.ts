@@ -4,21 +4,21 @@
 import { config } from '../config';
 import { CustomWorld, User } from '../e2e/cucumberWorld';
 import { Api } from './Api';
-import { JoinMeetingOptions, joinMeetingRoomAsGuest } from './meetingHelpers';
+import { JoinMeetingOptions, _joinMeetingRoomAsGuest } from './meetingHelpers';
 
-export async function joinGuestToMeeting(
+export async function joinMeetingRoomAsGuest(
   world: CustomWorld,
   moderator: string,
   guestLink: string,
   guestName: string,
   options?: JoinMeetingOptions
-) {
+): Promise<void> {
   const userApi = new Api({
     url: config.CONTROLLER_HOST,
     userName: guestName,
   });
   const context = await world.init();
-  const guestRoom = await joinMeetingRoomAsGuest(context, guestLink, guestName, options);
+  const guestRoom = await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
   world.setUsers({
     firstname: guestName,
     api: userApi,
@@ -28,7 +28,7 @@ export async function joinGuestToMeeting(
   world.addParticipantMeetingRooms(moderator, guestRoom);
 }
 
-export async function joinGuestsToMeeting(
+export async function joinMeetingRoomWithNGuests(
   world: CustomWorld,
   moderator: string,
   guestLink: string,
@@ -36,13 +36,13 @@ export async function joinGuestsToMeeting(
   numOfGuests: number,
   options?: JoinMeetingOptions,
   delay?: number
-) {
+): Promise<void> {
   for (let i = 1; i <= numOfGuests; i++) {
     const guestName = guestBasename + i;
     if (delay) {
       const meeting = world.getStartedMeeting(moderator).meeting;
       await meeting.meetingRoomPage.page.waitForTimeout(delay);
     }
-    await joinGuestToMeeting(world, moderator, guestLink, guestName, options);
+    await joinMeetingRoomAsGuest(world, moderator, guestLink, guestName, options);
   }
 }

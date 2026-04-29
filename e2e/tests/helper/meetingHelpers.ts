@@ -42,7 +42,8 @@ export const startAdhocMeetingAsModerator = async (
   return { meetingRoomPage, guestLink, meetingId };
 };
 
-export const joinMeetingRoomAsGuest = async (
+export const _joinMeetingRoomAsGuest = async (
+  // underscore = internal, don't use directly
   context: BrowserContext,
   guestLink: string,
   guestName: string,

@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
-import { joinGuestToMeeting } from '../../../helper/playwrightMeetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { CoffeeBreakDialogPage } from '../../../pages/MeetingRoom/CoffeeBreakDialogPage';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { CoffeeBreakPage } from '../../../pages/MeetingRoom/ModeratorTools/CoffeeBreakPage';
@@ -109,7 +109,7 @@ test.describe('Meeting room_Coffee break', async () => {
   }) => {
     // preconditions
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();

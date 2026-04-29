@@ -4,7 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
-import { joinGuestToMeeting } from '../../../helper/playwrightMeetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { closeWebkitPopUp } from '../../../helper/webkit';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { TimerPage } from '../../../pages/MeetingRoom/ModeratorTools/TimerPage';
@@ -24,7 +24,7 @@ test.describe('Meeting Room_Timer', () => {
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });
     }
-    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest1');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest1');
     guestMeetingRoomPage = participantMeetingRoomPages['guest1'];
     const meetingRoomTimerPage: TimerPage = new TimerPage({ page: meetingRoomPage.page });
     const guestMeetingRoomTimerPage: TimerPage = new TimerPage({ page: guestMeetingRoomPage.page });
@@ -377,7 +377,7 @@ test.describe('Meeting Room_Timer', () => {
       } while (i <= 3);
     }
 
-    const participantMeetingRoomPages = await joinGuestToMeeting(browser, guestLink, 'guest2');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest2');
     const secondGuestMeetingRoomPage = participantMeetingRoomPages['guest2'];
     const secondGuestMeetingRoomTimerPage = new TimerPage({ page: secondGuestMeetingRoomPage.page });
     await secondGuestMeetingRoomTimerPage.markMeAsDone();

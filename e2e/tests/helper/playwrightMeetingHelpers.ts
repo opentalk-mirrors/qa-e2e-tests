@@ -4,19 +4,19 @@
 import { Browser } from '@playwright/test';
 
 import { ParticipantMeetingRoomPages } from '../e2e/cucumberWorld';
-import { JoinMeetingOptions, joinMeetingRoomAsGuest } from './meetingHelpers';
+import { JoinMeetingOptions, _joinMeetingRoomAsGuest } from './meetingHelpers';
 
-export const joinGuestToMeeting = async (
+export const joinMeetingRoomAsGuest = async (
   browser: Browser,
   guestLink: string,
   guestName: string,
   options?: JoinMeetingOptions
 ): Promise<ParticipantMeetingRoomPages> => {
   const context = await browser.newContext();
-  return await joinMeetingRoomAsGuest(context, guestLink, guestName, options);
+  return await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
 };
 
-export const joinGuestsToMeeting = async (
+export const joinMeetingRoomWithNGuests = async (
   browser: Browser,
   guestLink: string,
   guestBaseName: string,
@@ -26,7 +26,7 @@ export const joinGuestsToMeeting = async (
   let guestMeetingRoomPages: ParticipantMeetingRoomPages = {};
   for (let i = 1; i <= numberOfGuests; i++) {
     const guestUserName = guestBaseName + i;
-    const guestMeetingRoomPage = await joinGuestToMeeting(browser, guestLink, guestUserName, options);
+    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(browser, guestLink, guestUserName, options);
     guestMeetingRoomPages = { ...guestMeetingRoomPage, ...guestMeetingRoomPages };
   }
   return guestMeetingRoomPages;

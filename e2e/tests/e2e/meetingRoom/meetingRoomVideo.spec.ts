@@ -7,7 +7,7 @@ import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
-import { joinGuestToMeeting } from '../../helper/playwrightMeetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../helper/playwrightMeetingHelpers';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 
 test.describe('Test if video is working', { tag: '@late' }, () => {
@@ -16,7 +16,7 @@ test.describe('Test if video is working', { tag: '@late' }, () => {
 
   test.beforeEach(async ({ page, browser, browserName }) => {
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPage = (await joinGuestToMeeting(browser, guestLink, 'guest1'))['guest1'];
+    guestMeetingRoomPage = (await joinMeetingRoomAsGuest(browser, guestLink, 'guest1'))['guest1'];
   });
 
   test('video of other participant is being played', async ({ browserName }) => {
