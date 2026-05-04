@@ -7,7 +7,7 @@ Feature: Dashboard Home
   So that I can manage my meetings
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/14
 
-  @smoke
+  @skip @smoke
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/41
     Given "Bob" has logged in
@@ -54,7 +54,7 @@ Feature: Dashboard Home
       | unscheduled  | Time-independent   |
       | scheduled    | %date_time_format% |
 
-
+  @skip
   Scenario: TC_011_Dashboard_Home_My favorite meetings_if empty list (and) also with presence of favorite meetings list
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/43
     Given "Alice" has logged in

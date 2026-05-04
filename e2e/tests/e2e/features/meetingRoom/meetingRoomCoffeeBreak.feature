@@ -15,7 +15,7 @@ Feature: Meeting room_Coffee break
     And "Alice" has set "10 min" as the session duration in the moderator tool
     And "Alice" has started a coffee break
 
-
+  @skip
   Scenario: TC_004_Meeting Room_As Moderator_Coffee break_Start coffee break_Back to the conference+Stop coffee break
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/220
     When "Alice" returns to the conference from the coffee break

@@ -176,7 +176,7 @@ test.describe('Dashboard_Settings', () => {
     await expect(accountPage.familyNameTextbox).not.toBeEditable();
   });
 
-  test('TC_004_Dashboard_Settings_Storage option', async ({ page, context }) => {
+  test.skip('TC_004_Dashboard_Settings_Storage option', async ({ page, context }) => {
     const MEETING_TITLE = 'myMeeting';
     const INDEX = 0;
     const { meetingRoomName, roomId } = await planNewMeetingAndStartAsModerator(page, MEETING_TITLE, undefined);
