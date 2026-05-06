@@ -8,12 +8,9 @@ import { config } from '../../config';
 import { OpenTalkEvent } from '../../helper/Api';
 import { assert } from '../../helper/assertion';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
+import { joinMeetingRoomWithNGuests, joinMeetingRoomAsGuest } from '../../helper/gherkinMeetingHelpers';
 import { substituteInLineCodes, validateDataTableHeaders } from '../../helper/helper';
-import {
-  joinMeetingRoomAsGuest,
-  joinMeetingRoomWithNGuests,
-  startAdhocMeetingAsModerator,
-} from '../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
@@ -21,7 +18,7 @@ import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
 import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
-import { CustomWorld, ParticipantMeetingRoomPages, User } from '../cucumberWorld';
+import { CustomWorld, User } from '../cucumberWorld';
 
 Given(
   '{string} has started an ad-hoc meeting and joined the meeting as moderator',
@@ -40,8 +37,7 @@ When(
   /^"([^"]*)" joins the meeting of "([^"]*)" as guest$/,
   async function (this: CustomWorld, guest: string, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
-    const context = this.getUser(username).context;
-    this.addParticipantMeetingRooms(username, await joinMeetingRoomAsGuest(context, meeting.guestLink, guest));
+    await joinMeetingRoomAsGuest(this, username, meeting.guestLink, guest);
   }
 );
 
@@ -49,9 +45,7 @@ When(
   '{int} guests join the meeting of {string}',
   async function (this: CustomWorld, numOfGuests: number, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
-    const context = this.getUser(username).context;
-    const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
-    this.addParticipantMeetingRooms(username, guestRooms);
+    await joinMeetingRoomWithNGuests(this, username, meeting.guestLink, 'guest', numOfGuests);
   }
 );
 
@@ -59,9 +53,7 @@ Given(
   /^(\d+) guests? ha(?:s|ve) joined the meeting of "(.+)"$/,
   async function (this: CustomWorld, numOfGuests: number, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const context = this.getUser(user).context;
-    const guestRooms = await joinMeetingRoomWithNGuests(context, meeting.guestLink, 'guest', numOfGuests);
-    this.addParticipantMeetingRooms(user, guestRooms);
+    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests);
   }
 );
 
@@ -69,15 +61,7 @@ Given(
   '{int} guests have joined the meeting of {string} with delay of {int} milliseconds',
   async function (this: CustomWorld, numOfGuests: number, user: string, delay: number) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const context = this.getUser(user).context;
-    const guestRooms: ParticipantMeetingRoomPages = {};
-    for (let i = 1; i <= numOfGuests; i++) {
-      await meeting.meetingRoomPage.page.waitForTimeout(delay);
-      const guestRoom = await joinMeetingRoomAsGuest(context, meeting.guestLink, `guest${i}`);
-      Object.assign(guestRooms, guestRoom);
-    }
-
-    this.addParticipantMeetingRooms(user, guestRooms);
+    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests, undefined, delay);
   }
 );
 
@@ -109,10 +93,8 @@ When('{string} copies the guest link into the clipboard', async function (this: 
 When(
   'a guest joins the meeting using the link in the clipboard of {string}',
   async function (this: CustomWorld, user: string) {
-    const context = this.getUser(user).context;
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
-    const guestRoom = await joinMeetingRoomAsGuest(context, clipboardContent, 'guest_joined_inside_breakout_room');
-    this.addParticipantMeetingRooms(user, guestRoom);
+    await joinMeetingRoomAsGuest(this, user, clipboardContent, 'guest_joined_inside_breakout_room');
   }
 );
 
@@ -318,11 +300,9 @@ Given(
     const api = this.getUser(moderator).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
     const guestLink = await api.getGuestLink(meeting.room.id);
-    const context = this.getUser(moderator).context;
-    const guestRooms = await joinMeetingRoomWithNGuests(context, guestLink, 'guest', numOfGuests, {
+    await joinMeetingRoomWithNGuests(this, moderator, guestLink, 'guest', numOfGuests, {
       audio: options.Audio === 'enabled',
     });
-    this.addParticipantMeetingRooms(moderator, guestRooms);
   }
 );
 

@@ -42,7 +42,8 @@ export const startAdhocMeetingAsModerator = async (
   return { meetingRoomPage, guestLink, meetingId };
 };
 
-export const joinMeetingRoomAsGuest = async (
+export const _joinMeetingRoomAsGuest = async (
+  // underscore = internal, don't use directly
   context: BrowserContext,
   guestLink: string,
   guestName: string,
@@ -53,13 +54,14 @@ export const joinMeetingRoomAsGuest = async (
   await newPage.goto(guestLink);
   await newPage.waitForLoadState('domcontentloaded');
 
+  const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
+  await expect(guestLobbyRoomPage.nameInputField).toBeVisible();
+
   // Close warning button in safari
   if (context.browser()?.browserType().name() === 'webkit') {
     await closeWebkitPopUp({ page: newPage });
   }
 
-  const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
-  await expect(guestLobbyRoomPage.nameInputField).toBeVisible();
   await guestLobbyRoomPage.nameInputField.fill(guestName);
   if (options?.audio) {
     await guestLobbyRoomPage.waitForMicrophoneButtonToBeEnabled();
@@ -74,27 +76,9 @@ export const joinMeetingRoomAsGuest = async (
   return { [guestName]: guestMeetingRoomPage };
 };
 
-class JoinMeetingOptions {
+export class JoinMeetingOptions {
   audio: boolean = false;
 }
-
-export const joinMeetingRoomWithNGuests = async (
-  context: BrowserContext,
-  guestLink: string,
-  guestBaseName: string,
-  numberOfGuests: number,
-  options?: JoinMeetingOptions
-): Promise<ParticipantMeetingRoomPages> => {
-  let guestMeetingRoomPages: ParticipantMeetingRoomPages = {};
-
-  for (let i = 1; i <= numberOfGuests; i++) {
-    const guestUserName = guestBaseName + i;
-    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(context, guestLink, guestUserName, options);
-    guestMeetingRoomPages = { ...guestMeetingRoomPage, ...guestMeetingRoomPages };
-  }
-
-  return guestMeetingRoomPages;
-};
 
 export const planNewMeetingAndStartAsModerator = async (
   page: Page,

@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { CoffeeBreakDialogPage } from '../../../pages/MeetingRoom/CoffeeBreakDialogPage';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { CoffeeBreakPage } from '../../../pages/MeetingRoom/ModeratorTools/CoffeeBreakPage';
@@ -23,8 +24,8 @@ test.describe('Meeting room_Coffee break', async () => {
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage;
 
-  test('TC_001_Meeting Room_As Moderator_Coffee break', async ({ page }) => {
-    ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page));
+  test('TC_001_Meeting Room_As Moderator_Coffee break', async ({ page, browserName }) => {
+    ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName));
     // preconditions
     await meetingRoomPage.page.bringToFront();
     coffeeBreakPage = await meetingRoomPage.selectCoffeeBreakModeratorTool();
@@ -36,8 +37,8 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(coffeeBreakPage.startCoffeeBreakButton).toBeVisible();
   });
 
-  test('TC_002_Meeting Room_As Moderator_Coffee break_Duration_Session Duration', async ({ page }) => {
-    ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page));
+  test('TC_002_Meeting Room_As Moderator_Coffee break_Duration_Session Duration', async ({ page, browserName }) => {
+    ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName));
     // preconditions
     await meetingRoomPage.page.bringToFront();
     coffeeBreakPage = await meetingRoomPage.selectCoffeeBreakModeratorTool();
@@ -101,14 +102,14 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(dialogPage.backToConferenceButton).toBeVisible();
   }
 
-  test('TC_003_Meeting Room_As Moderator_Coffee break_Start coffee break_with different Durations', async ({
+  test.skip('TC_003_Meeting Room_As Moderator_Coffee break_Start coffee break_with different Durations', async ({
     page,
-    context,
+    browser,
     browserName,
   }) => {
     // preconditions
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();

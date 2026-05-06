@@ -123,7 +123,10 @@ export class CustomWorld extends World {
     if (this.browser.browserType().name() === 'chromium') {
       permissions = ['clipboard-read', 'clipboard-write', 'camera', 'microphone'];
     }
-    const context = await this.browser.newContext({ ignoreHTTPSErrors: true });
+    const context = await this.browser.newContext({
+      ignoreHTTPSErrors: true,
+      locale: 'en-US',
+    });
     await context.grantPermissions(permissions);
     await context.tracing.start({
       screenshots: true,
@@ -147,7 +150,9 @@ export class CustomWorld extends World {
 
         await user.context.close();
         this.currentUser = undefined;
-        await api.deleteMeetings();
+        if (api.accessToken) {
+          await api.deleteMeetings();
+        }
       }
     }
   }

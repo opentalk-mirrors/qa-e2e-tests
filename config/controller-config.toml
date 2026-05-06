@@ -64,6 +64,7 @@ url = "postgres://postgres:password123@db:5432/opentalk"
 #addr = "192.0.2.0"
 #addr = "2001:0DB8::1337:DEAD:CAFE"
 addr = "0.0.0.0"
+service_api_keys = [{ "id" = "Controller", "secret" = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv" }]
 
 # The port to bind the HTTP Server to (defaults to 11311).
 # port = 8000
@@ -144,13 +145,51 @@ api_base_url = "https://accounts.opentalk.test/auth/admin/realms/OPENTALK"
 # Possible values are "disabled", "from_database" and "from_user_search_backend".
 users_find_behavior = "from_user_search_backend"
 
-# LiveKit WebRTC SFU
-[livekit]
-public_url = "https://livekit.opentalk.test"
-service_url = "https://livekit.opentalk.test"
+[roomserver]
+# Configure a roomserver for this controller.
+#
+# When enabled, the controllers built in signaling endpoints (`rooms/<room-id>/start` & `rooms/<room-id>/start_invited`)
+# are be disabled and roomserver signaling endpoints (`rooms/roomserver/<room-id>/start` &
+# `rooms/roomserver/<room-id>/start_invited`) have to be used instead.
+#
+# The deployed frontend client has to be compatible with the roomservers signaling implementation.
+#
+# The URL of the roomserver. Needs to be reachable by clients
+url = "https://roomserver.opentalk.test"
+# The roomservers API key
+api_key = { id = "Controller", secret = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv" }
 
+# Where the roomsserver stores assets
+[roomserver.asset_storage]
+secret = "secret2"
+type = "controller"
+url = "http://localhost:8000"
+
+#The Modules that are enabled in the roomserver
+[roomserver.modules.automod]
+[roomserver.modules.chat]
+[roomserver.modules.e2ee]
+[roomserver.modules.echo]
+[roomserver.modules.legal_vote]
+[roomserver.modules.livekit]
 api_key = "Controller"
 api_secret = "QKwu4cYmwisLOU2XyqrWOYEDnap6Nubv"
+public_url = "https://livekit.opentalk.test"
+service_url = "https://livekit.opentalk.test"
+[roomserver.modules.meeting_notes]
+ api_key = "secret"
+ base_url = "http://localhost:9001"
+[roomserver.modules.meeting_report]
+[roomserver.modules.moderation]
+[roomserver.modules.polls]
+[roomserver.modules.raise_hands]
+[roomserver.modules.shared_folder]
+[roomserver.modules.subroom_audio]
+[roomserver.modules.timer]
+[roomserver.modules.training_participation_report]
+[roomserver.modules.whiteboard]
+ api_key = "noop2zu3OovooXeeb8theesi"
+ base_url = "http://localhost:9666"
 
 [rabbit_mq]
 # The URL to use to connect to the rabbit mq broker
@@ -216,17 +255,6 @@ secret_key = "minioadmin"
 #[etcd]
 # A list urls of a etcd cluster
 #urls = ["localhost:2379"]
-
-# The etherpad configuration for the meeting-notes module
-[etherpad]
-url = "http://pad:9001"
-# Etherpads api key
-api_key = "pooWie1ooD8nie5eZophah6eih6Uo3ch"
-
-# Spacedeck configuration
-[spacedeck]
-url = "http://whiteboard:9666"
-api_key = "au0beiR3ki8ain0eihaiHae5ofei4soh"
 
 # Shared folder configuration
 [shared_folder]

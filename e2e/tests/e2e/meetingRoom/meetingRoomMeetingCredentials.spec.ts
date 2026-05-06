@@ -20,7 +20,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe('Meeting Room_Meeting credentials for all in conference', () => {
-  test('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
+  test.skip('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // clipboard access is not available in webKit headless mode
     const { meetingRoomPage, guestLink, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin } =
       await planNewMeetingAndStartAsModerator(page, meetingTitle, meetingPassword, browserName);

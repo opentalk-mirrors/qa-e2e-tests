@@ -20,7 +20,7 @@ export class PollPage {
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.pollHeading = this.page.getByRole('heading', { name: 'Poll' });
-    this.emptyPollMessage = this.page.locator('[data-sentry-component="renderPollOverview"]').getByRole('paragraph');
+    this.emptyPollMessage = this.page.getByRole('tabpanel', { name: 'Poll' }).getByRole('paragraph');
     this.createNewPollButton = this.page.getByRole('button', { name: 'Create new poll' });
     this.createNewPoll = {
       backButton: this.page.getByRole('button', { name: 'back' }),

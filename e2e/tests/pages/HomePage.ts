@@ -72,7 +72,7 @@ export class HomePage {
   async navigateToHomePage(): Promise<void> {
     const eventsTimeMinResponse = this.page.waitForResponse(async (response) => {
       if (
-        response.request().url().includes('/events?time_min') &&
+        response.request().url().includes('/v1/events/instances?time_min') &&
         response.request().method() === 'GET' &&
         response.status() === 200
       ) {
@@ -93,7 +93,7 @@ export class HomePage {
     });
     const eventsPerPageResponse = this.page.waitForResponse(
       (response) =>
-        response.request().url().includes('/events?per_page') &&
+        response.request().url().includes('/v1/events/instances?per_page') &&
         response.request().method() === 'GET' &&
         response.status() === 200
     );

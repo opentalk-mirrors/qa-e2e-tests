@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import test, { expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../helper/playwrightMeetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { TalkingStickPage } from '../../pages/MeetingRoom/ModeratorTools/TalkingStickPage';
@@ -16,7 +17,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
     await expect(burgerMenuPage.userManualMenuItem).toBeVisible();
-    await expect(burgerMenuPage.keyboardShortcutsMenuItem).toBeVisible();
+    await expect(burgerMenuPage.hotkeySettingsMenuItem).toBeVisible();
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const accessibilityPage = await burgerMenuPage.gotoAccessibility();
@@ -42,7 +43,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
     await expect(burgerMenuPage.userManualMenuItem).toBeVisible();
-    await expect(burgerMenuPage.keyboardShortcutsMenuItem).toBeVisible();
+    await expect(burgerMenuPage.hotkeySettingsMenuItem).toBeVisible();
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const userManualPage = await burgerMenuPage.gotoUserManual();
@@ -59,11 +60,11 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
   });
 
-  test('TC_003_Keyboard Shortcuts', async ({ page, context, browserName }) => {
+  test('TC_003_Keyboard Shortcuts', async ({ page, browser, browserName }) => {
     test.skip(browserName === 'webkit'); // Camera and Microphone permissions are not being granted in Safari in CI
 
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
     const guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     const viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
     await meetingRoomPage.page.bringToFront();
@@ -72,10 +73,10 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await expect(burgerMenuPage.burgerMenuDropdown).toBeVisible();
 
     await burgerMenuPage.openKeyboardShortcuts();
-    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.hotkeySettingsPopup).toBeVisible();
     await expect(meetingRoomPage.keyboardShortcuts.checkbox).toBeChecked();
     await meetingRoomPage.closePopupDialog();
-    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).not.toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.hotkeySettingsPopup).not.toBeVisible();
     await meetingRoomPage.pressEscape(); // escaping burgermenu because it does not allow to locate elements
 
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();
@@ -121,7 +122,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await meetingRoomPage.deactivateKeyboardShortcuts();
     await expect(meetingRoomPage.keyboardShortcuts.checkbox).not.toBeChecked();
     await meetingRoomPage.pressEscape();
-    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).not.toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.hotkeySettingsPopup).not.toBeVisible();
     await meetingRoomPage.pressEscape();
 
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();

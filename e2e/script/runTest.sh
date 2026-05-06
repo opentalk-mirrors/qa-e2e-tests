@@ -10,7 +10,7 @@ fi
 
 source e2e/.env;
 if [[ $TEST == "gherkin" ]]; then
-  tags_string="not @skip-on-$BROWSER"
+  tags_string="not @skip and not @skip-on-$BROWSER"
   if [[ $RUN_ONLY_SMOKE_TESTS == "true" ]]; then
     tags_string+=" and @smoke"
   fi

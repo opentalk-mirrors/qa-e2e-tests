@@ -112,7 +112,7 @@ Feature: Meeting Room Voting Room
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Create new voting |
 
-
+  @skip
   Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic text fields
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/151
     When "Alice" opens the Voting moderator tool

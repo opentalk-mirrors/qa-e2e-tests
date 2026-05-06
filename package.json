@@ -47,9 +47,9 @@
   },
   "dependencies": {
     "dotenv": "^16.5.0",
-    "fast-xml-parser": "^5.5.7",
+    "fast-xml-parser": "^5.7.0",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
-    "uuid": "^11.1.0"
+    "uuid": "^14.0.0"
   }
 }

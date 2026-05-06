@@ -3,22 +3,24 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
-import { joinMeetingRoomAsGuest, startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
+import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { LobbyRoomPage } from '../../../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { DebriefingPage } from '../../../pages/MeetingRoom/ModeratorTools/DebriefingPage';
 
-test.describe('Meeting Room_Debriefing', () => {
+test.describe.skip('Meeting Room_Debriefing', () => {
+  // skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/work_items/3288
   let meetingRoomPage: MeetingRoomPage,
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
     debriefingPage: DebriefingPage;
 
-  test.beforeEach(async ({ page, context, browserName }) => {
+  test.beforeEach(async ({ page, browser, browserName }) => {
     // skipped in webkit due to https://git.opentalk.dev/opentalk/qa/reports/-/issues/418
     test.skip(browserName === 'webkit');
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(context, guestLink, 'guest');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();

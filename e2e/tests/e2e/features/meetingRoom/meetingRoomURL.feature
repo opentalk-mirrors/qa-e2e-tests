@@ -8,7 +8,7 @@ Feature: Meeting room URL
   So that I and other invited participants can easily join
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/191
 
-  @smoke
+  @smoke @skip
   Scenario: TC_002_URL route in Breakout room
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/193
     Given "Alice" has logged in

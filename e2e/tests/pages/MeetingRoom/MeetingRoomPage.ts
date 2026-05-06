@@ -111,7 +111,7 @@ export class MeetingRoomPage {
   };
 
   keyboardShortcuts: {
-    keyboardShortcutsPopup: Locator;
+    hotkeySettingsPopup: Locator;
     checkbox: Locator;
   };
   private closePopupDialogButton: Locator;
@@ -200,7 +200,9 @@ export class MeetingRoomPage {
     this.chatHistoryDescription = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('paragraph');
     this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
     this.chatListItems = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('listitem');
-    this.noMessageMatchText = this.page.locator('//*[@data-sentry-component="NoSearchResult"]').locator('span');
+    this.noMessageMatchText = this.page
+      .getByRole('tabpanel', { name: 'Chat' })
+      .getByText('No messages matching the criteria');
     this.resetButton = this.page.getByRole('button', { name: 'Reset' });
     this.emojiPicker = this.page.getByRole('button', { name: 'open emoji picker' });
     this.chatTextField = this.page.getByPlaceholder('Type a message');
@@ -221,7 +223,7 @@ export class MeetingRoomPage {
     };
 
     this.keyboardShortcuts = {
-      keyboardShortcutsPopup: this.page.getByRole('dialog', { name: 'Hotkeys' }),
+      hotkeySettingsPopup: this.page.getByRole('dialog', { name: 'Hotkey Settings' }),
       checkbox: this.page.getByRole('switch', { name: 'Hotkeys' }),
     };
     this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });
