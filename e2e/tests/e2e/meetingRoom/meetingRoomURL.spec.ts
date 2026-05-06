@@ -17,7 +17,7 @@ test.beforeEach('delete existing meetings', async () => {
 });
 
 test.describe('Meeting room URL', async () => {
-  test.skip('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
+  test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
     const instanceUrl = new URL(config.INSTANCE_URL);
     homePage = new HomePage({ page });
