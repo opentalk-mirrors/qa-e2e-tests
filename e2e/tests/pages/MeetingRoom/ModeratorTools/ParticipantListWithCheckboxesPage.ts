@@ -10,10 +10,8 @@ export class ParticipantListWithCheckboxesPage {
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.participantList = this.page.locator('[data-sentry-component="SelectParticipantsItem"]');
-    this.participantListCheckboxes = this.page
-      .locator('[data-sentry-component="SelectParticipantsItem"]')
-      .getByRole('checkbox');
+    this.participantList = this.participantList = this.page.getByRole('list').getByRole('listitem');
+    this.participantListCheckboxes = this.participantList.getByRole('checkbox');
   }
 
   public async selectParticipantByIndexes(indexes: number[]): Promise<void> {
