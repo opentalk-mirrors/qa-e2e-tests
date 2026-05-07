@@ -232,7 +232,7 @@ export class MeetingRoomPage {
     this.coffeeBreakDialog = {
       coffeeBreakPopover: coffeeBreakPopover,
       coffeeBreakIcon: coffeeBreakPopover.locator('svg').nth(0),
-      durationLabel: coffeeBreakPopover.locator('[data-sentry-component="TimerDuration"] p').nth(0),
+      durationLabel: coffeeBreakPopover.locator('#tabpanel-tab-coffee-break p').first(),
       timerText: coffeeBreakPopover.getByTestId('timer-display'),
     };
   }

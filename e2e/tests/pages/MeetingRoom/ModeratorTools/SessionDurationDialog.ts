@@ -58,7 +58,7 @@ export class SessionDurationDialog {
     this.saveButton = this.page.getByRole('dialog').getByRole('button', { name: 'Save' });
     this.closeButton = this.page.getByRole('dialog').getByRole('button', { name: 'Close' });
     this.selectedDurationLocator = this.page.locator('div[role="button"][aria-selected="true"]');
-    this.durationLabel = this.page.locator('[data-sentry-component="TimerDuration"] p').nth(0);
+    this.durationLabel = this.page.locator('#tabpanel-tab-coffee-break p').first();
   }
 
   public async selectDuration(duration: string): Promise<void> {

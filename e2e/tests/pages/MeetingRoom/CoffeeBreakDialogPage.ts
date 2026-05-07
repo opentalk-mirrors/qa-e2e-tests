@@ -18,7 +18,7 @@ export class CoffeeBreakDialogPage {
     this.openTalkLogo = this.coffeeBreakDialog.locator('svg').first();
     this.coffeeBreakIcon = this.coffeeBreakDialog.locator('svg').nth(1);
     this.coffeeBreakText = this.page.getByRole('heading', { name: 'Coffee break! Time left:', exact: true });
-    this.timerText = this.page.locator('[data-sentry-element="TimerTypography"]');
+    this.timerText = this.page.getByTestId('timer-typography');
     this.backToConferenceButton = this.page.getByRole('button', { name: 'Back to the conference' });
   }
 

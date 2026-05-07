@@ -102,7 +102,7 @@ test.describe('Meeting room_Coffee break', async () => {
     await expect(dialogPage.backToConferenceButton).toBeVisible();
   }
 
-  test.skip('TC_003_Meeting Room_As Moderator_Coffee break_Start coffee break_with different Durations', async ({
+  test('TC_003_Meeting Room_As Moderator_Coffee break_Start coffee break_with different Durations', async ({
     page,
     browser,
     browserName,
