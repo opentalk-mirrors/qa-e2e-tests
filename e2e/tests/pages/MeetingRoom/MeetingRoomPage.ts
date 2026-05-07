@@ -134,9 +134,7 @@ export class MeetingRoomPage {
 
     this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
     this.waitingListButton = this.page.getByTestId('waiting-list-button');
-    this.waitingParticipantsIndicator = this.page
-      .locator('//*[@data-sentry-component="WaitingParticipantsPopover"]')
-      .locator('span');
+    this.waitingParticipantsIndicator = this.page.locator('header .MuiBadge-overlapRectangular');
     this.waitingParticipants = this.page.locator('//*[@data-sentry-element="ScrollableBox"]');
 
     this.participantWindowLocator = this.page.getByTestId('ParticipantWindow');
