@@ -14,7 +14,7 @@ const SMALL_NUMBER_OF_GUESTS = 2;
 let viewOptionsPage: ViewOptionsPage;
 
 test.describe('MeetingRoom - adjust participant view', () => {
-  test.skip('TC_001_VideoRoom_ParticipantViewSettings_List', async ({ page, browserName }) => {
+  test('TC_001_VideoRoom_ParticipantViewSettings_List', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -29,13 +29,17 @@ test.describe('MeetingRoom - adjust participant view', () => {
       'Join time',
       'Camera status',
       'Role',
+      '6 tiles',
+      '9 tiles',
+      '16 tiles',
+      '24 tiles',
     ]);
     for (const option of await viewOptionsPage.getOptionsList()) {
       await expect(option).toBeVisible();
     }
   });
 
-  test.skip('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
+  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -64,7 +68,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     expect(await viewOptionsPage.getPinnedParticipantNameInSpeakerView()).toBe(pinnedParticipant2);
   });
 
-  test.skip('TC_003_VideoRoom_ParticipantViewSettings_List_FullScreen', async ({ page, browser, browserName }) => {
+  test('TC_003_VideoRoom_ParticipantViewSettings_List_FullScreen', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -98,7 +102,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     );
   });
 
-  test.skip('TC_004_VideoRoom_ParticipantViewSettings_List_GridView', async ({ page, browser, browserName }) => {
+  test('TC_004_VideoRoom_ParticipantViewSettings_List_GridView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -121,7 +125,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test.skip('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, browser, browserName }) => {
+  test('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, browser, browserName }) => {
     test.skip(browserName === 'webkit');
     // in webkit one needs to give permission to turn camera on therefore skip webkit until solution for this is found
 
