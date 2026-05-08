@@ -135,7 +135,10 @@ export class MeetingRoomPage {
     this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
     this.waitingListButton = this.page.getByTestId('waiting-list-button');
     this.waitingParticipantsIndicator = this.page.locator('header .MuiBadge-overlapRectangular');
-    this.waitingParticipants = this.page.locator('//*[@data-sentry-element="ScrollableBox"]');
+    // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
+
+    this.waitingParticipants = this.page.locator('#waiting-list-popover');
+    // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
 
     this.participantWindowLocator = this.page.getByTestId('ParticipantWindow');
 
@@ -231,6 +234,8 @@ export class MeetingRoomPage {
       coffeeBreakPopover: coffeeBreakPopover,
       coffeeBreakIcon: coffeeBreakPopover.locator('svg').nth(0),
       durationLabel: coffeeBreakPopover.locator('#tabpanel-tab-coffee-break p').first(),
+      // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
+
       timerText: coffeeBreakPopover.getByTestId('timer-display'),
     };
   }
