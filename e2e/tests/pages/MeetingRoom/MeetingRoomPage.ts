@@ -111,7 +111,7 @@ export class MeetingRoomPage {
   };
 
   keyboardShortcuts: {
-    hotkeySettingsPopup: Locator;
+    shortcutSettingsPopup: Locator;
     checkbox: Locator;
   };
   private closePopupDialogButton: Locator;
@@ -223,8 +223,8 @@ export class MeetingRoomPage {
     };
 
     this.keyboardShortcuts = {
-      hotkeySettingsPopup: this.page.getByRole('dialog', { name: 'Hotkey Settings' }),
-      checkbox: this.page.getByRole('switch', { name: 'Hotkeys' }),
+      shortcutSettingsPopup: this.page.getByRole('dialog', { name: 'Shortcut Settings' }),
+      checkbox: this.page.getByRole('switch', { name: 'Activate shortcuts' }),
     };
     this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });
 
@@ -398,14 +398,12 @@ export class MeetingRoomPage {
   }
 
   async holdToSpeak() {
-    await this.page.keyboard.down('Control');
-    await this.page.keyboard.down('m');
+    await this.page.keyboard.down('Space');
     await this.page.waitForTimeout(config.SHORT_TIMEOUT);
   }
 
   async releaseHoldToSpeak() {
-    await this.page.keyboard.up('Control');
-    await this.page.keyboard.up('m');
+    await this.page.keyboard.up('Space');
     await this.page.waitForTimeout(config.SHORT_TIMEOUT);
   }
 
