@@ -167,11 +167,15 @@ export class PeopleOptionPage extends ModeratorToolsPage {
 
   public async revokePresenterRole(): Promise<void> {
     await this.revokePresenterRoleMenuItem.click();
-    await this.grantPresenterRoleMenuItem.waitFor({ state: 'visible' });
+    // added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
+    await this.page.keyboard.press('Escape');
+    // await this.grantPresenterRoleMenuItem.waitFor({ state: 'visible' });
   }
 
   public async grantPresenterRole(): Promise<void> {
     await this.grantPresenterRoleMenuItem.click();
-    await this.revokePresenterRoleMenuItem.waitFor({ state: 'visible' });
+    // added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
+    await this.page.keyboard.press('Escape');
+    // await this.revokePresenterRoleMenuItem.waitFor({ state: 'visible' });
   }
 }
