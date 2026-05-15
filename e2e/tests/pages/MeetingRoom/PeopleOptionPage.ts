@@ -10,8 +10,6 @@ export class PeopleOptionPage extends ModeratorToolsPage {
   public readonly page: Page;
   public readonly searchParticipantTextbox: Locator;
   public readonly sortByButton: Locator;
-  public readonly withoutGroupButton: Locator;
-  public readonly withoutGroupExpandButton: Locator;
   public readonly participantsList: Locator;
   public readonly participantName: Locator;
   public readonly participantTime: Locator;
@@ -32,8 +30,6 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     this.page = page;
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });
     this.sortByButton = this.page.getByRole('button', { name: 'Sort by' });
-    this.withoutGroupButton = this.page.getByRole('button', { name: 'without group' });
-    this.withoutGroupExpandButton = this.page.getByRole('button', { name: 'without group' }).locator('svg');
     this.participantsList = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list');
     this.participantName = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list').locator('p');
     this.participantTime = this.page.locator('//*[@data-sentry-element="ListItemText"]').locator('span');
@@ -109,10 +105,6 @@ export class PeopleOptionPage extends ModeratorToolsPage {
 
     await this.getSortOptionLocator(selectedOrder).click();
     await this.page.keyboard.press('Escape');
-  }
-
-  public async toggleWithoutGroup(): Promise<void> {
-    await this.withoutGroupButton.click();
   }
 
   public async isGuest(name: string): Promise<boolean> {

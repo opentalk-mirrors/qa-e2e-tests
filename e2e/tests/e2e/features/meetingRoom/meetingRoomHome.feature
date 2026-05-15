@@ -124,8 +124,7 @@ Feature: Meeting Room Home
     Then for "Alice" the chat overview should be displayed on the Meeting-Room-Page
     And the chat messages count for "Alice" should be 9 on the Meeting-Room-Page
 
-  @skip-on-webkit @skip
-  # skipped because of group filter switch is missing
+
   Scenario: TC_002_Meeting Room_As Moderator_Home_People option+search+sort+group
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/118
     Given 2 guests have joined the meeting of "Alice" with delay of 30000 milliseconds
@@ -135,7 +134,6 @@ Feature: Meeting Room Home
       | guest2 |
     And a "Search participant" "field" should be displayed in the open moderator tool for "Alice"
     And a "Sort by" "button" should be displayed in the open moderator tool for "Alice"
-    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
     And 4 participants should be displayed in the open moderator tool for "Alice"
     And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
     And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
@@ -191,29 +189,6 @@ Feature: Meeting Room Home
     Then for "Alice" the participants list should be displayed in "Ascending" order on the People-Option-Page
     When "Alice" presses the escape button twice on the Meeting-Room-Page
     Then for "Alice" order selection dropdown should not be displayed on the People-Option-Page
-    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
-
-    When "Alice" toggles "Group filter off" on the People-Option-Page
-    Then a "Group filter on" "switch" should be displayed in the open moderator tool for "Alice"
-    # labels are rendered based on config/opentalk-realm.json
-    # we currently have different labels from what is mentioned in the test case and this feature might be disabled in future
-    And for "Alice" the without group label with expand button should be displayed on the People-Option-Page
-    When "Alice" expands the 'without group' section on the People-Option-Page
-    Then for "Alice" these participants should be listed on the People-Option-Page:
-      | Bob Burton |
-      | guest1     |
-      | guest2     |
-    And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
-    And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
-
-    When "Alice" collapses the 'without group' section on the People-Option-Page
-    Then no participants should be listed for "Alice" on the People-Option-Page
-
-    When "Alice" toggles "Group filter on" on the People-Option-Page
-    And a "Group filter off" "switch" should be displayed in the open moderator tool for "Alice"
-    And 4 participants should be displayed in the open moderator tool for "Alice"
-    And for "Alice" the participants joined time should have the format "Joined HH:MM" on the People-Option-Page
-    And for "Alice" the audio status for each participant should be displayed on the People-Option-Page
 
   @skip
   # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/work_items/3288

@@ -30,7 +30,7 @@ export class ModeratorToolsPage {
     this.menuItem = this.page.getByRole('menuitem');
     this.dropdownOption = this.page.getByRole('option');
     this.listItem = this.tabPanel.getByRole('listitem');
-    this.participantNameSelector = this.listItem.locator('[data-sentry-element="ListItemText"] p');
+    this.participantNameSelector = this.listItem.locator('.MuiListItemText-multiline p');
     this.participantTimeSelector = this.listItem
       .getByRole('listitem')
       .locator('[data-sentry-element="ListItemText"] span');
