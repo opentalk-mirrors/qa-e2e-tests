@@ -201,6 +201,7 @@ Then(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
+    await meetingRoomPage.selectChatTab();
     const joinedDetails = await meetingRoomPage.getParticipantsDetails();
     const participants = dataTable.raw().map(([participant]) => participant);
     participants.forEach((participant, index) => {
@@ -571,5 +572,35 @@ Then(
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     const meetingRoomName = await meetingRoomPage.getMeetingRoomName();
     await assert(meetingRoomName, 'toContain', meetingTitle, `Expected ${meetingRoomName} to contain ${meetingTitle}`);
+  }
+);
+
+Then(
+  'for {string} {string} should be displayed on the tile view on the Meeting-Room-Page',
+  async function (this: CustomWorld, moderator: string, name: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    await assert(
+      meeting.meetingRoomPage.getParticipantTileLocatorByName(name),
+      'toBeVisible',
+      undefined,
+      `${name} participant tile is not visible`
+    );
+  }
+);
+
+Then(
+  /"([^"]*)" (should|should not) be allowed to share screen in the meeting room of "([^"]*)"/,
+  async function (this: CustomWorld, user: string, action: 'should' | 'should not', moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const isAllowed = await meeting.participantMeetingRoomPages[user].isScreenShareAllowed();
+    const shouldBeAllowed = action === 'should';
+    await assert(
+      isAllowed,
+      'toBe',
+      shouldBeAllowed,
+      `for ${user} screen share should ${shouldBeAllowed ? 'be' : 'not be'} allowed`
+    );
   }
 );

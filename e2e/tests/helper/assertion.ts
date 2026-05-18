@@ -5,9 +5,9 @@ import { expect, Locator } from '@playwright/test';
 
 type AssertionType = 'toBe' | 'toMatch' | 'toBeVisible' | 'toBeChecked' | 'toContain';
 export async function assert(
-  actual: string | number | Locator,
+  actual: string | number | Locator | boolean,
   assertionType: AssertionType,
-  expected?: string | number,
+  expected?: string | number | boolean,
   message?: string
 ) {
   try {

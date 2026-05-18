@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import assert from 'node:assert';
 
+import { assert } from '../../helper/assertion';
 import { isTimeAscending, isTimeDescending } from '../../helper/checkTimeOrderHelper';
 import { PeopleOptionPage } from '../../pages/MeetingRoom/PeopleOptionPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -136,7 +136,7 @@ Then(
           break;
         }
       }
-      assert(elementFound, `could not find the element '${expectedElement}'`);
+      await assert(elementFound, 'toBe', true, `could not find the element '${expectedElement}'`);
     }
   }
 );
@@ -232,9 +232,7 @@ When(
   /"([^"]*)" sends a direct message "([^"]*)" to "([^"]*)" on the Meeting-Room-Page/,
   async function (this: CustomWorld, user: string, message: string, to: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    await meeting.meetingRoomPage.selectPeopleOption();
-    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
     await peopleOptionPage.hoverParticipantsList(to);
     await peopleOptionPage.selectParticipantMenu(to);
     await peopleOptionPage.navigateToDirectMessage();
@@ -247,9 +245,7 @@ When(
   '{string} removes {string} from the meeting room',
   async function (this: CustomWorld, moderator: string, userToRemove: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    await meeting.meetingRoomPage.selectPeopleOption();
-    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
     await peopleOptionPage.selectParticipantMenu(userToRemove);
     await peopleOptionPage.removeParticipant();
   }
@@ -259,10 +255,66 @@ When(
   '{string} moves {string} to the waiting room from the meeting room',
   async function (this: CustomWorld, moderator: string, userToMove: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    await meeting.meetingRoomPage.selectPeopleOption();
-    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
     await peopleOptionPage.selectParticipantMenu(userToMove);
     await peopleOptionPage.moveParticipant();
+  }
+);
+
+When(
+  /"([^"]*)" (?:renames|tries to rename) "([^"]*)" to "([^"]*)" in the meeting room$/,
+  async function (this: CustomWorld, moderator: string, userToRename: string, newName: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    await peopleOptionPage.selectParticipantMenu(userToRename);
+    await peopleOptionPage.renameParticipant(newName);
+  }
+);
+
+Then(
+  'for {string} the rename error {string} should be displayed on the People-Option-Page',
+  async function (this: CustomWorld, user: string, errorMessage: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    const renameErrorText = await peopleOptionPage.getRenameErrorText();
+    await assert(renameErrorText, 'toBe', errorMessage, `Expected ${renameErrorText} to be ${errorMessage}`);
+  }
+);
+
+Then(
+  'for {string} {string} should be displayed in the participants list on the People-Option-Page',
+  async function (this: CustomWorld, user: string, name: string) {
+    const meeting = this.getStartedMeeting(user).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
+    await assert(
+      peopleOptionPage.getParticipantLocator(name),
+      'toBeVisible',
+      undefined,
+      `participant ${name} is not visible`
+    );
+  }
+);
+
+When(
+  /"([^"]*)" revokes presenter role from "([^"]*)" in the meeting room$/,
+  async function (this: CustomWorld, moderator: string, userToRevoke: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    await peopleOptionPage.selectParticipantMenu(userToRevoke);
+    await peopleOptionPage.revokePresenterRole();
+    await meeting.meetingRoomPage.pressEscape();
+  }
+);
+
+When(
+  /"([^"]*)" grants presenter role to "([^"]*)" in the meeting room$/,
+  async function (this: CustomWorld, moderator: string, userToGrant: string) {
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    await peopleOptionPage.selectParticipantMenu(userToGrant);
+    await peopleOptionPage.grantPresenterRole();
+    await meeting.meetingRoomPage.pressEscape();
   }
 );

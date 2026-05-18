@@ -269,3 +269,45 @@ Feature: Meeting Room Home
       You successfully accepted guest2 in the meeting
       """
     And "guest2" should be on the Meeting-Room-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
+
+
+  Scenario: Moderator can rename participants available in Participants list of People tab in the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    When "Alice" renames "guest2" to "guest2-new" in the meeting room
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      You changed the name of 'guest2' to 'guest2-new'.
+      """
+    And "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      Your display name was changed to 'guest2-new' by moderator Alice Hansen.
+      """
+    And for "Alice" "guest2-new" should be displayed in the participants list on the People-Option-Page
+    And for "Alice" "guest2-new" should be displayed on the tile view on the Meeting-Room-Page
+    And for "Alice" there should be these participants listed in the chat as having joined the room on the Meeting-Room-Page:
+      | Bob Burton |
+      | guest1     |
+      | guest2-new |
+    When "Alice" tries to rename "guest1" to "" in the meeting room
+    Then for "Alice" the rename error 'Error: "New name" is a required field' should be displayed on the People-Option-Page
+
+
+  Scenario: Moderator can revoke presenter role available in Participants list of People tab in the Meeting Room
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    Given 2 guests have joined the meeting of "Alice"
+    # added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
+    When "Alice" grants presenter role to "guest1" in the meeting room
+    Then "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      You got the presenter role
+      """
+    And "guest1" should be allowed to share screen in the meeting room of "Alice"
+    # screen share test needs to be done manually for now
+    # added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
+    When "Alice" revokes presenter role from "guest1" in the meeting room
+    Then "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      Your presenter role has been revoked
+      """
+    And "guest1" should not be allowed to share screen in the meeting room of "Alice"
