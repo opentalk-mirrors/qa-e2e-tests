@@ -25,7 +25,7 @@ Feature: Meeting Room Talking stick
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Start now |
 
-  @skip
+
   Scenario: TC_002_Meeting Room_As Moderator_Talking stick_Order selection field
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/196
     When "Alice" opens the Talking Stick moderator tool

@@ -31,10 +31,14 @@ export class ModeratorToolsPage {
     this.dropdownOption = this.page.getByRole('option');
     this.listItem = this.tabPanel.getByRole('listitem');
     this.participantNameSelector = this.listItem.locator('.MuiListItemText-multiline p');
-    this.participantTimeSelector = this.listItem
-      .getByRole('listitem')
-      .locator('[data-sentry-element="ListItemText"] span');
-    this.participantMessageSelector = this.listItem.locator('//*[@data-sentry-element="ContentTypography"]');
+    // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
+
+    this.participantTimeSelector = this.listItem.locator('.MuiListItemText-multiline span');
+    // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
+
+    this.participantMessageSelector = this.listItem.locator('.MuiTypography-alignRight span');
+    // The above locator is currently not reliable and should be changed after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
+
     this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
 
     this.sessionDurationDialog = new SessionDurationDialog({ page: this.page });
