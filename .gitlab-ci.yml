@@ -140,6 +140,8 @@ variables:
     - name: git.opentalk.dev:5050/opentalk/backend/services/roomserver:$ROOMSERVER_TAG
       pull_policy: if-not-present
       alias: roomserver
+      variables:
+        SSL_CERT_FILE: /tmp/certs/cert.crt
       entrypoint:
         - /bin/sh
         - -c
@@ -149,7 +151,14 @@ variables:
             echo "waiting for /builds/$CI_PROJECT_PATH/config/roomserver.toml";
             sleep 1;
           done;
-
+          until [ -f "/builds/$CI_PROJECT_PATH/certs/cert.crt" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/certs/cert.crt";
+            sleep 1;
+          done;
+          mkdir -p /tmp/certs;
+          cp /builds/$CI_PROJECT_PATH/certs/cert.crt /tmp/certs/;
+          cp /builds/$CI_PROJECT_PATH/certs/cert_key /tmp/certs/cert.key;
+          sleep 5;
           echo "Starting roomserver...";
           /opentalk-roomserver/opentalk-roomserver -c /builds/$CI_PROJECT_PATH/config/roomserver.toml
 
