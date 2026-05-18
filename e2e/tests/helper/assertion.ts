@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { expect, Locator } from '@playwright/test';
 
-type AssertionType = 'toBe' | 'toMatch' | 'toBeVisible' | 'toBeChecked' | 'toContain';
+type AssertionType = 'toBe' | 'toMatch' | 'toBeVisible' | 'toBeChecked' | 'not toBeChecked' | 'toContain';
 export async function assert(
   actual: string | number | Locator | boolean,
   assertionType: AssertionType,
@@ -26,6 +26,9 @@ export async function assert(
         break;
       case 'toBeChecked':
         await expect(actual as Locator, message).toBeChecked();
+        break;
+      case 'not toBeChecked':
+        await expect(actual as Locator, message).not.toBeChecked();
         break;
       case 'toContain':
         expect(actual as string, message).toContain(expected);
