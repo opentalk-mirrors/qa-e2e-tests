@@ -14,7 +14,7 @@ export class BurgerMenuPage {
   public readonly burgerMenuDropdown: Locator;
   public readonly accessibilityMenuItem: Locator;
   public readonly userManualMenuItem: Locator;
-  public readonly hotkeySettingsMenuItem: Locator;
+  public readonly shortcutSettingsMenuItem: Locator;
   public readonly reportABugMenuItem: Locator;
 
   constructor({ page }: { page: Page }) {
@@ -23,7 +23,7 @@ export class BurgerMenuPage {
     this.burgerMenuDropdown = this.page.getByRole('menu', { name: 'My meeting' });
     this.accessibilityMenuItem = this.page.getByRole('menuitem', { name: 'Accessibility Open in new tab' });
     this.userManualMenuItem = this.page.getByRole('menuitem', { name: 'User manual Open in new tab' });
-    this.hotkeySettingsMenuItem = this.page.getByRole('menuitem', { name: 'Hotkey Settings' });
+    this.shortcutSettingsMenuItem = this.page.getByRole('menuitem', { name: 'Shortcut Settings' });
     this.reportABugMenuItem = this.page.getByRole('menuitem', { name: 'Report a bug' });
   }
 
@@ -36,11 +36,13 @@ export class BurgerMenuPage {
   public async gotoUserManual(): Promise<Page> {
     const pagePromise = this.context.waitForEvent('page');
     await this.userManualMenuItem.click();
-    return await pagePromise;
+    const page = await pagePromise;
+    await page.waitForLoadState('domcontentloaded');
+    return page;
   }
 
   public async openKeyboardShortcuts() {
-    await this.hotkeySettingsMenuItem.click();
+    await this.shortcutSettingsMenuItem.click();
   }
 
   public async openReportABug(): Promise<GlitchTipPage> {
