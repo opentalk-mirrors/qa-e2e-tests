@@ -160,20 +160,14 @@ Then(
     switch (sortOption) {
       case 'Ascending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
-        const selfUser = participantsNames.find((name) => name.includes('(You)'));
-        const others = participantsNames.filter((name) => !name.includes('(You)'));
-        others.sort((a, b) => a.localeCompare(b));
-        const expectedOrder = selfUser ? [selfUser, ...others] : others;
+        const expectedOrder = [...participantsNames].sort((a, b) => a.localeCompare(b));
         expect(participantsNames).toEqual(expectedOrder);
         break;
       }
 
       case 'Descending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
-        const selfUser = participantsNames.find((name) => name.includes('(You)'));
-        const others = participantsNames.filter((name) => !name.includes('(You)'));
-        others.sort((a, b) => b.localeCompare(a));
-        const expectedOrder = selfUser ? [selfUser, ...others] : others;
+        const expectedOrder = [...participantsNames].sort((a, b) => b.localeCompare(a));
         expect(participantsNames).toEqual(expectedOrder);
         break;
       }
@@ -219,37 +213,6 @@ Then(
   }
 );
 
-When(
-  /"([^"]*)" toggles "([^"]*)" on the People-Option-Page/,
-  async function (this: CustomWorld, user: string, switchName: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await peopleOptionPage.toggleSwitch(switchName);
-  }
-);
-
-Then(
-  'for {string} the without group label with expand button should be displayed on the People-Option-Page',
-  async function (this: CustomWorld, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.withoutGroupButton).toBeVisible();
-    await expect(peopleOptionPage.withoutGroupExpandButton).toBeVisible();
-  }
-);
-
-When(
-  /"([^"]*)" (?:expands|collapses) the 'without group' section on the People-Option-Page/,
-  async function (this: CustomWorld, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await peopleOptionPage.toggleWithoutGroup();
-  }
-);
-
 Then(
   /for "([^"]*)" these participants should be listed on the People-Option-Page:/,
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
@@ -262,16 +225,6 @@ Then(
     for (let i = 0; i < participants.length; i++) {
       expect(participantsName[i]).toContain(participants[i]);
     }
-  }
-);
-
-Then(
-  'no participants should be listed for {string} on the People-Option-Page',
-  async function (this: CustomWorld, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getTotalParticipantsNumber()).toBe(0);
   }
 );
 
