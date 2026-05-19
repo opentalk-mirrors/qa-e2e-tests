@@ -16,7 +16,7 @@
           [
             "EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
             "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose",
-            "auto-close","auto close", "min", "sub-heading", "Votings", "allowAbstaining", "votingType"
+            "auto-close","auto close", "min", "sub-heading", "Votings", "allowAbstaining"
           ],
           {
             "ExpandMinimum": false,

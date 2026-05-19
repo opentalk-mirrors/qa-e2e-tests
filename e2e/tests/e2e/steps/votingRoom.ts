@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
@@ -39,20 +40,30 @@ Then(
   '{string} should be switched {string} in the Create Voting moderator tool for {string}',
   async function (
     this: CustomWorld,
-    button: 'allow abstaining toggle' | 'auto close toggle',
+    button: 'allow abstaining toggle' | 'auto close toggle' | 'pseudonymous toggle' | 'live toggle',
     status: 'ON' | 'OFF',
     user: string
   ) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    if (button === 'allow abstaining toggle' && status === 'ON') {
-      await expect(votingRoomPage.createNewVoting.allowAbstainingToggleButton).toBeChecked();
-    } else if (button === 'auto close toggle' && status === 'OFF') {
-      await expect(votingRoomPage.createNewVoting.autoCloseToggleButton).not.toBeChecked();
-    } else if (button === 'auto close toggle' && status === 'ON') {
-      await expect(votingRoomPage.createNewVoting.autoCloseToggleButton).toBeChecked();
-    } else if (button === 'allow abstaining toggle' && status === 'OFF') {
-      await expect(votingRoomPage.createNewVoting.allowAbstainingToggleButton).not.toBeChecked();
+
+    const toggleMap: Record<string, Locator> = {
+      'allow abstaining toggle': votingRoomPage.createNewVoting.allowAbstainingToggleButton,
+      'auto close toggle': votingRoomPage.createNewVoting.autoCloseToggleButton,
+      'pseudonymous toggle': votingRoomPage.createNewVoting.pseudonymousToggleButton,
+      'live toggle': votingRoomPage.createNewVoting.liveToggleButton,
+    };
+
+    const toggle = toggleMap[button];
+
+    if (!toggle) {
+      throw new Error(`Unknown toggle: ${button}`);
+    }
+
+    if (status === 'ON') {
+      await assert(toggle, 'toBeChecked', undefined, `${button} should be ON`);
+    } else {
+      await assert(toggle, 'not toBeChecked', undefined, `${button} should be OFF`);
     }
   }
 );
@@ -75,38 +86,11 @@ Then(
   }
 );
 
-Then(
-  '{string} should be selected as voting type in the Create Voting moderator tool for {string}',
-  async function (this: CustomWorld, votingType: string, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.createNewVoting.votingTypeDropdownInput).toHaveText(votingType);
-  }
-);
-
 When('{string} exits the Create Voting moderator tool', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;
   votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
   await votingRoomPage.exitVotingRoomCreation();
 });
-
-When(
-  '{string} opens the voting type dropdown in the Create Voting moderator tool',
-  async function (this: CustomWorld, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await votingRoomPage.openVotingTypeDropdown();
-  }
-);
-
-Then(
-  'the voting type dropdown should not be displayed in the Create Voting moderator tool for {string}',
-  async function (this: CustomWorld, user: string) {
-    const meeting = this.getStartedMeeting(user).meeting;
-    votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.createNewVoting.votingTypeDropdown).not.toBeVisible();
-  }
-);
 
 When('{string} saves the voting in the Create Voting moderator tool', async function (this: CustomWorld, user: string) {
   const meeting = this.getStartedMeeting(user).meeting;

@@ -12,9 +12,8 @@ Feature: Meeting Room Voting Room
     Given "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
 
-  @skip-on-chromium @skip-on-firefox @skip-on-webkit
+
   Scenario: Meeting Room As Moderator Voting_Overview+Duration+Back button
-    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/111
     When "Alice" opens the Voting moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Voting"
@@ -28,6 +27,8 @@ Feature: Meeting Room Voting Room
     When "Alice" starts to create a new vote in the Voting moderator tool
     Then the "sub-heading" in the open moderator tool for "Alice" should be "Create Voting"
     And the duration field in the open moderator tool for "Alice" should be set to "1 min"
+    And "pseudonymous toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
+    And "live toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
     And "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
     And "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
     When "Alice" hovers the "auto close toggle" in the Create Voting moderator tool
@@ -35,15 +36,14 @@ Feature: Meeting Room Voting Room
       """
       Activate or deactivate automatic exit once all votes have been cast
       """
-    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
     And these fields should be displayed in the open moderator tool for "Alice":
       | Title    |
       | Subtitle |
       | Topic    |
     And these "buttons" should be displayed in the open moderator tool for "Alice":
-      | Back     |
-      | Save     |
-      | Continue |
+      | Back             |
+      | Save As Template |
+      | Continue         |
 
     When "Alice" opens the session duration dialog in the moderator tool
     Then the heading in the session duration dialog should be "Session Duration" in the open moderator tool for "Alice"
@@ -112,7 +112,7 @@ Feature: Meeting Room Voting Room
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Create new voting |
 
-  @skip
+
   Scenario: Meeting Room As Moderator Voting Create new voting allow abstaining, auto close toggle buttons, voting type dropdown, Title+Subtitle+Topic text fields
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/151
     When "Alice" opens the Voting moderator tool
@@ -133,28 +133,6 @@ Feature: Meeting Room Voting Room
 
     When "Alice" toggles "autoClose" in the open moderator tool
     Then "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
-    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
-
-    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
-    Then these "options" should be displayed in the open moderator tool for "Alice":
-      | Roll Call            |
-      | Roll Call - by name  |
-      | Hidden Vote          |
-
-    When "Alice" selects "Roll Call" option in the open moderator tool
-    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
-    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
-
-    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
-    And "Alice" selects "Roll Call - by name" option in the open moderator tool
-    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
-    And "Roll Call - by name" should be selected as voting type in the Create Voting moderator tool for "Alice"
-
-    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
-    And "Alice" selects "Hidden Vote" option in the open moderator tool
-    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
-    And "Hidden Vote" should be selected as voting type in the Create Voting moderator tool for "Alice"
-
     When "Alice" selects the "Title" field in the open moderator tool
     Then the "Title" field with placeholder text "New vote" should be displayed in the open moderator tool for "Alice"
 
@@ -173,9 +151,8 @@ Feature: Meeting Room Voting Room
     When "Alice" types text "Dummy Topic" in the "Topic" field in the open moderator tool
     Then the text "Dummy Topic" should be displayed in the "Topic" field in the open moderator tool for "Alice"
 
-  @skip-on-chromium @skip-on-firefox @skip-on-webkit
+
   Scenario: Meeting Room_As Moderator_Voting_Create new voting_Save button
-    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     #https://git.opentalk.dev/opentalk/qa/reports/-/issues/156
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in
@@ -190,15 +167,6 @@ Feature: Meeting Room Voting Room
 
     And "allow abstaining toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
     And "auto close toggle" should be switched "OFF" in the Create Voting moderator tool for "Alice"
-
-    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
-    Then these "options" should be displayed in the open moderator tool for "Alice":
-      | Roll Call            |
-      | Roll Call - by name  |
-      | Hidden Vote          |
-    When "Alice" selects "Roll Call" option in the open moderator tool
-    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
-    And "Roll Call" should be selected as voting type in the Create Voting moderator tool for "Alice"
 
     When "Alice" selects the "Title" field in the open moderator tool
     And "Alice" types text "Dummy Title" in the "Title" field in the open moderator tool
@@ -238,9 +206,10 @@ Feature: Meeting Room Voting Room
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value              |
       | duration        | 1 min              |
+      | pseudonymous    | false              |
+      | live            | true               |
       | allowAbstaining | true               |
       | autoClose       | false              |
-      | votingType      | Roll Call          |
       | title           | Team Outing Vote   |
       | subtitle        | Annual Team Event  |
       | topic           | HR                 |
@@ -248,12 +217,11 @@ Feature: Meeting Room Voting Room
       | Back |
     And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
-      | Save     |
-      | Continue |
+      | Save As Template |
+      | Continue         |
 
-  @skip-on-chromium @skip-on-firefox @skip-on-webkit
+
   Scenario: Meeting Room_As Moderator_Voting_Update voting
-    # skipped because of unfinished work on https://git.opentalk.dev/opentalk/product/tickets/-/issues/1
     #https://git.opentalk.dev/opentalk/qa/reports/-/work_items/282
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in
@@ -278,9 +246,10 @@ Feature: Meeting Room Voting Room
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value              |
       | duration        | 1 min              |
+      | pseudonymous    | false              |
+      | live            | true               |
       | allowAbstaining | true               |
       | autoClose       | false              |
-      | votingType      | Roll Call          |
       | title           | Team Outing Vote   |
       | subtitle        | Annual Team Event  |
       | topic           | HR                 |
@@ -288,8 +257,8 @@ Feature: Meeting Room Voting Room
       | Back |
     And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
-      | Save     |
-      | Continue |
+      | Save As Template |
+      | Continue         |
 
     When "Alice" opens the session duration dialog in the moderator tool
     And "Alice" selects "2 min" duration in the duration dialog in the moderator tool
@@ -301,11 +270,6 @@ Feature: Meeting Room Voting Room
 
     When "Alice" toggles "autoClose" in the open moderator tool
     Then "auto close toggle" should be switched "ON" in the Create Voting moderator tool for "Alice"
-
-    When "Alice" opens the voting type dropdown in the Create Voting moderator tool
-    And "Alice" selects "Roll Call - by name" option in the open moderator tool
-    Then the voting type dropdown should not be displayed in the Create Voting moderator tool for "Alice"
-    And "Roll Call - by name" should be selected as voting type in the Create Voting moderator tool for "Alice"
 
     When "Alice" selects the "Title" field in the open moderator tool
     And "Alice" types text "Dummy Title" in the "Title" field in the open moderator tool
@@ -339,9 +303,10 @@ Feature: Meeting Room Voting Room
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value               |
       | duration        | 2 min               |
+      | pseudonymous    | false              |
+      | live            | true               |
       | allowAbstaining | false               |
       | autoClose       | true                |
-      | votingType      | Roll Call - by name |
       | title           | Dummy Title         |
       | subtitle        | Dummy Subtitle      |
       | topic           | Dummy Topic         |
@@ -349,5 +314,5 @@ Feature: Meeting Room Voting Room
       | Back |
     And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
-      | Save     |
-      | Continue |
+      | Save As Template |
+      | Continue      |

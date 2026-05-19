@@ -119,10 +119,6 @@ export class ModeratorToolsPage {
     }
   }
 
-  public async selectDropdownOption(votingType: string): Promise<void> {
-    await this.getDropdownOptionByName(votingType).click();
-  }
-
   public async getSessionDuration(): Promise<string> {
     await this.durationButton.waitFor({ state: 'visible' });
     const duration = await this.durationButton.innerText();

@@ -20,8 +20,8 @@ export class VotingRoomPage {
     readonly allowAbstainingToggleButton: Locator;
     readonly autoCloseToggleButtonTooltipDescription: Locator;
     readonly autoCloseToggleButton: Locator;
-    readonly votingTypeDropdownInput: Locator;
-    readonly votingTypeDropdown: Locator;
+    readonly pseudonymousToggleButton: Locator;
+    readonly liveToggleButton: Locator;
     readonly titleField: Locator;
     readonly subtitleField: Locator;
     readonly topicField: Locator;
@@ -34,18 +34,18 @@ export class VotingRoomPage {
       .getByRole('paragraph')
       .getByText('There are no votes for this conference at the moment.', { exact: true });
     this.createNewVotingButton = this.page.getByRole('button', { name: 'Create new voting' });
-    this.saveButton = this.page.getByRole('button', { name: 'Save', exact: true });
+    this.saveButton = this.page.getByRole('button', { name: 'Save As Template', exact: true });
 
     this.createNewVoting = {
       backButton: this.page.getByRole('button', { name: 'back' }),
       createVotingTitle: this.page.getByText('Create Voting', { exact: true }),
-      allowAbstainingToggleButton: this.page.locator('//input[@name="enableAbstain"]'),
+      allowAbstainingToggleButton: this.page.getByRole('switch', { name: 'Allow Abstaining' }),
       autoCloseToggleButtonTooltipDescription: this.page
         .getByRole('tooltip')
         .getByText('Activate or deactivate automatic exit once all votes have been cast', { exact: true }),
       autoCloseToggleButton: this.page.locator('//input[@name="autoClose"]'),
-      votingTypeDropdownInput: this.page.getByRole('combobox'),
-      votingTypeDropdown: this.page.getByRole('listbox'),
+      pseudonymousToggleButton: this.page.getByRole('switch', { name: 'Pseudonymous' }),
+      liveToggleButton: this.page.getByRole('switch', { name: 'Live' }),
       titleField: this.page.getByRole('textbox', { name: 'Title', exact: true }),
       subtitleField: this.page.getByRole('textbox', { name: 'Subtitle', exact: true }),
       topicField: this.page.getByRole('textbox', { name: 'Topic', exact: true }),
@@ -68,10 +68,6 @@ export class VotingRoomPage {
     await this.createNewVoting.autoCloseToggleButton.hover();
     const autoCloseToggleButtonTooltip = this.createNewVoting.autoCloseToggleButtonTooltipDescription;
     await autoCloseToggleButtonTooltip.waitFor({ state: 'visible' });
-  }
-
-  public async openVotingTypeDropdown(): Promise<void> {
-    await this.createNewVoting.votingTypeDropdownInput.click();
   }
 
   public async save(): Promise<void> {
@@ -115,10 +111,23 @@ export class VotingRoomPage {
     await this.savedVotingItems.last().click();
   }
 
-  public async getVotingFormValues() {
+  public async getVotingFormValues(): Promise<{
+    duration: string;
+    live: boolean;
+    pseudonymous: boolean;
+    allowAbstaining: boolean;
+    autoClose: boolean;
+    title: string;
+    subtitle: string;
+    topic: string;
+  }> {
     const moderatorRoomPage = new ModeratorToolsPage({ page: this.page });
 
     const duration = await moderatorRoomPage.getSessionDuration();
+
+    const live = await this.createNewVoting.liveToggleButton.isChecked();
+
+    const pseudonymous = await this.createNewVoting.pseudonymousToggleButton.isChecked();
 
     const allowAbstaining = await this.createNewVoting.allowAbstainingToggleButton.isChecked();
 
@@ -126,9 +135,10 @@ export class VotingRoomPage {
 
     return {
       duration,
+      live,
+      pseudonymous,
       allowAbstaining,
       autoClose,
-      votingType: (await this.createNewVoting.votingTypeDropdownInput.innerText()).trim(),
       title: await this.getTitleInputValue(),
       subtitle: await this.getSubtitleInputValue(),
       topic: await this.getTopicInputValue(),
