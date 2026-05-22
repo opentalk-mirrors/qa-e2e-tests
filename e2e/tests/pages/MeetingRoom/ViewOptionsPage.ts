@@ -174,6 +174,7 @@ export class ViewOptionsPage {
       .getByTestId(this.selectors.speakerViewContainer)
       .getByTestId(this.selectors.participantWindow)
       .first();
+    console.log('participantWindowwwwwwwwwwwwwwwwwwwwwwww: ', participantWindow);
     return await this.getNameTileText(participantWindow);
   }
 
@@ -201,6 +202,7 @@ export class ViewOptionsPage {
     if (await nameTile.isVisible()) {
       nameTileText = await nameTile.innerText();
     }
+    console.log('nameTileTexttttttttttttttttttt: ', nameTileText);
     return nameTileText;
   }
 

@@ -29,6 +29,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // when opening grid view options besides the meeting room name
     await viewOptionsPage.displayViewOptionsMenu();
     await expect(viewOptionsPage.viewGridAndSortingPopup).toBeVisible();
+    await expect(viewOptionsPage.viewGridAndSortingPopup).toBeVisible();
 
     expect(await viewOptionsPage.getViewOptionsListText()).toEqual(['Grid', 'Speaker', 'Fullscreen']);
     for (const option of await viewOptionsPage.getViewOptionsList()) {
