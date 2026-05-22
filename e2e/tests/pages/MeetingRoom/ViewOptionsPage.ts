@@ -7,16 +7,20 @@ export class ViewOptionsPage {
   private readonly page: Page;
 
   public readonly viewOptionsButton: Locator;
-  public readonly viewAndSortingPopupMenu: Locator;
+  public readonly viewGridAndSortingPopup: Locator;
   public readonly gridViewOption: Locator;
   public readonly speakerViewOption: Locator;
   public readonly fullScreenViewOption: Locator;
   public readonly fullScreenView: Locator;
   private readonly closeFullScreenButton: Locator;
+  public joinTimeFirstSortingOption: Locator;
   public activatedCameraFirstSortingOption: Locator;
   public moderatorsFirstSortingOption: Locator;
   public readonly gridViewParticipantWindow: Locator;
-  private viewAndSortingPopupMenuItems: Locator;
+  private readonly speakerViewContainer: Locator;
+  private readonly viewOptions: Locator;
+  private readonly gridSizeOptions: Locator;
+  private readonly sortingDropdown: Locator;
 
   public readonly selectors = {
     gridViewContainer: 'grid-container',
@@ -33,21 +37,27 @@ export class ViewOptionsPage {
   constructor({ page }: { page: Page }) {
     this.page = page;
 
-    this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
-    this.viewAndSortingPopupMenu = this.page.getByRole('menu', { name: 'Select view' });
-    this.viewAndSortingPopupMenuItems = this.viewAndSortingPopupMenu.getByRole('menuitemradio');
-    this.gridViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Grid-View' });
-    this.speakerViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Speaker-View' });
-    this.fullScreenViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Fullscreen' });
+    this.viewOptionsButton = this.page.getByRole('button', { name: 'Customize view' });
+    this.viewGridAndSortingPopup = this.page.getByRole('dialog', { name: 'Customize view' });
+    this.viewOptions = this.page.getByRole('group', { name: 'View' });
+    this.gridSizeOptions = this.page.getByRole('group', { name: 'Grid size' });
+    this.sortingDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
+    this.gridViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Grid' });
+    this.speakerViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Speaker' });
+    this.fullScreenViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Fullscreen' });
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
-    this.activatedCameraFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
+    this.joinTimeFirstSortingOption = this.viewGridAndSortingPopup.getByRole('option', {
+      name: 'Join time',
+    });
+    this.activatedCameraFirstSortingOption = this.viewGridAndSortingPopup.getByRole('option', {
       name: 'Camera status',
     });
-    this.moderatorsFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
+    this.moderatorsFirstSortingOption = this.sortingDropdown.getByRole('option', {
       name: 'Role',
     });
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
+    this.speakerViewContainer = this.page.getByTestId(this.selectors.speakerViewContainer);
 
     this.videoPreviewName = this.page
       .getByRole('complementary', { name: 'Tools' })
@@ -57,20 +67,32 @@ export class ViewOptionsPage {
   public async displayViewOptionsMenu(): Promise<void> {
     await this.viewOptionsButton.waitFor();
     await this.viewOptionsButton.click();
-    await this.viewAndSortingPopupMenu.waitFor();
-    await this.viewAndSortingPopupMenu.isVisible();
+    await this.viewGridAndSortingPopup.waitFor();
+    await this.viewGridAndSortingPopup.isVisible();
   }
 
-  public async getOptionsListText(): Promise<string[]> {
+  public async getViewOptionsListText(): Promise<string[]> {
     const optionsText: string[] = [];
-    for (const item of await this.getOptionsList()) {
+    for (const item of await this.getViewOptionsList()) {
       optionsText.push(await item.innerText());
     }
     return optionsText;
   }
 
-  public async getOptionsList(): Promise<Array<Locator>> {
-    return await this.viewAndSortingPopupMenuItems.all();
+  public async getViewOptionsList(): Promise<Array<Locator>> {
+    return await this.viewOptions.getByRole('button').all();
+  }
+
+  public async getGridSizeOptionsListText(): Promise<string[]> {
+    const optionsText: string[] = [];
+    for (const item of await this.getGridSizeOptionsList()) {
+      optionsText.push(await item.innerText());
+    }
+    return optionsText;
+  }
+
+  public async getGridSizeOptionsList(): Promise<Array<Locator>> {
+    return await this.gridSizeOptions.getByRole('button').all();
   }
 
   public async selectGridViewOption(): Promise<void> {
@@ -99,6 +121,11 @@ export class ViewOptionsPage {
   public async selectModeratorsFirstSortingOption(): Promise<void> {
     await this.moderatorsFirstSortingOption.waitFor();
     await this.moderatorsFirstSortingOption.click();
+  }
+
+  public async selectJoinTimeFirstSortingOption(): Promise<void> {
+    await this.joinTimeFirstSortingOption.waitFor();
+    await this.joinTimeFirstSortingOption.click();
   }
 
   public async isFullScreen(): Promise<boolean> {
