@@ -6,6 +6,7 @@ import { expect } from '@playwright/test';
 import assert from 'node:assert';
 
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
+import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -159,7 +160,12 @@ When(
   async function (this: CustomWorld, user: string, switchName: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await moderatorToolsPage.toggleSwitch(switchName);
+    const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
+    if (switchName === 'autoClose') {
+      await votingRoomPage.createNewVoting.autoCloseToggleButton.click();
+    } else {
+      await moderatorToolsPage.toggleSwitch(switchName);
+    }
   }
 );
 

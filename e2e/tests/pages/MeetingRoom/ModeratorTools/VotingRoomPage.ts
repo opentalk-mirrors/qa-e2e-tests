@@ -43,7 +43,9 @@ export class VotingRoomPage {
       autoCloseToggleButtonTooltipDescription: this.page
         .getByRole('tooltip')
         .getByText('Activate or deactivate automatic exit once all votes have been cast', { exact: true }),
-      autoCloseToggleButton: this.page.locator('//input[@name="autoClose"]'),
+      autoCloseToggleButton: this.page.locator(
+        'span[aria-label="Activate or deactivate automatic exit once all votes have been cast"]'
+      ),
       pseudonymousToggleButton: this.page.getByRole('switch', { name: 'Pseudonymous' }),
       liveToggleButton: this.page.getByRole('switch', { name: 'Live' }),
       titleField: this.page.getByRole('textbox', { name: 'Title', exact: true }),
