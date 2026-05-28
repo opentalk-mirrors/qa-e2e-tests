@@ -20,6 +20,7 @@ export class VotingRoomPage {
     readonly allowAbstainingToggleButton: Locator;
     readonly autoCloseToggleButtonTooltipDescription: Locator;
     readonly autoCloseToggleButton: Locator;
+    readonly autoCloseSwitch: Locator;
     readonly pseudonymousToggleButton: Locator;
     readonly liveToggleButton: Locator;
     readonly titleField: Locator;
@@ -43,7 +44,8 @@ export class VotingRoomPage {
       autoCloseToggleButtonTooltipDescription: this.page
         .getByRole('tooltip')
         .getByText('Activate or deactivate automatic exit once all votes have been cast', { exact: true }),
-      autoCloseToggleButton: this.page.locator(
+      autoCloseToggleButton: this.page.locator('//input[@name="autoClose"]'),
+      autoCloseSwitch: this.page.locator(
         'span[aria-label="Activate or deactivate automatic exit once all votes have been cast"]'
       ),
       pseudonymousToggleButton: this.page.getByRole('switch', { name: 'Pseudonymous' }),
@@ -70,6 +72,10 @@ export class VotingRoomPage {
     await this.createNewVoting.autoCloseToggleButton.hover();
     const autoCloseToggleButtonTooltip = this.createNewVoting.autoCloseToggleButtonTooltipDescription;
     await autoCloseToggleButtonTooltip.waitFor({ state: 'visible' });
+  }
+
+  public async toggleAutoClose(): Promise<void> {
+    await this.createNewVoting.autoCloseSwitch.click();
   }
 
   public async save(): Promise<void> {

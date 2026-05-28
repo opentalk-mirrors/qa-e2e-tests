@@ -160,12 +160,12 @@ When(
   async function (this: CustomWorld, user: string, switchName: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     if (switchName === 'autoClose') {
-      await votingRoomPage.createNewVoting.autoCloseToggleButton.click();
-    } else {
-      await moderatorToolsPage.toggleSwitch(switchName);
+      const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
+      await votingRoomPage.toggleAutoClose();
+      return;
     }
+    await moderatorToolsPage.toggleSwitch(switchName);
   }
 );
 

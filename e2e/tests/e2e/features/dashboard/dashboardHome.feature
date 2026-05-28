@@ -59,7 +59,7 @@ Feature: Dashboard Home
       | unscheduled  | Time-independent   |
       | scheduled    | %date_time_format% |
 
-  @skip
+
   Scenario: TC_011_Dashboard_Home_My favorite meetings_if empty list (and) also with presence of favorite meetings list
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/43
     Given "Alice" has logged in
