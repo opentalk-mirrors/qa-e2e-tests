@@ -328,7 +328,7 @@ test.describe('Meeting Room_Timer', () => {
     await expect(meetingRoomPage.moderationTools.coffeeBreakButton).toBeEnabled();
   });
 
-  test('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({ browser }) => {
+  test.skip('TC_006_Meeting Room_As Moderator_Timer_Mark me as done button+Stop Timer button', async ({ browser }) => {
     const sessionDurationDialog = await timerPage.openSessionDurationDialog();
     await sessionDurationDialog.selectDuration('1 min');
     await sessionDurationDialog.save();

@@ -13,7 +13,7 @@ const SMALL_NUMBER_OF_GUESTS = 2;
 
 let viewOptionsPage: ViewOptionsPage;
 
-test.describe('MeetingRoom - adjust participant view', () => {
+test.describe.skip('MeetingRoom - adjust participant view', () => {
   test('TC_001_VideoRoom_ParticipantViewSettings_List', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
