@@ -115,7 +115,7 @@ Feature: Meeting Room Breakout Room
     And "Alice" closes the session duration dialog in the open moderator tool
     Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
 
-  @skip-on-webkit @skip
+  @skip-on-webkit
   # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
   Scenario Outline: Create Breakout Rooms with random distribution
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/248

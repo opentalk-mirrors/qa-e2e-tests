@@ -20,7 +20,9 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   constructor({ page }: { page: Page }) {
     super({ page });
     this.startRoomsButton = this.page.getByRole('button', { name: 'Start rooms' });
-    this.closeRoomButton = this.page.getByRole('button', { name: 'Close room' });
+    this.closeRoomButton = this.page
+      .getByRole('tabpanel', { name: 'Create breakout rooms' })
+      .getByRole('button', { name: 'Close room' });
     this.participantsAvatar = this.page.getByRole('tabpanel').getByTestId('participantAvatar');
     this.createdRoomsDropdown = this.page.getByRole('tabpanel').getByText(/Room \d+/);
 
@@ -41,7 +43,6 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
 
   public async closeRoom(): Promise<void> {
     await this.closeRoomButton.click();
-    await this.closeRoomButton.waitFor({ state: 'detached' });
   }
 
   public async setRandomDistribution(on = false): Promise<void> {
