@@ -112,7 +112,7 @@ export class MeetingRoomPage {
   };
 
   keyboardShortcuts: {
-    shortcutSettingsPopup: Locator;
+    keyboardShortcutsPopup: Locator;
     checkbox: Locator;
   };
   private closePopupDialogButton: Locator;
@@ -180,11 +180,11 @@ export class MeetingRoomPage {
       disabledScreenShareButton: this.page.getByRole('button', {
         name: 'Ask a moderator to allow to share your screen',
       }),
-      microphoneButton: this.page.getByRole('button', { name: 'Turn On Audio', exact: true }),
-      microphoneButtonOff: this.page.getByRole('button', { name: 'Turn Off Audio', exact: true }),
+      microphoneButton: this.page.getByRole('button', { name: 'Turn On Audio (ctrl + shift + m)', exact: true }),
+      microphoneButtonOff: this.page.getByRole('button', { name: 'Turn Off Audio (ctrl + shift + m)', exact: true }),
       microphoneMoreOptionsMenuButton: this.page.getByRole('button', { name: 'additional options microphone' }),
-      videoButton: this.page.getByRole('button', { name: 'Turn On Video', exact: true }),
-      videoButtonOff: this.page.getByRole('button', { name: 'Turn Off Video', exact: true }),
+      videoButton: this.page.getByRole('button', { name: 'Turn On Video (ctrl + shift + v)', exact: true }),
+      videoButtonOff: this.page.getByRole('button', { name: 'Turn Off Video (ctrl + shift + v)', exact: true }),
       cameraMoreOptionButton: this.page.getByRole('button', { name: 'additional options camera' }),
       moreOptionButton: this.page.getByRole('button', { name: 'More Options' }),
       endMeetingButton: this.page.getByRole('button', { name: 'Leave Call' }),
@@ -228,8 +228,8 @@ export class MeetingRoomPage {
     };
 
     this.keyboardShortcuts = {
-      shortcutSettingsPopup: this.page.getByRole('dialog', { name: 'Shortcut Settings' }),
-      checkbox: this.page.getByRole('switch', { name: 'Activate shortcuts' }),
+      keyboardShortcutsPopup: this.page.getByRole('dialog', { name: 'Keyboard Shortcuts' }),
+      checkbox: this.page.getByRole('switch', { name: 'Shortcuts' }),
     };
     this.closePopupDialogButton = this.page.getByRole('button', { name: 'Close dialog' });
 
