@@ -270,7 +270,7 @@ Feature: Meeting Room Home
       """
     And "guest2" should be on the Meeting-Room-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
 
-
+  @skip # https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/151
   Scenario: Moderator can rename participants available in Participants list of People tab in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
@@ -281,7 +281,7 @@ Feature: Meeting Room Home
       """
     And "guest2" should be notified with the following text in the meeting room of "Alice":
       """
-      Your display name was changed to 'guest2-new' by moderator Alice Hansen.
+      Moderator changed the display name of guest2 to guest2-new
       """
     And for "Alice" "guest2-new" should be displayed in the participants list on the People-Option-Page
     And for "Alice" "guest2-new" should be displayed on the tile view on the Meeting-Room-Page

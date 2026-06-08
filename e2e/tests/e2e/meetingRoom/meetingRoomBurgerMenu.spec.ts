@@ -15,7 +15,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
     await expect(burgerMenuPage.userManualMenuItem).toBeVisible();
-    await expect(burgerMenuPage.shortcutSettingsMenuItem).toBeVisible();
+    await expect(burgerMenuPage.keyboardShortcutsMenuItem).toBeVisible();
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const accessibilityPage = await burgerMenuPage.gotoAccessibility();
@@ -41,7 +41,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
 
     await expect(burgerMenuPage.accessibilityMenuItem).toBeVisible();
     await expect(burgerMenuPage.userManualMenuItem).toBeVisible();
-    await expect(burgerMenuPage.shortcutSettingsMenuItem).toBeVisible();
+    await expect(burgerMenuPage.keyboardShortcutsMenuItem).toBeVisible();
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const userManualPage = await burgerMenuPage.gotoUserManual();
@@ -73,10 +73,10 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await expect(burgerMenuPage.burgerMenuDropdown).toBeVisible();
 
     await burgerMenuPage.openKeyboardShortcuts();
-    await expect(meetingRoomPage.keyboardShortcuts.shortcutSettingsPopup).toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).toBeVisible();
     await expect(meetingRoomPage.keyboardShortcuts.checkbox).toBeChecked();
     await meetingRoomPage.closePopupDialog();
-    await expect(meetingRoomPage.keyboardShortcuts.shortcutSettingsPopup).not.toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).not.toBeVisible();
     await meetingRoomPage.pressEscape(); // escaping burgermenu because it does not allow to locate elements
 
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();
@@ -155,7 +155,7 @@ test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
     await meetingRoomPage.deactivateKeyboardShortcuts();
     await expect(meetingRoomPage.keyboardShortcuts.checkbox).not.toBeChecked();
     await meetingRoomPage.pressEscape();
-    await expect(meetingRoomPage.keyboardShortcuts.shortcutSettingsPopup).not.toBeVisible();
+    await expect(meetingRoomPage.keyboardShortcuts.keyboardShortcutsPopup).not.toBeVisible();
     await meetingRoomPage.pressEscape();
 
     expect(await meetingRoomPage.isAudioOn()).toBeFalsy();
