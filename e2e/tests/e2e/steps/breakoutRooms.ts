@@ -137,7 +137,7 @@ When(
 );
 
 Then(
-  'all together {int} participants should be in the Breakout Rooms in the meeting room of {string}',
+  /^all together (\d+) participants should be in the Breakout Rooms? in the meeting room of "([^"]*)"$/,
   async function (this: CustomWorld, expectedNoOfParticipants: number, moderator: string) {
     const moderatorPage = this.getStartedMeeting(moderator).meeting.meetingRoomPage;
     await moderatorPage.page.bringToFront();
