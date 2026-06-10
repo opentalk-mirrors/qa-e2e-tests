@@ -38,9 +38,9 @@ export class LobbyRoomPage {
     this.backButton = this.page.getByRole('button', { name: 'Back', exact: true });
     this.openUserManualButton = this.page.getByRole('button', { name: 'Open user manual' });
     this.nameInputField = this.page.getByRole('textbox', { name: 'Name' });
-    this.microphoneButton = this.page.getByRole('button', { name: 'Turn On Audio (ctrl + shift + m)', exact: true });
+    this.microphoneButton = this.page.getByRole('button', { name: 'Turn On Audio (Ctrl + Shift + M)', exact: true });
     this.microphoneMoreOptionsMenuButton = this.page.getByRole('button', { name: 'additional options microphone' });
-    this.videoButton = this.page.getByRole('button', { name: 'Turn On Video (ctrl + shift + v)', exact: true });
+    this.videoButton = this.page.getByRole('button', { name: 'Turn On Video (Ctrl + Shift + V)', exact: true });
     this.cameraMoreOptionsMenuButton = this.page.getByRole('button', { name: 'additional options camera' });
     this.blurBackgroundButton = this.page.getByRole('button', { name: 'Turn On Background Blur' });
     this.joinMeetingButton = this.page.getByRole('button', { name: 'Enter now' });

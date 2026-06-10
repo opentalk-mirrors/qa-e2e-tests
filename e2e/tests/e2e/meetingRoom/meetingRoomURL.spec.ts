@@ -19,6 +19,9 @@ test.beforeEach('delete existing meetings', async () => {
 test.describe('Meeting room URL', async () => {
   test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
+    // Set fixed time in the browser/test environment to 10:00 AM preventing nightly failures
+    const today = new Date().toISOString().slice(0, 10);
+    await page.clock.setFixedTime(new Date(`${today}T10:00:00`));
     const instanceUrl = new URL(config.INSTANCE_URL);
     homePage = new HomePage({ page });
     await homePage.navigateToHomePage();
