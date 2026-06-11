@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { config } from '../config';
 import { CustomWorld, User } from '../e2e/cucumberWorld';
 import { Api } from './Api';
 import { JoinMeetingOptions, _joinMeetingRoomAsGuest } from './meetingHelpers';
@@ -14,16 +13,15 @@ export async function joinMeetingRoomAsGuest(
   options?: JoinMeetingOptions
 ): Promise<void> {
   const userApi = new Api({
-    url: config.CONTROLLER_HOST,
     userName: guestName,
   });
   const context = await world.init();
   const guestRoom = await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
   world.setUsers({
-    firstname: guestName,
     api: userApi,
     context: context,
     page: guestRoom[guestName].page,
+    type: 'guest',
   } as User);
   world.addParticipantMeetingRooms(moderator, guestRoom);
 }

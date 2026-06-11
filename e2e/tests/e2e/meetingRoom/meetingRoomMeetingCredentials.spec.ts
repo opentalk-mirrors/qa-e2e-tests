@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
 import { getClipboardContent } from '../../helper/clipboardHelpers';
+import { deleteUser } from '../../helper/keycloak';
 import { planNewMeetingAndStartAsModerator } from '../../helper/meetingHelpers';
 import { HomePage } from '../../pages/HomePage';
 import { MeetingInfoPage } from '../../pages/MeetingRoom/MeetingInfoPage';
@@ -20,8 +22,15 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe('Meeting Room_Meeting credentials for all in conference', () => {
-  test('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit'); // clipboard access isn't available in webKit headless mode
+  let userId = '';
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+  });
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+  test.skip('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit'); // clipboard access is not available in webKit headless mode
     const { meetingRoomPage, guestLink, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin } =
       await planNewMeetingAndStartAsModerator(page, meetingTitle, meetingPassword, browserName);
     await expect(meetingRoomPage.meetingInfoButton).toBeVisible();

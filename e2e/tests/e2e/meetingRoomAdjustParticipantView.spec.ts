@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../authHelpers';
 import { config } from '../config';
+import { deleteUser } from '../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../helper/meetingHelpers';
 import { joinMeetingRoomWithNGuests } from '../helper/playwrightMeetingHelpers';
 import { ViewOptionsPage } from '../pages/MeetingRoom/ViewOptionsPage';
@@ -14,6 +16,13 @@ const SMALL_NUMBER_OF_GUESTS = 2;
 let viewOptionsPage: ViewOptionsPage;
 
 test.describe.skip('MeetingRoom - adjust participant view', () => {
+  let userId = '';
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+  });
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
   test('TC_001_VideoRoom_ParticipantViewSettings_List', async ({ page, browserName }) => {
     const { meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });

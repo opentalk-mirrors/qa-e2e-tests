@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../../authHelpers';
+import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { CoffeeBreakDialogPage } from '../../../pages/MeetingRoom/CoffeeBreakDialogPage';
@@ -22,7 +24,15 @@ test.describe('Meeting room_Coffee break', async () => {
   let meetingRoomPage: MeetingRoomPage,
     coffeeBreakPage: CoffeeBreakPage,
     guestLink: string,
-    guestMeetingRoomPage: MeetingRoomPage;
+    guestMeetingRoomPage: MeetingRoomPage,
+    userId: string;
+
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+  });
 
   test('TC_001_Meeting Room_As Moderator_Coffee break', async ({ page, browserName }) => {
     ({ meetingRoomPage } = await startAdhocMeetingAsModerator(page, browserName));

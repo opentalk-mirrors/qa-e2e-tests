@@ -53,7 +53,6 @@ export default defineConfig({
       testMatch: /.*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: '.auth/user.json',
         launchOptions: {
           args: [
             '--use-fake-device-for-media-stream',
@@ -76,7 +75,6 @@ export default defineConfig({
       testMatch: /.*\.spec\.ts/,
       use: {
         ...devices['Desktop Firefox'],
-        storageState: '.auth/user.json',
         launchOptions: {
           args: [
             '--use-fake-device-for-media-stream',
@@ -107,7 +105,6 @@ export default defineConfig({
       testMatch: /.*\.spec\.ts/,
       use: {
         ...devices['Desktop Safari'],
-        storageState: '.auth/user.json',
         contextOptions: {
           permissions: ['clipboard-read'],
         },
@@ -119,7 +116,6 @@ export default defineConfig({
       testMatch: /.*\.smoke\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: '.auth/user.json',
         launchOptions: {
           args: ['--guest', '--disable-web-security', '--allow-running-insecure-content'],
         },
@@ -131,7 +127,6 @@ export default defineConfig({
       testMatch: /.*\.smoke\.ts/,
       use: {
         ...devices['Desktop Firefox'],
-        storageState: '.auth/user.json',
         launchOptions: {
           args: ['--guest', '--disable-web-security', '--allow-running-insecure-content'],
         },
@@ -143,7 +138,6 @@ export default defineConfig({
       testMatch: /.*\.smoke\.ts/,
       use: {
         ...devices['Desktop Safari'],
-        storageState: '.auth/user.json',
       },
       dependencies: ['setup'],
     },

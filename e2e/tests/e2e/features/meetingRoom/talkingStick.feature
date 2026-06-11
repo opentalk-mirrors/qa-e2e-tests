@@ -8,7 +8,8 @@ Feature: Meeting Room Talking stick
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/194
 
   Background:
-    Given "Alice" has logged in
+    Given user "Alice" has been created
+    And "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And 3 guests have joined the meeting of "Alice"
 

@@ -10,7 +10,10 @@ Feature: Mute Participants
 
   Scenario: As Moderator_Mute participants_All button, Selected button
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/107
-    Given "Alice" has logged in
+    Given these users have been created:
+      | Alice |
+      | Bob   |
+    And "Alice" has logged in
     And "Alice" has created an unscheduled meeting with the title "with-alice"
     And "Alice" has joined the meeting with the title "with-alice" as moderator
     And 3 guests have joined the meeting with the title "with-alice" created by "Alice" with:

@@ -4,8 +4,19 @@
 import { test, expect } from '@playwright/test';
 
 import { createAdhocMeeting, gotoLobby, gotoDashboard, gotoRoom } from '../../utils/pageUtils';
+import { globalSetup } from '../authHelpers';
+import { deleteUser } from '../helper/keycloak';
 
 test.describe.skip('203_Help_Quick_Guide', () => {
+  let userId = '';
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+  });
+
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+
   test('TC_001_Dashboard_Quick-Guide', async ({ page, context }) => {
     await gotoDashboard(page);
     await page.getByRole('link', { name: 'Help' }).click();

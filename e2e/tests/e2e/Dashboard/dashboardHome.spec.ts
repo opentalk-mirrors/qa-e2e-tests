@@ -4,8 +4,10 @@
 import { test, expect } from '@playwright/test';
 import { validate } from 'uuid';
 
+import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
 import { formatDate } from '../../helper/helper';
+import { deleteUser } from '../../helper/keycloak';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 
@@ -37,8 +39,9 @@ const getUserToInviteInMeeting = (
   }
   return { invitedUser, invitedUserMail };
 };
-
-test.beforeEach('Navigate to dashboard', async ({ page, browserName }) => {
+let userId = '';
+test.beforeEach('Navigate to dashboard', async ({ page, browserName, context }, testInfo) => {
+  userId = await globalSetup(page, context, testInfo);
   const homePage = new HomePage({ page });
   await homePage.navigateToHomePage();
 
@@ -46,6 +49,9 @@ test.beforeEach('Navigate to dashboard', async ({ page, browserName }) => {
   if (browserName === 'webkit') {
     await closeWebkitPopUp({ page });
   }
+});
+test.afterEach(async () => {
+  await deleteUser(userId);
 });
 
 test.describe('Dashboard_Home', { tag: '@late' }, () => {

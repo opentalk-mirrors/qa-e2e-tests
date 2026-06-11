@@ -3,20 +3,25 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../authHelpers';
+import { deleteUser } from '../../helper/keycloak';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HelpPage } from '../../pages/HelpPage';
 
-test.beforeEach('Navigate to help option', async ({ page, browserName, context }) => {
-  const helpPage = new HelpPage({ page, context });
-  await helpPage.navigateToHelpPage();
-
-  // Warning button in safari blocks the selector for creating new meeting
-  if (browserName === 'webkit') {
-    await closeWebkitPopUp({ page });
-  }
-});
+let userId = '';
 
 test.describe('Dashboard_Help', () => {
+  test.beforeEach('Navigate to help option', async ({ page, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
+    const helpPage = new HelpPage({ page, context });
+    await helpPage.navigateToHelpPage();
+    if (browserName === 'webkit') {
+      await closeWebkitPopUp({ page });
+    }
+  });
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
   test('TC_001_Dashboard_Help_User Manual', async ({ page, context }) => {
     const helpPage = new HelpPage({ page, context });
     await expect(helpPage.helpHeading).toBeVisible();

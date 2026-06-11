@@ -9,7 +9,11 @@ Feature: Meeting Room Voting Room
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/20
 
   Background:
-    Given "Alice" has logged in
+    Given these users have been created:
+      | Alice |
+      | Bob   |
+    And "Alice" has logged in
+    And "Bob" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
 
 
@@ -155,7 +159,6 @@ Feature: Meeting Room Voting Room
   Scenario: Meeting Room_As Moderator_Voting_Create new voting_Save button
     #https://git.opentalk.dev/opentalk/qa/reports/-/issues/156
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
-    And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
     And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
       | setting | value    |
@@ -224,7 +227,6 @@ Feature: Meeting Room Voting Room
   Scenario: Meeting Room_As Moderator_Voting_Update voting
     #https://git.opentalk.dev/opentalk/qa/reports/-/work_items/282
     Given "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
-    And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "Ad-hoc Meeting" created by "Alice"
     And "Bob" has joined the meeting with the title "Ad-hoc Meeting" created by "Alice" with:
       | setting | value    |

@@ -8,7 +8,10 @@ Feature: Meeting Room Home
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/110
 
   Background:
-    Given "Alice" has logged in
+    Given these users have been created:
+      | Alice |
+      | Bob   |
+    And "Alice" has logged in
     And "Alice" has started an ad-hoc meeting and joined the meeting as moderator
     And "Alice" has invited "Bob" to meeting "Ad-hoc Meeting"
     And "Bob" has logged in

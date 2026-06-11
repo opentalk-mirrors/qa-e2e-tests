@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { readFileSync, readFile } from 'node:fs';
 
+import { authUserFile } from '../authHelpers';
 import { config } from '../config';
 
 async function makeRequest(
@@ -12,7 +13,7 @@ async function makeRequest(
   headers: Headers = new Headers(),
   isBuffer: boolean = false
 ) {
-  const dataArray = JSON.parse(readFileSync('.auth/user.json', 'utf-8'));
+  const dataArray = JSON.parse(readFileSync(authUserFile, 'utf-8'));
   const localStorage = dataArray.origins[0].localStorage;
   const accessToken = localStorage.find((item: { name: string; value: string }) => item.name === 'access_token')?.value;
   if (!headers.has('content-type')) {
@@ -340,14 +341,14 @@ interface StreamingTarget {
 }
 
 export class Api {
-  url: string;
   accessToken?: string;
   userName: string;
+  password?: string;
 
-  constructor({ url, accessToken, userName }: { url: string; accessToken?: string; userName: string }) {
-    this.url = url;
+  constructor({ accessToken, userName, password }: { accessToken?: string; userName: string; password?: string }) {
     this.accessToken = accessToken;
     this.userName = userName;
+    this.password = password;
   }
 
   makeRequest(params: string, method: string = 'GET', body?: object, headers: Headers = new Headers()) {
@@ -359,7 +360,7 @@ export class Api {
       body: bodyString,
       method: method,
     };
-    return fetch(`${this.url}${params}`, requestOptions);
+    return fetch(`${config.CONTROLLER_HOST}${params}`, requestOptions);
   }
 
   async changeLanguage(lang: string) {
@@ -415,7 +416,7 @@ export class Api {
       e2e_encryption: false,
       is_adhoc: true,
       is_time_independent: true,
-      title: `${meetingTitlePrefix} ${new Date().toTimeString().slice(0, 5)}`,
+      title: `${meetingTitlePrefix}`,
       waiting_room: false,
     };
 

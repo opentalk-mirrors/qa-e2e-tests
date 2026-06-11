@@ -3,10 +3,21 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../authHelpers';
 import { config } from '../config';
+import { deleteUser } from '../helper/keycloak';
 
 test.describe('Dashboard', () => {
   test.describe('Sidebar Navigation/Options', () => {
+    let userId = '';
+    test.afterEach(async () => {
+      await deleteUser(userId);
+    });
+
+    test.beforeEach(async ({ page, context }, testInfo) => {
+      userId = await globalSetup(page, context, testInfo);
+    });
+
     test('verify the contents displayed in the settings option of dashboard', async ({ page }) => {
       await page.goto(config.INSTANCE_URL);
       await page.getByRole('link', { name: 'Settings', exact: true }).click();

@@ -3,11 +3,23 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../authHelpers';
 import { config } from '../config';
+import { deleteUser } from '../helper/keycloak';
 
 test.describe('Conference', () => {
   test.describe.configure({ mode: 'serial' });
   test.describe('SpeedTest', () => {
+    let userId = '';
+
+    test.afterEach(async () => {
+      await deleteUser(userId);
+    });
+
+    test.beforeEach(async ({ page, context }, testInfo) => {
+      userId = await globalSetup(page, context, testInfo);
+    });
+
     test('show stable connection message with a good connection', async ({ page, browserName }) => {
       test.skip(browserName === 'webkit');
 

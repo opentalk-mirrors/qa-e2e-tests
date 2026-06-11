@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { test, expect } from '@playwright/test';
 
+import { globalSetup } from '../../../authHelpers';
 import { config } from '../../../config';
+import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomWithNGuests, joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
 import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
@@ -23,14 +25,19 @@ let meetingRoomPage: MeetingRoomPage,
   guestLink: string,
   guestMeetingRoomPages: ParticipantMeetingRoomPages,
   idleGuestMeetingRoomPage: MeetingRoomPage,
-  resetRaisedHandsPage: ResetRaisedHandsPage;
+  resetRaisedHandsPage: ResetRaisedHandsPage,
+  userId: string;
 
 test.describe('Meeting Room_Reset raised hands selected button', { tag: '@late' }, () => {
   const guestName = [guest1, guest2];
 
   let guestTile: ParticipantTilePage, moderatorTile: ParticipantTilePage, idleGuestTile: ParticipantTilePage;
 
-  test.beforeEach(async ({ page, browser, browserName }) => {
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+  test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.raiseYourHand();
@@ -133,7 +140,8 @@ test.describe('Meeting Room_Reset raised hands selected button', { tag: '@late' 
 });
 
 test.describe('Meeting Room_Reset raised hands search participant', () => {
-  test.beforeEach(async ({ page, browser, browserName }) => {
+  test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
+    userId = await globalSetup(page, context, testInfo);
     ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
     guestMeetingRoomPages = await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
@@ -146,9 +154,11 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();
   });
 
-  test.skip('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async ({
-    browserName,
-  }) => {
+  test.afterEach(async () => {
+    await deleteUser(userId);
+  });
+
+  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async ({ browserName }) => {
     test.skip(browserName === 'webkit');
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
