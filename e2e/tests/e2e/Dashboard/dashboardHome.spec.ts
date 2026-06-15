@@ -125,7 +125,16 @@ test.describe('Dashboard_Home', { tag: '@late' }, () => {
     await expect(meetingPlanningPage.dateInputField.toInputField).toBeVisible();
     await expect(meetingPlanningPage.meetingOccurrenceDropDown).toBeVisible();
     await expect(meetingPlanningPage.meetingOccurrenceDropDown).toHaveText('No repetition');
-    await expect(meetingPlanningPage.waitingRoomToggleButton).not.toBeChecked();
+    await expect(meetingPlanningPage.waitingRoomLabel).toBeVisible();
+    const off = meetingPlanningPage.waitingRoomOffButton;
+    const guests = meetingPlanningPage.waitingRoomGuestsOnlyButton;
+    const everyone = meetingPlanningPage.waitingRoomEveryoneButton;
+    for (const button of [off, guests, everyone]) {
+      await expect(button).toBeVisible();
+    }
+    await expect(off).toHaveAttribute('aria-pressed', 'true');
+    await expect(guests).toHaveAttribute('aria-pressed', 'false');
+    await expect(everyone).toHaveAttribute('aria-pressed', 'false');
     // check skipped because of https://git.opentalk.dev/opentalk/qa/reports/-/issues/397
     // await expect(meetingPlanningPage.createSharedFolderToggleButton).not.toBeChecked();
     await expect(meetingPlanningPage.showMeetingDetailsToggleButton).toBeChecked();

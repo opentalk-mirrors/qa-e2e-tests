@@ -16,7 +16,10 @@ export class MeetingPlanningPage {
     createButton: Locator;
   };
   setDateTimeToggleButton: Locator;
-  waitingRoomToggleButton: Locator;
+  public readonly waitingRoomLabel: Locator;
+  public readonly waitingRoomOffButton: Locator;
+  public readonly waitingRoomGuestsOnlyButton: Locator;
+  public readonly waitingRoomEveryoneButton: Locator;
   createSharedFolderToggleButton: Locator;
   showMeetingDetailsToggleButton: Locator;
   livestreamToggleButton: Locator;
@@ -90,7 +93,10 @@ export class MeetingPlanningPage {
       createButton: this.page.getByRole('button', { name: 'Create' }),
     };
     this.setDateTimeToggleButton = this.page.getByLabel('Set date & time');
-    this.waitingRoomToggleButton = this.page.getByLabel('Waiting room');
+    this.waitingRoomLabel = this.page.getByRole('group', { name: 'Waiting room' });
+    this.waitingRoomOffButton = this.page.getByRole('button', { name: 'Off' });
+    this.waitingRoomGuestsOnlyButton = this.page.getByRole('button', { name: 'Guests only' });
+    this.waitingRoomEveryoneButton = this.page.getByRole('button', { name: 'Everyone' });
     this.createSharedFolderToggleButton = this.page.getByLabel('Create shared folder');
     this.showMeetingDetailsToggleButton = this.page.getByLabel('Show meeting details');
     this.livestreamToggleButton = this.page.getByLabel('Livestream');
