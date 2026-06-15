@@ -112,11 +112,7 @@ export class ModeratorToolsPage {
   }
 
   public async toggleSwitch(switchName: string): Promise<void> {
-    try {
-      await this.getSwitchByName(switchName).click();
-    } catch {
-      await this.page.locator(`//input[@name="${switchName}"]`).click();
-    }
+    await this.getSwitchByName(switchName).click();
   }
 
   public async getSessionDuration(): Promise<string> {
