@@ -13,7 +13,7 @@ import { SidebarPage } from '../../pages/SidebarPage';
 const meetingTitle = 'test_meeting';
 const meetingRoomPassword = 'test1234';
 
-test.describe('Accessibility_General', { tag: '@late' }, () => {
+test.describe('Accessibility_General', () => {
   let userId = '';
   test.afterEach(async () => {
     await deleteUser(userId);

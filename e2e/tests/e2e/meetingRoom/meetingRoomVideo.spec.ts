@@ -12,7 +12,7 @@ import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { joinMeetingRoomAsGuest } from '../../helper/playwrightMeetingHelpers';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 
-test.describe('Test if video is working', { tag: '@late' }, () => {
+test.describe('Test if video is working', () => {
   let meetingRoomPage: MeetingRoomPage, guestLink: string, guestMeetingRoomPage: MeetingRoomPage;
   test.use({ viewport: { width: 1280, height: 720 } });
   let userId = '';

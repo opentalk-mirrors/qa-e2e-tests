@@ -54,7 +54,7 @@ test.afterEach(async () => {
   await deleteUser(userId);
 });
 
-test.describe('Dashboard_Home', { tag: '@late' }, () => {
+test.describe('Dashboard_Home', () => {
   test('TC_001_Dashboard_Home_Start new', async ({ page, browserName }) => {
     const homePage = new HomePage({ page });
     await homePage.navigateToHomePage();
