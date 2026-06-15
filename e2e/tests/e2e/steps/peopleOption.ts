@@ -289,7 +289,7 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     await assert(
-      peopleOptionPage.getParticipantLocator(name),
+      peopleOptionPage.getParticipantByName(name),
       'toBeVisible',
       undefined,
       `participant ${name} is not visible`

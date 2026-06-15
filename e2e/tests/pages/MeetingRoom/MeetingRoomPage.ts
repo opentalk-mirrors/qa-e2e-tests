@@ -125,6 +125,9 @@ export class MeetingRoomPage {
     timerText: Locator;
   };
 
+  private readonly declineInvitationToWhisperGroupButton: Locator;
+  private readonly acceptInvitationToWhisperGroupButton: Locator;
+
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.context = this.page.context();
@@ -242,6 +245,9 @@ export class MeetingRoomPage {
 
       timerText: coffeeBreakPopover.getByTestId('timer-display'),
     };
+
+    this.declineInvitationToWhisperGroupButton = this.page.getByRole('alert').getByRole('button', { name: 'Decline' });
+    this.acceptInvitationToWhisperGroupButton = this.page.getByRole('alert').getByRole('button', { name: 'Accept' });
   }
 
   async renderMeetingRoom(): Promise<void> {
@@ -716,5 +722,15 @@ export class MeetingRoomPage {
       .locator('button');
     await approveWaitingParticipantLocator.click();
     await approveWaitingParticipantLocator.waitFor({ state: 'detached' });
+  }
+
+  public async declineInvitationToWhisperGroup(): Promise<void> {
+    await this.declineInvitationToWhisperGroupButton.click();
+    await this.declineInvitationToWhisperGroupButton.waitFor({ state: 'detached' });
+  }
+
+  public async acceptInvitationToWhisperGroup(): Promise<void> {
+    await this.acceptInvitationToWhisperGroupButton.click();
+    await this.acceptInvitationToWhisperGroupButton.waitFor({ state: 'detached' });
   }
 }

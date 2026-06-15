@@ -370,3 +370,6 @@ allowlist = ["0.0.0.0/0", "::ffff:0:0/96"]
 # The user has booked a specific tariff, but is not allowed to use it, e.g. because
 # it is unpaid. Therefore the user's tariff is downgraded to the fallback tariff.
 #downgraded = ["unpaid"]
+
+[subroom_audio]
+enable_whisper = true

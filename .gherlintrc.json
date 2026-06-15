@@ -16,7 +16,7 @@
           [
             "EUPL", "SPDX", "GmbH", "OpenTalk", "FileCopyrightText", "TC", "ali1", "bob1", "GlitchTip",
             "Test12345", "HH", "guest1", "guest2", "guest3", "guest4", "alice", "textbox", "textfield", "autoClose",
-            "auto-close","auto close", "min", "sub-heading", "Votings", "allowAbstaining"
+            "auto-close","auto close", "min", "sub-heading", "Votings", "allowAbstaining", "W"
           ],
           {
             "ExpandMinimum": false,
@@ -27,7 +27,8 @@
           [
             ["\\n", " "],
             ["%meeting_url_pattern%", ""],
-            ["config/opentalk-realm.json", ""]
+            ["config/opentalk-realm.json", ""],
+            ["guest", "Guest"]
           ]
         ],
         "words_to_avoid": [
