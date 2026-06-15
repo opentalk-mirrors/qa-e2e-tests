@@ -12,7 +12,7 @@ import { BurgerMenuPage } from '../../pages/MeetingRoom/BurgerMenuPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { ViewOptionsPage } from '../../pages/MeetingRoom/ViewOptionsPage';
 
-test.describe('Meeting Room_Burger menu', { tag: '@late' }, () => {
+test.describe('Meeting Room_Burger menu', () => {
   let userId = '';
   let meetingRoomPage: MeetingRoomPage;
 
