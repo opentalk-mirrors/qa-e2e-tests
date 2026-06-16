@@ -141,7 +141,10 @@ async function startAdhocMeetingAsModerator(
   meetingTitlePrefix: string = 'Ad-hoc Meeting'
 ) {
   const page = user.page;
-  const { meetingLink, roomId, meetingId } = await user.api.startAdhocMeetingAsModerator(meetingTitlePrefix);
+  const { meetingLink, roomId, meetingId } = await user.api.startAdhocMeetingAsModerator(
+    meetingTitlePrefix,
+    'direct_access'
+  );
   const guestLink = await user.api.getGuestLink(roomId);
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
