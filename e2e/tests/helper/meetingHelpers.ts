@@ -20,7 +20,7 @@ export const startAdhocMeetingAsModerator = async (
   browserName?: 'webkit' | 'chromium' | 'firefox',
   meetingTitlePrefix: string = 'Ad-hoc Meeting'
 ): Promise<{ meetingRoomPage: MeetingRoomPage; guestLink: string; meetingId: string }> => {
-  const { meetingLink, roomId, meetingId } = await startMeeting(meetingTitlePrefix);
+  const { meetingLink, roomId, meetingId } = await startMeeting(meetingTitlePrefix, 'direct_access');
   const guestLink = await getGuestLink(roomId);
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });

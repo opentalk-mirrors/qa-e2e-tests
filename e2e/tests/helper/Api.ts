@@ -120,7 +120,8 @@ export async function createMeeting(payload: object): Promise<{
 }
 
 export async function startAdhocMeetingAsModerator(
-  meetingTitlePrefix: string
+  meetingTitlePrefix: string,
+  guestAccess: 'waiting_room' | 'direct_access'
 ): Promise<{ meetingLink: string; roomId: string; meetingId: string }> {
   const payload: object = {
     description: '',
@@ -128,6 +129,7 @@ export async function startAdhocMeetingAsModerator(
     is_adhoc: true,
     is_time_independent: true,
     title: `${meetingTitlePrefix}`,
+    guest_access: guestAccess,
     waiting_room: false,
   };
 
@@ -409,7 +411,8 @@ export class Api {
   }
 
   async startAdhocMeetingAsModerator(
-    meetingTitlePrefix: string
+    meetingTitlePrefix: string,
+    guestAccess: 'waiting_room' | 'direct_access'
   ): Promise<{ meetingLink: string; roomId: string; meetingId: string }> {
     const payload: object = {
       description: '',
@@ -417,6 +420,7 @@ export class Api {
       is_adhoc: true,
       is_time_independent: true,
       title: `${meetingTitlePrefix}`,
+      guest_access: guestAccess,
       waiting_room: false,
     };
 
