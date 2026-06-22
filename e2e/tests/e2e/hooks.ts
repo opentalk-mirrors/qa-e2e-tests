@@ -8,9 +8,16 @@ import { config } from '../config';
 import { CustomWorld } from './cucumberWorld';
 
 let browser: Browser;
+const testIDs = new Set();
+let retry: number = 0;
 
 Before(async function (this: CustomWorld, scenario) {
   this.testId = scenario.pickle.id;
+  if (testIDs.has(this.testId)) {
+    retry++;
+    this.testId = this.testId + retry;
+  }
+  testIDs.add(this.testId);
   const browserName = config.browser;
   let browserType: BrowserType<Browser>;
   let args = [

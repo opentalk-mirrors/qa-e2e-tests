@@ -7,7 +7,7 @@ RETRY=1
 if [[ "$CI" == "true" ]]; then
   RETRY=2
 fi
-WORKERS=$(( $(nproc) / 2 ))
+WORKERS="${WORKERS:-$(( $(nproc) / 2 ))}"
 echo Using $WORKERS workers
 source e2e/.env;
 if [[ $TEST == "gherkin" ]]; then
