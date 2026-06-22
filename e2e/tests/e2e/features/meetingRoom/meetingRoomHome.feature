@@ -194,7 +194,7 @@ Feature: Meeting Room Home
     Then for "Alice" order selection dropdown should not be displayed on the People-Option-Page
 
   @skip
-  # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/work_items/3288
+  # skipped because of https://git.opentalk.dev/opentalk/product/tickets/-/work_items/263
   Scenario: Guest users can send direct messages to other participants from the list in People tab in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
