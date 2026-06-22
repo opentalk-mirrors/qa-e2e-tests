@@ -263,20 +263,33 @@ test.describe('Dashboard_Home', () => {
       }
     }
 
-    const today = new Date().getDay();
-
+    // Select M/W/F
     for (const day of ['M', 'W', 'F']) {
-      if (day !== days[today]) {
-        await page.getByRole('button', { name: day, exact: true }).click();
+      const dayButton = page.getByRole('button', { name: day, exact: true });
+
+      const selected = await dayButton.evaluate((el) => el.classList.contains('MuiChip-filled'));
+
+      if (!selected) {
+        await dayButton.click();
       }
     }
 
-    // current day will be select by default. so this code makes sure other days except 'M', 'W' and 'F' are not selected.
-    if (!['M', 'W', 'F'].includes(days[today])) {
-      await page
-        .getByRole('button', { name: days[today], exact: true })
-        .nth(today === 2 || today === 0 ? 0 : 1)
-        .click();
+    // Remove default set current day
+    const today = new Date().getDay();
+    const currentDay = days[today];
+
+    if (!['M', 'W', 'F'].includes(currentDay)) {
+      const selectedDays = planMeetingPage.selectedDays;
+      const selectedCount = await selectedDays.count();
+
+      for (let i = 0; i < selectedCount; i++) {
+        const text = await selectedDays.nth(i).textContent();
+
+        if (text?.trim() === currentDay) {
+          await selectedDays.nth(i).click();
+          break;
+        }
+      }
     }
 
     // Selected specific days (e.g., Monday, Wednesday, Friday) should be highlighted
