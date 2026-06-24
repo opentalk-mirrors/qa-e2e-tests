@@ -29,6 +29,7 @@ export class MeetingPlanningPage {
   meetingTextAsTitle: Locator;
   participantTextAsTitle: Locator;
   meetingPageDescription: Locator;
+  selectedDays: Locator;
 
   dateInputField: {
     fromInputField: Locator;
@@ -102,12 +103,13 @@ export class MeetingPlanningPage {
     this.livestreamToggleButton = this.page.getByLabel('Livestream');
     this.enableProtectionToggleButton = this.page.getByLabel('Enable very high level of protection');
     this.cancelMeetingCreationButton = this.page.getByRole('link', { name: 'Cancel' });
-    this.meetingOccurrenceDropDown = this.page.getByRole('combobox', { name: 'Meeting Recurrence' });
+    this.meetingOccurrenceDropDown = this.page.getByRole('combobox', { name: 'Meeting recurrence' });
     this.meetingTextAsTitle = this.page.getByText('meeting', { exact: true });
     this.participantTextAsTitle = this.page.getByText('Participants');
     this.meetingPageDescription = this.page.getByText(
       'Required fields are marked with an asterisk. Please fill them out.'
     );
+    this.selectedDays = this.page.locator('[role="button"].MuiChip-filled');
     this.dateInputField = {
       fromInputField: this.page.getByLabel('from *'),
       datePicker: this.page.locator('.MuiPickersPopper-root'),
