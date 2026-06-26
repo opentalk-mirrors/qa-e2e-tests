@@ -18,6 +18,7 @@ export async function joinMeetingRoomAsGuest(
   const context = await world.init();
   const guestRoom = await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
   world.setUsers({
+    userName: guestName,
     api: userApi,
     context: context,
     page: guestRoom[guestName].page,

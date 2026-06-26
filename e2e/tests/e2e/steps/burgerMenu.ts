@@ -15,9 +15,9 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
     if (actionType === 'should') {
-      expect(await glitchTipPage.glitchTipPopup).toBeVisible();
+      await expect(glitchTipPage.glitchTipPopup).toBeVisible();
     } else {
-      expect(await glitchTipPage.glitchTipPopup).not.toBeVisible();
+      await expect(glitchTipPage.glitchTipPopup).not.toBeVisible();
     }
   }
 );

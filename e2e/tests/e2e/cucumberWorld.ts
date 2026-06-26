@@ -147,10 +147,10 @@ export class CustomWorld extends World {
       for (const [_key, user] of Object.entries(this.users)) {
         if (scenario.result?.status === 'FAILED') {
           await user.context?.tracing.stop({
-            path: `playwright-report/${scenario.pickle.name.replaceAll(' ', '-')}${new Date().toISOString().replaceAll(/[:.,]/g, '-')}.zip`,
+            path: `playwright-report/${scenario.pickle.name.replaceAll(' ', '-')}/${user.userName}-${new Date().toISOString().replaceAll(/[:.,]/g, '-')}.zip`,
           });
         } else {
-          await this.context?.tracing.stop();
+          await user.context?.tracing.stop();
         }
 
         await user.context.close();
