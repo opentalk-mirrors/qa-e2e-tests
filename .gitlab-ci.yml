@@ -469,9 +469,9 @@ merge-and-upload-test-results:
       -u $TESTRAIL_EMAIL \
       -p $TESTRAIL_PASSWORD \
       parse_junit \
-      -f "./merged-reports/combined-report.xml" \
+      -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
-      --title "Automated Nightly Tests from GitLab CI/CD"
+      --title "Automated Nightly Tests from GitLab CI/CD (Branch: $CI_COMMIT_REF_NAME, Commit: $CI_COMMIT_SHORT_SHA)"
   artifacts:
     paths:
       - merged-reports
