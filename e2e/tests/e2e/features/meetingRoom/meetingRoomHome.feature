@@ -193,12 +193,12 @@ Feature: Meeting Room Home
     When "Alice" presses the escape button twice on the Meeting-Room-Page
     Then for "Alice" order selection dropdown should not be displayed on the People-Option-Page
 
-  @skip
-  # skipped because of https://git.opentalk.dev/opentalk/product/tickets/-/work_items/263
-  Scenario: Guest users can send direct messages to other participants from the list in People tab in the Meeting Room
+
+  Scenario Outline: Guest users can send direct or private messages to other participants in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
+    # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/127
     Given 2 guests have joined the meeting of "Alice"
-    When "Alice" sends a direct message "Hello" to "guest1" on the Meeting-Room-Page
+    When "Alice" sends a "<message type>" message "Hello" to "guest1" on the Meeting-Room-Page
     Then "guest1" should be notified with the following text in the meeting room of "Alice":
       """
       You have a new message
@@ -226,6 +226,10 @@ Feature: Meeting Room Home
     Then for "Alice" the following messages should be displayed in the chat on the Messages-Page
       | Hello |
       | Hi    |
+    Examples:
+      | message type |
+      | direct       |
+      | private      |
 
   @skip @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
   Scenario: Moderator can remove participants and accept them back into the meeting

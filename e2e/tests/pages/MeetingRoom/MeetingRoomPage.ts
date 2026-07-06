@@ -7,6 +7,7 @@ import { config } from '../../config';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { BurgerMenuPage } from './BurgerMenuPage';
 import { MeetingInfoPage } from './MeetingInfoPage';
+import { MessagesPage } from './MessagesPage';
 import { BreakoutRoomsPage } from './ModeratorTools/BreakoutRoomsPage';
 import { CoffeeBreakPage } from './ModeratorTools/CoffeeBreakPage';
 import { MuteParticipantsPage } from './ModeratorTools/MuteParticipantsPage';
@@ -97,7 +98,6 @@ export class MeetingRoomPage {
   public readonly resetButton: Locator;
   emojiPicker: Locator;
   public readonly emojiPickerDialog: Locator;
-  private readonly smileyEmojiButton: Locator;
   chatTextField: Locator;
   public readonly chatTextArea: Locator;
   private readonly chatTextbox: Locator;
@@ -209,13 +209,12 @@ export class MeetingRoomPage {
     this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
     this.chatListItems = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('listitem');
     this.noMessageMatchText = this.page
-      .getByRole('tabpanel', { name: 'Chat' })
+      .getByRole('tabpanel', { name: 'Home' })
       .getByText('No messages matching the criteria');
     this.resetButton = this.page.getByRole('button', { name: 'Reset' });
     this.emojiPicker = this.page.getByRole('button', { name: 'open emoji picker' });
     this.chatTextField = this.page.getByPlaceholder('Type a message');
     this.emojiPickerDialog = this.page.getByRole('dialog', { name: 'Emoji picker' });
-    this.smileyEmojiButton = this.page.getByRole('button', { name: 'smiley', exact: true });
 
     this.chatTextArea = this.page.locator('//*[@id="chat-input-label"]');
     this.chatTextbox = this.page.getByRole('textbox', { name: 'Chat', exact: true });
@@ -732,5 +731,12 @@ export class MeetingRoomPage {
   public async acceptInvitationToWhisperGroup(): Promise<void> {
     await this.acceptInvitationToWhisperGroupButton.click();
     await this.acceptInvitationToWhisperGroupButton.waitFor({ state: 'detached' });
+  }
+
+  public async openMessages(): Promise<MessagesPage> {
+    await this.messagesButton.click();
+    const messagesPage = new MessagesPage({ page: this.page });
+    await messagesPage.newMessageButton.waitFor({ state: 'visible' });
+    return messagesPage;
   }
 }
