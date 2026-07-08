@@ -12,7 +12,6 @@ import { MeetingRoomPage } from '../../../pages/MeetingRoom/MeetingRoomPage';
 import { DebriefingPage } from '../../../pages/MeetingRoom/ModeratorTools/DebriefingPage';
 
 test.describe('Meeting Room_Debriefing', () => {
-  // skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/work_items/3288
   let meetingRoomPage: MeetingRoomPage,
     guestLink: string,
     guestMeetingRoomPage: MeetingRoomPage,

@@ -158,8 +158,7 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     await deleteUser(userId);
   });
 
-  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async ({ browserName }) => {
-    test.skip(browserName === 'webkit');
+  test('TC_002_Meeting Room_As Moderator_Reset raised hands_Search participant textbox', async () => {
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await expect(guestMeetingRoomPage.toolBar.handLowerButton).toBeEnabled();
