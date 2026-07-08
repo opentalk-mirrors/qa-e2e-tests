@@ -444,25 +444,25 @@ e2e-gherkin-tests:
   artifacts:
     when: always
     paths:
+      - cucumber-report-*.json
       - playwright-report
     expire_in: 1 days
 
 merge-and-upload-test-results:
   stage: testrail
   image: python:latest
+  when: always
   needs:
-    - e2e-playwright-tests
+    - job: e2e-playwright-tests
+      artifacts: true
+    - job: e2e-gherkin-tests
+      artifacts: true
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
   before_script:
-    - pip install junitparser trcli
+    - pip install trcli
   script: |
-    mkdir ./merged-reports
-    junitparser merge \
-      ./junit/junit-chromium.xml \
-      ./junit/junit-webkit.xml \
-      ./junit/junit-firefox.xml \
-      ./merged-reports/combined-report.xml
+    # Upload Playwright JUnit report to TestRail
     trcli -y \
       -h https://opentalk.testrail.com/ \
       --project "Automated Tests" \
@@ -471,8 +471,22 @@ merge-and-upload-test-results:
       parse_junit \
       -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
-      --title "Automated Nightly Tests from GitLab CI/CD (Branch: $CI_COMMIT_REF_NAME, Commit: $CI_COMMIT_SHORT_SHA)"
+      --title "Automated Nightly Playwright Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
+    # Upload Gherkin Cucumber JSON report to TestRail
+    trcli -y \
+      -h https://opentalk.testrail.com/ \
+      --project "Automated Tests" \
+      -u $TESTRAIL_EMAIL \
+      -p $TESTRAIL_PASSWORD \
+      parse_cucumber \
+      -f "./cucumber-report-*.json"
+      --run-description "URL: $CI_PIPELINE_URL" \
+      --title "Automated Nightly Gherkin Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)" \
+      --case-matcher auto
   artifacts:
+    when: always
     paths:
-      - merged-reports
+      - junit/
+      - cucumber-report-*.json
+      - playwright-report/
     expire_in: 7 days
