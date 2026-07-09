@@ -479,14 +479,7 @@ merge-and-upload-test-results:
       -u $TESTRAIL_EMAIL \
       -p $TESTRAIL_PASSWORD \
       parse_cucumber \
-      -f "./cucumber-report-*.json"
+      -f "./cucumber-report-*.json" \
       --run-description "URL: $CI_PIPELINE_URL" \
       --title "Automated Nightly Gherkin Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)" \
       --case-matcher auto
-  artifacts:
-    when: always
-    paths:
-      - junit/
-      - cucumber-report-*.json
-      - playwright-report/
-    expire_in: 7 days
