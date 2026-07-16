@@ -2,7 +2,7 @@
 # Playwright
 node_modules/
 /test-results/
-/playwright-report/
+playwright-report/
 /blob-report/
 /playwright/.cache/
 .gitlab-ci-local
@@ -14,3 +14,4 @@ html-report/
 
 # IntelliJ
 .idea
+.pnpm-store/
