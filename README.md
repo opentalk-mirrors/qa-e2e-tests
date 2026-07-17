@@ -148,6 +148,18 @@ SHORT_TIMEOUT # defaults to 5s
 ```
 This approach makes it easier to adjust timing across the entire test suite without changing individual tests, and helps keep our Playwright tests clean and flexible.
 
+#### Additional flags
+
+Both Playwright and Cucumber support extra command-line options when running tests. You can pass these options directly to the underlying command. For example:
+
+```shell
+pnpm run test:gherkin e2e/tests/e2e/features/ --strict --format html
+pnpm run test:playwright --ui -x
+```
+
+Any supported Playwright or Cucumber CLI flag can be appended in the same way.
+
+
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
 These traces are a very useful tool to debug failed tests in CI, specially if they pass in the local environment.  
