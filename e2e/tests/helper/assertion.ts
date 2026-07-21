@@ -27,6 +27,7 @@ type AssertionsWithoutExpected =
   | 'toBeUndefined'
   | 'toBeEnabled'
   | 'toBeFocused'
+  | 'not toEqual'
   | 'toBeHidden';
 
 type AssertionType = AssertionsWithExpected | AssertionsWithoutExpected;
@@ -108,6 +109,9 @@ export async function assert(
         break;
       case 'toEqual':
         expect(actual as string[] | object, assertionMessage).toEqual(expected);
+        break;
+      case 'not toEqual':
+        expect(actual as string[] | object, message).not.toEqual(expected);
         break;
       case 'toBeTruthy':
         expect(actual, assertionMessage).toBeTruthy();

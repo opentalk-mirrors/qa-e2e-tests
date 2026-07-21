@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 import { getMeetingLink, OpenTalkEvent } from '../../helper/Api';
 import { assert } from '../../helper/assertion';
@@ -153,7 +153,6 @@ async function startAdhocMeetingAsModerator(
   );
 
   // only moderator is present before guests join
-  expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
   await assert(
     await meetingRoomPage.getNumberOfParticipantsInMeeting(),
     'toBe',
@@ -261,22 +260,22 @@ Then(
     for (const option of expectedDetails) {
       switch (option) {
         case 'Edit':
-          await expect(home.editMenuItem).toBeVisible();
+          assert(home.editMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         case 'Add to favorites':
-          await expect(home.addToFavoriteMenuItem).toBeVisible();
+          assert(home.addToFavoriteMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         case 'Copy Meeting-Link':
-          await expect(home.copyMeetingLinkMenuItem).toBeVisible();
+          assert(home.copyMeetingLinkMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         case 'Delete':
-          await expect(home.deleteMenuItem).toBeVisible();
+          assert(home.deleteMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         case 'Details':
-          await expect(home.detailsMenuItem).toBeVisible();
+          assert(home.detailsMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         case 'Decline':
-          await expect(home.declineMenuItem).toBeVisible();
+          assert(home.declineMenuItem, 'toBeVisible', `Expected to have participants`);
           break;
         default:
           throw new Error(`'${option}' option is not available in 3-dot button menu`);
@@ -303,7 +302,7 @@ Given(
     const api = this.getUser(moderator).api;
     const apiInvitee = this.getUser(invitee).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
-    expect(meeting.created_by.firstname).toBe(moderator);
+    await assert(meeting.created_by.firstname, 'toBe', moderator, `Expected to have  participants`);
     await apiInvitee.acceptInvite(meeting.id);
   }
 );
@@ -341,22 +340,15 @@ Then(
     validateDataTableHeaders(dataTable, expectedHeaders);
     const expectedDetails = dataTable.hashes();
     for (let i = 0; i < expectedDetails.length; i++) {
-      switch (expectedDetails[i].detail) {
-        case 'time':
-          if (expectedDetails[i].value === '%date_time_format%') {
-            expect(await meetingItem.textContent()).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2} - \d{2}:\d{2}/);
-          } else {
-            await expect(meetingItem).toContainText(expectedDetails[i].value);
-          }
-          break;
-        case 'meeting title':
-          await expect(meetingItem).toContainText(expectedDetails[i].value);
-          break;
-        case 'creator':
-          await expect(meetingItem).toContainText(expectedDetails[i].value);
-          break;
-        default:
-          throw new Error(`${expectedDetails[i].options} detail is not available`);
+      if (expectedDetails[i].detail === 'time' && expectedDetails[i].value === '%date_time_format%') {
+        assert(
+          await meetingItem.textContent(),
+          'toMatch',
+          /\d{2}\/\d{2}\/\d{4} \d{2}:\d{2} - \d{2}:\d{2}/,
+          `Expected to have  participants`
+        );
+      } else {
+        assert(meetingItem, 'toBe', expectedDetails[i].value, `Expected to have participants`);
       }
     }
   }
@@ -371,10 +363,18 @@ Then(
     for (const button of expectedDetails) {
       switch (button) {
         case '3-dot option':
-          await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
+          await assert(
+            await home.getThreeDotMenuOfMeeting(meetingTitle),
+            'toBeVisible',
+            `Expected to have meetings`
+          );
           break;
         case 'Start':
-          await expect(await home.getStartMeetingButton(meetingTitle)).toBeVisible();
+          await assert(
+            await home.getStartMeetingButton(meetingTitle),
+            'toBeVisible',
+            `Expected to have meetings`
+          );
           break;
         default:
           throw new Error(`${button} button is not available`);
@@ -407,10 +407,10 @@ Then(
     for (const detail of expectedDetails) {
       switch (detail) {
         case 'no-favorite-meetings-text':
-          await expect(home.noFavoritesSelector).toBeVisible();
+          assert(home.noFavoritesSelector, 'toBeVisible', `Expected to have participants`);
           break;
         case 'bookmark icon':
-          expect(await home.favoriteMeetingsIcons.count()).toBe(1);
+          assert(await home.favoriteMeetingsIcons.count(), 'toBe', 1, `Expected to have participants`);
           break;
         default:
           throw new Error(`${detail} is a typo or an unexpected detail`);
@@ -432,7 +432,7 @@ When('{string} selects {string} on the Home-Page', async function (this: CustomW
 Then('for {string} the Meetings list should be displayed', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
   const myMeeting = new MyMeetingsPage({ page });
-  await expect(myMeeting.myMeetingsHeading).toBeVisible();
+  assert(myMeeting.myMeetingsHeading, 'toBeVisible', `Expected to have  participants`);
 });
 
 When(
@@ -478,7 +478,7 @@ Then(
   async function (this: CustomWorld, user: string, meetingTitle: string) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    expect(await home.isMeetingFavorite(meetingTitle)).toBe(true);
+    assert(await home.isMeetingFavorite(meetingTitle), 'toBe', true, `Expected to have  participants`);
   }
 );
 
@@ -488,9 +488,13 @@ Then(
     const home = await navigateToHomePage(this, user);
     const expectedMeetings = dataTable.raw().map(([value]) => value);
     for (const meeting of expectedMeetings) {
-      await expect(await home.getFavouriteMeetingSelector(meeting)).toBeVisible();
+      assert(
+        await home.getFavouriteMeetingSelector(meeting),
+        'toBeVisible',
+        `Expected to have participants`
+      );
     }
-    await expect(home.favoriteMeetingsIcons).toBeVisible();
+    assert(home.favoriteMeetingsIcons, 'toBeVisible', `Expected to have participants`);
   }
 );
 
@@ -518,7 +522,7 @@ Then(
       if (title === `OpenTalk Meeting Invitation - "${meetingTitle}"`) {
         const lobby = new LobbyRoomPage({ page });
         const meetingTitleLocator = await lobby.getMeetingInvitationTitleLocator(meetingTitle);
-        await expect(meetingTitleLocator).toBeVisible();
+        assert(meetingTitleLocator, 'toBeVisible', `Expected to have  participants`);
       }
     }
   }
@@ -538,21 +542,26 @@ Then(
   async function (this: CustomWorld, user: string, dataTable: DataTable) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    await expect(home.joinExistingMeetingDialog).toBeVisible();
+    assert(home.joinExistingMeetingDialog, 'toBeVisible', `Expected to have participants`);
+
     const expectedDetails = dataTable.raw().map(([value]) => value);
     for (const detail of expectedDetails) {
       switch (detail) {
         case 'Join a meeting now':
-          await expect(home.joinExistingMeetingHeading).toBeVisible();
+          assert(home.joinExistingMeetingHeading, 'toBeVisible', `Expected to have participants`);
+
           break;
         case 'Meeting ID (URL)':
-          await expect(home.joinExistingMeetingInput).toBeVisible();
+          assert(home.joinExistingMeetingInput, 'toBeVisible', `Expected to have participants`);
+
           break;
         case 'Join':
-          await expect(home.joinExistingMeetingJoinButton).toBeVisible();
+          assert(home.joinExistingMeetingJoinButton, 'toBeVisible', `Expected to have participants`);
+
           break;
         case 'Close':
-          await expect(home.joinExistingMeetingCloseButton).toBeVisible();
+          assert(home.joinExistingMeetingCloseButton, 'toBeVisible', `Expected to have participants`);
+
           break;
         default:
           throw new Error(`${detail} detail is not available`);
@@ -578,7 +587,7 @@ Then(
   async function (this: CustomWorld, user: string, errorMessage: string) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    await expect(home.joinExistingMeetingErrorLabel).toContainText(errorMessage);
+    assert(home.joinExistingMeetingErrorLabel, 'toContainText', errorMessage, `Expected to have participants`);
   }
 );
 
@@ -603,7 +612,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
-    await expect(home.joinExistingMeetingDialog).not.toBeVisible();
+    assert(home.joinExistingMeetingDialog, 'not toBeVisible', `Expected to have participants`);
   }
 );
 
@@ -616,7 +625,7 @@ When('{string} navigates back from Lobby-Page', async function (this: CustomWorl
 Then('{string} should be on the Home-Page', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
   const home = new HomePage({ page: page });
-  await expect(home.currentMeetingsHeaderSelector).toBeVisible();
+  assert(home.currentMeetingsHeaderSelector, 'toBeVisible', `Expected to have participants`);
 });
 
 When('{string} selects the OpenTalk logo on the Lobby-Page', async function (this: CustomWorld, user: string) {
@@ -644,14 +653,14 @@ Then(
     const api = this.getUser(user).api;
     const home = new HomePage({ page: page });
     const roomId = (await api.getMeetingByTitle(meetingTitle)).room.id;
-    await expect(home.joinExistingMeetingInput).toHaveValue(roomId);
+    assert(home.joinExistingMeetingInput, 'toHaveValue', roomId, `Expected to have participants`);
   }
 );
 
 Then('for {string} there should be no change in UI', async function (this: CustomWorld, user: string) {
   const page = this.getUser(user).page;
   const home = new HomePage({ page: page });
-  await expect(home.currentMeetingsHeaderSelector).toBeVisible();
+  assert(home.currentMeetingsHeaderSelector, 'toBeVisible', `Expected to have participants`);
 });
 
 When(

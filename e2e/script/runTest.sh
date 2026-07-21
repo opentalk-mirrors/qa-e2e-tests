@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 RETRY=0
 if [[ "$CI" == "true" ]]; then
-  RETRY=2
+  RETRY=0
 fi
 WORKERS="${WORKERS:-$(( $(nproc) / 2 ))}"
 echo Using $WORKERS workers
