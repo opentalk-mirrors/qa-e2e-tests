@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { PollPage } from '../../pages/MeetingRoom/ModeratorTools/PollPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -21,7 +21,12 @@ Then(
   async function (this: CustomWorld, user: string, description: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     pollPage = new PollPage({ page: meeting.meetingRoomPage.page });
-    await expect(pollPage.emptyPollMessage).toHaveText(description);
+    await assert(
+      pollPage.emptyPollMessage,
+      'toHaveText',
+      description,
+      `Expected description '${description}' to be present in locator ${pollPage.emptyPollMessage}`
+    );
   }
 );
 
@@ -56,9 +61,19 @@ Then(
       const expectedValue = row['value'] === 'true';
 
       if (pollType === 'live') {
-        expect(defaults.isLive).toBe(expectedValue);
+        await assert(
+          defaults.isLive,
+          'toBe',
+          expectedValue,
+          `Expected poll live checkbox status to be ${expectedValue} but found ${defaults.isLive}`
+        );
       } else if (pollType === 'multiple choice') {
-        expect(defaults.allowMultipleChoice).toBe(expectedValue);
+        await assert(
+          defaults.allowMultipleChoice,
+          'toBe',
+          expectedValue,
+          `Expected poll multiple-choice checkbox status to be ${expectedValue} but found ${defaults.allowMultipleChoice}`
+        );
       } else {
         throw new Error(`Unknown poll-type: ${pollType}`);
       }
@@ -72,6 +87,6 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     pollPage = new PollPage({ page: meeting.meetingRoomPage.page });
     const existingPolls = await pollPage.getExistingPolls();
-    expect(existingPolls).toBe(0);
+    await assert(existingPolls, 'toBe', 0, `Expected to have 0 polls but found ${existingPolls}`);
   }
 );

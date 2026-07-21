@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { DebriefingPage } from '../../pages/MeetingRoom/ModeratorTools/DebriefingPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -24,5 +24,10 @@ Then('for {string} the debriefing option should be displayed', async function (t
     throw new Error(`Step user mismatch: expected ${username}, got ${this.currentUser}`);
   }
 
-  await expect(debriefingPage.debriefingOptions.forModeratorOption).toBeVisible();
+  await assert(
+    debriefingPage.debriefingOptions.forModeratorOption,
+    'toBeVisible',
+    undefined,
+    `Expected moderation tool in debriefing page to be visible`
+  );
 });

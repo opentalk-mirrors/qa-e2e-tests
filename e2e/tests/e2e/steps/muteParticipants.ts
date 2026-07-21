@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { MuteParticipantsPage } from '../../pages/MeetingRoom/ModeratorTools/MuteParticipantsPage';
@@ -57,7 +57,13 @@ Then(
         let success = false;
         do {
           try {
-            expect(await notificationPage.getAllAlertNotificationsTexts()).toContain(message.text);
+            const notifications = await notificationPage.getAllAlertNotificationsTexts();
+            await assert(
+              notifications,
+              'toContain',
+              message.text,
+              `Expected notification to have text ${message.text} but got ${notifications}`
+            );
             success = true;
           } catch (_error) {
             console.log(`could not find notification '${message.text}' on the page of '${message.user}', will retry`);
@@ -89,10 +95,11 @@ Then(
     for (const status of statuses) {
       if (meeting.participantMeetingRoomPages && meeting.participantMeetingRoomPages[status.participant]) {
         await meeting.participantMeetingRoomPages[status.participant].page.bringToFront();
+        const isAudioOn = await meeting.participantMeetingRoomPages[status.participant].isAudioOn();
         if (status.status === 'enabled') {
-          expect(await meeting.participantMeetingRoomPages[status.participant].isAudioOn()).toBeTruthy();
+          await assert(isAudioOn, 'toBeTruthy', undefined, `Expected mics to be enabled but it was disabled`);
         } else if (status.status === 'disabled') {
-          expect(await meeting.participantMeetingRoomPages[status.participant].isAudioOn()).toBeFalsy();
+          await assert(isAudioOn, 'toBeFalsy', undefined, `Expected mics to be disabled but it was enabled`);
         } else {
           throw new Error(`${status.status} is an invalid status, only "enabled" and "disabled" are accepted`);
         }

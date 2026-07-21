@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { expect, Locator } from '@playwright/test';
+import { expect, Locator, Response } from '@playwright/test';
 
 type AssertionType =
   | 'toBe'
@@ -10,11 +10,16 @@ type AssertionType =
   | 'toBeChecked'
   | 'toContain'
   | 'not toBeChecked'
-  | 'not toBeVisible';
+  | 'not toBeVisible'
+  | 'toEqual'
+  | 'toBeTruthy'
+  | 'toBeFalsy'
+  | 'toBeUndefined'
+  | 'toHaveText';
 export async function assert(
-  actual: string | number | Locator | boolean | string[],
+  actual: string | number | Locator | boolean | string[] | Response | undefined | null,
   assertionType: AssertionType,
-  expected?: string | number | boolean,
+  expected?: string | number | boolean | string[],
   message?: string
 ) {
   try {
@@ -46,6 +51,21 @@ export async function assert(
         } else {
           expect(actual as string, message).toContain(expected);
         }
+        break;
+      case 'toEqual':
+        expect(actual as string[], message).toEqual(expected);
+        break;
+      case 'toBeTruthy':
+        expect(actual, message).toBeTruthy();
+        break;
+      case 'toBeFalsy':
+        expect(actual, message).toBeFalsy();
+        break;
+      case 'toBeUndefined':
+        expect(actual, message).toBeUndefined();
+        break;
+      case 'toHaveText':
+        await expect(actual as Locator, message).toHaveText(expected as string);
         break;
       default:
         throw new Error(`'${assertionType}' is not implemented`);
