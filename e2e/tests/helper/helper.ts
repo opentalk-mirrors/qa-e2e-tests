@@ -14,7 +14,7 @@ export function formatDate(date: Date) {
 }
 
 // returns the substituted string or if no substitution is found, the string itself
-export function substituteInLineCodes(code: string): string {
+export function substituteInLineCodes(code: string): RegExp | string {
   switch (code) {
     case '%meeting_url_pattern%':
       return meetingUrlPatter;

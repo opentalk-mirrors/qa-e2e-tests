@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { MessagesPage } from '../../pages/MeetingRoom/MessagesPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -15,9 +15,19 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    expect(await messagesPage.getParticipantDetails(-1)).toContain(user);
-    expect(await messagesPage.getParticipantDetails(-1)).toContain(message);
-    expect(await messagesPage.getParticipantDetails(-1)).toMatch(/([01]?[0-9]|2[0-3]):[0-5][0-9]/);
+    assert(await messagesPage.getParticipantDetails(-1), 'toContain', user, `Expected coffee break icon to be visible`);
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toContain',
+      message,
+      `Expected coffee break icon to be visible`
+    );
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toMatch',
+      /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -27,7 +37,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    expect(await messagesPage.getParticipantData('message')).toEqual(messages.raw().flat());
+    assert(
+      await messagesPage.getParticipantData('message'),
+      'toEqual',
+      messages.raw().flat(),
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -48,8 +63,8 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
     const threads = await messagesPage.getAllThreadsDetails();
-    expect(threads).toHaveProperty(to);
-    expect(threads[to]).toBe(message);
+    await assert(threads, 'toHaveProperty', to, `Expected coffee break icon to be visible`);
+    await assert(threads[to], 'toBe', message, `Expected coffee break icon to be visible`);
   }
 );
 

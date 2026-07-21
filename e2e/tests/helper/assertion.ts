@@ -16,11 +16,25 @@ type AssertionType =
   | 'toBeFalsy'
   | 'toBeUndefined'
   | 'toHaveText'
-  | 'toContainText';
+  | 'toContainText'
+  | 'toBeEnabled'
+  | 'toHaveProperty'
+  | 'toHaveValue';
 export async function assert(
-  actual: string | number | Locator | boolean | string[] | Response | undefined | null,
+  actual:
+    | string
+    | number
+    | Locator
+    | boolean
+    | string[]
+    | Locator
+    | Response
+    | Record<string, string>
+    | undefined
+    | null
+    | object,
   assertionType: AssertionType,
-  expected?: string | number | boolean | string[],
+  expected?: string | number | boolean | string[] | RegExp | object,
   message?: string
 ) {
   try {
@@ -29,10 +43,7 @@ export async function assert(
         expect(actual, message).toBe(expected);
         break;
       case 'toMatch':
-        if (typeof actual !== 'string' || typeof expected !== 'string') {
-          throw new TypeError('actual and expected must be a string');
-        }
-        expect(actual, message).toMatch(new RegExp(expected));
+        await expect(actual as string, message).toMatch(expected as RegExp | string);
         break;
       case 'toBeVisible':
         await expect(actual as Locator, message).toBeVisible();
@@ -54,7 +65,7 @@ export async function assert(
         }
         break;
       case 'toEqual':
-        expect(actual as string[], message).toEqual(expected);
+        expect(actual as string[] | object, message).toEqual(expected);
         break;
       case 'toBeTruthy':
         expect(actual, message).toBeTruthy();
@@ -65,11 +76,20 @@ export async function assert(
       case 'toBeUndefined':
         expect(actual, message).toBeUndefined();
         break;
+      case 'toContainText':
+        await expect(actual as Locator, message).toContainText(expected as string | RegExp);
+        break;
+      case 'toBeEnabled':
+        await expect(actual as Locator, message).toBeEnabled();
+        break;
+      case 'toHaveProperty':
+        expect(actual as Record<string, string>, message).toHaveProperty(expected as string);
+        break;
+      case 'toHaveValue':
+        await expect(actual as Locator, message).toHaveValue(expected as string | RegExp);
+        break;
       case 'toHaveText':
         await expect(actual as Locator, message).toHaveText(expected as string);
-        break;
-      case 'toContainText':
-        await expect(actual as Locator, message).toContainText(expected as string);
         break;
       default:
         throw new Error(`'${assertionType}' is not implemented`);

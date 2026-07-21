@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect, Locator } from '@playwright/test';
+import { Locator } from '@playwright/test';
 
 import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
@@ -23,7 +23,12 @@ Then(
   async function (this: CustomWorld, user: string, description: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.votingRoomMessage).toHaveText(description);
+    await assert(
+      votingRoomPage.votingRoomMessage,
+      'toHaveText',
+      description,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -82,7 +87,12 @@ Then(
   async function (this: CustomWorld, user: string, tooltipDescription: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription).toHaveText(tooltipDescription);
+    await assert(
+      votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription,
+      'toHaveText',
+      tooltipDescription,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -132,11 +142,11 @@ Then(
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     const actual = await votingRoomPage.getSavedVotings();
 
-    expect(actual.length).toBe(expected.length);
+    await assert(actual.length, 'toBe', expected.length, `Expected coffee break icon to be visible`);
 
     for (let i = 0; i < expected.length; i++) {
-      expect(actual[i].title).toBe(expected[i].title);
-      expect(actual[i].topic).toBe(expected[i].topic);
+      await assert(actual[i].title, 'toBe', expected[i].title, `Expected coffee break icon to be visible`);
+      await assert(actual[i].topic, 'toBe', expected[i].topic, `Expected coffee break icon to be visible`);
     }
   }
 );
@@ -161,7 +171,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
 
-    expect(await votingRoomPage.isSavedVotingListVisible()).toBe(false);
+    await assert(
+      await votingRoomPage.isSavedVotingListVisible(),
+      'toBe',
+      false,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -197,6 +212,6 @@ Then(
     const expected = Object.fromEntries(
       lastCreatedVotingDetails.map(({ field, value }) => [field, normalizeValue(value)])
     );
-    expect(actual).toEqual(expected);
+    await assert(actual, 'toEqual', expected, `Expected coffee break icon to be visible`);
   }
 );

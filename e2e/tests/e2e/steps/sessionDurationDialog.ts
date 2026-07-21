@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { SessionDurationDialog } from '../../pages/MeetingRoom/ModeratorTools/SessionDurationDialog';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -71,7 +71,7 @@ Then(
   async function (this: CustomWorld, title: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
-    await expect(sessionDurationDialog.title).toHaveText(title);
+    await assert(sessionDurationDialog.title, 'toHaveText', title, `Expected coffee break icon to be visible`);
   }
 );
 
@@ -80,7 +80,7 @@ Then(
   async function (this: CustomWorld, user: string, duration: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorRoomPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await expect(moderatorRoomPage.durationButton).toHaveText(duration);
+    await assert(moderatorRoomPage.durationButton, 'toHaveText', duration, `Expected coffee break icon to be visible`);
   }
 );
 
@@ -89,7 +89,12 @@ Then(
   async function (this: CustomWorld, duration: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
-    expect(await sessionDurationDialog.getSelectedDurationText()).toBe(duration);
+    await assert(
+      await sessionDurationDialog.getSelectedDurationText(),
+      'toBe',
+      duration,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -98,7 +103,12 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorRoomPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    expect(await moderatorRoomPage.isSessionDurationDialogVisible()).toBeFalsy();
+    await assert(
+      await moderatorRoomPage.isSessionDurationDialogVisible(),
+      'toBeFalsy',
+      undefined,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -107,8 +117,23 @@ Then(
   async function (this: CustomWorld, text: string, expectedValue: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
-    await expect(sessionDurationDialog.customDurationLabel).toHaveText(text);
-    await expect(sessionDurationDialog.customDurationButtonInput).toBeVisible();
-    await expect(sessionDurationDialog.customDurationButtonInput).toHaveValue(expectedValue);
+    await assert(
+      sessionDurationDialog.customDurationLabel,
+      'toHaveText',
+      text,
+      `Expected coffee break icon to be visible`
+    );
+    await assert(
+      sessionDurationDialog.customDurationButtonInput,
+      'toBeVisible',
+      undefined,
+      `Expected coffee break icon to be visible`
+    );
+    await assert(
+      sessionDurationDialog.customDurationButtonInput,
+      'toHaveValue',
+      expectedValue,
+      `Expected coffee break icon to be visible`
+    );
   }
 );

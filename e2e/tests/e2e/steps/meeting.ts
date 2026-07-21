@@ -116,13 +116,13 @@ Then(
 Then(
   'the content of the clipboard of {string} should match {string}',
   async function (this: CustomWorld, user: string, regexToMatch: string) {
-    regexToMatch = substituteInLineCodes(regexToMatch);
+    const urlRegex = substituteInLineCodes(regexToMatch);
     const clipboardContent = await getClipboardContent(this.getStartedMeeting(user).meeting.meetingRoomPage.page);
     await assert(
       clipboardContent,
       'toMatch',
-      regexToMatch,
-      `Expected clipboard content to match '${regexToMatch}' but got '${clipboardContent}'`
+      urlRegex,
+      `Expected clipboard content to match '${urlRegex}' but got '${clipboardContent}'`
     );
   }
 );
