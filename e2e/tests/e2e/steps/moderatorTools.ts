@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
 import { assert } from '../../helper/assertion';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
@@ -44,7 +43,12 @@ Then(
           break;
         }
       }
-      await assert(elementFound, 'toBe', true, `Could not find the element '${expectedElement}'`);
+      assert(
+        elementFound,
+        'toBeTruthy',
+        undefined,
+        `Expected "${expectedElement}" to be listed among the ${elements} in the open moderator tool`
+      );
     }
   }
 );
@@ -57,17 +61,32 @@ Then(
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     switch (element) {
       case 'field':
-        await expect(moderatorToolsPage.getTextboxByLabel(elementName)).toBeVisible();
+        assert(
+          moderatorToolsPage.getTextboxByLabel(elementName),
+          'toBeVisible',
+          undefined,
+          `Expected the field "${elementName}" to be visible in the open moderator tool`
+        );
         break;
 
       // switch has no inner text and returns null, so cant return accessible name
       case 'switch':
-        await expect(moderatorToolsPage.getSwitchByName(elementName)).toBeVisible();
+        assert(
+          moderatorToolsPage.getSwitchByName(elementName),
+          'toBeVisible',
+          undefined,
+          `Expected the switch "${elementName}" to be visible in the open moderator tool`
+        );
         break;
 
       // sort by button has no inner text and returns null, so cant return accessible name
       case 'button':
-        await expect(moderatorToolsPage.getButtonByName(elementName)).toBeVisible();
+        assert(
+          moderatorToolsPage.getButtonByName(elementName),
+          'toBeVisible',
+          undefined,
+          `Expected the button "${elementName}" to be visible in the open moderator tool`
+        );
         break;
 
       default:
@@ -82,7 +101,12 @@ Then(
     const participants = expectedParticipants.raw().flat();
     const participantListPage = await expectParticipantListWithCheckboxesToHaveCount(this, user, participants.length);
     for (const participant of participants) {
-      await expect(participantListPage.getParticipantItemByName(participant)).toBeVisible();
+      assert(
+        participantListPage.getParticipantItemByName(participant),
+        'toBeVisible',
+        undefined,
+        `Expected participant "${participant}" to be displayed with a checkbox in the moderator tool`
+      );
     }
   }
 );
@@ -103,7 +127,13 @@ async function expectParticipantListWithCheckboxesToHaveCount(
   await meeting.meetingRoomPage.page.bringToFront();
   const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
   const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
-  await expect(participantList.participantList).toHaveCount(expectedCount);
+  assert(
+    participantList.participantList,
+    'toHaveCount',
+    expectedCount,
+    `Expected ${expectedCount} participant(s) to be displayed with checkboxes in the moderator tool`
+  );
+
   return participantList;
 }
 
@@ -114,7 +144,12 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     for (const label of labels.raw().flat()) {
-      await expect(moderatorToolsPage.getTextboxByLabel(label)).toBeVisible();
+      assert(
+        moderatorToolsPage.getTextboxByLabel(label),
+        'toBeVisible',
+        undefined,
+        `Expected the field "${label}" to be visible in the open moderator tool`
+      );
     }
   }
 );
@@ -133,7 +168,12 @@ Then(
   async function (this: CustomWorld, textField: string, placeholder: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    expect(await moderatorToolsPage.getFieldPlaceholderValue(textField)).toBe(placeholder);
+    assert(
+      await moderatorToolsPage.getFieldPlaceholderValue(textField),
+      'toBe',
+      placeholder,
+      `Expected the "${textField}" field to have placeholder "${placeholder}"`
+    );
   }
 );
 
@@ -151,7 +191,7 @@ Then(
   async function (this: CustomWorld, text: string, textField: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    expect(await moderatorToolsPage.getFieldInputValue(textField)).toBe(text);
+    assert(await moderatorToolsPage.getFieldInputValue(textField), 'toBe', text, `Expected to have participants`);
   }
 );
 
@@ -184,7 +224,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     const actualParticipantsCount = await moderatorToolsPage.getTotalParticipantsNumber();
-    expect(participantsCount).toEqual(actualParticipantsCount);
+    assert(
+      actualParticipantsCount,
+      'toEqual',
+      participantsCount,
+      `Expected ${participantsCount} participant(s) to be displayed in the moderator tool, but found ${actualParticipantsCount}`
+    );
   }
 );
 
@@ -193,6 +238,11 @@ Then(
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorNotification = new NotificationPage({ page: meeting.meetingRoomPage.page });
-    expect(await moderatorNotification.getAlertNotificationText()).toBe(text);
+    assert(
+      await moderatorNotification.getAlertNotificationText(),
+      'toBe',
+      text,
+      `Expected a notification with the text "${text}" to be displayed in the meeting room`
+    );
   }
 );

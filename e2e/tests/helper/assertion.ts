@@ -21,7 +21,8 @@ type AssertionType =
   | 'toHaveProperty'
   | 'toHaveValue'
   | 'toHaveCount'
-  | 'toBeFocused';
+  | 'toBeFocused'
+  | 'toBeHidden';
 export async function assert(
   actual:
     | string
@@ -99,7 +100,10 @@ export async function assert(
         await expect(actual as Locator, message).toHaveText(expected as string);
         break;
       case 'toHaveCount':
-        await expect(actual as Locator, message).toHaveCount(expected as number);
+        expect(actual as Locator, message).toHaveCount(expected as number);
+        break;
+      case 'toBeHidden':
+        expect(actual as Locator, message).toBeHidden();
         break;
       case 'toBeFocused':
         await expect(actual as Locator, message).toBeFocused();
