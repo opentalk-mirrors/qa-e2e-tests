@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
 import { assert } from '../../helper/assertion';
 import { isTimeAscending, isTimeDescending } from '../../helper/checkTimeOrderHelper';
@@ -19,7 +18,12 @@ Then(
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const guestsName = dataTable.raw().map(([guest]) => guest);
     for (const guest of guestsName) {
-      expect(await peopleOptionPage.isGuest(guest)).toBeTruthy();
+      assert(
+        await peopleOptionPage.isGuest(guest),
+        'toBeTruthy',
+        undefined,
+        `Expected participant "${guest}" to be labeled as a guest`
+      );
     }
   }
 );
@@ -30,9 +34,15 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.participantsList).toBeVisible();
+    assert(peopleOptionPage.participantsList, 'toBeVisible', undefined, `Expected the participants list to be visible`);
+
     for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
-      expect(await peopleOptionPage.getParticipantDetails(i)).toMatch(/Joined ([01]\d|2[0-3]):[0-5]\d/);
+      assert(
+        await peopleOptionPage.getParticipantDetails(i),
+        'toMatch',
+        /Joined ([01]\d|2[0-3]):[0-5]\d/,
+        `Expected participant at index ${i} to have a join time in the format "Joined HH:MM"`
+      );
     }
   }
 );
@@ -43,9 +53,15 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.participantsList).toBeVisible();
+    assert(peopleOptionPage.participantsList, 'toBeVisible', undefined, `Expected the participants list to be visible`);
+
     for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
-      await expect(peopleOptionPage.microphonesStatus.nth(i)).toBeVisible();
+      assert(
+        peopleOptionPage.microphonesStatus.nth(i),
+        'toBeVisible',
+        undefined,
+        `Expected the microphone status to be visible for participant at index ${i}`
+      );
     }
   }
 );
@@ -66,7 +82,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getSearchParticipantPlaceholder()).toBe(placeholder);
+    assert(
+      await peopleOptionPage.getSearchParticipantPlaceholder(),
+      'toBe',
+      placeholder,
+      `Expected the search participant textbox placeholder to be "${placeholder}"`
+    );
   }
 );
 
@@ -96,7 +117,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getSearchParticipantTextboxValue()).toBe('');
+    assert(
+      await peopleOptionPage.getSearchParticipantTextboxValue(),
+      'toBe',
+      '',
+      `Expected the search participant textbox to be empty`
+    );
   }
 );
 
@@ -106,7 +132,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getTotalParticipantsNumber()).toBe(0);
+    assert(
+      await peopleOptionPage.getTotalParticipantsNumber(),
+      'toBe',
+      0,
+      `Expected no participants to match the search`
+    );
   }
 );
 
@@ -161,39 +192,74 @@ Then(
       case 'Ascending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
         const expectedOrder = [...participantsNames].sort((a, b) => a.localeCompare(b));
-        expect(participantsNames).toEqual(expectedOrder);
+        assert(
+          participantsNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be sorted alphabetically in ascending order`
+        );
+
         break;
       }
 
       case 'Descending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
         const expectedOrder = [...participantsNames].sort((a, b) => b.localeCompare(a));
-        expect(participantsNames).toEqual(expectedOrder);
+        assert(
+          participantsNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be sorted alphabetically in descending order`
+        );
+
         break;
       }
 
       case 'First Join Time': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
-        expect(isTimeAscending(times.slice(1))).toBeTruthy();
+        assert(
+          isTimeAscending(times.slice(1)),
+          'toBeTruthy',
+          undefined,
+          `Expected participants to be sorted by earliest join time first`
+        );
+
         break;
       }
 
       case 'Last Join Time': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
-        expect(isTimeDescending(times.slice(1))).toBeTruthy();
+        assert(
+          isTimeDescending(times.slice(1)),
+          'toBeTruthy',
+          undefined,
+          `Expected participants to be sorted by latest join time first`
+        );
+
         break;
       }
 
       case 'Last Active': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Last Active');
-        expect(isTimeDescending(times.slice(1))).toBeTruthy();
+        assert(
+          isTimeDescending(times.slice(1)),
+          'toBeTruthy',
+          undefined,
+          `Expected participants to be sorted by most recent activity first`
+        );
 
         break;
       }
 
       case 'Raised Hand First': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Hand raised');
-        expect(isTimeAscending(times.slice(1))).toBeTruthy();
+        assert(
+          isTimeAscending(times.slice(1)),
+          'toBeTruthy',
+          undefined,
+          `Expected participants with raised hands to be sorted by the earliest hand raise time`
+        );
+
         break;
       }
 
@@ -209,7 +275,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.sortByDropdown).not.toBeVisible();
+    await assert(
+      peopleOptionPage.sortByDropdown,
+      'not toBeVisible',
+      undefined,
+      `Expected the order selection dropdown not to be visible`
+    );
   }
 );
 
@@ -221,9 +292,20 @@ Then(
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const participantsName: string[] = await peopleOptionPage.getAllParticipantsNames();
     const participants = dataTable.raw().map(([participant]) => participant);
-    expect(participantsName.length).toBe(participants.length);
+    assert(
+      participantsName.length,
+      'toBe',
+      participants.length,
+      `Expected ${participants.length} participants, but found ${participantsName.length}`
+    );
+
     for (let i = 0; i < participants.length; i++) {
-      expect(participantsName[i]).toContain(participants[i]);
+      assert(
+        participantsName[i],
+        'toContain',
+        participants[i],
+        `Expected participant at position ${i + 1} to be "${participants[i]}"`
+      );
     }
   }
 );
