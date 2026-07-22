@@ -158,7 +158,6 @@ async function startAdhocMeetingAsModerator(
   const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
 
   await meetingRoomPage.meetingRoomName.waitFor({ state: 'visible' });
-  expect(await meetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
   await assert(await meetingRoomPage.getMeetingRoomName(), 'toContain', meetingTitlePrefix);
 
   // only moderator is present before guests join
