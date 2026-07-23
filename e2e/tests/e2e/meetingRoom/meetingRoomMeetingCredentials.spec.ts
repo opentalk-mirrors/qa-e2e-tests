@@ -36,7 +36,7 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     await expect(meetingRoomPage.meetingInfoButton).toBeVisible();
 
     const meetingInfoPage: MeetingInfoPage = await meetingRoomPage.showMeetingDetails();
-    await expect(meetingInfoPage.meetingLinkInputField).toBeVisible();
+    await expect(meetingInfoPage.inviteLinkInputField).toBeVisible();
     await expect(meetingInfoPage.dialInNumberInputField).toBeVisible();
     await expect(meetingInfoPage.clipBoardButton).toBeVisible();
     await expect(meetingInfoPage.eMailButton).toBeVisible();

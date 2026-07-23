@@ -82,6 +82,7 @@ export class LobbyRoomPage {
     await this.joinMeetingButton.isVisible();
     await this.joinMeetingButton.click();
     await this.page.waitForLoadState('load');
+    await this.joinMeetingButton.waitFor({ state: 'hidden' });
     const meetingRoomPage = new MeetingRoomPage({ page: this.page });
     await meetingRoomPage.renderMeetingRoom();
     return meetingRoomPage;
