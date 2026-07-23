@@ -472,13 +472,13 @@ merge-and-upload-test-results:
       -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
       --title "Automated Nightly Playwright Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
-    # # Upload Gherkin Cucumber JSON report to TestRail
-    # trcli -y \
-    #   -h https://opentalk.testrail.com/ \
-    #   --project "Automated Tests" \
-    #   -u $TESTRAIL_EMAIL \
-    #   -p $TESTRAIL_PASSWORD \
-    #   parse_cucumber \
-    #   -f "./cucumber-report-*.json" \
-    #   --run-description "URL: $CI_PIPELINE_URL" \
-    #   --title "Automated Nightly Gherkin Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
+    # Upload Gherkin Cucumber JSON report to TestRail
+    trcli -y \
+      -h https://opentalk.testrail.com/ \
+      --project "Automated Tests" \
+      -u $TESTRAIL_EMAIL \
+      -p $TESTRAIL_PASSWORD \
+      parse_cucumber \
+      -f "./cucumber-report-*.json" \
+      --run-description "URL: $CI_PIPELINE_URL" \
+      --title "Automated Nightly Gherkin Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
