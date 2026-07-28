@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
@@ -142,7 +142,13 @@ Then(
     const moderatorPage = this.getStartedMeeting(moderator).meeting.meetingRoomPage;
     await moderatorPage.page.bringToFront();
     const breakoutRoomPage = await moderatorPage.startBreakoutRoomsModeratorTool();
-    expect(await breakoutRoomPage.countParticipantsOfAllRooms()).toBe(expectedNoOfParticipants);
+    const noOfParticipants = await breakoutRoomPage.countParticipantsOfAllRooms();
+    await assert(
+      noOfParticipants,
+      'toBe',
+      expectedNoOfParticipants,
+      `Expected to have ${expectedNoOfParticipants} participants but found ${noOfParticipants} participants`
+    );
   }
 );
 
@@ -154,14 +160,26 @@ Then(
     await moderatorPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: moderatorPage.page });
     switch (type) {
-      case 'heading':
-        expect(await moderatorToolsPage?.getHeadingText()).toBe(expectedHeading);
+      case 'heading': {
+        const headingText = await moderatorToolsPage?.getHeadingText();
+        await assert(
+          headingText,
+          'toBe',
+          expectedHeading,
+          `Expected to have ${expectedHeading} but found ${headingText} in the heading`
+        );
         break;
-
-      case 'sub-heading':
-        expect(await moderatorToolsPage?.getSubHeadingText()).toBe(expectedHeading);
+      }
+      case 'sub-heading': {
+        const subHeadingText = await moderatorToolsPage?.getSubHeadingText();
+        await assert(
+          subHeadingText,
+          'toBe',
+          expectedHeading,
+          `Expected to have ${expectedHeading} but found ${subHeadingText} in the sub-heading`
+        );
         break;
-
+      }
       default:
         throw new Error(`Invalid type ${type}`);
     }
@@ -174,7 +192,13 @@ Then(
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
     const expectedOptions = expectedOptionsTable.raw().map(([value]) => value);
-    expect(await breakoutRoomsPage?.getSelectionModeOptions()).toEqual(expectedOptions);
+    const selectionModeOptions = await breakoutRoomsPage?.getSelectionModeOptions();
+    await assert(
+      selectionModeOptions,
+      'toEqual',
+      expectedOptions,
+      `Expected to have ${expectedOptions} but found ${selectionModeOptions} in the options`
+    );
   }
 );
 
@@ -188,24 +212,57 @@ Then(
     const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
     for (let i = 0; i < expectedSettingsTableHashes.length; i++) {
       switch (expectedSettingsTableHashes[i].setting) {
-        case 'Duration':
-          expect(await breakoutRoomsPage?.getSessionDuration()).toBe(expectedSettingsTableHashes[i].value);
+        case 'Duration': {
+          const sessionDuration = await breakoutRoomsPage?.getSessionDuration();
+          await assert(
+            sessionDuration,
+            'toBe',
+            expectedSettingsTableHashes[i].value,
+            `Expected to have duration of ${expectedSettingsTableHashes[i].value} but found ${sessionDuration}`
+          );
           break;
-        case 'By number of':
-          expect(await breakoutRoomsPage?.getSelectionMode()).toBe(expectedSettingsTableHashes[i].value);
+        }
+        case 'By number of': {
+          const selectionMode = await breakoutRoomsPage?.getSelectionMode();
+          await assert(
+            selectionMode,
+            'toBe',
+            expectedSettingsTableHashes[i].value,
+            `Expected ${expectedSettingsTableHashes[i].value} to be selected but found ${selectionMode} to be selected`
+          );
           break;
-        case 'Number of rooms':
-          expect(await breakoutRoomsPage?.getNumberOfRoomsSetting()).toBe(expectedSettingsTableHashes[i].value);
+        }
+        case 'Number of rooms': {
+          const noOfRoomsSetting = await breakoutRoomsPage?.getNumberOfRoomsSetting();
+          await assert(
+            noOfRoomsSetting,
+            'toBe',
+            expectedSettingsTableHashes[i].value,
+            `Expected to have ${expectedSettingsTableHashes[i].value} number of rooms but found ${noOfRoomsSetting}`
+          );
           break;
-        case 'Random distribution':
+        }
+        case 'Random distribution': {
+          const isDistributionRandom = await breakoutRoomsPage?.isDistributionRandom();
           if (expectedSettingsTableHashes[i].value === 'enabled') {
-            expect(await breakoutRoomsPage?.isDistributionRandom()).toBeTruthy();
+            await assert(
+              isDistributionRandom,
+              'toBeTruthy',
+              undefined,
+              `Expected Random distribution to be enabled but it was disabled`
+            );
           } else if (expectedSettingsTableHashes[i].value === 'disabled') {
-            expect(await breakoutRoomsPage?.isDistributionRandom()).toBeFalsy();
+            await assert(
+              isDistributionRandom,
+              'toBeFalsy',
+              undefined,
+              `Expected Random distribution to be disabled but it was enabled`
+            );
           } else {
             throw new Error('Invalid value for "Random distribution" setting');
           }
           break;
+        }
         default:
           throw new Error('Invalid Setting name for the Breakout Rooms moderator tool');
       }
@@ -218,7 +275,13 @@ Then(
   async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string) {
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    expect(await breakoutRoomsPage?.getNumberOfRoomsToBeCreated()).toBe(expectedNoOfRooms);
+    const numberOfRoomsToBeCreated = await breakoutRoomsPage?.getNumberOfRoomsToBeCreated();
+    await assert(
+      numberOfRoomsToBeCreated,
+      'toBe',
+      expectedNoOfRooms,
+      `Expected to have ${expectedNoOfRooms} rooms but found ${numberOfRoomsToBeCreated}`
+    );
   }
 );
 
@@ -232,10 +295,20 @@ Then(
     }
     switch (buttonName.toLowerCase()) {
       case 'start rooms':
-        await expect(breakoutRoomsPage.startRoomsButton).toBeVisible();
+        await assert(
+          breakoutRoomsPage.startRoomsButton,
+          'toBeVisible',
+          undefined,
+          `Expected to have 'start rooms' visible in Breakout Rooms moderator tool`
+        );
         break;
       case 'close room':
-        await expect(breakoutRoomsPage.closeRoomButton).toBeVisible();
+        await assert(
+          breakoutRoomsPage.closeRoomButton,
+          'toBeVisible',
+          undefined,
+          `Expected to have 'close room' visible in Breakout Rooms moderator tool`
+        );
         break;
       default:
         throw new Error('Invalid button name for the Breakout Rooms moderator tool');
@@ -247,7 +320,13 @@ Then(
   async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string) {
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    expect(await breakoutRoomsPage?.countCreatedRooms()).toBe(expectedNoOfRooms);
+    const createdRooms = await breakoutRoomsPage?.countCreatedRooms();
+    await assert(
+      createdRooms,
+      'toBe',
+      expectedNoOfRooms,
+      `Expected to have ${expectedNoOfRooms} rooms but found ${createdRooms} rooms`
+    );
   }
 );
 

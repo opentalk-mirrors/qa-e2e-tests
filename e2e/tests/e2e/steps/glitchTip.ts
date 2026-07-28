@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { GlitchTipPage } from '../../pages/MeetingRoom/GlitchTipPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -39,13 +39,19 @@ When(
 );
 
 Then('for {string} no request should have been sent to GlitchTip', async function (this: CustomWorld, user: string) {
-  expect(this.getStartedMeeting(user).crashReportResponse).toBeUndefined();
+  await assert(
+    this.getStartedMeeting(user).crashReportResponse,
+    'toBeUndefined',
+    undefined,
+    `Didn't expect glitchtip to send crash report`
+  );
 });
 
 Then(
   'for {string} a request to GlitchTip should have been sent and a response with status code 200 should have been received',
   async function (this: CustomWorld, user: string) {
-    expect(this.getStartedMeeting(user).crashReportResponse?.status()).toBe(200);
+    const responseCode = this.getStartedMeeting(user).crashReportResponse?.status();
+    await assert(responseCode, 'toBe', 200, `Expected request to GlitchTip to be successful but got ${responseCode}`);
   }
 );
 
@@ -54,12 +60,12 @@ Then(
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
-    await expect(glitchTipPage.sendingSuccessfulPopup).toBeVisible();
+    await assert(glitchTipPage.sendingSuccessfulPopup, 'toBeVisible', undefined, `Expected pop-up to be displayed`);
 
     const actualText = await glitchTipPage.getSendingSuccessfulPopupText();
     const subTexts = text.split(/\\n/);
     for (const subText of subTexts) {
-      expect(actualText).toContain(subText);
+      await assert(actualText, 'toContain', subText, `Expected to get text '${subText}' but got '${actualText}'`);
     }
   }
 );

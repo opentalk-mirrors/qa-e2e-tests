@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { GlitchTipPage } from '../../pages/MeetingRoom/GlitchTipPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -15,9 +15,19 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
     if (actionType === 'should') {
-      await expect(glitchTipPage.glitchTipPopup).toBeVisible();
+      await assert(
+        glitchTipPage.glitchTipPopup,
+        'toBeVisible',
+        undefined,
+        `Expected to have glitch tip popup to be visible`
+      );
     } else {
-      await expect(glitchTipPage.glitchTipPopup).not.toBeVisible();
+      await assert(
+        glitchTipPage.glitchTipPopup,
+        'not toBeVisible',
+        undefined,
+        `Didn't expect to have glitch tip popup to be visible`
+      );
     }
   }
 );
