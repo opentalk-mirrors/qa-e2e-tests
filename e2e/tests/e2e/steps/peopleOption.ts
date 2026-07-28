@@ -229,13 +229,21 @@ Then(
 );
 
 When(
-  /"([^"]*)" sends a direct message "([^"]*)" to "([^"]*)" on the Meeting-Room-Page/,
-  async function (this: CustomWorld, user: string, message: string, to: string) {
+  /"([^"]*)" sends a "([^"]*)" message "([^"]*)" to "([^"]*)" on the Meeting-Room-Page/,
+  async function (this: CustomWorld, user: string, messageType: 'direct' | 'private', message: string, to: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
-    await peopleOptionPage.hoverParticipantsList(to);
-    await peopleOptionPage.selectParticipantMenu(to);
-    await peopleOptionPage.navigateToDirectMessage();
+    if (messageType === 'direct') {
+      const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+      await peopleOptionPage.hoverParticipantsList(to);
+      await peopleOptionPage.selectParticipantMenu(to);
+      await peopleOptionPage.navigateToDirectMessage();
+    } else if (messageType === 'private') {
+      const messagesPage = await meeting.meetingRoomPage.openMessages();
+      await messagesPage.openMessagesMenu();
+      await messagesPage.openPrivateMessage(to);
+    } else {
+      throw new Error(`Invalid message type: ${messageType}. Message type should be either direct or private`);
+    }
     await meeting.meetingRoomPage.typeMessage(message);
     await meeting.meetingRoomPage.submitChat();
   }

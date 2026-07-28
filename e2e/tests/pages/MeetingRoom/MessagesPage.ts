@@ -10,16 +10,14 @@ export class MessagesPage extends ModeratorToolsPage {
   private readonly messagesTabPanel: Locator;
   private readonly backButton: Locator;
   private readonly threadDetail: Locator;
-  private readonly newMessageButton: Locator;
+  public readonly newMessageButton: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page: page });
     this.page = page;
     this.messagesTabPanel = this.page.getByRole('tabpanel', { name: 'Messages' });
     this.backButton = this.messagesTabPanel.getByRole('button', { name: 'Back' });
-    this.threadDetail = this.messagesTabPanel
-      .locator('//*[@data-sentry-element="ListItemText"]')
-      .locator('//*[@data-sentry-element="Typography"]');
+    this.threadDetail = this.messagesTabPanel.getByRole('list').getByRole('button').locator('p');
     this.newMessageButton = this.page.getByRole('button', { name: 'New Message', exact: true });
   }
 
