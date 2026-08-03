@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Page, Locator } from '@playwright/test';
 
+import { config } from '../config';
 import { MeetingRoomPage } from './MeetingRoom/MeetingRoomPage';
 
 export class LobbyRoomPage {
   page: Page;
   openTalkLogo: Locator;
   speedTestButton: Locator;
+  speedTestResultLabel: Locator;
   threeDotMenuButton: Locator;
   openUserManualButton: Locator;
   backButton: Locator;
@@ -34,6 +36,7 @@ export class LobbyRoomPage {
     this.page = page;
     this.openTalkLogo = this.page.getByRole('button', { name: 'Go to dashboard' });
     this.speedTestButton = this.page.getByRole('button', { name: 'Start Speed-Test' });
+    this.speedTestResultLabel = this.page.getByText(/Your internet connection is (slow|stable)\./);
     this.threeDotMenuButton = this.page.getByRole('button', { name: 'My meeting' });
     this.backButton = this.page.getByRole('button', { name: 'Back', exact: true });
     this.openUserManualButton = this.page.getByRole('button', { name: 'Open user manual' });
@@ -107,5 +110,17 @@ export class LobbyRoomPage {
 
   async getMeetingInvitationTitleLocator(meetingTitle: string): Promise<Locator> {
     return this.page.getByRole('heading', { name: `OpenTalk Meeting Invitation - "${meetingTitle}"` });
+  }
+
+  public async runSpeedTest(): Promise<void> {
+    await this.speedTestButton.click();
+    await this.waitForSpeedTestResult();
+  }
+
+  private async waitForSpeedTestResult(): Promise<void> {
+    await this.speedTestResultLabel.waitFor({
+      state: 'visible',
+      timeout: config.LONG_TIMEOUT,
+    });
   }
 }

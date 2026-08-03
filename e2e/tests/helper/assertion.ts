@@ -15,7 +15,8 @@ type AssertionType =
   | 'toBeTruthy'
   | 'toBeFalsy'
   | 'toBeUndefined'
-  | 'toHaveText';
+  | 'toHaveText'
+  | 'toContainText';
 export async function assert(
   actual: string | number | Locator | boolean | string[] | Response | undefined | null,
   assertionType: AssertionType,
@@ -66,6 +67,9 @@ export async function assert(
         break;
       case 'toHaveText':
         await expect(actual as Locator, message).toHaveText(expected as string);
+        break;
+      case 'toContainText':
+        await expect(actual as Locator, message).toContainText(expected as string);
         break;
       default:
         throw new Error(`'${assertionType}' is not implemented`);

@@ -5,7 +5,10 @@ import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../authHelpers';
 import { config } from '../config';
+import { assert } from '../helper/assertion';
 import { deleteUser } from '../helper/keycloak';
+import { HomePage } from '../pages/HomePage';
+import { SidebarPage } from '../pages/SidebarPage';
 
 test.describe('Dashboard', () => {
   test.describe('Sidebar Navigation/Options', () => {
@@ -19,29 +22,82 @@ test.describe('Dashboard', () => {
     });
 
     test('verify the contents displayed in the settings option of dashboard', async ({ page }) => {
-      await page.goto(config.INSTANCE_URL);
-      await page.getByRole('link', { name: 'Settings', exact: true }).click();
-      await expect(page.getByTestId('SecondaryNavigation').getByRole('list')).toContainText('General');
-      await expect(page.getByTestId('SecondaryNavigation').getByRole('list')).toContainText('Profile');
-      await expect(page.getByTestId('SecondaryNavigation').getByRole('list')).toContainText('Account');
+      const homePage = new HomePage({ page });
+      await homePage.navigateToHomePage();
+
+      const sidebarPage = new SidebarPage({ page });
+      const settingsPage = await sidebarPage.navigateToSettingsPage();
+
+      await assert(
+        settingsPage.generalLink,
+        'toContainText',
+        'General',
+        'General settings link should be visible and contain "General".'
+      );
+      await assert(
+        settingsPage.profileLink,
+        'toContainText',
+        'Profile',
+        'Profile settings link should be visible and contain "Profile".'
+      );
+      await assert(
+        settingsPage.accountLink,
+        'toContainText',
+        'Account',
+        'Account settings link should be visible and contain "Account".'
+      );
     });
 
     test('verify the contents displayed in the meetings option of dashboard', async ({ page }) => {
-      await page.goto(config.INSTANCE_URL);
-      await page.getByRole('link', { name: 'Meetings' }).click();
-      await expect(page.getByLabel('Only show invites')).toBeVisible();
-      await expect(page.getByTestId('favoriteMeeting')).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Plan new' })).toBeVisible();
-      await expect(page.getByRole('heading', { name: 'My Meetings' })).toBeVisible();
+      const homePage = new HomePage({ page });
+      await homePage.navigateToHomePage();
+
+      const sidebarPage = new SidebarPage({ page });
+      const myMeetingsPage = await sidebarPage.navigateToMyMeetingsPage();
+
+      await assert(
+        myMeetingsPage.onlyShowInvitesButton,
+        'toBeVisible',
+        'The "Only Show Invites" button should be visible on the Meetings page.'
+      );
+      await assert(
+        myMeetingsPage.favoriteMeetingButton,
+        'toBeVisible',
+        'The "Only show favorites" button should be visible on the Meetings page.'
+      );
+      await assert(
+        myMeetingsPage.planNewLink,
+        'toBeVisible',
+        'The "Plan New" link should be visible on the Meetings page.'
+      );
+      await assert(myMeetingsPage.myMeetingsHeading, 'toBeVisible', 'The "My Meetings" heading should be visible.');
     });
 
     test('verify the contents displayed in the home option of dashboard', async ({ page }) => {
-      await page.goto(`${config.INSTANCE_URL}/dashboard/meetings`);
-      await page.getByRole('link', { name: 'Home' }).click();
-      await expect(page.getByRole('link', { name: 'Start new' })).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Plan new' })).toBeVisible();
-      await expect(page.getByText('Current meetings')).toBeVisible();
-      await expect(page.getByText('My favorite meetings')).toBeVisible();
+      const sidebarPage = new SidebarPage({ page });
+      await sidebarPage.navigateToMyMeetingsPage();
+      const homePage = await sidebarPage.navigateToHomePage();
+
+      await assert(
+        homePage.startNewMeetingButton,
+        'toBeVisible',
+        'The "Start new" button should be visible on the home page.'
+      );
+      await assert(
+        homePage.planNewMeetingButton,
+        'toBeVisible',
+        'The "Plan new" button should be visible on the home page.'
+      );
+      await assert(
+        homePage.favoriteMeetingsHeaderSelector,
+        'toBeVisible',
+        'The "My favorite meetings" header should be visible on the home page.'
+      );
+      await assert(
+        homePage.currentMeetingsHeaderSelector,
+        'toBeVisible',
+        '"Current meetings" header should be visible on the home page.'
+      );
     });
 
     test.skip('logout from dashboard will redirect to signIn page', async ({ page }) => {
