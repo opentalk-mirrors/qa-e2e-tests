@@ -448,6 +448,20 @@ e2e-gherkin-tests:
       - playwright-report
     expire_in: 1 days
 
+sync-gherkin-to-testrail:
+  stage: testrail
+  image: python:latest
+  rules:
+    - changes:
+        - e2e/tests/e2e/features/**/*.feature
+  before_script:
+    - apt-get update
+    - apt-get install -y jq curl
+    - pip install trcli
+  script:
+    - chmod +x ./scripts/sync-gherkin-to-testrail.sh
+    - ./scripts/sync-gherkin-to-testrail.sh
+
 merge-and-upload-test-results:
   stage: testrail
   image: python:latest
@@ -464,7 +478,7 @@ merge-and-upload-test-results:
   script: |
     # Upload Playwright JUnit report to TestRail
     trcli -y \
-      -h https://opentalk.testrail.com/ \
+      -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
       -u $TESTRAIL_EMAIL \
       -p $TESTRAIL_PASSWORD \
@@ -474,7 +488,7 @@ merge-and-upload-test-results:
       --title "Automated Nightly Playwright Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
     # Upload Gherkin Cucumber JSON report to TestRail
     trcli -y \
-      -h https://opentalk.testrail.com/ \
+      -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
       -u $TESTRAIL_EMAIL \
       -p $TESTRAIL_PASSWORD \
