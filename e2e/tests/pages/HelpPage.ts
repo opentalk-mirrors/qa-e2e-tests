@@ -12,7 +12,6 @@ export class HelpPage {
   context: BrowserContext;
   userManualLink: Locator;
   supportLink: Locator;
-  userManualHeading: Locator;
   helpHeading: Locator;
 
   constructor({ page, context }: { page: Page; context: BrowserContext }) {
@@ -21,7 +20,6 @@ export class HelpPage {
     this.helpHeading = this.page.getByRole('heading', { name: 'Help' });
     this.userManualLink = this.page.getByRole('link', { name: 'User Manual' });
     this.supportLink = this.page.getByRole('link', { name: 'Support' });
-    this.userManualHeading = this.page.getByRole('heading', { name: 'User manual' });
   }
 
   async navigateToHelpPage(): Promise<void> {

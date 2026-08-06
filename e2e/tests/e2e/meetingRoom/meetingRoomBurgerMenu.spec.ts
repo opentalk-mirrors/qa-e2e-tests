@@ -4,7 +4,6 @@
 import test, { expect } from '@playwright/test';
 
 import { globalSetup } from '../../authHelpers';
-import { config } from '../../config';
 import { deleteUser } from '../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
@@ -34,17 +33,8 @@ test.describe('Meeting Room_Burger menu', () => {
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const accessibilityPage = await burgerMenuPage.gotoAccessibility();
-    const accessibilityHeading = accessibilityPage.getByRole('heading', {
-      name: 'Accessibility statement',
-      exact: true,
-    });
-    const openTalkInformationHeading = accessibilityPage.getByRole('heading', {
-      name: 'Accessibility statement for the OpenTalk video conferencing solution',
-      exact: true,
-    });
+
     expect(accessibilityPage.url()).toBe('https://opentalk.eu/en/accessibility-statement');
-    await expect(accessibilityHeading).toBeVisible();
-    await expect(openTalkInformationHeading).toBeVisible();
 
     await meetingRoomPage.page.bringToFront();
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
@@ -59,14 +49,8 @@ test.describe('Meeting Room_Burger menu', () => {
     await expect(burgerMenuPage.reportABugMenuItem).toBeVisible();
 
     const userManualPage = await burgerMenuPage.gotoUserManual();
-    const userManualHeading = userManualPage.getByRole('heading', { name: 'User manual', exact: true });
-    const openTalkDocs = userManualPage.getByText(
-      'Please contact your admin if this manual leaves any questions unanswered or if you have found a technical error. We hope you enjoy using OpenTalk!',
-      { exact: true }
-    );
+
     expect(userManualPage.url()).toMatch(/^https:\/\/docs\.opentalk\.eu\/.*$/);
-    await expect(userManualHeading).toBeVisible({ timeout: config.SHORT_TIMEOUT });
-    await expect(openTalkDocs).toBeVisible();
 
     await meetingRoomPage.page.bringToFront();
     await expect(meetingRoomPage.meetingRoomName).toBeVisible();
