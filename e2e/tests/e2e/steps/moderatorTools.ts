@@ -4,12 +4,12 @@
 import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
-import { assert } from '../../helper/assertion';
 
 Then(
   /(?:these|this) "([^"]*)" should be displayed in the open moderator tool for "([^"]*)":/,
@@ -44,11 +44,7 @@ Then(
           break;
         }
       }
-    await assert(
-      elementFound,
-      'toBe',
-      true,
-      `Could not find the element '${expectedElement}'`);
+      await assert(elementFound, 'toBe', true, `Could not find the element '${expectedElement}'`);
     }
   }
 );

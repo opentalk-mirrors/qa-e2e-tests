@@ -80,7 +80,11 @@ export class PollPage {
   }
 
   public getOptionIndex(field: string): number {
-    return parseInt(field.match(/\d+/)?.[0] || '0') - 1;
+    const optionNumber = parseInt(field.match(/\d+/)?.[0] ?? '', 10);
+    if (Number.isNaN(optionNumber)) {
+      throw new Error(`Invalid option field: '${field}'`);
+    }
+    return optionNumber - 1;
   }
 
   public async fillOption(index: number, value: string): Promise<void> {
@@ -109,7 +113,7 @@ export class PollPage {
       await this.addOption();
       await this.fillAnswer(answer);
     }
-    await this.documentBody.click();
+    await this.page.keyboard.press('Tab');
   }
 
   public async updateOption(index: number, value: string): Promise<void> {
@@ -131,7 +135,7 @@ export class PollPage {
     const option = this.getOptionByIndex(index);
     await this.clearAndFocusField(option);
     await this.fillAnswer(value);
-    await this.page.keyboard.press('Enter');
+    await this.page.keyboard.press('Tab');
   }
 
   async clearAndFocusField(option: Locator): Promise<void> {
@@ -148,7 +152,7 @@ export class PollPage {
    * 1 → second-last option
    * 2 → third-last option
    *
-   * Example:
+   * For Example:
    * [Option1, Option2, Option3, Option4]
    * positionFromEnd = 1 → removes Option3
    */

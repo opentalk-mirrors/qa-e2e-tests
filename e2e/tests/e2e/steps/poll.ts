@@ -143,7 +143,7 @@ Then(
   }
 );
 
-Then(
+When(
   /^"([^"]*)" selects the latest (?:created|updated) poll in the open moderator tool$/,
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
@@ -168,10 +168,20 @@ Then(
       const expectedValue = row.value;
 
       if (field === 'Topic') {
-        await assert(await pollPage.createNewPoll.topicField.inputValue(), 'toBe', expectedValue, `Expected topic field to have value "${expectedValue}"`);
+        await assert(
+          await pollPage.createNewPoll.topicField.inputValue(),
+          'toBe',
+          expectedValue,
+          `Expected topic field to have value "${expectedValue}"`
+        );
       } else if (field.includes('Option')) {
         const option = pollPage.getOptionByIndex(optionCounter);
-        await assert(await option.textContent(), 'toHaveText', expectedValue, `Expected option ${optionCounter + 1} to have value "${expectedValue}"`);
+        await assert(
+          option,
+          'toHaveText',
+          expectedValue,
+          `Expected option ${optionCounter + 1} to have value "${expectedValue}"`
+        );
 
         optionCounter++;
       } else {
@@ -183,10 +193,10 @@ Then(
 
 Then(
   'these poll details for {string} should be displayed in the following order in the open moderator tool:',
-  async function (this: CustomWorld, user: string, detailsTabel: DataTable) {
+  async function (this: CustomWorld, user: string, detailsTable: DataTable) {
     const expectedHeaders = ['field', 'value'];
-    validateDataTableHeaders(detailsTabel, expectedHeaders);
-    const expected = detailsTabel.hashes();
+    validateDataTableHeaders(detailsTable, expectedHeaders);
+    const expected = detailsTable.hashes();
 
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
@@ -194,13 +204,13 @@ Then(
     const actual = await moderatorToolPage.getSavedDetails();
 
     for (let i = 0; i < expected.length; i++) {
-      const [topic] = actual[i];
+      const [actualValue] = actual[i];
       const rowNumber = i + 1;
       await assert(
-        topic,
+        actualValue,
         'toBe',
         expected[i].value,
-        `Poll row ${rowNumber}: topic mismatch. Expected "${expected[i].topic}", but found "${topic}".`
+        `Poll row ${rowNumber}: value mismatch. Expected "${expected[i].value}", but found "${actualValue}".`
       );
     }
   }
