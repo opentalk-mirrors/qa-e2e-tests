@@ -205,7 +205,7 @@ Then(
     const joinedDetails = await meetingRoomPage.getParticipantsDetails();
     const participants = dataTable.raw().map(([participant]) => participant);
     participants.forEach((participant, index) => {
-      expect(joinedDetails[index].trim()).toMatch(new RegExp(`^${participant}joined the call at \\d{2}:\\d{2}$`));
+      expect(joinedDetails[index].trim()).toMatch(new RegExp(`^${participant}joined the meeting at \\d{2}:\\d{2}$`));
     });
   }
 );
