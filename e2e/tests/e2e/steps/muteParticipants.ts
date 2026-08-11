@@ -43,7 +43,7 @@ When(
 );
 
 Then(
-  'in the meeting of {string} these alert notifications should be displayed for the respected users:',
+  'in the meeting of {string} these alert notifications should be displayed for the respective users:',
   async function (this: CustomWorld, moderator: string, messageTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
     const expectedHeaders = ['user', 'text'];
