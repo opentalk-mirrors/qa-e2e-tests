@@ -15,6 +15,11 @@ set -euo pipefail
 : "${TESTRAIL_USERNAME:?TESTRAIL_USERNAME is not set}"
 : "${TESTRAIL_API_KEY:?TESTRAIL_API_KEY is not set}"
 
+# TODO: Implement pagination for TestRail case retrieval.
+# The TestRail get_cases API returns a maximum of 250 cases per request by default.
+# This script currently fetches cases with a single API request and does not handle pagination.
+# See issue: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/84 for implementing pagination using the offset and limit parameters:
+
 # Fetch all existing TestRail cases from the project and suite.
 TEST_CASES_JSON=$(
   curl -sSf \
