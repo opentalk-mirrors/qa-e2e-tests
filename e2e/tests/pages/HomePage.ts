@@ -21,6 +21,7 @@ export class HomePage {
   joinExistingMeetingCloseButton: Locator;
   currentMeetingsHeaderSelector: Locator;
   noFavoritesSelector: Locator;
+  markFavoritesTooltipMessage: Locator;
   favoriteMeetingsHeaderSelector: Locator;
   favoriteMeetingsIcons: Locator;
   startMeetingButtonNamePrefix: string;
@@ -36,6 +37,7 @@ export class HomePage {
   deleteMenu: Locator;
   deleteButton: Locator;
   private meetingListItem: Locator;
+
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.planNewMeetingButton = this.page.getByRole('link', { name: 'Plan new' });
@@ -49,6 +51,9 @@ export class HomePage {
     this.joinExistingMeetingCloseButton = this.page.getByRole('button', { name: 'Close dialog' });
     this.currentMeetingsHeaderSelector = this.page.getByText('Current meetings');
     this.noFavoritesSelector = this.page.getByText("You don't have any favorites yet.");
+    this.markFavoritesTooltipMessage = this.page.getByRole('link', {
+      name: 'You can mark favourites over the menu in the card.',
+    });
     this.favoriteMeetingsHeaderSelector = this.page.getByText(/^(My favorite meetings|Meine Favoriten)$/);
     this.favoriteMeetingsIcons = this.favoriteMeetingsHeaderSelector.locator('..').locator('svg');
     this.startMeetingButtonNamePrefix = 'Start ';

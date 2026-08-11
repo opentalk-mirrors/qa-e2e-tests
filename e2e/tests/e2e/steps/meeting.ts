@@ -469,7 +469,12 @@ Then(
     const page = this.getUser(user).page;
     const home = new HomePage({ page: page });
     if (text === 'mark-favorites-tooltip') {
-      home.page.getByText('You can mark favourites over the menu in the card.');
+      await assert(
+        home.markFavoritesTooltipMessage,
+        'toBeVisible',
+        undefined,
+        'Tooltip message: "You can mark favourites over the menu in the card." should be visible'
+      );
     } else {
       throw new Error(`${text} is a typo or element does not exist`);
     }
