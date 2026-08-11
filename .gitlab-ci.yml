@@ -452,7 +452,8 @@ sync-gherkin-to-testrail:
   stage: testrail
   image: python:latest
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
+      changes:
         - e2e/tests/e2e/features/**/*.feature
   before_script:
     - apt-get update
@@ -480,8 +481,8 @@ merge-and-upload-test-results:
     trcli -y \
       -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
-      -u $TESTRAIL_EMAIL \
-      -p $TESTRAIL_PASSWORD \
+      -u $TESTRAIL_USERNAME \
+      -p $TESTRAIL_API_KEY \
       parse_junit \
       -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
@@ -490,8 +491,8 @@ merge-and-upload-test-results:
     trcli -y \
       -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
-      -u $TESTRAIL_EMAIL \
-      -p $TESTRAIL_PASSWORD \
+      -u $TESTRAIL_USERNAME \
+      -p $TESTRAIL_API_KEY \
       parse_cucumber \
       -f "./cucumber-report-*.json" \
       --run-description "URL: $CI_PIPELINE_URL" \
