@@ -175,16 +175,12 @@ export class PeopleOptionPage extends ModeratorToolsPage {
 
   public async revokePresenterRole(): Promise<void> {
     await this.revokePresenterRoleMenuItem.click();
-    // added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
-    await this.page.keyboard.press('Escape');
-    // await this.grantPresenterRoleMenuItem.waitFor({ state: 'visible' });
+    await this.participantMenu.waitFor({ state: 'detached' });
   }
 
   public async grantPresenterRole(): Promise<void> {
     await this.grantPresenterRoleMenuItem.click();
-    // added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
-    await this.page.keyboard.press('Escape');
-    // await this.revokePresenterRoleMenuItem.waitFor({ state: 'visible' });
+    await this.participantMenu.waitFor({ state: 'detached' });
   }
 
   public async markAsWhisperPartner(userToMark: string): Promise<void> {

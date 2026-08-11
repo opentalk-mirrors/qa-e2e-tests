@@ -303,7 +303,6 @@ Feature: Meeting Room Home
   Scenario: Moderator can revoke presenter role available in Participants list of People tab in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
-    # added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
     When "Alice" grants presenter role to "guest1" in the meeting room
     Then "guest1" should be notified with the following text in the meeting room of "Alice":
       """
@@ -311,7 +310,6 @@ Feature: Meeting Room Home
       """
     And "guest1" should be allowed to share screen in the meeting room of "Alice"
     # screen share test needs to be done manually for now
-    # added press escape and commented wait for due to bug https://git.opentalk.dev/opentalk/product/tickets/-/work_items/244
     When "Alice" revokes presenter role from "guest1" in the meeting room
     Then "guest1" should be notified with the following text in the meeting room of "Alice":
       """
