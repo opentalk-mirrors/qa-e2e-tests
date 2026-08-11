@@ -71,7 +71,12 @@ Then(
   async function (this: CustomWorld, title: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
-    await assert(sessionDurationDialog.title, 'toHaveText', title, `Expected coffee break icon to be visible`);
+    await assert(
+      sessionDurationDialog.title,
+      'toHaveText',
+      title,
+      `Expected the session duration dialog title to display "${title}"`
+    );
   }
 );
 
@@ -80,7 +85,12 @@ Then(
   async function (this: CustomWorld, user: string, duration: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorRoomPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    await assert(moderatorRoomPage.durationButton, 'toHaveText', duration, `Expected coffee break icon to be visible`);
+    await assert(
+      moderatorRoomPage.durationButton,
+      'toHaveText',
+      duration,
+      `Expected the duration button to display "${duration}"`
+    );
   }
 );
 
@@ -93,7 +103,7 @@ Then(
       await sessionDurationDialog.getSelectedDurationText(),
       'toBe',
       duration,
-      `Expected coffee break icon to be visible`
+      `Expected the selected session duration to be "${duration}"`
     );
   }
 );
@@ -107,7 +117,7 @@ Then(
       await moderatorRoomPage.isSessionDurationDialogVisible(),
       'toBeFalsy',
       undefined,
-      `Expected coffee break icon to be visible`
+      `Expected the session duration dialog to be hidden`
     );
   }
 );
@@ -121,19 +131,19 @@ Then(
       sessionDurationDialog.customDurationLabel,
       'toHaveText',
       text,
-      `Expected coffee break icon to be visible`
+      `Expected the custom duration label to display "${text}"`
     );
     await assert(
       sessionDurationDialog.customDurationButtonInput,
       'toBeVisible',
       undefined,
-      `Expected coffee break icon to be visible`
+      `Expected the custom duration input to be visible`
     );
     await assert(
       sessionDurationDialog.customDurationButtonInput,
       'toHaveValue',
       expectedValue,
-      `Expected coffee break icon to be visible`
+      `Expected the custom duration input to have value "${expectedValue}"`
     );
   }
 );

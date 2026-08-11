@@ -27,7 +27,7 @@ Then(
       votingRoomPage.votingRoomMessage,
       'toHaveText',
       description,
-      `Expected coffee break icon to be visible`
+      `Expected the voting room message to display "${description}"`
     );
   }
 );
@@ -91,7 +91,7 @@ Then(
       votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription,
       'toHaveText',
       tooltipDescription,
-      `Expected coffee break icon to be visible`
+      `Expected the auto-close toggle tooltip to display "${tooltipDescription}"`
     );
   }
 );
@@ -142,11 +142,26 @@ Then(
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     const actual = await votingRoomPage.getSavedVotings();
 
-    await assert(actual.length, 'toBe', expected.length, `Expected coffee break icon to be visible`);
+    await assert(
+      actual.length,
+      'toBe',
+      expected.length,
+      `Expected the number of voting items to be ${expected.length}, but got ${actual.length}`
+    );
 
     for (let i = 0; i < expected.length; i++) {
-      await assert(actual[i].title, 'toBe', expected[i].title, `Expected coffee break icon to be visible`);
-      await assert(actual[i].topic, 'toBe', expected[i].topic, `Expected coffee break icon to be visible`);
+      await assert(
+        actual[i].title,
+        'toBe',
+        expected[i].title,
+        `Expected voting title at index ${i} to be "${expected[i].title}", but got "${actual[i].title}"`
+      );
+      await assert(
+        actual[i].topic,
+        'toBe',
+        expected[i].topic,
+        `Expected voting topic at index ${i} to be "${expected[i].topic}", but got "${actual[i].topic}"`
+      );
     }
   }
 );
@@ -175,7 +190,7 @@ Then(
       await votingRoomPage.isSavedVotingListVisible(),
       'toBe',
       false,
-      `Expected coffee break icon to be visible`
+      'Expected the saved voting list to be hidden'
     );
   }
 );
@@ -212,6 +227,6 @@ Then(
     const expected = Object.fromEntries(
       lastCreatedVotingDetails.map(({ field, value }) => [field, normalizeValue(value)])
     );
-    await assert(actual, 'toEqual', expected, `Expected coffee break icon to be visible`);
+    await assert(actual, 'toEqual', expected, 'Expected the actual voting list to match the expected voting list');
   }
 );

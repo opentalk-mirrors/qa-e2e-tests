@@ -15,18 +15,23 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    assert(await messagesPage.getParticipantDetails(-1), 'toContain', user, `Expected coffee break icon to be visible`);
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toContain',
+      user,
+      `Expected participant details to contain "${user}"`
+    );
     assert(
       await messagesPage.getParticipantDetails(-1),
       'toContain',
       message,
-      `Expected coffee break icon to be visible`
+      `Expected participant details to contain "${message}"`
     );
     assert(
       await messagesPage.getParticipantDetails(-1),
       'toMatch',
       /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
-      `Expected coffee break icon to be visible`
+      'Expected participant details to contain a valid time in HH:MM format'
     );
   }
 );
@@ -41,7 +46,7 @@ Then(
       await messagesPage.getParticipantData('message'),
       'toEqual',
       messages.raw().flat(),
-      `Expected coffee break icon to be visible`
+      `Expected participant message data to match the expected messages`
     );
   }
 );
@@ -63,8 +68,8 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
     const threads = await messagesPage.getAllThreadsDetails();
-    await assert(threads, 'toHaveProperty', to, `Expected coffee break icon to be visible`);
-    await assert(threads[to], 'toBe', message, `Expected coffee break icon to be visible`);
+    await assert(threads, 'toHaveProperty', to, `Expected threads to have a property "${to}"`);
+    await assert(threads[to], 'toBe', message, `Expected thread "${to}" to contain message "${message}"`);
   }
 );
 

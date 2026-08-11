@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable } from '@cucumber/cucumber';
 
-import { meetingUrlPatter } from './meetingHelpers';
+import { meetingUrlPattern } from './meetingHelpers';
 
 export function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', {
@@ -17,7 +17,7 @@ export function formatDate(date: Date) {
 export function substituteInLineCodes(code: string): RegExp | string {
   switch (code) {
     case '%meeting_url_pattern%':
-      return meetingUrlPatter;
+      return meetingUrlPattern;
     default:
       return code;
   }

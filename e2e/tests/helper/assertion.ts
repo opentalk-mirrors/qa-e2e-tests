@@ -27,7 +27,6 @@ export async function assert(
     | Locator
     | boolean
     | string[]
-    | Locator
     | Response
     | Record<string, string>
     | undefined
@@ -43,7 +42,13 @@ export async function assert(
         expect(actual, message).toBe(expected);
         break;
       case 'toMatch':
-        await expect(actual as string, message).toMatch(expected as RegExp | string);
+        if (typeof actual !== 'string') {
+          throw new TypeError('actual must be a string');
+        }
+        if (typeof expected !== 'string' && !(expected instanceof RegExp)) {
+          throw new TypeError('expected must be a string or RegExp');
+        }
+        await expect(actual, message).toMatch(expected);
         break;
       case 'toBeVisible':
         await expect(actual as Locator, message).toBeVisible();
@@ -77,7 +82,7 @@ export async function assert(
         expect(actual, message).toBeUndefined();
         break;
       case 'toContainText':
-        await expect(actual as Locator, message).toContainText(expected as string | RegExp);
+        await expect(actual as Locator, message).toContainText(expected as string);
         break;
       case 'toBeEnabled':
         await expect(actual as Locator, message).toBeEnabled();
@@ -86,7 +91,7 @@ export async function assert(
         expect(actual as Record<string, string>, message).toHaveProperty(expected as string);
         break;
       case 'toHaveValue':
-        await expect(actual as Locator, message).toHaveValue(expected as string | RegExp);
+        await expect(actual as Locator, message).toHaveValue(expected as string);
         break;
       case 'toHaveText':
         await expect(actual as Locator, message).toHaveText(expected as string);

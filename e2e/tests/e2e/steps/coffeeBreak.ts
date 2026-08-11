@@ -80,7 +80,7 @@ Then(
       meetingName,
       'toContain',
       meetingTitlePrefix,
-      `Expected the guest to be back in the meeting room "${meetingTitlePrefix}"`
+      `Expected the meeting room name to contain "${meetingTitlePrefix}", but got "${meetingName}"`
     );
   }
 );
@@ -186,8 +186,7 @@ Then(
     await moderatorMeetingRoomPage.page.bringToFront();
     await assert(
       await moderatorMeetingRoomPage.isCoffeeBreakPopoverClosed(),
-      'toBe',
-      true,
+      'toBeTruthy',
       'Expected the Coffee break popover to be closed'
     );
   }
