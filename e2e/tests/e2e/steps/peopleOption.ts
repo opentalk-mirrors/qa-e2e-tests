@@ -312,7 +312,6 @@ When(
     const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
     await peopleOptionPage.selectParticipantMenu(userToRevoke);
     await peopleOptionPage.revokePresenterRole();
-    await meeting.meetingRoomPage.pressEscape();
   }
 );
 
@@ -323,6 +322,5 @@ When(
     const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
     await peopleOptionPage.selectParticipantMenu(userToGrant);
     await peopleOptionPage.grantPresenterRole();
-    await meeting.meetingRoomPage.pressEscape();
   }
 );
