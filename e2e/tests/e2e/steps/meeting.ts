@@ -108,7 +108,7 @@ Then(
       actualNumOfParticipants,
       'toBe',
       expectedNumOfParticipants,
-      `Expected to have ${expectedNumOfParticipants} participants but found ${expectedNumOfParticipants} participants`
+      `Expected to have ${expectedNumOfParticipants} participants but found ${actualNumOfParticipants} participants`
     );
   }
 );
