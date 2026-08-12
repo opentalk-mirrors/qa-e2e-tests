@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: EUPL-1.2
 Feature: GlitchTip_General
    As a user
-   I want to send crash report
-   So that I can report errors
+   I want to send a crash report
+   So that OpenTalk can quickly fix my issues
    # https://git.opentalk.dev/opentalk/qa/reports/-/issues/236
 
   Background:

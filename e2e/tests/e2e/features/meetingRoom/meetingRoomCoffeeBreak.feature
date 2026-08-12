@@ -29,7 +29,7 @@ Feature: Meeting room_Coffee break
 
     When "Alice" stops the coffee break
     Then the Coffee break popover in the Meeting room should be closed for "Alice"
-    And in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+    And in the meeting of "Alice" these alert notifications should be displayed for the respective users:
       | user   | text                      |
       | Alice  | The coffee break is over. |
       | guest1 | The coffee break is over. |

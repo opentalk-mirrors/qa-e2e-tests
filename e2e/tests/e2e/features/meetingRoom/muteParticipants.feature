@@ -37,7 +37,7 @@ Feature: Mute Participants
       | guest2 |
       | guest3 |
     When "Alice" mutes all participants in the Mute Participants moderator tool
-    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respective users:
       | user   | text                            |
       | Bob    | You were muted by Alice Hansen. |
       | guest1 | You were muted by Alice Hansen. |
@@ -60,7 +60,7 @@ Feature: Mute Participants
     When "Alice" selects and mutes these participants in the Mute Participants moderator tool:
       | Bob    |
       | guest3 |
-    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respective users:
       | user   | text                            |
       | Bob    | You were muted by Alice Hansen. |
       | guest3 | You were muted by Alice Hansen. |

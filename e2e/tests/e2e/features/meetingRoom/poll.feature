@@ -6,7 +6,7 @@ Feature: Meeting Room - Poll Overview
 
   As a moderator
   I want to create a poll in the meeting room
-  So that I can gather participant's opinion on a specific topic
+  So that I can gather participants' opinions on a specific topic
   #https://git.opentalk.dev/opentalk/qa/reports/-/issues/131
 
   Background:

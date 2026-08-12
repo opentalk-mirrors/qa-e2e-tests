@@ -337,7 +337,7 @@ Feature: Meeting Room Home
       Alice Hansen invited you to a whisper group.
       """
     When "guest1" declines the invitation to a whisper group in the meeting room of "Alice"
-    Then in the meeting of "Alice" these alert notifications should be displayed for the respected users:
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respective users:
       | user  | text                                                |
       | Alice | Your whisper group has been disbanded.              |
       | Alice | guest1 declined your invitation to a whisper group. |

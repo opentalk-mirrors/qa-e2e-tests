@@ -4,7 +4,7 @@
 @skip-on-webkit
 Feature: Meeting room URL
   As a user
-  I want every link to the meeting room be correct
+  I want every link to the meeting room to be correct
   So that I and other invited participants can easily join
   # https://git.opentalk.dev/opentalk/qa/reports/-/issues/191
 
