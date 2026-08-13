@@ -155,7 +155,7 @@ export class MeetingRoomPage {
     this.moderationTools = {
       homeButton: this.page.getByRole('tab', { name: 'Home' }),
       muteParticipantsButton: this.page.getByRole('tab', { name: 'Mute participants' }),
-      resetRaisedHandsButton: this.page.getByRole('tab', { name: 'Reset raised hands' }),
+      resetRaisedHandsButton: this.page.getByRole('tab', { name: 'moderationbar-button-reset-handraises-tooltip' }), //Need to check if this is intentional or not, as it seems like a tooltip name rather than a tab name.
       talkingStickButton: this.page.getByRole('tab', { name: 'Talking stick' }),
       pollButton: this.page.getByRole('tab', { name: 'Poll' }),
       votingButton: this.page.getByRole('tab', { name: 'Voting' }),
