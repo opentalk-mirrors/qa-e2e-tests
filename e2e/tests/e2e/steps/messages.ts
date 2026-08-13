@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { MessagesPage } from '../../pages/MeetingRoom/MessagesPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -15,9 +15,24 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    expect(await messagesPage.getParticipantDetails(-1)).toContain(user);
-    expect(await messagesPage.getParticipantDetails(-1)).toContain(message);
-    expect(await messagesPage.getParticipantDetails(-1)).toMatch(/([01]?[0-9]|2[0-3]):[0-5][0-9]/);
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toContain',
+      user,
+      `Expected participant details to contain "${user}"`
+    );
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toContain',
+      message,
+      `Expected participant details to contain "${message}"`
+    );
+    assert(
+      await messagesPage.getParticipantDetails(-1),
+      'toMatch',
+      /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
+      'Expected participant details to contain a valid time in HH:MM format'
+    );
   }
 );
 
@@ -27,7 +42,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    expect(await messagesPage.getParticipantData('message')).toEqual(messages.raw().flat());
+    assert(
+      await messagesPage.getParticipantData('message'),
+      'toEqual',
+      messages.raw().flat(),
+      `Expected participant message data to match the expected messages`
+    );
   }
 );
 
@@ -48,8 +68,8 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
     const threads = await messagesPage.getAllThreadsDetails();
-    expect(threads).toHaveProperty(to);
-    expect(threads[to]).toBe(message);
+    await assert(threads, 'toHaveProperty', to, `Expected threads to have a property "${to}"`);
+    await assert(threads[to], 'toBe', message, `Expected thread "${to}" to contain message "${message}"`);
   }
 );
 

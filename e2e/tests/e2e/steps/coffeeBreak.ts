@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { Given, Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { CoffeeBreakDialogPage } from '../../pages/MeetingRoom/CoffeeBreakDialogPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { CoffeeBreakPage } from '../../pages/MeetingRoom/ModeratorTools/CoffeeBreakPage';
@@ -68,9 +68,20 @@ Then(
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
     const coffeeBreakDialogPage = new CoffeeBreakDialogPage(moderatorMeetingRoomPage);
-    expect(await coffeeBreakDialogPage.isCoffeeBreakDialogClosed()).toBeTruthy();
+    await assert(
+      await coffeeBreakDialogPage.isCoffeeBreakDialogClosed(),
+      'toBeTruthy',
+      undefined,
+      'Expected the Coffee break overlay to be closed for the guest'
+    );
     await moderatorMeetingRoomPage.meetingRoomName.isVisible();
-    expect(await moderatorMeetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
+    const meetingName = await moderatorMeetingRoomPage.getMeetingRoomName();
+    await assert(
+      meetingName,
+      'toContain',
+      meetingTitlePrefix,
+      `Expected the meeting room name to contain "${meetingTitlePrefix}", but got "${meetingName}"`
+    );
   }
 );
 
@@ -80,8 +91,19 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    expect(await moderatorMeetingRoomPage.isCoffeeBreakPopoverOpen()).toBeTruthy();
-    await expect(moderatorMeetingRoomPage.coffeeBreakDialog.coffeeBreakPopover).toContainText(headingName);
+    const isCoffeeBreakPopoverOpen = await moderatorMeetingRoomPage.isCoffeeBreakPopoverOpen();
+    await assert(
+      isCoffeeBreakPopoverOpen,
+      'toBeTruthy',
+      undefined,
+      'Expected the Coffee break popover to be visible in the meeting room'
+    );
+    await assert(
+      moderatorMeetingRoomPage.coffeeBreakDialog.coffeeBreakPopover,
+      'toContainText',
+      headingName,
+      `Expected the Coffee break popover heading to contain "${headingName}"`
+    );
   }
 );
 
@@ -91,7 +113,12 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    await expect(moderatorMeetingRoomPage.coffeeBreakDialog.coffeeBreakIcon).toBeVisible();
+    await assert(
+      moderatorMeetingRoomPage.coffeeBreakDialog.coffeeBreakIcon,
+      'toBeVisible',
+      undefined,
+      `Expected coffee break icon to be visible`
+    );
   }
 );
 
@@ -102,7 +129,12 @@ Then(
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
-    await expect(sessionDurationDialog.durationLabel).toHaveText(durationText);
+    await assert(
+      sessionDurationDialog.durationLabel,
+      'toHaveText',
+      durationText,
+      `Expected the session duration label to display "${durationText}"`
+    );
   }
 );
 
@@ -113,7 +145,12 @@ Then(
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
     const mmssRegex = /^\d{2}\s*:\s*\d{2}$/;
-    await expect(moderatorMeetingRoomPage.coffeeBreakDialog.timerText).toHaveText(mmssRegex);
+    await assert(
+      moderatorMeetingRoomPage.coffeeBreakDialog.timerText,
+      'toHaveText',
+      mmssRegex,
+      'Expected the remaining time to be displayed in MM:SS format'
+    );
   }
 );
 
@@ -123,9 +160,12 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    expect(
-      await moderatorMeetingRoomPage.isTimerCountingDown(moderatorMeetingRoomPage.coffeeBreakDialog.timerText)
-    ).toBeTruthy();
+    await assert(
+      await moderatorMeetingRoomPage.isTimerCountingDown(moderatorMeetingRoomPage.coffeeBreakDialog.timerText),
+      'toBeTruthy',
+      undefined,
+      'Expected the Coffee break countdown timer to be running'
+    );
   }
 );
 
@@ -144,7 +184,11 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    expect(await moderatorMeetingRoomPage.isCoffeeBreakPopoverClosed()).toBe(true);
+    await assert(
+      await moderatorMeetingRoomPage.isCoffeeBreakPopoverClosed(),
+      'toBeTruthy',
+      'Expected the Coffee break popover to be closed'
+    );
   }
 );
 
@@ -158,9 +202,20 @@ Then(
     }
     await guestMeetingRoomPage.page.bringToFront();
     const coffeeBreakDialogPage = new CoffeeBreakDialogPage(guestMeetingRoomPage);
-    expect(await coffeeBreakDialogPage.isCoffeeBreakDialogClosed()).toBeTruthy();
+    await assert(
+      await coffeeBreakDialogPage.isCoffeeBreakDialogClosed(),
+      'toBeTruthy',
+      undefined,
+      'Expected the Coffee break dialog to be closed after returning to the conference'
+    );
     await guestMeetingRoomPage.meetingRoomName.isVisible();
-    expect(await guestMeetingRoomPage.getMeetingRoomName()).toContain(meetingTitlePrefix);
+    const meetingName = await guestMeetingRoomPage.getMeetingRoomName();
+    await assert(
+      meetingName,
+      'toContain',
+      meetingTitlePrefix,
+      `Expected the meeting room name to contain "${meetingTitlePrefix}", but got "${meetingName}"`
+    );
   }
 );
 
@@ -170,6 +225,11 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    await expect(moderatorMeetingRoomPage.moderationTools.timerButton).toBeEnabled();
+    await assert(
+      moderatorMeetingRoomPage.moderationTools.timerButton,
+      'toBeEnabled',
+      undefined,
+      'Expected the Timer moderation tool to be enabled after the Coffee break ended'
+    );
   }
 );

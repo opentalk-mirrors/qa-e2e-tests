@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect, Locator } from '@playwright/test';
+import { Locator } from '@playwright/test';
 
 import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
@@ -23,7 +23,12 @@ Then(
   async function (this: CustomWorld, user: string, description: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.votingRoomMessage).toHaveText(description);
+    await assert(
+      votingRoomPage.votingRoomMessage,
+      'toHaveText',
+      description,
+      `Expected the voting room message to display "${description}"`
+    );
   }
 );
 
@@ -82,7 +87,12 @@ Then(
   async function (this: CustomWorld, user: string, tooltipDescription: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    await expect(votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription).toHaveText(tooltipDescription);
+    await assert(
+      votingRoomPage.createNewVoting.autoCloseToggleButtonTooltipDescription,
+      'toHaveText',
+      tooltipDescription,
+      `Expected the auto-close toggle tooltip to display "${tooltipDescription}"`
+    );
   }
 );
 
@@ -132,11 +142,26 @@ Then(
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
     const actual = await votingRoomPage.getSavedVotings();
 
-    expect(actual.length).toBe(expected.length);
+    await assert(
+      actual.length,
+      'toBe',
+      expected.length,
+      `Expected the number of voting items to be ${expected.length}, but got ${actual.length}`
+    );
 
     for (let i = 0; i < expected.length; i++) {
-      expect(actual[i].title).toBe(expected[i].title);
-      expect(actual[i].topic).toBe(expected[i].topic);
+      await assert(
+        actual[i].title,
+        'toBe',
+        expected[i].title,
+        `Expected voting title at index ${i} to be "${expected[i].title}", but got "${actual[i].title}"`
+      );
+      await assert(
+        actual[i].topic,
+        'toBe',
+        expected[i].topic,
+        `Expected voting topic at index ${i} to be "${expected[i].topic}", but got "${actual[i].topic}"`
+      );
     }
   }
 );
@@ -161,7 +186,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
 
-    expect(await votingRoomPage.isSavedVotingListVisible()).toBe(false);
+    await assert(
+      await votingRoomPage.isSavedVotingListVisible(),
+      'toBe',
+      false,
+      'Expected the saved voting list to be hidden'
+    );
   }
 );
 
@@ -197,6 +227,6 @@ Then(
     const expected = Object.fromEntries(
       lastCreatedVotingDetails.map(({ field, value }) => [field, normalizeValue(value)])
     );
-    expect(actual).toEqual(expected);
+    await assert(actual, 'toEqual', expected, 'Expected the actual voting list to match the expected voting list');
   }
 );

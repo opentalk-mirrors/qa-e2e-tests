@@ -11,8 +11,8 @@ import { closeWebkitPopUp } from './webkit';
 
 // these escapes are useful, because it's a regex
 /* eslint-disable no-useless-escape */
-export const meetingUrlPatter =
-  'https?:\/\/[a-z:0-9\.\-]+\/room\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\?invite=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+export const meetingUrlPattern =
+  /https?:\/\/[a-z:0-9\.\-]+\/room\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\?invite=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 /* eslint-enable no-useless-escape */
 
 export const startAdhocMeetingAsModerator = async (
