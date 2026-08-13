@@ -8,10 +8,14 @@ export class MyMeetingsPage {
 
   public readonly myMeetingsHeading: Locator;
   public readonly planNewLink: Locator;
+  public readonly onlyShowInvitesButton: Locator;
+  public readonly favoriteMeetingButton: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.myMeetingsHeading = this.page.getByRole('heading', { name: /^(My Meetings|Meine Meetings)$/ });
     this.planNewLink = this.page.getByRole('link', { name: /^(Plan new|Meeting planen)$/ });
+    this.onlyShowInvitesButton = this.page.getByRole('button', { name: 'Only show invites' });
+    this.favoriteMeetingButton = this.page.getByRole('button', { name: 'Only show favorites' });
   }
 }
