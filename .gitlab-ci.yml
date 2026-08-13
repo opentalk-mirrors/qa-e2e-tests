@@ -481,8 +481,8 @@ merge-and-upload-test-results:
     trcli -y \
       -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
-      -u $TESTRAIL_USERNAME \
-      -p $TESTRAIL_API_KEY \
+      -u "$TESTRAIL_USERNAME" \
+      -k "$TESTRAIL_API_KEY" \
       parse_junit \
       -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
@@ -491,8 +491,8 @@ merge-and-upload-test-results:
     trcli -y \
       -h "$TESTRAIL_URL" \
       --project "Automated Tests" \
-      -u $TESTRAIL_USERNAME \
-      -p $TESTRAIL_API_KEY \
+       -u "$TESTRAIL_USERNAME" \
+       -k "$TESTRAIL_API_KEY" \
       parse_cucumber \
       -f "./cucumber-report-*.json" \
       --run-description "URL: $CI_PIPELINE_URL" \
