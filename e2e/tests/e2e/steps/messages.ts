@@ -15,19 +15,19 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    assert(
+    await assert(
       await messagesPage.getParticipantDetails(-1),
       'toContain',
       user,
       `Expected participant details to contain "${user}"`
     );
-    assert(
+    await assert(
       await messagesPage.getParticipantDetails(-1),
       'toContain',
       message,
       `Expected participant details to contain "${message}"`
     );
-    assert(
+    await assert(
       await messagesPage.getParticipantDetails(-1),
       'toMatch',
       /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
@@ -42,7 +42,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     messagesPage = new MessagesPage({ page: meeting.meetingRoomPage.page });
-    assert(
+    await assert(
       await messagesPage.getParticipantData('message'),
       'toEqual',
       messages.raw().flat(),

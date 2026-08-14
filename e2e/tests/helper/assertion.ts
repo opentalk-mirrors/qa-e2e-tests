@@ -51,7 +51,7 @@ export async function assert(
         if (typeof expected !== 'string' && !(expected instanceof RegExp)) {
           throw new TypeError('expected must be a string or RegExp');
         }
-        await expect(actual, message).toMatch(expected);
+        expect(actual, message).toMatch(expected);
         break;
       case 'toBeVisible':
         await expect(actual as Locator, message).toBeVisible();
@@ -100,10 +100,10 @@ export async function assert(
         await expect(actual as Locator, message).toHaveText(expected as string);
         break;
       case 'toHaveCount':
-        expect(actual as Locator, message).toHaveCount(expected as number);
+        await expect(actual as Locator, message).toHaveCount(expected as number);
         break;
       case 'toBeHidden':
-        expect(actual as Locator, message).toBeHidden();
+        await expect(actual as Locator, message).toBeHidden();
         break;
       case 'toBeFocused':
         await expect(actual as Locator, message).toBeFocused();

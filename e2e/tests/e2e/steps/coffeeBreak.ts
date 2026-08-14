@@ -187,6 +187,7 @@ Then(
     await assert(
       await moderatorMeetingRoomPage.isCoffeeBreakPopoverClosed(),
       'toBeTruthy',
+      undefined,
       'Expected the Coffee break popover to be closed'
     );
   }

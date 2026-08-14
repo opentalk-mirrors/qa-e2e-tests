@@ -36,7 +36,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    assert(
+    await assert(
       talkingStickPage.dropdownMenuItem,
       'toBeVisible',
       undefined,
@@ -50,7 +50,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    assert(
+    await assert(
       talkingStickPage.dropdownMenuItem,
       'toBeHidden',
       undefined,
@@ -65,7 +65,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
     const optionButtonList = talkingStickPage.getOrderSelectionOptionLocator(optionButton);
-    assert(
+    await assert(
       optionButtonList,
       'toBeVisible',
       undefined,
@@ -84,41 +84,41 @@ Then(
     switch (displayOrder) {
       case 'Descending': {
         const expectedOrder = [...displayGuestNames].sort().reverse();
-        assert(
+        await assert(
           displayGuestNames,
           'toEqual',
           expectedOrder,
-          'Expected the participants to be displayed in descending alphabetical order'
+          `Expected participants in descending alphabetical order: [${expectedOrder.join(', ')}], but displayed: [${displayGuestNames.join(', ')}]`
         );
         break;
       }
       case 'Ascending': {
         const expectedOrder = [...displayGuestNames].sort();
-        assert(
+        await assert(
           displayGuestNames,
           'toEqual',
           expectedOrder,
-          'Expected the participants to be displayed in ascending alphabetical order'
+          `Expected participants in ascending alphabetical order: [${expectedOrder.join(', ')}], but displayed: [${displayGuestNames.join(', ')}]`
         );
         break;
       }
       case 'First Join Time': {
         const expectedOrder = [...displayGuestTimes].sort();
-        assert(
+        await assert(
           displayGuestTimes,
           'toEqual',
           expectedOrder,
-          'Expected the participants to be ordered by first join time'
+          `Expected participants to be ordered by first join time: [${expectedOrder.join(', ')}], but displayed: [${displayGuestTimes.join(', ')}]`
         );
         break;
       }
       case 'Last Join Time': {
         const expectedOrder = [...displayGuestTimes].sort().reverse();
-        assert(
+        await assert(
           displayGuestTimes,
           'toEqual',
           expectedOrder,
-          'Expected the participants to be ordered by last join time'
+          `Expected participants to be ordered by last join time: [${expectedOrder.join(', ')}], but displayed: [${displayGuestTimes.join(', ')}]`
         );
         break;
       }
@@ -134,7 +134,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
     const moderatorSwitch = await talkingStickPage.getIncludeModeratorSwitchValue();
-    assert(moderatorSwitch, 'toBeTruthy', undefined, 'Expected the "Include moderator" switch to be enabled');
+    await assert(moderatorSwitch, 'toBeTruthy', undefined, 'Expected the "Include moderator" switch to be enabled ');
   }
 );
 
@@ -146,7 +146,12 @@ Then(
     const displayGuestTimes = await talkingStickPage.getParticipantData('time');
     const expectedFormatRegex = /^Joined (?:[01]\d|2[0-3]):[0-5]\d$/;
     for (const timeString of displayGuestTimes) {
-      assert(timeString, 'toMatch', expectedFormatRegex, `Expected "${timeString}" to match the format "Joined HH:MM"`);
+      await assert(
+        timeString,
+        'toMatch',
+        expectedFormatRegex,
+        `Expected "${timeString}" to match the "Joined HH:MM" format`
+      );
     }
   }
 );
@@ -160,7 +165,7 @@ Then(
       talkingStickPage.activeSpeakerSVG,
       'not toBeVisible',
       undefined,
-      'Expected each participant to display the default muted audio status in the Talking Stick moderator tool'
+      'Expected each participant to have the default muted audio status in the Talking Stick moderator tool'
     );
   }
 );

@@ -43,12 +43,7 @@ Then(
           break;
         }
       }
-      assert(
-        elementFound,
-        'toBeTruthy',
-        undefined,
-        `Expected "${expectedElement}" to be listed among the ${elements} in the open moderator tool`
-      );
+      await assert(elementFound, 'toBeTruthy', undefined, `Could not find the expected element "${expectedElement}"`);
     }
   }
 );
@@ -61,31 +56,31 @@ Then(
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     switch (element) {
       case 'field':
-        assert(
+        await assert(
           moderatorToolsPage.getTextboxByLabel(elementName),
           'toBeVisible',
           undefined,
-          `Expected the field "${elementName}" to be visible in the open moderator tool`
+          `Expected the "${elementName}" field to be visible in the open moderator tool`
         );
         break;
 
       // switch has no inner text and returns null, so cant return accessible name
       case 'switch':
-        assert(
+        await assert(
           moderatorToolsPage.getSwitchByName(elementName),
           'toBeVisible',
           undefined,
-          `Expected the switch "${elementName}" to be visible in the open moderator tool`
+          `Expected the "${elementName}" switch to be visible in the open moderator tool`
         );
         break;
 
       // sort by button has no inner text and returns null, so cant return accessible name
       case 'button':
-        assert(
+        await assert(
           moderatorToolsPage.getButtonByName(elementName),
           'toBeVisible',
           undefined,
-          `Expected the button "${elementName}" to be visible in the open moderator tool`
+          `Expected the "${elementName}" button to be visible in the open moderator tool`
         );
         break;
 
@@ -101,11 +96,11 @@ Then(
     const participants = expectedParticipants.raw().flat();
     const participantListPage = await expectParticipantListWithCheckboxesToHaveCount(this, user, participants.length);
     for (const participant of participants) {
-      assert(
+      await assert(
         participantListPage.getParticipantItemByName(participant),
         'toBeVisible',
         undefined,
-        `Expected participant "${participant}" to be displayed with a checkbox in the moderator tool`
+        `Expected participant "${participant}" to be visible with a checkbox in the moderator tool`
       );
     }
   }
@@ -127,11 +122,11 @@ async function expectParticipantListWithCheckboxesToHaveCount(
   await meeting.meetingRoomPage.page.bringToFront();
   const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
   const participantList = new ParticipantListWithCheckboxesPage({ page: moderatorToolsPage.page });
-  assert(
+  await assert(
     participantList.participantList,
     'toHaveCount',
     expectedCount,
-    `Expected ${expectedCount} participant(s) to be displayed with checkboxes in the moderator tool`
+    `Expected ${expectedCount} participant(s) to be visible with checkboxes in the moderator tool`
   );
 
   return participantList;
@@ -144,11 +139,11 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     for (const label of labels.raw().flat()) {
-      assert(
+      await assert(
         moderatorToolsPage.getTextboxByLabel(label),
         'toBeVisible',
         undefined,
-        `Expected the field "${label}" to be visible in the open moderator tool`
+        `Expected the "${label}" field to be visible in the open moderator tool`
       );
     }
   }
@@ -168,11 +163,11 @@ Then(
   async function (this: CustomWorld, textField: string, placeholder: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    assert(
+    await assert(
       await moderatorToolsPage.getFieldPlaceholderValue(textField),
       'toBe',
       placeholder,
-      `Expected the "${textField}" field to have placeholder "${placeholder}"`
+      `Expected the "${textField}" field to have the placeholder "${placeholder}"`
     );
   }
 );
@@ -191,7 +186,12 @@ Then(
   async function (this: CustomWorld, text: string, textField: string, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
-    assert(await moderatorToolsPage.getFieldInputValue(textField), 'toBe', text, `Expected to have participants`);
+    await assert(
+      await moderatorToolsPage.getFieldInputValue(textField),
+      'toBe',
+      text,
+      `Expected the "${textField}" field to have the value "${text}"`
+    );
   }
 );
 
@@ -224,11 +224,11 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorToolsPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
     const actualParticipantsCount = await moderatorToolsPage.getTotalParticipantsNumber();
-    assert(
+    await assert(
       actualParticipantsCount,
       'toEqual',
       participantsCount,
-      `Expected ${participantsCount} participant(s) to be displayed in the moderator tool, but found ${actualParticipantsCount}`
+      `Expected ${participantsCount} participant(s) in the open moderator tool, but found ${actualParticipantsCount}`
     );
   }
 );
@@ -238,11 +238,11 @@ Then(
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const moderatorNotification = new NotificationPage({ page: meeting.meetingRoomPage.page });
-    assert(
+    await assert(
       await moderatorNotification.getAlertNotificationText(),
       'toBe',
       text,
-      `Expected a notification with the text "${text}" to be displayed in the meeting room`
+      `Expected a notification with text "${text}" to be visible in the meeting room`
     );
   }
 );
