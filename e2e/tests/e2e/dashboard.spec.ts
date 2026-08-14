@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { globalSetup } from '../authHelpers';
-import { config } from '../config';
 import { assert } from '../helper/assertion';
 import { deleteUser } from '../helper/keycloak';
 import { HomePage } from '../pages/HomePage';
+import { LoginPage } from '../pages/LoginPage';
 import { SidebarPage } from '../pages/SidebarPage';
 
 test.describe('Dashboard', () => {
@@ -104,17 +104,13 @@ test.describe('Dashboard', () => {
       );
     });
 
-    test.skip('logout from dashboard will redirect to signIn page', async ({ page }) => {
-      await page.goto(`${config.INSTANCE_URL}/dashboard`);
-      await page.locator('button').filter({ hasText: 'Logout' }).click();
-      await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
+    test('logout from dashboard will redirect to signIn page', async ({ page }) => {
+      const sidebarPage = new SidebarPage({ page });
+      await sidebarPage.logOut();
+
       //Relogin user again
-      await page.goto(config.INSTANCE_URL);
-      await page.getByLabel('Username or email').fill(config.USER_NAME);
-      await page.getByLabel('Username or email').press('Tab');
-      await page.getByLabel('Password').fill(config.PASSWORD);
-      await page.getByRole('button', { name: 'Sign In' }).click();
-      await expect(page.getByRole('link', { name: /(Start|Starten)$/ }).nth(1)).toBeVisible();
+      const loginPage = new LoginPage({ page });
+      await assert(loginPage.signInButton, 'toBeVisible', 'Expected the "Sign In" button to be visible after logout');
     });
   });
 });
