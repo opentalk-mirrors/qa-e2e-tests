@@ -6,6 +6,7 @@ import { validate } from 'uuid';
 
 import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
+import { assert } from '../../helper/assertion';
 import { formatDate } from '../../helper/helper';
 import { deleteUser } from '../../helper/keycloak';
 import { closeWebkitPopUp } from '../../helper/webkit';
@@ -252,53 +253,36 @@ test.describe('Dashboard_Home', () => {
     await planMeetingPage.selectMeetingRepetition('Custom');
     await planMeetingPage.selectCustomMeetingRepetition('Week');
 
-    // A new field with selectable options M, T, W, T, F, S, S should appear
-    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const days = ['S', 'M', 'T', 'W', 'F'];
 
     for (const day of days) {
       if (day === 'S' || day === 'T') {
-        await expect(page.getByRole('button', { name: day, exact: true })).toHaveCount(2);
+        assert(
+          await planMeetingPage.getWeeklyDayButtons(day),
+          'toHaveCount',
+          2,
+          `Day button "${day}" should appear exactly twice`
+        );
       } else {
-        await expect(page.getByRole('button', { name: day, exact: true })).toBeVisible();
+        assert(
+          await planMeetingPage.getWeeklyDayButtons(day),
+          'toBeVisible',
+          undefined,
+          `Day button "${day}" should be visible`
+        );
       }
     }
 
-    // Select M/W/F
-    for (const day of ['M', 'W', 'F']) {
-      const dayButton = page.getByRole('button', { name: day, exact: true });
-
-      const selected = await dayButton.evaluate((el) => el.classList.contains('MuiChip-filled'));
-
-      if (!selected) {
-        await dayButton.click();
-      }
-    }
-
-    // Remove default set current day
-    const today = new Date().getDay();
-    const currentDay = days[today];
-
-    if (!['M', 'W', 'F'].includes(currentDay)) {
-      const selectedDays = planMeetingPage.selectedDays;
-      const selectedCount = await selectedDays.count();
-
-      for (let i = 0; i < selectedCount; i++) {
-        const text = await selectedDays.nth(i).textContent();
-
-        if (text?.trim() === currentDay) {
-          await selectedDays.nth(i).click();
-          break;
-        }
-      }
-    }
+    await planMeetingPage.selectWeeklyRepetitionDays(['M', 'W', 'F']);
 
     // Selected specific days (e.g., Monday, Wednesday, Friday) should be highlighted
     for (const day of ['M', 'W', 'F']) {
-      expect(
-        await page
-          .getByRole('button', { name: day, exact: true })
-          .evaluate((el) => el.classList.contains('MuiChip-filled'))
-      ).toBe(true);
+      await assert(
+        await planMeetingPage.isDayButtonSelected(day),
+        'toBeTruthy',
+        undefined,
+        `Day "${day}" should be highlighted`
+      );
     }
 
     await planMeetingPage.saveCustomMeetingRepetition();

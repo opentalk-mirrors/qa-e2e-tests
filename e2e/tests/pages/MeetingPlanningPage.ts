@@ -29,7 +29,8 @@ export class MeetingPlanningPage {
   meetingTextAsTitle: Locator;
   participantTextAsTitle: Locator;
   meetingPageDescription: Locator;
-  selectedDays: Locator;
+  selectedDayButtons: Locator;
+  buttons: Locator;
 
   dateInputField: {
     fromInputField: Locator;
@@ -109,7 +110,8 @@ export class MeetingPlanningPage {
     this.meetingPageDescription = this.page.getByText(
       'Required fields are marked with an asterisk. Please fill them out.'
     );
-    this.selectedDays = this.page.locator('[role="button"].MuiChip-filled');
+    this.selectedDayButtons = this.page.locator('[role="button"].MuiChip-filled');
+    this.buttons = this.page.getByRole('button');
     this.dateInputField = {
       fromInputField: this.page.getByLabel('from *'),
       datePicker: this.page.locator('.MuiPickersPopper-root'),
@@ -292,5 +294,49 @@ export class MeetingPlanningPage {
 
   async getMeetingOccurrenceDropDownExpansionState(): Promise<string | null> {
     return await this.meetingOccurrenceDropDown.getAttribute('aria-expanded');
+  }
+
+  getWeeklyDayButtons(day: string): Locator {
+    return this.buttons.filter({ hasText: new RegExp(`^${day}$`) });
+  }
+
+  // Selects the specified days that are not already selected.
+  private async selectDays(daysToSelect: string[]): Promise<void> {
+    for (const day of daysToSelect) {
+      const dayButton = this.getWeeklyDayButtons(day).first();
+
+      const isSelected = await this.isDayButtonSelected(day);
+
+      if (!isSelected) {
+        await (await dayButton).click();
+      }
+    }
+  }
+
+  // Deselects the default current day if it is not requested.
+  private async deselectCurrentDayIfNotRequested(daysToSelect: string[]): Promise<void> {
+    const currentDay = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][new Date().getDay()];
+
+    if (daysToSelect.includes(currentDay)) {
+      return;
+    }
+
+    const selectedDayButton = this.selectedDayButtons.filter({
+      hasText: new RegExp(`^${currentDay}$`),
+    });
+
+    if (await selectedDayButton.count()) {
+      await selectedDayButton.first().click();
+    }
+  }
+
+  // Selects the requested days and removes the default day if necessary.
+  async selectWeeklyRepetitionDays(daysToSelect: string[]): Promise<void> {
+    await this.selectDays(daysToSelect);
+    await this.deselectCurrentDayIfNotRequested(daysToSelect);
+  }
+
+  public async isDayButtonSelected(day: string): Promise<boolean> {
+    return (await this.selectedDayButtons.filter({ hasText: new RegExp(`^${day}$`) }).count()) > 0;
   }
 }
