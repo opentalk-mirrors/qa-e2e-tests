@@ -480,7 +480,7 @@ merge-and-upload-test-results:
     # Upload Playwright JUnit report to TestRail
     trcli -y \
       -h "$TESTRAIL_URL" \
-      --project "Automated Tests" \
+      --project "$TESTRAIL_PROJECT" \
       -u "$TESTRAIL_USERNAME" \
       -k "$TESTRAIL_API_KEY" \
       parse_junit \
@@ -490,7 +490,7 @@ merge-and-upload-test-results:
     # Upload Gherkin Cucumber JSON report to TestRail
     trcli -y \
       -h "$TESTRAIL_URL" \
-      --project "Automated Tests" \
+      --project "$TESTRAIL_PROJECT" \
        -u "$TESTRAIL_USERNAME" \
        -k "$TESTRAIL_API_KEY" \
       parse_cucumber \

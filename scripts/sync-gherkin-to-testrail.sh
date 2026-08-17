@@ -70,7 +70,7 @@ while IFS= read -r FEATURE_FILE; do
     trcli -y \
       -h "$TESTRAIL_URL" \
       -u "$TESTRAIL_USERNAME" \
-      -p "$TESTRAIL_API_KEY" \
+      -k "$TESTRAIL_API_KEY" \
       --project "$TESTRAIL_PROJECT" \
       import_gherkin \
       -f "$TEMP_FEATURE_FILE" \
@@ -86,7 +86,7 @@ while IFS= read -r FEATURE_FILE; do
     trcli -y \
       -h "$TESTRAIL_URL" \
       -u "$TESTRAIL_USERNAME" \
-      -p "$TESTRAIL_API_KEY" \
+      -k "$TESTRAIL_API_KEY" \
       --project "$TESTRAIL_PROJECT" \
       import_gherkin \
       -f "$TEMP_FEATURE_FILE" \
