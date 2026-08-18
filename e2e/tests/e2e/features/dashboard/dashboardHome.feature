@@ -12,7 +12,7 @@ Feature: Dashboard Home
       | Alice |
       | Bob   |
 
-  @skip @smoke
+  @smoke
   Scenario Outline: TC_010_Dashboard_Home_Current meetings_meeting entry_if created by own & if created by other user_with 3-dot button
     # https://git.opentalk.dev/opentalk/qa/reports/-/issues/41
     Given "Bob" has logged in

@@ -4,6 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../../../authHelpers';
+import { assert } from '../../../helper/assertion';
 import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
@@ -154,11 +155,24 @@ test.describe('Meeting room_Coffee break', async () => {
     await coffeeBreakDialogPage.waitForCoffeeBreakToEnd();
     expect(await coffeeBreakDialogPage.isCoffeeBreakDialogClosed()).toBeTruthy();
     const moderatorNotification = new NotificationPage({ page: page });
-    expect(await moderatorNotification.getAlertNotificationText()).toBe(coffeeBreakOverNotificationText);
+    const notificationText = await moderatorNotification.getAlertNotificationText();
+    await assert(
+      notificationText,
+      'toBe',
+      coffeeBreakOverNotificationText,
+      `Expected the notification text shown when the coffee break ended in the moderator meeting room to be "${coffeeBreakOverNotificationText}", but received "${notificationText}"`
+    );
+
     await guestMeetingRoomPage.page.bringToFront();
     expect(await guestCoffeeBreakDialogPage.isCoffeeBreakDialogClosed()).toBeTruthy();
     const guestNotification = new NotificationPage({ page: guestMeetingRoomPage.page });
-    expect(await guestNotification.getAlertNotificationText()).toBe(coffeeBreakOverNotificationText);
+    const guestNotificationText = await guestNotification.getAlertNotificationText();
+    await assert(
+      guestNotificationText,
+      'toBe',
+      coffeeBreakOverNotificationText,
+      `Expected the notification text shown when the coffee break ended in the guest meeting room to be "${coffeeBreakOverNotificationText}", but received "${guestNotificationText}"`
+    );
     await meetingRoomPage.page.bringToFront();
     await expect(coffeeBreakPage.heading).toBeVisible();
     expect(await coffeeBreakPage.getHeadingText()).toBe('Coffee break');

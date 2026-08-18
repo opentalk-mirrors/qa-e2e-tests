@@ -498,14 +498,16 @@ Then(
     const meeting = this.getStartedMeeting(moderator);
     await meeting.participantMeetingRoomPages[receiver].page.bringToFront();
     const notificationPage = new NotificationPage({ page: meeting.participantMeetingRoomPages[receiver].page });
-    const notificationText = await notificationPage.getAlertNotificationText();
+    const notificationTexts = await notificationPage.getAllAlertNotificationsTexts();
+
+    const matchingNotification = notificationTexts.find((notificationText) => notificationText.includes(notification));
     await assert(
-      notificationText,
+      matchingNotification,
       'toContain',
       notification,
-      `Expected ${notificationText} to contain ${notification}`
+      `Expected the notification to contain "${notification}", but received "${matchingNotification}"`
     );
-    await notificationPage.closeNotificationAlert();
+    await notificationPage.closeNotificationAlert(notification);
   }
 );
 

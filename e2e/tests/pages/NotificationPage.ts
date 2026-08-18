@@ -8,6 +8,7 @@ import { MeetingRoomPage } from './MeetingRoom/MeetingRoomPage';
 
 export class NotificationPage {
   private readonly page: Page;
+  private readonly allAlerts: Locator;
   private readonly baseAlertLocator: Locator;
   private readonly breakoutRoomAlertLocator: Locator;
   private readonly joinBreakoutRoomLocator: Locator;
@@ -16,11 +17,12 @@ export class NotificationPage {
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.baseAlertLocator = this.page.locator('xpath=//*[@role="alert"]//span');
+    this.allAlerts = this.page.getByRole('alert');
+    this.baseAlertLocator = this.allAlerts.locator('span');
     this.breakoutRoomAlertLocator = this.page.getByRole('alertdialog');
     this.joinBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Join Room' });
     this.leaveBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Leave Room' });
-    this.closeButton = this.page.getByRole('alert').getByRole('button', { name: 'Close' });
+    this.closeButton = this.page.getByRole('button', { name: 'Close' });
   }
 
   public async getAlertNotificationText(): Promise<string> {
@@ -58,9 +60,11 @@ export class NotificationPage {
     } while (meetingRoomNameAfter === meetingRoomNameBefore);
   }
 
-  public async closeNotificationAlert(): Promise<void> {
-    await this.baseAlertLocator.waitFor();
-    await this.closeButton.click();
+  public async closeNotificationAlert(notificationText: string): Promise<void> {
+    const alert = this.allAlerts.filter({ hasText: notificationText });
+    if (await alert.isVisible()) {
+      await alert.locator(this.closeButton).click();
+    }
     await waitForDomStopChanging(this.page);
   }
 }
