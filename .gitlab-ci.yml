@@ -477,22 +477,27 @@ merge-and-upload-test-results:
   before_script:
     - pip install trcli
   script: |
-    # Upload Playwright JUnit report to TestRail
+    echo "Uploading Playwright results"
+
+    # Upload Playwright JUnit report to Playwright TestRail project
     trcli -y \
       -h "$TESTRAIL_URL" \
-      --project "$TESTRAIL_PROJECT" \
+      --project "Automated Tests" \
       -u "$TESTRAIL_USERNAME" \
       -k "$TESTRAIL_API_KEY" \
       parse_junit \
       -f "./junit/junit-*.xml" \
       --run-description "URL: $CI_PIPELINE_URL" \
       --title "Automated Nightly Playwright Tests from GitLab CI/CD ($CI_COMMIT_REF_NAME, $CI_COMMIT_SHORT_SHA)"
-    # Upload Gherkin Cucumber JSON report to TestRail
+
+    echo "Uploading Gherkin results"
+
+    # Upload Gherkin Cucumber JSON report to Cucumber TestRail project
     trcli -y \
       -h "$TESTRAIL_URL" \
-      --project "$TESTRAIL_PROJECT" \
-       -u "$TESTRAIL_USERNAME" \
-       -k "$TESTRAIL_API_KEY" \
+      --project "Cucumber automation tests" \
+      -u "$TESTRAIL_USERNAME" \
+      -k "$TESTRAIL_API_KEY" \
       parse_cucumber \
       -f "./cucumber-report-*.json" \
       --run-description "URL: $CI_PIPELINE_URL" \
