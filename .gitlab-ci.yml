@@ -477,15 +477,6 @@ merge-and-upload-test-results:
   before_script:
     - pip install trcli
   script: |
-    echo "Testing TestRail authentication"
-
-    curl -sSf \
-      -u "$TESTRAIL_USERNAME:$TESTRAIL_API_KEY" \
-      "$TESTRAIL_URL/index.php?/api/v2/get_projects" \
-      > /dev/null
-
-    echo "TestRail authentication successful."
-
     echo "Uploading Playwright results"
 
     # Upload Playwright JUnit report to Playwright TestRail project
