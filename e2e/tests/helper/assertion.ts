@@ -20,7 +20,8 @@ type AssertionType =
   | 'toBeEnabled'
   | 'toHaveProperty'
   | 'toHaveValue'
-  | 'toHaveCount';
+  | 'toHaveCount'
+  | 'toBeFocused';
 export async function assert(
   actual:
     | string
@@ -99,6 +100,9 @@ export async function assert(
         break;
       case 'toHaveCount':
         await expect(actual as Locator, message).toHaveCount(expected as number);
+        break;
+      case 'toBeFocused':
+        await expect(actual as Locator, message).toBeFocused();
         break;
       default:
         throw new Error(`'${assertionType}' is not implemented`);
