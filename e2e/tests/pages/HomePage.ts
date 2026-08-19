@@ -45,7 +45,7 @@ export class HomePage {
     this.joinExistingMeetingButton = this.page.getByRole('button', { name: 'Join existing' });
     this.joinExistingMeetingDialog = this.page.getByRole('dialog', { name: 'Join a meeting now' });
     this.joinExistingMeetingHeading = this.page.getByRole('heading', { name: 'Join a meeting now' });
-    this.joinExistingMeetingInput = this.page.locator('//*[@id="Join meeting input field"]');
+    this.joinExistingMeetingInput = this.page.getByRole('textbox', { name: 'Meeting ID (URL)' });
     this.joinExistingMeetingErrorLabel = this.page.locator('//*[@id="Join meeting input field-helper-text"]');
     this.joinExistingMeetingJoinButton = this.page.getByRole('button', { name: 'Join' });
     this.joinExistingMeetingCloseButton = this.page.getByRole('button', { name: 'Close dialog' });
