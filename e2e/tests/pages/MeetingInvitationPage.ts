@@ -37,7 +37,7 @@ export class MeetingInvitationPage {
     this.phoneDialInInputField = this.page.getByRole('textbox', { name: 'Phone Dial-in' });
     this.guestLinkInputField = this.page.getByRole('textbox', { name: 'Guest-Link' });
     this.passwordInputField = this.page.getByRole('textbox', { name: 'Password', exact: true });
-    this.inviteParticipantsInputField = this.page.locator('[data-testid="SelectParticipants"] input');
+    this.inviteParticipantsInputField = this.page.getByRole('combobox', { name: 'Invite participants' });
     this.cancelMeetingButton = this.page.getByRole('button', { name: 'Cancel' });
     this.openMeetingRoomButton = this.page.getByRole('link', { name: 'Open Video Room' });
     this.warningDialogForDuplicateMeeting = this.page.getByText('Please confirm');

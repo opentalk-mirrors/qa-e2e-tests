@@ -27,7 +27,7 @@ export class TalkingStickPage extends ModeratorToolsPage {
       .filter({ has: this.page.getByRole('menuitem', { name: 'Name (A - Z)' }) });
     this.showPossibleOrderSelectionsButton = this.page.locator('[data-sentry-component="TalkingStickSortButton"]');
     this.includeModeratorSwitch = this.page.getByRole('switch', { name: 'Include moderator' });
-    this.activeSpeakerSVG = this.page.locator('[aria-labelledby="active-speaker-icon-title-id"]');
+    this.activeSpeakerSVG = this.page.getByRole('img', { name: 'Active speaker' });
   }
 
   public async openTalkingStickPage(): Promise<void> {

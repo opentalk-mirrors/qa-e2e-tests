@@ -31,33 +31,22 @@ export class SessionDurationDialog {
     this.page = page;
     this.dialogContainer = this.page.getByRole('dialog', { name: 'Session Duration', exact: true });
     this.title = this.page.locator('//p[@id="duration-field-popover-title"]');
-    this.oneMinuteDurationButton = this.page.getByRole('dialog').getByRole('button', { name: '1 minute', exact: true });
-    this.twoMinuteDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: '2 minutes', exact: true });
-    this.fiveMinuteDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: '5 minutes', exact: true });
-    this.tenMinuteDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: '10 minutes', exact: true });
-    this.fifteenMinuteDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: '15 minutes', exact: true });
-    this.thirtyMinuteDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: '30 minutes', exact: true });
-    this.unlimitedTimeDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Unlimited duration', exact: true });
-    this.customDurationButton = this.page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Custom duration', exact: true });
-    this.customDurationButtonInput = this.page.getByRole('dialog').getByRole('spinbutton');
-    this.customDurationLabel = this.page.getByRole('dialog').getByText('Enter custom duration (min)');
-    this.saveButton = this.page.getByRole('dialog').getByRole('button', { name: 'Save' });
-    this.closeButton = this.page.getByRole('dialog').getByRole('button', { name: 'Close' });
-    this.selectedDurationLocator = this.page.locator('div[role="button"][aria-selected="true"]');
+    this.oneMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '1 minute', exact: true });
+    this.twoMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '2 minutes', exact: true });
+    this.fiveMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '5 minutes', exact: true });
+    this.tenMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '10 minutes', exact: true });
+    this.fifteenMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '15 minutes', exact: true });
+    this.thirtyMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '30 minutes', exact: true });
+    this.unlimitedTimeDurationButton = this.dialogContainer.getByRole('button', {
+      name: 'Unlimited duration',
+      exact: true,
+    });
+    this.customDurationButton = this.dialogContainer.getByRole('button', { name: 'Custom duration', exact: true });
+    this.customDurationButtonInput = this.dialogContainer.getByRole('spinbutton');
+    this.customDurationLabel = this.dialogContainer.getByText('Enter custom duration (min)');
+    this.saveButton = this.dialogContainer.getByRole('button', { name: 'Save' });
+    this.closeButton = this.dialogContainer.getByRole('button', { name: 'Close' });
+    this.selectedDurationLocator = this.dialogContainer.locator('[role="button"][aria-selected="true"]');
     this.durationLabel = this.page.locator('#tabpanel-tab-coffee-break p').first();
     // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
   }
