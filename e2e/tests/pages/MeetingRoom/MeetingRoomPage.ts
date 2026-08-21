@@ -136,7 +136,7 @@ export class MeetingRoomPage {
 
     this.meetingInfoButton = this.page.getByRole('button', { name: 'Share meeting details' });
 
-    this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
+    this.viewOptionsButton = this.page.getByRole('button', { name: 'Customize view' });
     this.waitingListButton = this.page.getByTestId('waiting-list-button');
     this.waitingParticipantsIndicator = this.page.locator('header .MuiBadge-overlapRectangular');
     // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.

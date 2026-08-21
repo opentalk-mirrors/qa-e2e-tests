@@ -4,6 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../../authHelpers';
+import { assert } from '../../helper/assertion';
 import { deleteUser } from '../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
@@ -112,7 +113,7 @@ test.describe('Accessibility_General', () => {
     await expect(lobbyRoomPage.dataProtectionLink).toBeFocused();
   });
 
-  test.skip('TC_003_Meeting_Room', async ({ page, browserName }) => {
+  test('TC_003_Meeting_Room', async ({ page, browserName }) => {
     // Camera and Microphone permissions are not being granted in Safari in CI
     // Thus they cannot be accessed by keyboard "Tab", see https://github.com/microsoft/playwright/issues/20563
     test.skip(browserName === 'webkit');
@@ -131,16 +132,19 @@ test.describe('Accessibility_General', () => {
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.jumpLinks.skipToPersonalControlPanelLink).toBeFocused();
 
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.meetingInfoButton).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.viewOptionsButton).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.securityMonitorButton).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.burgerMenuButton).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
+    const topBarButtons = [
+      meetingRoomPage.meetingInfoButton,
+      meetingRoomPage.viewOptionsButton,
+      meetingRoomPage.securityMonitorButton,
+      meetingRoomPage.burgerMenuButton,
+    ];
 
+    for (const button of topBarButtons) {
+      await meetingRoomPage.page.keyboard.press('Tab');
+      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the top bar`);
+    }
+
+    await meetingRoomPage.page.keyboard.press('Tab');
     // make sure audio and video button are enabled because tests frequently fail because of this
     await expect(meetingRoomPage.toolBar.microphoneButton).toBeEnabled();
     await expect(meetingRoomPage.toolBar.videoButton).toBeEnabled();
@@ -161,24 +165,24 @@ test.describe('Accessibility_General', () => {
     ];
 
     for (const button of moderationButtons) {
-      await expect(button).toBeFocused();
+      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the moderator tools`);
       await meetingRoomPage.page.keyboard.press('ArrowDown');
     }
 
     const toolBarButtons = [
-      meetingRoomPage.toolBar.handRaiseButton,
-      meetingRoomPage.toolBar.turnOnScreenShareButton,
       meetingRoomPage.toolBar.microphoneButton,
       meetingRoomPage.toolBar.microphoneMoreOptionsMenuButton,
       meetingRoomPage.toolBar.videoButton,
       meetingRoomPage.toolBar.cameraMoreOptionButton,
+      meetingRoomPage.toolBar.turnOnScreenShareButton,
+      meetingRoomPage.toolBar.handRaiseButton,
       meetingRoomPage.toolBar.moreOptionButton,
       meetingRoomPage.toolBar.endMeetingButton,
     ];
 
     for (const button of toolBarButtons) {
       await meetingRoomPage.page.keyboard.press('Tab');
-      await expect(button).toBeFocused();
+      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the toolbar`);
     }
 
     await meetingRoomPage.page.keyboard.press('Tab');
@@ -188,14 +192,16 @@ test.describe('Accessibility_General', () => {
     await meetingRoomPage.page.keyboard.press('ArrowRight');
     await expect(meetingRoomPage.messagesButton).toBeFocused();
 
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.searchInChatButton).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.emojiPicker).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.chatTextField).toBeFocused();
-    await meetingRoomPage.page.keyboard.press('Tab');
-    await expect(meetingRoomPage.chatSubmitButton).toBeFocused();
+    const chatElements = [
+      meetingRoomPage.searchInChatButton,
+      meetingRoomPage.emojiPicker,
+      meetingRoomPage.chatTextField,
+      meetingRoomPage.chatSubmitButton,
+    ];
+    for (const chatElement of chatElements) {
+      await meetingRoomPage.page.keyboard.press('Tab');
+      await assert(chatElement, 'toBeFocused', undefined, `Expected ${chatElement} to receive focus in the chat`);
+    }
     await meetingRoomPage.page.keyboard.press('Tab');
   });
 });
