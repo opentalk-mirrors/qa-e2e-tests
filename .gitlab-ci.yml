@@ -478,11 +478,6 @@ merge-and-upload-test-results:
     - pip install trcli
   script: |
 
-    echo "TestRail URL: $TESTRAIL_URL"
-    echo "TestRail username: $TESTRAIL_USERNAME"
-    echo "API key length: ${#TESTRAIL_API_KEY}"
-    echo "API key SHA256: $(printf '%s' "$TESTRAIL_API_KEY" | sha256sum | cut -d' ' -f1)"
-    
     # Upload Playwright JUnit report to Playwright TestRail project
     trcli -y \
       -h "$TESTRAIL_URL" \
