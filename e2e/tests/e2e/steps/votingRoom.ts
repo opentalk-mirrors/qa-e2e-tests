@@ -131,41 +131,6 @@ When(
   }
 );
 
-Then(
-  'the saved voting list for {string} should be displayed in the following order in the open moderator tool:',
-  async function (this: CustomWorld, user: string, displayedVotingsTabel: DataTable) {
-    const expectedHeaders = ['title', 'topic'];
-    validateDataTableHeaders(displayedVotingsTabel, expectedHeaders);
-    const expected = displayedVotingsTabel.hashes();
-
-    const meeting = this.getStartedMeeting(user).meeting;
-    const votingRoomPage = new VotingRoomPage({ page: meeting.meetingRoomPage.page });
-    const actual = await votingRoomPage.getSavedVotings();
-
-    await assert(
-      actual.length,
-      'toBe',
-      expected.length,
-      `Expected the number of voting items to be ${expected.length}, but got ${actual.length}`
-    );
-
-    for (let i = 0; i < expected.length; i++) {
-      await assert(
-        actual[i].title,
-        'toBe',
-        expected[i].title,
-        `Expected voting title at index ${i} to be "${expected[i].title}", but got "${actual[i].title}"`
-      );
-      await assert(
-        actual[i].topic,
-        'toBe',
-        expected[i].topic,
-        `Expected voting topic at index ${i} to be "${expected[i].topic}", but got "${actual[i].topic}"`
-      );
-    }
-  }
-);
-
 When(
   '{string} {string} the saved voting section in the open moderator tool',
   async function (this: CustomWorld, user: string, _action: string) {
@@ -228,5 +193,36 @@ Then(
       lastCreatedVotingDetails.map(({ field, value }) => [field, normalizeValue(value)])
     );
     await assert(actual, 'toEqual', expected, 'Expected the actual voting list to match the expected voting list');
+  }
+);
+
+Then(
+  'these voting details for {string} should be displayed in the following order in the open moderator tool:',
+  async function (this: CustomWorld, user: string, detailsTable: DataTable) {
+    const expectedHeaders = ['title', 'topic'];
+    validateDataTableHeaders(detailsTable, expectedHeaders);
+    const expected = detailsTable.hashes();
+
+    const meeting = this.getStartedMeeting(user).meeting;
+    const moderatorToolPage = new ModeratorToolsPage({ page: meeting.meetingRoomPage.page });
+
+    const actual = await moderatorToolPage.getSavedDetails();
+
+    for (let i = 0; i < expected.length; i++) {
+      const [title, topic] = actual[i];
+      const rowNumber = i + 1;
+      await assert(
+        title,
+        'toBe',
+        expected[i].title,
+        `Voting row ${rowNumber}: title mismatch. Expected "${expected[i].title}", but found "${title}".`
+      );
+      await assert(
+        topic,
+        'toBe',
+        expected[i].topic,
+        `Voting row ${rowNumber}: topic mismatch. Expected "${expected[i].topic}", but found "${topic}".`
+      );
+    }
   }
 );

@@ -52,13 +52,13 @@ Feature: Meeting Room Voting Room
     When "Alice" opens the session duration dialog in the moderator tool
     Then the heading in the session duration dialog should be "Session Duration" in the open moderator tool for "Alice"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
-      | Unlimited Time |
-      | 1 min          |
-      | 2 min          |
-      | 5 min          |
-      | Custom         |
-      | Save           |
-      | Close          |
+      | Unlimited Time   |
+      | 1 min            |
+      | 2 min            |
+      | 5 min            |
+      | Custom           |
+      | Save             |
+      | Close            |
 
     When "Alice" selects "Unlimited Time" duration in the duration dialog in the moderator tool
     Then the "Unlimited Time" duration should be selected in the duration dialog in the moderator tool for "Alice"
@@ -194,7 +194,7 @@ Feature: Meeting Room Voting Room
       | Title                | Subtitle            | Topic   |
       | Budget Approval Vote | Q1 Financial Review | Finance |
       | Team Outing Vote     | Annual Team Event   | HR      |
-    Then the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
+    Then these voting details for "Alice" should be displayed in the following order in the open moderator tool:
       | title                | topic        |
       | Dummy Title          | Dummy Topic  |
       | Budget Approval Vote | Finance      |
@@ -208,7 +208,6 @@ Feature: Meeting Room Voting Room
     And "Alice" selects the last voting from the list in the open moderator tool
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value              |
-      | duration        | 1 min              |
       | pseudonymous    | false              |
       | live            | true               |
       | allowAbstaining | true               |
@@ -239,7 +238,7 @@ Feature: Meeting Room Voting Room
       | Title                | Subtitle            | Topic   |
       | Budget Approval Vote | Q1 Financial Review | Finance |
       | Team Outing Vote     | Annual Team Event   | HR      |
-    Then the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
+    Then these voting details for "Alice" should be displayed in the following order in the open moderator tool:
       | title                | topic        |
       | Budget Approval Vote | Finance      |
       | Team Outing Vote     | HR           |
@@ -247,7 +246,6 @@ Feature: Meeting Room Voting Room
     When "Alice" selects the last voting from the list in the open moderator tool
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value              |
-      | duration        | 1 min              |
       | pseudonymous    | false              |
       | live            | true               |
       | allowAbstaining | true               |
@@ -292,7 +290,7 @@ Feature: Meeting Room Voting Room
     Then the "heading" in the open moderator tool for "Alice" should be "Voting"
     And this "button" should be displayed in the open moderator tool for "Alice":
       | Saved Votings |
-    And the saved voting list for "Alice" should be displayed in the following order in the open moderator tool:
+    And these voting details for "Alice" should be displayed in the following order in the open moderator tool:
       | title                | topic        |
       | Budget Approval Vote | Finance      |
       | Dummy Title          | Dummy Topic  |
@@ -304,9 +302,8 @@ Feature: Meeting Room Voting Room
     And "Alice" selects the last voting from the list in the open moderator tool
     Then the following saved voting details should be displayed on the Update Voting screen for "Alice":
       | field           | value               |
-      | duration        | 2 min               |
-      | pseudonymous    | false              |
-      | live            | true               |
+      | pseudonymous    | false               |
+      | live            | true                |
       | allowAbstaining | false               |
       | autoClose       | true                |
       | title           | Dummy Title         |
@@ -317,4 +314,4 @@ Feature: Meeting Room Voting Room
     And the "sub-heading" in the open moderator tool for "Alice" should be "Update Voting"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
       | Save As Template |
-      | Continue      |
+      | Continue         |

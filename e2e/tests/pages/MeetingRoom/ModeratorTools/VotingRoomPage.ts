@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { Locator, Page } from '@playwright/test';
 
-import { ModeratorToolsPage } from '../ModeratorToolsPage';
-
 export class VotingRoomPage {
   public readonly page: Page;
   public readonly votingRoomHeading: Locator;
@@ -94,18 +92,6 @@ export class VotingRoomPage {
     return await this.createNewVoting.topicField.inputValue();
   }
 
-  public async getSavedVotings() {
-    const count = await this.savedVotingItems.count();
-    const votes: { title: string; topic: string }[] = [];
-    for (let i = 0; i < count; i++) {
-      const item = this.savedVotingItems.nth(i);
-      const title = (await item.locator('span').innerText()).trim();
-      const topic = (await item.locator('p').innerText()).trim();
-      votes.push({ title, topic });
-    }
-    return votes;
-  }
-
   public async toggleHideUnhide(): Promise<void> {
     await this.savedVotingsButton.click();
   }
@@ -120,7 +106,6 @@ export class VotingRoomPage {
   }
 
   public async getVotingFormValues(): Promise<{
-    duration: string;
     live: boolean;
     pseudonymous: boolean;
     allowAbstaining: boolean;
@@ -129,10 +114,6 @@ export class VotingRoomPage {
     subtitle: string;
     topic: string;
   }> {
-    const moderatorRoomPage = new ModeratorToolsPage({ page: this.page });
-
-    const duration = await moderatorRoomPage.getSessionDuration();
-
     const live = await this.createNewVoting.liveToggleButton.isChecked();
 
     const pseudonymous = await this.createNewVoting.pseudonymousToggleButton.isChecked();
@@ -142,7 +123,6 @@ export class VotingRoomPage {
     const autoClose = await this.createNewVoting.autoCloseToggleButton.isChecked();
 
     return {
-      duration,
       live,
       pseudonymous,
       allowAbstaining,

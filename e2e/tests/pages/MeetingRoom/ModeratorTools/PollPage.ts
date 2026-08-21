@@ -8,6 +8,8 @@ export class PollPage {
   public readonly pollHeading: Locator;
   public readonly emptyPollMessage: Locator;
   private readonly createNewPollButton: Locator;
+  private readonly removeIcon: Locator;
+  private readonly documentBody: Locator;
   private readonly pollLists: Locator;
 
   public readonly createNewPoll: {
@@ -15,6 +17,12 @@ export class PollPage {
     readonly createPollTitle: Locator;
     readonly liveToggleButton: Locator;
     readonly multipleChoiceToggleButton: Locator;
+    readonly topicField: Locator;
+    readonly firstOptionButton: Locator;
+    readonly secondOptionButton: Locator;
+    readonly addOptionButton: Locator;
+    readonly optionButtons: Locator;
+    readonly savePollAsTemplateButton: Locator;
   };
 
   constructor({ page }: { page: Page }) {
@@ -27,8 +35,16 @@ export class PollPage {
       createPollTitle: this.page.getByText('Create poll', { exact: true }),
       liveToggleButton: this.page.locator('//input[@name="live"]'),
       multipleChoiceToggleButton: this.page.locator('//input[@name="multipleChoice"]'),
+      topicField: this.page.getByRole('textbox', { name: 'Topic', exact: true }),
+      firstOptionButton: this.page.getByRole('button', { name: 'Add Option 1', exact: true }),
+      secondOptionButton: this.page.getByRole('button', { name: 'Add Option 2', exact: true }),
+      addOptionButton: this.page.getByRole('button', { name: 'Add Option', exact: true }),
+      optionButtons: this.page.locator('.MuiChip-filledDefault'),
+      savePollAsTemplateButton: this.page.getByRole('button', { name: 'Save As Template', exact: true }),
     };
-    this.pollLists = this.page.getByRole('list').locator('li');
+    this.removeIcon = this.page.locator('.MuiChip-deleteIconFilledColorDefault');
+    this.documentBody = this.page.locator('body');
+    this.pollLists = this.page.getByRole('list').getByRole('button');
   }
 
   public async createNewPollRoom(): Promise<void> {
@@ -40,7 +56,7 @@ export class PollPage {
     await this.createNewPoll.backButton.click();
   }
 
-  public async getPollDefaults(): Promise<{ isLive: boolean; allowMultipleChoice: boolean }> {
+  public async getCurrentSettings(): Promise<{ isLive: boolean; allowMultipleChoice: boolean }> {
     return {
       isLive: await this.createNewPoll.liveToggleButton.isChecked(),
       allowMultipleChoice: await this.createNewPoll.multipleChoiceToggleButton.isChecked(),
@@ -49,5 +65,115 @@ export class PollPage {
 
   public async getExistingPolls(): Promise<number> {
     return this.pollLists.count();
+  }
+
+  public async enterTopicValue(value: string): Promise<void> {
+    await this.createNewPoll.topicField.fill(value);
+  }
+
+  public async addOption(): Promise<void> {
+    await this.createNewPoll.addOptionButton.click();
+  }
+
+  public async fillAnswer(answer: string): Promise<void> {
+    await this.page.keyboard.type(answer);
+  }
+
+  public getOptionIndex(field: string): number {
+    const optionNumber = parseInt(field.match(/\d+/)?.[0] ?? '', 10);
+    if (Number.isNaN(optionNumber)) {
+      throw new Error(`Invalid option field: '${field}'`);
+    }
+    return optionNumber - 1;
+  }
+
+  public async fillOption(index: number, value: string): Promise<void> {
+    const defaultOptionCount = 2;
+
+    if (index < defaultOptionCount) {
+      await this.fillDefaultOptionsByIndex(index, value);
+    } else {
+      await this.fillAdditionalOptions([value]);
+    }
+  }
+
+  async fillDefaultOptionsByIndex(optionIndex: number, answer: string): Promise<void> {
+    const optionButtons = [this.createNewPoll.firstOptionButton, this.createNewPoll.secondOptionButton];
+
+    if (optionIndex < optionButtons.length) {
+      const option = optionButtons[optionIndex];
+
+      await option.click();
+      await this.fillAnswer(answer);
+    }
+  }
+
+  public async fillAdditionalOptions(options: string[]): Promise<void> {
+    for (const answer of options) {
+      await this.addOption();
+      await this.fillAnswer(answer);
+    }
+    await this.page.keyboard.press('Tab');
+  }
+
+  public async updateOption(index: number, value: string): Promise<void> {
+    const defaultOptionCount = 2;
+    if (index < defaultOptionCount) {
+      await this.fillDefaultOptionsByIndex(index, value);
+      return;
+    }
+    const additionalOptions = this.createNewPoll.optionButtons;
+    const existingAdditionalCount = await additionalOptions.count();
+    if (index < existingAdditionalCount) {
+      await this.updateExistingAdditionalOptions(index, value);
+    } else {
+      await this.fillAdditionalOptions([value]);
+    }
+  }
+
+  public async updateExistingAdditionalOptions(index: number, value: string): Promise<void> {
+    const option = this.getOptionByIndex(index);
+    await this.clearAndFocusField(option);
+    await this.fillAnswer(value);
+    await this.page.keyboard.press('Tab');
+  }
+
+  async clearAndFocusField(option: Locator): Promise<void> {
+    await option.click();
+    await this.page.keyboard.press('Control+A');
+    await this.page.keyboard.press('Backspace');
+  }
+
+  /**
+   * Removes a poll option from the end of the list.
+   *
+   * positionFromEnd defines which option to remove:
+   * 0 → last option
+   * 1 → second-last option
+   * 2 → third-last option
+   *
+   * For Example:
+   * [Option1, Option2, Option3, Option4]
+   * positionFromEnd = 1 → removes Option3
+   */
+  public async removeOptionFromEnd(positionFromEnd: number): Promise<void> {
+    const count = await this.removeIcon.count();
+    if (count <= positionFromEnd) {
+      throw new Error(`Cannot remove option: only ${count} options available`);
+    }
+    await this.removeIcon.nth(count - 1 - positionFromEnd).click();
+  }
+
+  public async saveAsTemplate(): Promise<void> {
+    await this.createNewPoll.savePollAsTemplateButton.click();
+  }
+
+  public async selectLatestPoll(): Promise<void> {
+    const latestPoll = this.pollLists.last();
+    await latestPoll.click();
+  }
+
+  public getOptionByIndex(index: number): Locator {
+    return this.createNewPoll.optionButtons.nth(index);
   }
 }

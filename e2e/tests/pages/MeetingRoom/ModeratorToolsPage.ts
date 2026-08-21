@@ -20,6 +20,7 @@ export class ModeratorToolsPage {
   private readonly participantNameSelector: Locator;
   private readonly participantTimeSelector: Locator;
   private readonly participantMessageSelector: Locator;
+  private readonly savedItems: Locator;
 
   constructor({ page }: { page: Page }) {
     this.page = page;
@@ -42,6 +43,7 @@ export class ModeratorToolsPage {
     this.durationButton = this.page.getByRole('button', { name: /^Duration.*/i });
 
     this.sessionDurationDialog = new SessionDurationDialog({ page: this.page });
+    this.savedItems = this.page.locator('ul .MuiListItemText-root');
   }
 
   private async getAllButtons(): Promise<Locator[]> {
@@ -162,5 +164,20 @@ export class ModeratorToolsPage {
 
   public async getAllParticipantsDetails(): Promise<string[]> {
     return await this.listItem.allInnerTexts();
+  }
+
+  public async getSavedDetails(): Promise<string[][]> {
+    const count = await this.savedItems.count();
+    const details: string[][] = [];
+    for (let i = 0; i < count; i++) {
+      const item = this.savedItems.nth(i);
+      const innerText = await item.innerText();
+      const actual = innerText
+        .split('\n')
+        .map((text) => text.trim())
+        .filter(Boolean);
+      details.push(actual);
+    }
+    return details;
   }
 }

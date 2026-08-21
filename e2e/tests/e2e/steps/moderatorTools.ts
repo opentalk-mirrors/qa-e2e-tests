@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import assert from 'node:assert';
 
+import { assert } from '../../helper/assertion';
 import { ParticipantListWithCheckboxesPage } from '../../pages/MeetingRoom/ModeratorTools/ParticipantListWithCheckboxesPage';
 import { VotingRoomPage } from '../../pages/MeetingRoom/ModeratorTools/VotingRoomPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
@@ -44,7 +44,7 @@ Then(
           break;
         }
       }
-      assert(elementFound, `could not find the element '${expectedElement}'`);
+      await assert(elementFound, 'toBe', true, `Could not find the element '${expectedElement}'`);
     }
   }
 );
