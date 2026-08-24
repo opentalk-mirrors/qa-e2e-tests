@@ -257,18 +257,18 @@ test.describe('Dashboard_Home', () => {
 
     for (const day of days) {
       if (day === 'S' || day === 'T') {
-        assert(
-          await planMeetingPage.getWeeklyDayButtons(day),
+        await assert(
+          planMeetingPage.getWeeklyDayButtons(day),
           'toHaveCount',
           2,
-          `Day button "${day}" should appear exactly twice`
+          `Expected the day button "${day}" to appear exactly twice`
         );
       } else {
-        assert(
-          await planMeetingPage.getWeeklyDayButtons(day),
+        await assert(
+          planMeetingPage.getWeeklyDayButtons(day),
           'toBeVisible',
           undefined,
-          `Day button "${day}" should be visible`
+          `Expected the day button "${day}" to be visible`
         );
       }
     }

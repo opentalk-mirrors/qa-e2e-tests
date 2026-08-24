@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { Then, When } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
+import { assert } from '../../helper/assertion';
 import { TalkingStickPage } from '../../pages/MeetingRoom/ModeratorTools/TalkingStickPage';
 import { CustomWorld } from '../cucumberWorld';
 
@@ -36,7 +36,12 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    await expect(talkingStickPage.dropdownMenuItem).toBeVisible();
+    await assert(
+      talkingStickPage.dropdownMenuItem,
+      'toBeVisible',
+      undefined,
+      'Expected the order selection dropdown menu to be visible in the Talking Stick moderator tool'
+    );
   }
 );
 
@@ -45,7 +50,12 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    await expect(talkingStickPage.dropdownMenuItem).not.toBeVisible();
+    await assert(
+      talkingStickPage.dropdownMenuItem,
+      'toBeHidden',
+      undefined,
+      'Expected the order selection dropdown menu to be hidden in the Talking Stick moderator tool'
+    );
   }
 );
 
@@ -55,7 +65,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
     const optionButtonList = talkingStickPage.getOrderSelectionOptionLocator(optionButton);
-    await expect(optionButtonList).toBeVisible();
+    await assert(
+      optionButtonList,
+      'toBeVisible',
+      undefined,
+      `Expected the "${optionButton}" order selection option to be visible in the Talking Stick moderator tool`
+    );
   }
 );
 
@@ -69,22 +84,42 @@ Then(
     switch (displayOrder) {
       case 'Descending': {
         const expectedOrder = [...displayGuestNames].sort().reverse();
-        expect(displayGuestNames).toEqual(expectedOrder);
+        await assert(
+          displayGuestNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants in descending alphabetical order: [${expectedOrder.join(', ')}], but displayed: [${displayGuestNames.join(', ')}]`
+        );
         break;
       }
       case 'Ascending': {
         const expectedOrder = [...displayGuestNames].sort();
-        expect(displayGuestNames).toEqual(expectedOrder);
+        await assert(
+          displayGuestNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants in ascending alphabetical order: [${expectedOrder.join(', ')}], but displayed: [${displayGuestNames.join(', ')}]`
+        );
         break;
       }
       case 'First Join Time': {
         const expectedOrder = [...displayGuestTimes].sort();
-        expect(displayGuestTimes).toEqual(expectedOrder);
+        await assert(
+          displayGuestTimes,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be ordered by first join time: [${expectedOrder.join(', ')}], but displayed: [${displayGuestTimes.join(', ')}]`
+        );
         break;
       }
       case 'Last Join Time': {
         const expectedOrder = [...displayGuestTimes].sort().reverse();
-        expect(displayGuestTimes).toEqual(expectedOrder);
+        await assert(
+          displayGuestTimes,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be ordered by last join time: [${expectedOrder.join(', ')}], but displayed: [${displayGuestTimes.join(', ')}]`
+        );
         break;
       }
       default:
@@ -99,7 +134,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
     const moderatorSwitch = await talkingStickPage.getIncludeModeratorSwitchValue();
-    expect(moderatorSwitch).toBeTruthy();
+    await assert(moderatorSwitch, 'toBeTruthy', undefined, 'Expected the "Include moderator" switch to be enabled ');
   }
 );
 
@@ -111,7 +146,12 @@ Then(
     const displayGuestTimes = await talkingStickPage.getParticipantData('time');
     const expectedFormatRegex = /^Joined (?:[01]\d|2[0-3]):[0-5]\d$/;
     for (const timeString of displayGuestTimes) {
-      expect(timeString).toMatch(expectedFormatRegex);
+      await assert(
+        timeString,
+        'toMatch',
+        expectedFormatRegex,
+        `Expected "${timeString}" to match the "Joined HH:MM" format`
+      );
     }
   }
 );
@@ -121,6 +161,11 @@ Then(
   async function (this: CustomWorld, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
-    await expect(talkingStickPage.activeSpeakerSVG).not.toBeVisible();
+    await assert(
+      talkingStickPage.activeSpeakerSVG,
+      'not toBeVisible',
+      undefined,
+      'Expected each participant to have the default muted audio status in the Talking Stick moderator tool'
+    );
   }
 );

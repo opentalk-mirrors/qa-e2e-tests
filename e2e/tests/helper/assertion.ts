@@ -21,7 +21,8 @@ type AssertionType =
   | 'toHaveProperty'
   | 'toHaveValue'
   | 'toHaveCount'
-  | 'toBeFocused';
+  | 'toBeFocused'
+  | 'toBeHidden';
 export async function assert(
   actual:
     | string
@@ -50,7 +51,7 @@ export async function assert(
         if (typeof expected !== 'string' && !(expected instanceof RegExp)) {
           throw new TypeError('expected must be a string or RegExp');
         }
-        await expect(actual, message).toMatch(expected);
+        expect(actual, message).toMatch(expected);
         break;
       case 'toBeVisible':
         await expect(actual as Locator, message).toBeVisible();
@@ -100,6 +101,9 @@ export async function assert(
         break;
       case 'toHaveCount':
         await expect(actual as Locator, message).toHaveCount(expected as number);
+        break;
+      case 'toBeHidden':
+        await expect(actual as Locator, message).toBeHidden();
         break;
       case 'toBeFocused':
         await expect(actual as Locator, message).toBeFocused();

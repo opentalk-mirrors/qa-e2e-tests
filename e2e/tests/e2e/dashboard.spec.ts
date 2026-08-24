@@ -58,19 +58,27 @@ test.describe('Dashboard', () => {
       await assert(
         myMeetingsPage.onlyShowInvitesButton,
         'toBeVisible',
-        'The "Only Show Invites" button should be visible on the Meetings page.'
+        undefined,
+        'Expected the "Only Show Invites" button to be visible on the Meetings page.'
       );
       await assert(
         myMeetingsPage.favoriteMeetingButton,
         'toBeVisible',
-        'The "Only show favorites" button should be visible on the Meetings page.'
+        undefined,
+        'Expected the "Only show favorites" button to be visible on the Meetings page.'
       );
       await assert(
         myMeetingsPage.planNewLink,
         'toBeVisible',
-        'The "Plan New" link should be visible on the Meetings page.'
+        undefined,
+        'Expected the "Plan New" link to be visible on the Meetings page.'
       );
-      await assert(myMeetingsPage.myMeetingsHeading, 'toBeVisible', 'The "My Meetings" heading should be visible.');
+      await assert(
+        myMeetingsPage.myMeetingsHeading,
+        'toBeVisible',
+        undefined,
+        'Expected the "My Meetings" heading to be visible.'
+      );
     });
 
     test('verify the contents displayed in the home option of dashboard', async ({ page }) => {
@@ -81,22 +89,26 @@ test.describe('Dashboard', () => {
       await assert(
         homePage.startNewMeetingButton,
         'toBeVisible',
-        'The "Start new" button should be visible on the home page.'
+        undefined,
+        'Expected the "Start new" button to be visible on the home page.'
       );
       await assert(
         homePage.planNewMeetingButton,
         'toBeVisible',
-        'The "Plan new" button should be visible on the home page.'
+        undefined,
+        'Expected the "Plan new" button to be visible on the home page.'
       );
       await assert(
         homePage.favoriteMeetingsHeaderSelector,
         'toBeVisible',
-        'The "My favorite meetings" header should be visible on the home page.'
+        undefined,
+        'Expected the "My favorite meetings" header to be visible on the home page.'
       );
       await assert(
         homePage.currentMeetingsHeaderSelector,
         'toBeVisible',
-        '"Current meetings" header should be visible on the home page.'
+        undefined,
+        'Expected the "Current meetings" header to be visible on the home page.'
       );
     });
 
