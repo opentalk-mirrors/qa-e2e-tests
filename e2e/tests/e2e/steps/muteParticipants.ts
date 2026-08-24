@@ -97,9 +97,9 @@ Then(
         await meeting.participantMeetingRoomPages[status.participant].page.bringToFront();
         const isAudioOn = await meeting.participantMeetingRoomPages[status.participant].isAudioOn();
         if (status.status === 'enabled') {
-          await assert(isAudioOn, 'toBeTruthy', undefined, `Expected mics to be enabled but it was disabled`);
+          await assert(isAudioOn, 'toBeTruthy', `Expected mics to be enabled but it was disabled`);
         } else if (status.status === 'disabled') {
-          await assert(isAudioOn, 'toBeFalsy', undefined, `Expected mics to be disabled but it was enabled`);
+          await assert(isAudioOn, 'toBeFalsy', `Expected mics to be disabled but it was enabled`);
         } else {
           throw new Error(`${status.status} is an invalid status, only "enabled" and "disabled" are accepted`);
         }

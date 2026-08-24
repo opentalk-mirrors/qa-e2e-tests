@@ -48,7 +48,6 @@ Then(
       await assert(
         peopleOptionPage.getWhisperPartnerStatusLocator(participant, status as 'confirmed' | 'pending'),
         'toBeVisible',
-        undefined,
         `whisper partner status for ${participant} is not as expected`
       );
     }
@@ -77,7 +76,6 @@ Then(
         await assert(
           peopleOptionPage.getWhisperPartnerStatusLocator(participant, status as 'confirmed' | 'pending'),
           'not toBeVisible',
-          undefined,
           `whisper partner status for ${participant} should have been removed`
         );
       }

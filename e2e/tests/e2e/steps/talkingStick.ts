@@ -39,7 +39,6 @@ Then(
     await assert(
       talkingStickPage.dropdownMenuItem,
       'toBeVisible',
-      undefined,
       'Expected the order selection dropdown menu to be visible in the Talking Stick moderator tool'
     );
   }
@@ -53,7 +52,6 @@ Then(
     await assert(
       talkingStickPage.dropdownMenuItem,
       'toBeHidden',
-      undefined,
       'Expected the order selection dropdown menu to be hidden in the Talking Stick moderator tool'
     );
   }
@@ -68,7 +66,6 @@ Then(
     await assert(
       optionButtonList,
       'toBeVisible',
-      undefined,
       `Expected the "${optionButton}" order selection option to be visible in the Talking Stick moderator tool`
     );
   }
@@ -134,7 +131,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const talkingStickPage = new TalkingStickPage(meeting.meetingRoomPage);
     const moderatorSwitch = await talkingStickPage.getIncludeModeratorSwitchValue();
-    await assert(moderatorSwitch, 'toBeTruthy', undefined, 'Expected the "Include moderator" switch to be enabled ');
+    await assert(moderatorSwitch, 'toBeTruthy', 'Expected the "Include moderator" switch to be enabled ');
   }
 );
 
@@ -164,7 +161,6 @@ Then(
     await assert(
       talkingStickPage.activeSpeakerSVG,
       'not toBeVisible',
-      undefined,
       'Expected each participant to have the default muted audio status in the Talking Stick moderator tool'
     );
   }

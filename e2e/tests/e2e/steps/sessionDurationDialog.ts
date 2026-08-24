@@ -116,7 +116,6 @@ Then(
     await assert(
       await moderatorRoomPage.isSessionDurationDialogVisible(),
       'toBeFalsy',
-      undefined,
       `Expected the session duration dialog to be hidden`
     );
   }
@@ -136,7 +135,6 @@ Then(
     await assert(
       sessionDurationDialog.customDurationButtonInput,
       'toBeVisible',
-      undefined,
       `Expected the custom duration input to be visible`
     );
     await assert(

@@ -23,7 +23,6 @@ test('Login with valid credentials (username)', async ({ page }) => {
   await assert(
     new HomePage({ page }).startNewMeetingButton,
     'toBeVisible',
-    undefined,
     'Start New Meeting button is not visible after successful login with username'
   );
 });
@@ -33,7 +32,6 @@ test('Login with valid credentials (email)', async ({ page }) => {
   await assert(
     new HomePage({ page }).startNewMeetingButton,
     'toBeVisible',
-    undefined,
     'Start New Meeting button is not visible after successful login with email'
   );
 });
@@ -43,7 +41,6 @@ test('Login with invalid credentials', async () => {
   await assert(
     loginPage.invalidCredentialsError,
     'toBeVisible',
-    undefined,
     'Invalid credentials error message is not displayed after login with invalid credentials'
   );
 });

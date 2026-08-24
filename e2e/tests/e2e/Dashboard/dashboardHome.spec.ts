@@ -260,12 +260,7 @@ test.describe('Dashboard_Home', () => {
           `Expected the day button "${day}" to appear exactly twice`
         );
       } else {
-        await assert(
-          planMeetingPage.getWeeklyDayButtons(day),
-          'toBeVisible',
-          undefined,
-          `Expected the day button "${day}" to be visible`
-        );
+        await assert(planMeetingPage.getWeeklyDayButtons(day), 'toBeVisible', `Day button "${day}" should be visible`);
       }
     }
 
@@ -273,12 +268,7 @@ test.describe('Dashboard_Home', () => {
 
     // Selected specific days (e.g., Monday, Wednesday, Friday) should be highlighted
     for (const day of ['M', 'W', 'F']) {
-      await assert(
-        await planMeetingPage.isDayButtonSelected(day),
-        'toBeTruthy',
-        undefined,
-        `Day "${day}" should be highlighted`
-      );
+      await assert(await planMeetingPage.isDayButtonSelected(day), 'toBeTruthy', `Day "${day}" should be highlighted`);
     }
 
     await planMeetingPage.saveCustomMeetingRepetition();

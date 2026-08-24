@@ -66,9 +66,9 @@ Then(
     }
 
     if (status === 'ON') {
-      await assert(toggle, 'toBeChecked', undefined, `${button} should be ON`);
+      await assert(toggle, 'toBeChecked', `${button} should be ON`);
     } else {
-      await assert(toggle, 'not toBeChecked', undefined, `${button} should be OFF`);
+      await assert(toggle, 'not toBeChecked', `${button} should be OFF`);
     }
   }
 );

@@ -58,25 +58,21 @@ test.describe('Dashboard', () => {
       await assert(
         myMeetingsPage.onlyShowInvitesButton,
         'toBeVisible',
-        undefined,
         'Expected the "Only Show Invites" button to be visible on the Meetings page.'
       );
       await assert(
         myMeetingsPage.favoriteMeetingButton,
         'toBeVisible',
-        undefined,
         'Expected the "Only show favorites" button to be visible on the Meetings page.'
       );
       await assert(
         myMeetingsPage.planNewLink,
         'toBeVisible',
-        undefined,
         'Expected the "Plan New" link to be visible on the Meetings page.'
       );
       await assert(
         myMeetingsPage.myMeetingsHeading,
         'toBeVisible',
-        undefined,
         'Expected the "My Meetings" heading to be visible.'
       );
     });
@@ -89,25 +85,21 @@ test.describe('Dashboard', () => {
       await assert(
         homePage.startNewMeetingButton,
         'toBeVisible',
-        undefined,
         'Expected the "Start new" button to be visible on the home page.'
       );
       await assert(
         homePage.planNewMeetingButton,
         'toBeVisible',
-        undefined,
         'Expected the "Plan new" button to be visible on the home page.'
       );
       await assert(
         homePage.favoriteMeetingsHeaderSelector,
         'toBeVisible',
-        undefined,
         'Expected the "My favorite meetings" header to be visible on the home page.'
       );
       await assert(
         homePage.currentMeetingsHeaderSelector,
         'toBeVisible',
-        undefined,
         'Expected the "Current meetings" header to be visible on the home page.'
       );
     });

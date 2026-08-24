@@ -145,11 +145,21 @@ async function startAdhocMeetingAsModerator(
   const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
 
   await meetingRoomPage.meetingRoomName.waitFor({ state: 'visible' });
-  await assert(await meetingRoomPage.getMeetingRoomName(), 'toContain', meetingTitlePrefix);
+  await assert(
+    await meetingRoomPage.getMeetingRoomName(),
+    'toContain',
+    meetingTitlePrefix,
+    `Expected meeting room name to contain "${meetingTitlePrefix}"`
+  );
 
   // only moderator is present before guests join
   expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
-  await assert(await meetingRoomPage.getNumberOfParticipantsInMeeting(), 'toBe', 1);
+  await assert(
+    await meetingRoomPage.getNumberOfParticipantsInMeeting(),
+    'toBe',
+    1,
+    'Expected only the moderator to be present before guests join'
+  );
   return { meetingRoomPage, meetingLink, meetingId };
 }
 
@@ -455,7 +465,6 @@ Then(
       await assert(
         home.markFavoritesTooltipMessage,
         'toBeVisible',
-        undefined,
         'Tooltip message: "You can mark favourites over the menu in the card." should be visible'
       );
     } else {
