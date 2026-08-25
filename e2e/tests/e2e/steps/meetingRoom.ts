@@ -25,7 +25,7 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     await meetingRoomPage.page.bringToFront();
-    assert(
+    await assert(
       await meetingRoomPage.isOptionSelected(meetingRoomPage.moderationTools.homeButton),
       'toBeTruthy',
       `Expected the Home view to be selected in the moderator sidebar`
@@ -43,10 +43,10 @@ Then(
     for (const tab of tabs) {
       switch (tab) {
         case 'Chat':
-          assert(meetingRoomPage.chatButton, 'toBeVisible', `Expected the Chat tab to be visible`);
+          await assert(meetingRoomPage.chatButton, 'toBeVisible', `Expected the Chat tab to be visible`);
           break;
         case 'Messages':
-          assert(meetingRoomPage.messagesButton, 'toBeVisible', `Expected the Messages tab to be visible`);
+          await assert(meetingRoomPage.messagesButton, 'toBeVisible', `Expected the Messages tab to be visible`);
           break;
         default: {
           if (tab.startsWith('People')) {
@@ -54,8 +54,8 @@ Then(
             const actualParticipantsNum = Number(
               (await meetingRoomPage.getPeopleTabText()).split('(')[1]?.replace(')', '')
             );
-            assert(meetingRoomPage.peopleButton, 'toBeVisible', `Expected the People tab to be visible`);
-            assert(
+            await assert(meetingRoomPage.peopleButton, 'toBeVisible', `Expected the People tab to be visible`);
+            await assert(
               expectedParticipantsNum,
               'toBe',
               actualParticipantsNum,
@@ -75,8 +75,8 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.chatButton, 'toBeVisible', `Expected the Chat tab to be visible`);
-    assert(
+    await assert(meetingRoomPage.chatButton, 'toBeVisible', `Expected the Chat tab to be visible`);
+    await assert(
       await meetingRoomPage.isOptionSelected(meetingRoomPage.chatButton),
       'toBeTruthy',
       `Expected the Chat tab to be selected`
@@ -89,7 +89,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.chatOption, 'toBeVisible', `Expected the Chat option to be visible`);
+    await assert(meetingRoomPage.chatOption, 'toBeVisible', `Expected the Chat option to be visible`);
   }
 );
 
@@ -98,11 +98,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
-      meetingRoomPage.searchInChatButton,
-      'toBeVisible',
-      `Expected the chat search field to be visible`
-    );
+    await assert(meetingRoomPage.searchInChatButton, 'toBeVisible', `Expected the chat search field to be visible`);
   }
 );
 
@@ -112,7 +108,7 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     await meetingRoomPage.page.bringToFront();
-    assert(meetingRoomPage.chatTextArea, 'toBeVisible', `Expected the chat input text field to be visible`);
+    await assert(meetingRoomPage.chatTextArea, 'toBeVisible', `Expected the chat input text field to be visible`);
   }
 );
 
@@ -121,11 +117,11 @@ Then(
   async function (this: CustomWorld, guest: string, moderator: string, description: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
     await startedMeeting.participantMeetingRoomPages[guest].page.bringToFront();
-    assert(
+    await assert(
       startedMeeting.participantMeetingRoomPages[guest].chatHistoryDescription,
       'toHaveText',
       description,
-      `Expected the chat history description to match the expected text`
+      `Expected chat history description for guest "${guest}" to be "${description}".`
     );
   }
 );
@@ -135,7 +131,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.emojiPicker, 'toBeVisible', `Expected the emoji picker button to be visible`);
+    await assert(meetingRoomPage.emojiPicker, 'toBeVisible', `Expected the emoji picker button to be visible`);
   }
 );
 
@@ -144,7 +140,7 @@ Then(
   async function (this: CustomWorld, user: string, name: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.chatTextArea, 'toHaveText', name, `Expected the chat textbox to be named "${name}"`);
+    await assert(meetingRoomPage.chatTextArea, 'toHaveText', name, `Expected the chat textbox to be named "${name}"`);
   }
 );
 
@@ -153,7 +149,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.chatSubmitButton, 'toBeVisible', `Expected the chat submit button to be visible`);
+    await assert(meetingRoomPage.chatSubmitButton, 'toBeVisible', `Expected the chat submit button to be visible`);
   }
 );
 
@@ -180,7 +176,7 @@ Then(
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getChatTextFieldInputValue(),
       'toBe',
       message,
@@ -206,13 +202,9 @@ Then(
     const meetingRoomPage = new MeetingRoomPage({ page: page });
 
     if (actionType === 'should') {
-      assert(
-        meetingRoomPage.emojiPickerDialog,
-        'toBeVisible',
-        `Expected the emoji picker dialog to be visible`
-      );
+      await assert(meetingRoomPage.emojiPickerDialog, 'toBeVisible', `Expected the emoji picker dialog to be visible`);
     } else {
-      assert(
+      await assert(
         meetingRoomPage.emojiPickerDialog,
         'not toBeVisible',
         `Expected the emoji picker dialog not to be visible`
@@ -238,14 +230,14 @@ Then(
     await meetingRoomPage.selectChatTab();
     const joinedDetails = await meetingRoomPage.getParticipantsDetails();
     const participants = dataTable.raw().map(([participant]) => participant);
-    participants.forEach((participant, index) => {
-      assert(
+    for (const [index, participant] of participants.entries()) {
+      await assert(
         joinedDetails[index].trim(),
         'toMatch',
-        new RegExp(`^${participant}joined the call at \\d{2}:\\d{2}$`),
+        new RegExp(`^${participant}joined the meeting at \\d{2}:\\d{2}$`),
         `Expected "${participant}" to have a "joined the call at HH:MM" entry`
       );
-    });
+    }
   }
 );
 
@@ -254,7 +246,7 @@ Then(
   async function (this: CustomWorld, guest: string, moderator: string) {
     const startedMeeting = this.getStartedMeeting(moderator);
     const joinedDetails = await startedMeeting.participantMeetingRoomPages[guest].getParticipantsDetails();
-    assert(joinedDetails, 'toEqual', [], `Expected no participant join details to be displayed`);
+    await assert(joinedDetails, 'toEqual', [], `Expected no participant join details to be displayed`);
   }
 );
 
@@ -263,13 +255,13 @@ Then(
   async function (this: CustomWorld, user: string, message: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getLastChatText(),
       'toContain',
       user,
       `Expected the last chat message to contain sender "${user}"`
     );
-    assert(
+    await assert(
       await meetingRoomPage.getLastChatText(),
       'toContain',
       message,
@@ -283,7 +275,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getLastChatText(),
       'toMatch',
       /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
@@ -298,7 +290,7 @@ Then(
     const startedMeeting = this.getStartedMeeting(moderator);
     await startedMeeting.participantMeetingRoomPages[guest].page.bringToFront();
     const chatListText = await startedMeeting.participantMeetingRoomPages[guest].filterChatText(message);
-    assert(chatListText, 'toContain', message, `Expected the chat to contain the message "${message}"`);
+    await assert(chatListText, 'toContain', message, `Expected the chat to contain the message "${message}"`);
   }
 );
 
@@ -316,7 +308,7 @@ Then(
   async function (this: CustomWorld, user: string, placeholder: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getChatTextboxPlaceholder(),
       'toBe',
       placeholder,
@@ -341,14 +333,14 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     if (actionType === 'should') {
-      assert(
+      await assert(
         await meetingRoomPage.getEmptyMessageErrorText(),
         'toBe',
         errorMessage,
         `Expected the empty message error to be "${errorMessage}"`
       );
     } else {
-      assert(
+      await assert(
         meetingRoomPage.emptyMessageError,
         'not toBeVisible',
         `Expected the empty message error not to be visible`
@@ -386,7 +378,7 @@ Then(
   async function (this: CustomWorld, user: string, placeholder: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getSearchInChatTextboxPlaceholder(),
       'toBe',
       placeholder,
@@ -412,7 +404,7 @@ Then(
     const chatListTexts = await meetingRoomPage.getAllChatListTexts();
     for (const chatListText of chatListTexts) {
       const subTexts = chatListText.split('\n').filter((subText) => subText.trim() !== '');
-      assert(
+      await assert(
         subTexts[2].toLowerCase().includes(message),
         'toBeTruthy',
         `Expected every displayed message to contain "${message}"`
@@ -429,7 +421,7 @@ Then(
     const chatListTexts = await meetingRoomPage.getAllChatListTexts();
     for (const chatListText of chatListTexts) {
       const subTexts = chatListText.split('\n').filter((subText) => subText.trim() !== '');
-      assert(
+      await assert(
         subTexts[0],
         'toContain',
         participantName,
@@ -447,7 +439,7 @@ Then(
     const chatListTexts = await meetingRoomPage.getAllChatListTexts();
     for (const chatListText of chatListTexts) {
       const subTexts = chatListText.split('\n').filter((subText) => subText.trim() !== '');
-      assert(
+      await assert(
         subTexts[1],
         'toMatch',
         /([01]?[0-9]|2[0-3]):[0-5][0-9]/,
@@ -471,7 +463,7 @@ Then(
   async function (this: CustomWorld, user: string, text: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       meetingRoomPage.noMessageMatchText,
       'toHaveText',
       text,
@@ -485,7 +477,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(meetingRoomPage.resetButton, 'toBeVisible', `Expected the Reset button to be visible`);
+    await assert(meetingRoomPage.resetButton, 'toBeVisible', `Expected the Reset button to be visible`);
   }
 );
 
@@ -503,7 +495,7 @@ Then(
   async function (this: CustomWorld, user: string) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getSearchInChatTextboxValue(),
       'toBe',
       '',
@@ -518,17 +510,18 @@ Then(
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
     await meetingRoomPage.scrollChatListItems();
-    assert(
+    await assert(
       meetingRoomPage.joinedText.first(),
       'toBeVisible',
       `Expected the chat overview to display join events`
     );
-    assert(
+    await assert(
       await meetingRoomPage.getAllChatListTexts(),
       'not toEqual',
+      [],
       `Expected the chat overview to contain messages`
     );
-    assert(meetingRoomPage.resetButton, 'not toBeVisible', `Expected the Reset button not to be visible`);
+    await assert(meetingRoomPage.resetButton, 'not toBeVisible', `Expected the Reset button not to be visible`);
   }
 );
 
@@ -537,7 +530,7 @@ Then(
   async function (this: CustomWorld, user: string, count: number) {
     const page = this.getUser(user).page;
     const meetingRoomPage = new MeetingRoomPage({ page: page });
-    assert(
+    await assert(
       await meetingRoomPage.getAllChatListCount(),
       'toBe',
       count,
@@ -626,7 +619,7 @@ Then(
   async function (this: CustomWorld, user: string, moderator: string) {
     const meeting = this.getStartedMeeting(moderator);
     await meeting.participantMeetingRoomPages[user].page.bringToFront();
-    assert(
+    await assert(
       await meeting.participantMeetingRoomPages[user].isMessageUnread(),
       'toBeTruthy',
       `Expected the unread message indicator to be visible`
@@ -648,7 +641,7 @@ Then(
   async function (this: CustomWorld, user: string, errorMessage: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    assert(
+    await assert(
       await meeting.meetingRoomPage.getEmptyMessageErrorText(),
       'toBe',
       errorMessage,
