@@ -476,7 +476,6 @@ merge-and-upload-test-results:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
   before_script:
     - pip install trcli
-    - echo "user_set=$( [ -n \"$TESTRAIL_USERNAME\" ] && echo yes || echo no ) key_len=${#TESTRAIL_API_KEY}"
   script: |
 
     # Upload Playwright JUnit report to Playwright TestRail project
