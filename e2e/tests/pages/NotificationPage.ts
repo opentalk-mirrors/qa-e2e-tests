@@ -10,6 +10,7 @@ export class NotificationPage {
   private readonly page: Page;
   private readonly allAlerts: Locator;
   private readonly baseAlertLocator: Locator;
+  private readonly alertDialogHeading: Locator;
   private readonly breakoutRoomAlertLocator: Locator;
   private readonly joinBreakoutRoomLocator: Locator;
   private readonly leaveBreakoutRoomLocator: Locator;
@@ -19,6 +20,7 @@ export class NotificationPage {
     this.page = page;
     this.allAlerts = this.page.getByRole('alert');
     this.baseAlertLocator = this.allAlerts.locator('span');
+    this.alertDialogHeading = this.page.getByRole('alertdialog').getByRole('heading');
     this.breakoutRoomAlertLocator = this.page.getByRole('alertdialog');
     this.joinBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Join Room' });
     this.leaveBreakoutRoomLocator = this.breakoutRoomAlertLocator.getByRole('button', { name: 'Leave Room' });
@@ -34,7 +36,12 @@ export class NotificationPage {
     await this.baseAlertLocator.first().waitFor();
     const notificationTexts: string[] = [];
     for (const alertLocator of await this.baseAlertLocator.all()) {
-      notificationTexts.push(await alertLocator.innerText());
+      notificationTexts.push((await alertLocator.innerText()).replace(/\n/g, ' ').trim());
+    }
+
+    if (await this.alertDialogHeading.isVisible()) {
+      const alertDialogText = (await this.alertDialogHeading.innerText()).replace(/\n/g, ' ').trim();
+      notificationTexts.push(alertDialogText);
     }
     return notificationTexts;
   }

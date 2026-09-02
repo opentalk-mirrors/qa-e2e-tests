@@ -85,10 +85,6 @@ export class ModeratorToolsPage {
     return await Promise.all(options.map(async (option) => await option.innerText()));
   }
 
-  private getDropdownOptionByName(optionName: string): Locator {
-    return this.page.getByRole('option', { name: optionName, exact: true });
-  }
-
   public getSwitchByName(switchName: string): Locator {
     return this.page.getByRole('switch', { name: switchName, exact: true });
   }
@@ -140,6 +136,10 @@ export class ModeratorToolsPage {
     return this.sessionDurationDialog;
   }
 
+  public getParticipantByName(name: string): Locator {
+    return this.listItem.filter({ hasText: name });
+  }
+
   public async getParticipantData(childType: 'name' | 'time' | 'message'): Promise<string[]> {
     let allTexts: string[];
     await waitForDomStopChanging(this.page);
@@ -162,8 +162,7 @@ export class ModeratorToolsPage {
   }
 
   public async getParticipantDetails(index: number): Promise<string> {
-    await waitForDomStopChanging(this.page);
-    return (await this.listItem.nth(index)).innerText();
+    return await this.listItem.nth(index).innerText();
   }
 
   public async getAllParticipantsDetails(): Promise<string[]> {

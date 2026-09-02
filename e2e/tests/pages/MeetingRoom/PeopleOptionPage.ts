@@ -140,10 +140,6 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     await this.getParticipantByName(to).locator(this.threeDotButton).click();
   }
 
-  public getParticipantByName(name: string): Locator {
-    return this.listItem.filter({ hasText: name });
-  }
-
   public async navigateToDirectMessage(): Promise<void> {
     await this.sendDirectMessageMenuItem.click();
   }

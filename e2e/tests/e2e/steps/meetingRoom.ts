@@ -487,7 +487,7 @@ Then(
       notificationTexts,
       'toContain',
       notification,
-      `Expected ${notificationTexts} to contain ${notification}`
+      `Expected "${notificationTexts}" to contain "${notification}"`
     );
   }
 );
