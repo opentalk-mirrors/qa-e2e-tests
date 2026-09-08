@@ -30,7 +30,6 @@ export class HomePage {
   editMenuItem: Locator;
   addToFavoriteMenuItem: Locator;
   copyMeetingLinkMenuItem: Locator;
-  copyGuestLinkMenuItem: Locator;
   deleteMenuItem: Locator;
   declineMenuItem: Locator;
   acceptMeetingInvitationButton: Locator;
@@ -63,7 +62,6 @@ export class HomePage {
     this.editMenuItem = this.page.getByRole('menuitem', { name: /Edit \w+/ });
     this.addToFavoriteMenuItem = this.page.getByRole('menuitem', { name: /Add \w+ to favorites/ });
     this.copyMeetingLinkMenuItem = this.page.getByRole('menuitem', { name: /Copy Meeting-Link for \w+/ });
-    this.copyGuestLinkMenuItem = this.page.getByRole('menuitem', { name: /Copy Guest-Link for \w+/ });
     this.deleteMenuItem = this.page.getByRole('menuitem', { name: /Delete \w+/ });
     this.declineMenuItem = this.page.getByRole('menuitem', { name: 'global-decline-label' });
     this.acceptMeetingInvitationButton = this.page.getByRole('button', { name: 'Accept' });

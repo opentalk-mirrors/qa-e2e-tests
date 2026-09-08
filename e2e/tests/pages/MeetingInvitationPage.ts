@@ -10,7 +10,6 @@ export class MeetingInvitationPage {
   page: Page;
   meetingLinkInputField: Locator;
   phoneDialInInputField: Locator;
-  guestLinkInputField: Locator;
   passwordInputField: Locator;
   inviteParticipantsInputField: Locator;
   cancelMeetingButton: Locator;
@@ -35,7 +34,6 @@ export class MeetingInvitationPage {
     this.page = page;
     this.meetingLinkInputField = this.page.getByRole('textbox', { name: 'Meeting-Link' });
     this.phoneDialInInputField = this.page.getByRole('textbox', { name: 'Phone Dial-in' });
-    this.guestLinkInputField = this.page.getByRole('textbox', { name: 'Guest-Link' });
     this.passwordInputField = this.page.getByRole('textbox', { name: 'Password', exact: true });
     this.inviteParticipantsInputField = this.page.getByRole('combobox', { name: 'Invite participants' });
     this.cancelMeetingButton = this.page.getByRole('button', { name: 'Cancel' });
@@ -87,21 +85,10 @@ export class MeetingInvitationPage {
     return this.page.getByText(this.notificationText);
   }
 
-  public async waitForGuestLinkToRender(): Promise<void> {
-    // it takes some time for guestlink placeholder to have meeting url
-    await this.guestLinkInputField.isVisible();
-    let guestLink = await this.guestLinkInputField.inputValue();
-    while (guestLink == '-') {
-      await this.page.waitForTimeout(500);
-      guestLink = await this.guestLinkInputField.inputValue();
-    }
-  }
-
-  public async getGuestLink(): Promise<string> {
-    await this.guestLinkInputField.isVisible();
-    await this.waitForGuestLinkToRender();
-    const guestLink = await this.guestLinkInputField.inputValue();
-    return guestLink;
+  public async getMeetingLink(): Promise<string> {
+    await this.meetingLinkInputField.isVisible();
+    const meetingLink = await this.meetingLinkInputField.inputValue();
+    return meetingLink;
   }
 
   async getPhoneDialInDetails(): Promise<{
