@@ -16,7 +16,6 @@ import { ResetRaisedHandsPage } from './ModeratorTools/ResetRaisedHandsPage';
 import { TalkingStickPage } from './ModeratorTools/TalkingStickPage';
 import { TimerPage } from './ModeratorTools/TimerPage';
 import { VotingRoomPage } from './ModeratorTools/VotingRoomPage';
-import { MoreOptionsPage } from './MoreOptionsPage';
 import { ParticipantTilePage } from './ParticipantTilePage';
 import { PeopleOptionPage } from './PeopleOptionPage';
 import { ViewOptionsPage } from './ViewOptionsPage';
@@ -283,7 +282,7 @@ export class MeetingRoomPage {
   async showMeetingDetails(): Promise<MeetingInfoPage> {
     await this.meetingInfoButton.click();
     const meetingInfoPage = new MeetingInfoPage({ page: this.page });
-    await meetingInfoPage.clipBoardButton.waitFor();
+    await meetingInfoPage.clipBoardButton.waitFor({ state: 'visible' });
     return meetingInfoPage;
   }
 
@@ -453,11 +452,6 @@ export class MeetingRoomPage {
         break;
       }
     }
-  }
-
-  async showMoreOptions() {
-    await this.toolBar.moreOptionButton.click();
-    return new MoreOptionsPage({ page: this.page });
   }
 
   // utility function
