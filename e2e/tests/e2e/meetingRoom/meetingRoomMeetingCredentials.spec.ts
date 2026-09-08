@@ -36,7 +36,7 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     await expect(meetingRoomPage.meetingInfoButton).toBeVisible();
 
     const meetingInfoPage: MeetingInfoPage = await meetingRoomPage.showMeetingDetails();
-    await expect(meetingInfoPage.inviteLinkInputField).toBeVisible();
+    await expect(meetingInfoPage.meetingLinkInputField).toBeVisible();
     await expect(meetingInfoPage.dialInNumberInputField).toBeVisible();
     await expect(meetingInfoPage.clipBoardButton).toBeVisible();
     await expect(meetingInfoPage.eMailButton).toBeVisible();
@@ -49,7 +49,8 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     expect(clipboardContent).toContain(`${userName} invites you to an OpenTalk meeting.`);
     expect(clipboardContent).toContain(`Title: ${meetingTitle}`);
     // expect(clipboardContent).toContain('You can join the meeting using one of the following means:');
-    expect(clipboardContent).toContain('meeting-details-dialog-join-line'); // This is a bug reported in https://git.opentalk.dev/opentalk/qa/reports/-/issues/403
+    // expect(clipboardContent).toContain('meeting-details-dialog-join-line'); // This is a bug reported in https://git.opentalk.dev/opentalk/qa/reports/-/issues/403
+    expect(clipboardContent).toContain('You can join the meeting using one of the following means');
     expect(clipboardContent).toContain(`Meeting-Link: ${meetingLink}`);
     expect(clipboardContent).toContain(`Password: ${meetingPassword}`);
     expect(clipboardContent).toContain(`Telephone dial-in\nNumber: ${telephoneDialInNumber}`);
@@ -59,7 +60,7 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     // skipped click on E-mail test step as depending on testing environment, it opens in a different email app,
     // so this needs to be tested manually until a solution has been found
 
-    await meetingInfoPage.copyInviteLinkToClipboard();
+    await meetingInfoPage.copyMeetingLinkToClipboard();
     await expect(meetingInfoPage.linkCopiedToClipboardPopup).toBeVisible();
     expect(await getClipboardContent(page)).toContain(meetingLink);
 

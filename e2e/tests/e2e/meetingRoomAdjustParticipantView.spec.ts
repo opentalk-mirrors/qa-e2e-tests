@@ -49,11 +49,11 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
   });
 
   test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
-    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
+    const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
     // open grid view options besides the meeting room name
@@ -78,11 +78,11 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
   });
 
   test('TC_003_VideoRoom_ParticipantViewSettings_List_FullScreen', async ({ page, browser, browserName }) => {
-    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
+    const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 2 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', SMALL_NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', SMALL_NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.peopleButton.click();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(SMALL_NUMBER_OF_GUESTS + 1);
@@ -112,11 +112,11 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
   });
 
   test('TC_004_VideoRoom_ParticipantViewSettings_List_GridView', async ({ page, browser, browserName }) => {
-    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
+    const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
+    await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
 
@@ -138,12 +138,12 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     test.skip(browserName === 'webkit');
     // in webkit one needs to give permission to turn camera on therefore skip webkit until solution for this is found
 
-    const { meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName);
+    const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     const firstJoinedParticipantName = await meetingRoomPage.getUserName();
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
     // join with 5 guests (in separate browser instances)
-    const guestPages = await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
+    const guestPages = await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', NUMBER_OF_GUESTS);
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(NUMBER_OF_GUESTS + 1);
     await meetingRoomPage.page.bringToFront();
     const firstGuestMeetingRoomPage = guestPages['guest1'];

@@ -35,35 +35,18 @@ test.describe('Meeting room URL', async () => {
 
     const UUIDRegexString = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     const meetingLinkRegex = new RegExp(instanceUrl.host + '/room/' + UUIDRegexString + '$');
-    const guestLinkRegex = new RegExp(
-      instanceUrl.host + '/room/' + UUIDRegexString + '\\?invite=' + UUIDRegexString + '$'
-    );
     const meetingPlanningPage = await homePage.planNewMeeting();
     await meetingPlanningPage.createNewMeeting(meetingTitle);
     await homePage.navigateToHomePage();
     const meetingDetailsPage = await homePage.showMeetingDetails(meetingTitle);
     const meetingLink = await meetingDetailsPage.getMeetingLink();
     expect(meetingLink).toMatch(meetingLinkRegex);
-    let guestLink = await meetingDetailsPage.getGuestLink();
-    expect(guestLink).toMatch(guestLinkRegex);
-
     await meetingDetailsPage.copyMeetingLinkToClipboard();
     expect(await getClipboardContent(page)).toEqual(meetingLink);
-    await meetingDetailsPage.copyGuestLinkToClipboard();
-    expect(await getClipboardContent(page)).toEqual(guestLink);
 
     await page.goto(meetingLink);
     const lobbyRoomPage = new LobbyRoomPage({ page });
     const meetingRoomPage = await lobbyRoomPage.enterMeetingRoom();
     expect(await meetingRoomPage.getMeetingRoomName()).toEqual(meetingTitle);
-
-    const moreOptionsPage = await meetingRoomPage.showMoreOptions();
-    const inviteGuestPopupPage = await moreOptionsPage.inviteGuest();
-    await inviteGuestPopupPage.createInvitation();
-    guestLink = await inviteGuestPopupPage.getGuestLink();
-    expect(guestLink).toMatch(guestLinkRegex);
-
-    await inviteGuestPopupPage.copyToClipboard();
-    expect(await getClipboardContent(page)).toEqual(guestLink);
   });
 });

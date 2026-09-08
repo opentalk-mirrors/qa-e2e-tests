@@ -22,7 +22,7 @@ const guest2 = 'guest2';
 const resetRaisedHandsNotificationText = 'Your raised hand was reset by the moderator';
 
 let meetingRoomPage: MeetingRoomPage,
-  guestLink: string,
+  meetingLink: string,
   guestMeetingRoomPages: ParticipantMeetingRoomPages,
   idleGuestMeetingRoomPage: MeetingRoomPage,
   resetRaisedHandsPage: ResetRaisedHandsPage,
@@ -38,16 +38,16 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
   });
   test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
     await meetingRoomPage.page.bringToFront();
     await meetingRoomPage.raiseYourHand();
-    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', NUMBER_OF_GUESTS);
 
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
     }
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, idleGuest);
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, idleGuest);
     idleGuestMeetingRoomPage = participantMeetingRoomPages[idleGuest];
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
   });
@@ -142,13 +142,13 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
 test.describe('Meeting Room_Reset raised hands search participant', () => {
   test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(browser, guestLink, 'guest', NUMBER_OF_GUESTS);
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
+    guestMeetingRoomPages = await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', NUMBER_OF_GUESTS);
     for (const [_, guestMeetingRoomPage] of Object.entries(guestMeetingRoomPages)) {
       await guestMeetingRoomPage.page.bringToFront();
       await guestMeetingRoomPage.raiseYourHand();
     }
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, idleGuest);
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, idleGuest);
     idleGuestMeetingRoomPage = participantMeetingRoomPages[idleGuest];
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
     resetRaisedHandsPage = await meetingRoomPage.startResetRaisedHandsModeratorTool();

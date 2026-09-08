@@ -13,14 +13,14 @@ import { joinMeetingRoomAsGuest } from '../../helper/playwrightMeetingHelpers';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 
 test.describe('Test if video is working', () => {
-  let meetingRoomPage: MeetingRoomPage, guestLink: string, guestMeetingRoomPage: MeetingRoomPage;
+  let meetingRoomPage: MeetingRoomPage, meetingLink: string, guestMeetingRoomPage: MeetingRoomPage;
   test.use({ viewport: { width: 1280, height: 720 } });
   let userId = '';
 
   test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    guestMeetingRoomPage = (await joinMeetingRoomAsGuest(browser, guestLink, 'guest1'))['guest1'];
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
+    guestMeetingRoomPage = (await joinMeetingRoomAsGuest(browser, meetingLink, 'guest1'))['guest1'];
   });
 
   test.afterEach(async () => {

@@ -13,7 +13,7 @@ import { DebriefingPage } from '../../../pages/MeetingRoom/ModeratorTools/Debrie
 
 test.describe('Meeting Room_Debriefing', () => {
   let meetingRoomPage: MeetingRoomPage,
-    guestLink: string,
+    meetingLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
     debriefingPage: DebriefingPage,
     userId: string;
@@ -22,8 +22,8 @@ test.describe('Meeting Room_Debriefing', () => {
     userId = await globalSetup(page, context, testInfo);
     // skipped in webkit due to https://git.opentalk.dev/opentalk/qa/reports/-/issues/418
     test.skip(browserName === 'webkit');
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();
