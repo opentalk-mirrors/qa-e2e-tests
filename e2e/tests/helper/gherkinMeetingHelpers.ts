@@ -8,7 +8,7 @@ import { JoinMeetingOptions, _joinMeetingRoomAsGuest } from './meetingHelpers';
 export async function joinMeetingRoomAsGuest(
   world: CustomWorld,
   moderator: string,
-  guestLink: string,
+  meetingLink: string,
   guestName: string,
   options?: JoinMeetingOptions
 ): Promise<void> {
@@ -16,7 +16,7 @@ export async function joinMeetingRoomAsGuest(
     userName: guestName,
   });
   const context = await world.init();
-  const guestRoom = await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
+  const guestRoom = await _joinMeetingRoomAsGuest(context, meetingLink, guestName, options);
   world.setUsers({
     userName: guestName,
     api: userApi,
@@ -30,7 +30,7 @@ export async function joinMeetingRoomAsGuest(
 export async function joinMeetingRoomWithNGuests(
   world: CustomWorld,
   moderator: string,
-  guestLink: string,
+  meetingLink: string,
   guestBasename: string,
   numOfGuests: number,
   options?: JoinMeetingOptions,
@@ -42,6 +42,6 @@ export async function joinMeetingRoomWithNGuests(
       const meeting = world.getStartedMeeting(moderator).meeting;
       await meeting.meetingRoomPage.page.waitForTimeout(delay);
     }
-    await joinMeetingRoomAsGuest(world, moderator, guestLink, guestName, options);
+    await joinMeetingRoomAsGuest(world, moderator, meetingLink, guestName, options);
   }
 }

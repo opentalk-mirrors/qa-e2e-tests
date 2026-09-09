@@ -8,17 +8,17 @@ import { JoinMeetingOptions, _joinMeetingRoomAsGuest } from './meetingHelpers';
 
 export const joinMeetingRoomAsGuest = async (
   browser: Browser,
-  guestLink: string,
+  meetingLink: string,
   guestName: string,
   options?: JoinMeetingOptions
 ): Promise<ParticipantMeetingRoomPages> => {
   const context = await browser.newContext();
-  return await _joinMeetingRoomAsGuest(context, guestLink, guestName, options);
+  return await _joinMeetingRoomAsGuest(context, meetingLink, guestName, options);
 };
 
 export const joinMeetingRoomWithNGuests = async (
   browser: Browser,
-  guestLink: string,
+  meetingLink: string,
   guestBaseName: string,
   numberOfGuests: number,
   options?: JoinMeetingOptions
@@ -26,7 +26,7 @@ export const joinMeetingRoomWithNGuests = async (
   let guestMeetingRoomPages: ParticipantMeetingRoomPages = {};
   for (let i = 1; i <= numberOfGuests; i++) {
     const guestUserName = guestBaseName + i;
-    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(browser, guestLink, guestUserName, options);
+    const guestMeetingRoomPage = await joinMeetingRoomAsGuest(browser, meetingLink, guestUserName, options);
     guestMeetingRoomPages = { ...guestMeetingRoomPage, ...guestMeetingRoomPages };
   }
   return guestMeetingRoomPages;

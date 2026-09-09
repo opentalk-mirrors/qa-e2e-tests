@@ -6,22 +6,21 @@ import { Page, expect, BrowserContext } from '@playwright/test';
 import { ParticipantMeetingRoomPages } from '../e2e/cucumberWorld';
 import { LobbyRoomPage } from '../pages/LobbyRoomPage';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
-import { getGuestLink, planMeetingAsModerator, startAdhocMeetingAsModerator as startMeeting } from './Api';
+import { planMeetingAsModerator, startAdhocMeetingAsModerator as startMeeting } from './Api';
 import { closeWebkitPopUp } from './webkit';
 
 // these escapes are useful, because it's a regex
 /* eslint-disable no-useless-escape */
 export const meetingUrlPattern =
-  /https?:\/\/[a-z:0-9\.\-]+\/room\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\?invite=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+  /https?:\/\/[a-z:0-9\.\-]+\/room\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 /* eslint-enable no-useless-escape */
 
 export const startAdhocMeetingAsModerator = async (
   page: Page,
   browserName?: 'webkit' | 'chromium' | 'firefox',
   meetingTitlePrefix: string = 'Ad-hoc Meeting'
-): Promise<{ meetingRoomPage: MeetingRoomPage; guestLink: string; meetingId: string }> => {
-  const { meetingLink, roomId, meetingId } = await startMeeting(meetingTitlePrefix, 'direct_access');
-  const guestLink = await getGuestLink(roomId);
+): Promise<{ meetingRoomPage: MeetingRoomPage; meetingLink: string; meetingId: string }> => {
+  const { meetingLink, meetingId } = await startMeeting(meetingTitlePrefix, 'direct_access');
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
   await lobbyRoomPage.renderLobbyPage();
@@ -38,19 +37,19 @@ export const startAdhocMeetingAsModerator = async (
 
   // only moderator is present before guests join
   expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
-  return { meetingRoomPage, guestLink, meetingId };
+  return { meetingRoomPage, meetingLink, meetingId };
 };
 
 export const _joinMeetingRoomAsGuest = async (
   // underscore = internal, don't use directly
   context: BrowserContext,
-  guestLink: string,
+  meetingLink: string,
   guestName: string,
   options?: JoinMeetingOptions
 ): Promise<ParticipantMeetingRoomPages> => {
-  // create new browser instance & launch OpenTalk with guest link
+  // create a new browser instance and launch OpenTalk with the meeting link
   const newPage = await context.newPage();
-  await newPage.goto(guestLink);
+  await newPage.goto(meetingLink);
   await newPage.waitForLoadState('domcontentloaded');
 
   const guestLobbyRoomPage = new LobbyRoomPage({ page: newPage });
@@ -86,7 +85,6 @@ export const planNewMeetingAndStartAsModerator = async (
   browserName?: 'webkit' | 'chromium' | 'firefox'
 ): Promise<{
   meetingRoomPage: MeetingRoomPage;
-  guestLink: string;
   phoneDialIn: string;
   telephoneDialInNumber: string;
   conferenceId: string;
@@ -104,7 +102,6 @@ export const planNewMeetingAndStartAsModerator = async (
     meetingTitle,
     meetingPassword
   );
-  const guestLink = await getGuestLink(roomId);
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
   await expect(lobbyRoomPage.nameInputField).toBeVisible(); // needed because of flakyness (see issue #1692)
@@ -116,7 +113,6 @@ export const planNewMeetingAndStartAsModerator = async (
 
   return {
     meetingRoomPage,
-    guestLink,
     phoneDialIn: '',
     telephoneDialInNumber,
     conferenceId,

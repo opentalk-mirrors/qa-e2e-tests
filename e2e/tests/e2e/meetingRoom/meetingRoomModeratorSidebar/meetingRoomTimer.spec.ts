@@ -17,7 +17,7 @@ const NUMBER_OF_GUESTS = 1;
 test.describe('Meeting Room_Timer', () => {
   let userId = '';
   let meetingRoomPage: MeetingRoomPage,
-    guestLink: string,
+    meetingLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
     meetingParticipantPages: TimerPage[],
     timerPage: TimerPage;
@@ -28,11 +28,11 @@ test.describe('Meeting Room_Timer', () => {
 
   test.beforeEach(async ({ page, browser, browserName, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
     if (browserName === 'webkit') {
       await closeWebkitPopUp({ page });
     }
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest1');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, 'guest1');
     guestMeetingRoomPage = participantMeetingRoomPages['guest1'];
     const meetingRoomTimerPage: TimerPage = new TimerPage({ page: meetingRoomPage.page });
     const guestMeetingRoomTimerPage: TimerPage = new TimerPage({ page: guestMeetingRoomPage.page });
@@ -385,7 +385,7 @@ test.describe('Meeting Room_Timer', () => {
       } while (i <= 3);
     }
 
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest2');
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, 'guest2');
     const secondGuestMeetingRoomPage = participantMeetingRoomPages['guest2'];
     const secondGuestMeetingRoomTimerPage = new TimerPage({ page: secondGuestMeetingRoomPage.page });
     await secondGuestMeetingRoomTimerPage.markMeAsDone();

@@ -23,7 +23,7 @@ test.describe('Meeting room_Coffee break', async () => {
 
   let meetingRoomPage: MeetingRoomPage,
     coffeeBreakPage: CoffeeBreakPage,
-    guestLink: string,
+    meetingLink: string,
     guestMeetingRoomPage: MeetingRoomPage,
     userId: string;
 
@@ -118,8 +118,8 @@ test.describe('Meeting room_Coffee break', async () => {
     browserName,
   }) => {
     // preconditions
-    ({ meetingRoomPage, guestLink } = await startAdhocMeetingAsModerator(page, browserName));
-    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, guestLink, 'guest');
+    ({ meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName));
+    const participantMeetingRoomPages = await joinMeetingRoomAsGuest(browser, meetingLink, 'guest');
     guestMeetingRoomPage = participantMeetingRoomPages['guest'];
     // TODO: Need to add pre-condition to join meeting as few invited participants, once invited user scenario is implemented
     await meetingRoomPage.page.bringToFront();

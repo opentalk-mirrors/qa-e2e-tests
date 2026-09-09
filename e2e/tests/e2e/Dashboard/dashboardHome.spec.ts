@@ -60,13 +60,11 @@ test.describe('Dashboard_Home', () => {
     const homePage = new HomePage({ page });
     await homePage.navigateToHomePage();
     const meetingInvitationPage = await homePage.startAdhocMeeting();
-    await meetingInvitationPage.waitForGuestLinkToRender();
 
     await expect(await meetingInvitationPage.getAdhocMeetingDescriptionTitleText()).toBeVisible();
     await expect(await meetingInvitationPage.getAdhocMeetingDescriptionDisclaimer()).toBeVisible();
     await expect(meetingInvitationPage.meetingLinkInputField).toBeVisible();
     await expect(meetingInvitationPage.phoneDialInInputField).toBeVisible();
-    await expect(meetingInvitationPage.guestLinkInputField).toBeVisible();
     await expect(meetingInvitationPage.passwordInputField).toBeVisible();
     await expect(meetingInvitationPage.inviteParticipantsInputField).toBeVisible();
     await expect(meetingInvitationPage.cancelMeetingButton).toBeVisible();
@@ -76,8 +74,6 @@ test.describe('Dashboard_Home', () => {
 
     const meetingLink = await meetingInvitationPage.meetingLinkInputField.inputValue();
     expect(isRoomIdValid(meetingLink)).toBeTruthy();
-    const guestInvitationLink = await meetingInvitationPage.guestLinkInputField.inputValue();
-    expect(isRoomIdValid(guestInvitationLink)).toBeTruthy();
 
     const phoneNumber = await meetingInvitationPage.phoneDialInInputField.inputValue();
     // default phone number depends on configuration
@@ -128,8 +124,8 @@ test.describe('Dashboard_Home', () => {
     await expect(meetingPlanningPage.meetingOccurrenceDropDown).toHaveText('No repetition');
     await expect(meetingPlanningPage.waitingRoomLabel).toBeVisible();
     const off = meetingPlanningPage.waitingRoomOffButton;
-    const guests = meetingPlanningPage.waitingRoomGuestsOnlyButton;
-    const everyone = meetingPlanningPage.waitingRoomEveryoneButton;
+    const guests = meetingPlanningPage.waitingRoomForGuestsButton;
+    const everyone = meetingPlanningPage.waitingRoomForAllButton;
     for (const button of [off, guests, everyone]) {
       await expect(button).toBeVisible();
     }

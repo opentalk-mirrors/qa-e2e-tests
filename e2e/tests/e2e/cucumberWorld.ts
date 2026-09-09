@@ -27,7 +27,7 @@ interface Meeting {
     };
   };
 
-  guestLink: string;
+  meetingLink: string;
   meetingId: string;
 }
 

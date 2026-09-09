@@ -4,17 +4,15 @@
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { expect, Page } from '@playwright/test';
 
-import { config } from '../../config';
-import { OpenTalkEvent } from '../../helper/Api';
+import { getMeetingLink, OpenTalkEvent } from '../../helper/Api';
 import { assert } from '../../helper/assertion';
-import { getClipboardContent } from '../../helper/clipboardHelpers';
+import { getClipboardContent, setClipboardContent } from '../../helper/clipboardHelpers';
 import { joinMeetingRoomWithNGuests, joinMeetingRoomAsGuest } from '../../helper/gherkinMeetingHelpers';
 import { substituteInLineCodes, validateDataTableHeaders } from '../../helper/helper';
 import { waitForDomStopChanging } from '../../helper/waitingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
 import { HomePage } from '../../pages/HomePage';
 import { LobbyRoomPage } from '../../pages/LobbyRoomPage';
-import { InviteGuestPopupPage } from '../../pages/MeetingRoom/InviteGuestPopupPage';
 import { MeetingRoomPage } from '../../pages/MeetingRoom/MeetingRoomPage';
 import { MyMeetingsPage } from '../../pages/MyMeetingsPage';
 import { CustomWorld, User } from '../cucumberWorld';
@@ -36,7 +34,7 @@ When(
   /^"([^"]*)" joins the meeting of "([^"]*)" as guest$/,
   async function (this: CustomWorld, guest: string, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
-    await joinMeetingRoomAsGuest(this, username, meeting.guestLink, guest);
+    await joinMeetingRoomAsGuest(this, username, meeting.meetingLink, guest);
   }
 );
 
@@ -44,7 +42,7 @@ When(
   '{int} guests join the meeting of {string}',
   async function (this: CustomWorld, numOfGuests: number, username: string) {
     const meeting = this.getStartedMeeting(username).meeting;
-    await joinMeetingRoomWithNGuests(this, username, meeting.guestLink, 'guest', numOfGuests);
+    await joinMeetingRoomWithNGuests(this, username, meeting.meetingLink, 'guest', numOfGuests);
   }
 );
 
@@ -52,7 +50,7 @@ Given(
   /^(\d+) guests? ha(?:s|ve) joined the meeting of "(.+)"$/,
   async function (this: CustomWorld, numOfGuests: number, user: string) {
     const meeting = this.getStartedMeeting(user).meeting;
-    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests);
+    await joinMeetingRoomWithNGuests(this, user, meeting.meetingLink, 'guest', numOfGuests);
   }
 );
 
@@ -60,15 +58,9 @@ Given(
   '{int} guests have joined the meeting of {string} with delay of {int} milliseconds',
   async function (this: CustomWorld, numOfGuests: number, user: string, delay: number) {
     const meeting = this.getStartedMeeting(user).meeting;
-    await joinMeetingRoomWithNGuests(this, user, meeting.guestLink, 'guest', numOfGuests, { audio: false }, delay);
+    await joinMeetingRoomWithNGuests(this, user, meeting.meetingLink, 'guest', numOfGuests, { audio: false }, delay);
   }
 );
-
-When('{string} creates a guest link from the more-options menu', async function (this: CustomWorld, user: string) {
-  const moreOptionsPage = await this.getStartedMeeting(user).meeting.meetingRoomPage.showMoreOptions();
-  const inviteGuestPopupPage = await moreOptionsPage.inviteGuest();
-  await inviteGuestPopupPage.createInvitation();
-});
 
 When(
   '{string} closes all open dialogs by pressing Escape {int} times',
@@ -82,11 +74,9 @@ When(
   }
 );
 
-When('{string} copies the guest link into the clipboard', async function (this: CustomWorld, user: string) {
-  const inviteGuestPopupPage = new InviteGuestPopupPage({
-    page: this.getStartedMeeting(user).meeting.meetingRoomPage.page,
-  });
-  await inviteGuestPopupPage.copyToClipboard();
+When('{string} copies the meeting link into the clipboard', async function (this: CustomWorld, user: string) {
+  const meeting = this.getStartedMeeting(user).meeting;
+  await setClipboardContent(meeting.meetingRoomPage.page, meeting.meetingLink);
 });
 
 When(
@@ -129,7 +119,8 @@ Then(
 
 async function startAdhocMeeting(world: CustomWorld, username: string) {
   const user = world.getUser(username);
-  world.setStartedMeeting(username, await startAdhocMeetingAsModerator(user));
+  const meeting = await startAdhocMeetingAsModerator(user);
+  world.setStartedMeeting(username, meeting);
   world.addParticipantMeetingRooms(username, {
     [username]: world.getStartedMeeting(username).meeting.meetingRoomPage,
   });
@@ -141,11 +132,7 @@ async function startAdhocMeetingAsModerator(
   meetingTitlePrefix: string = 'Ad-hoc Meeting'
 ) {
   const page = user.page;
-  const { meetingLink, roomId, meetingId } = await user.api.startAdhocMeetingAsModerator(
-    meetingTitlePrefix,
-    'direct_access'
-  );
-  const guestLink = await user.api.getGuestLink(roomId);
+  const { meetingLink, meetingId } = await user.api.startAdhocMeetingAsModerator(meetingTitlePrefix, 'direct_access');
   await page.goto(meetingLink);
   const lobbyRoomPage = new LobbyRoomPage({ page });
   await lobbyRoomPage.renderLobbyPage();
@@ -163,7 +150,7 @@ async function startAdhocMeetingAsModerator(
   // only moderator is present before guests join
   expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(1);
   await assert(await meetingRoomPage.getNumberOfParticipantsInMeeting(), 'toBe', 1);
-  return { meetingRoomPage, guestLink, meetingId };
+  return { meetingRoomPage, meetingLink, meetingId };
 }
 
 Given(
@@ -183,7 +170,7 @@ async function joinMeeting(
   meeting: OpenTalkEvent,
   options?: { Audio?: string }
 ): Promise<MeetingRoomPage> {
-  await userToJoin.page.goto(`${config.INSTANCE_URL}/room/${meeting.room.id}`);
+  await userToJoin.page.goto(userToJoin.api.getMeetingLink(meeting.room.id));
   const lobbyRoomPage = new LobbyRoomPage({ page: userToJoin.page });
   await lobbyRoomPage.renderLobbyPage();
 
@@ -207,11 +194,10 @@ Given(
     const user = this.getUser(moderator);
     const meeting = await user.api.getMeetingByTitle(meetingTitle);
     const meetingRoomPage = await joinMeeting(this, user, meeting);
-
     this.setStartedMeeting(moderator, {
       meetingId: meeting.id,
       meetingRoomPage: meetingRoomPage,
-      guestLink: await user.api.getGuestLink(meeting.room.id),
+      meetingLink: user.api.getMeetingLink(meeting.room.id),
     });
   }
 );
@@ -273,9 +259,6 @@ Then(
         case 'Copy Meeting-Link':
           await expect(home.copyMeetingLinkMenuItem).toBeVisible();
           break;
-        case 'Copy Guest-Link':
-          await expect(home.copyGuestLinkMenuItem).toBeVisible();
-          break;
         case 'Delete':
           await expect(home.deleteMenuItem).toBeVisible();
           break;
@@ -330,8 +313,8 @@ Given(
 
     const api = this.getUser(moderator).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
-    const guestLink = await api.getGuestLink(meeting.room.id);
-    await joinMeetingRoomWithNGuests(this, moderator, guestLink, 'guest', numOfGuests, {
+    const meetingLink = api.getMeetingLink(meeting.room.id);
+    await joinMeetingRoomWithNGuests(this, moderator, meetingLink, 'guest', numOfGuests, {
       audio: options.Audio === 'enabled',
     });
   }
@@ -634,21 +617,14 @@ When('{string} selects the OpenTalk logo on the Lobby-Page', async function (thi
 });
 
 When(
-  /^"([^"]*)" enters the (meeting|guest) link of the meeting named "([^"]*)" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page$/,
-  async function (this: CustomWorld, user: string, linkType: string, meetingTitle: string) {
+  /^"([^"]*)" enters the meeting link of the meeting named "([^"]*)" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page$/,
+  async function (this: CustomWorld, user: string, meetingTitle: string) {
     const page = this.getUser(user).page;
     const api = this.getUser(user).api;
     const home = new HomePage({ page: page });
     const roomId = (await api.getMeetingByTitle(meetingTitle)).room.id;
-    if (linkType === 'meeting') {
-      await home.joinExistingMeetingInput.fill(`${config.INSTANCE_URL}/room/${roomId}`);
-      await home.joinExistingMeetingJoinButton.focus();
-    } else {
-      const guestlink = await api.getGuestLink(roomId);
-      await home.page.evaluate(`navigator.clipboard.writeText('${guestlink}')`);
-      await home.joinExistingMeetingInput.focus();
-      await home.page.keyboard.press('Control+V');
-    }
+    await home.joinExistingMeetingInput.fill(getMeetingLink(roomId));
+    await home.joinExistingMeetingJoinButton.focus();
   }
 );
 

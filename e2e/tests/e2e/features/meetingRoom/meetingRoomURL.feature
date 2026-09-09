@@ -21,8 +21,7 @@ Feature: Meeting room URL
       | Random distribution | enabled |
     And all participants in the meeting room of "Alice" join the Breakout Rooms
     Then all together 4 participants should be in the Breakout Room in the meeting room of "Alice"
-    When "Alice" creates a guest link from the more-options menu
-    And "Alice" copies the guest link into the clipboard
+    When "Alice" copies the meeting link into the clipboard
     Then the content of the clipboard of "Alice" should match "%meeting_url_pattern%"
     When a guest joins the meeting using the link in the clipboard of "Alice"
     And "Alice" closes all open dialogs by pressing Escape 2 times

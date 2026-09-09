@@ -106,7 +106,7 @@ export async function createMeeting(payload: object): Promise<{
     const json = await response.json();
     const roomId = json.room.id;
     const meetingId = json.id;
-    const meetingLink = `${config.INSTANCE_URL}/room/${roomId}`;
+    const meetingLink = getMeetingLink(roomId);
     const telephoneDialInNumber = json.room.call_in?.tel ?? '',
       conferenceId = json.room.call_in?.id ?? '',
       conferencePin = json.room.call_in?.password ?? '';
@@ -138,19 +138,8 @@ export async function startAdhocMeetingAsModerator(
   return { meetingLink, roomId, meetingId };
 }
 
-export async function getGuestLink(roomId: string): Promise<string> {
-  try {
-    const getGuestLinkResponse = await makeRequest(`/v1/rooms/${roomId}/invites`, 'POST', {});
-    const getGuestLinkJson = await getGuestLinkResponse.json();
-    const guestLink = `${config.INSTANCE_URL}/room/${roomId}?invite=${getGuestLinkJson.invite_code}`;
-
-    return guestLink;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    throw error;
-  }
+export function getMeetingLink(roomId: string): string {
+  return `${config.INSTANCE_URL}/room/${roomId}`;
 }
 
 export async function planMeetingAsModerator(
@@ -232,11 +221,12 @@ type MeetingTime = {
   timezone: string;
 };
 
-type MyFunctionParams = {
+type PlanMeetingParams = {
   title: string;
   description?: string;
   waiting_room?: boolean;
   show_meeting_details?: boolean;
+  guest_access?: 'waiting_room' | 'direct_access';
   password?: string;
   is_time_independent?: boolean;
   is_adhoc?: boolean;
@@ -397,7 +387,7 @@ export class Api {
       const json = await response.json();
       const roomId = json.room.id;
       const meetingId = json.id;
-      const meetingLink = `${config.INSTANCE_URL}/room/${roomId}`;
+      const meetingLink = getMeetingLink(roomId);
       const telephoneDialInNumber = json.room.call_in?.tel ?? '',
         conferenceId = json.room.call_in?.id ?? '',
         conferencePin = json.room.call_in?.password ?? '';
@@ -429,19 +419,8 @@ export class Api {
     return { meetingLink, roomId, meetingId };
   }
 
-  async getGuestLink(roomId: string): Promise<string> {
-    try {
-      const getGuestLinkResponse = await this.makeRequest(`/v1/rooms/${roomId}/invites`, 'POST', {});
-      const getGuestLinkJson = await getGuestLinkResponse.json();
-      const guestLink = `${config.INSTANCE_URL}/room/${roomId}?invite=${getGuestLinkJson.invite_code}`;
-
-      return guestLink;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw error;
-    }
+  getMeetingLink(roomId: string): string {
+    return `${config.INSTANCE_URL}/room/${roomId}`;
   }
 
   async planMeetingAsModerator({
@@ -449,6 +428,7 @@ export class Api {
     description = '',
     waiting_room = false,
     show_meeting_details = true,
+    guest_access = 'direct_access',
     password = undefined,
     is_time_independent = false,
     is_adhoc = false,
@@ -459,7 +439,7 @@ export class Api {
     ends_at = undefined,
     timezone = 'Asia/Kathmandu',
     is_all_day = false,
-  }: MyFunctionParams): Promise<{
+  }: PlanMeetingParams): Promise<{
     meetingLink: string;
     roomId: string;
     telephoneDialInNumber: string;
@@ -472,6 +452,7 @@ export class Api {
       description: description,
       waiting_room: waiting_room,
       show_meeting_details: show_meeting_details,
+      guest_access: guest_access,
       is_time_independent: is_time_independent,
       is_adhoc: is_adhoc,
       has_shared_folder: has_shared_folder,
@@ -482,7 +463,7 @@ export class Api {
     };
 
     if (password !== undefined) {
-      (payload as MyFunctionParams).password = password;
+      (payload as PlanMeetingParams).password = password;
     }
     if (!is_time_independent) {
       const now = new Date();
@@ -491,9 +472,9 @@ export class Api {
         datetime: starts.toISOString(),
         timezone: timezone,
       };
-      (payload as MyFunctionParams).starts_at = starts_at;
-      (payload as MyFunctionParams).ends_at = starts_at;
-      (payload as MyFunctionParams).is_all_day = is_all_day;
+      (payload as PlanMeetingParams).starts_at = starts_at;
+      (payload as PlanMeetingParams).ends_at = starts_at;
+      (payload as PlanMeetingParams).is_all_day = is_all_day;
     }
     const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin, meetingId } =
       await this.createMeeting(payload);

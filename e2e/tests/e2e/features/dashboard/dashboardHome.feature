@@ -46,7 +46,6 @@ Feature: Dashboard Home
       | Add to favorites  |
       | Details           |
       | Copy Meeting-Link |
-      | Copy Guest-Link   |
       | Delete            |
     When "Alice" checks more options for meeting "bob1" on the Home-Page
     Then the following options should be displayed on the Home-Page for "Alice":
@@ -123,7 +122,7 @@ Feature: Dashboard Home
     When "Alice" navigates back from Lobby-Page
     Then "Alice" should be on the Home-Page
     When "Alice" starts to join an existing meeting from the Home-Page
-    And "Alice" enters the guest link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
+    And "Alice" enters the meeting link of the meeting named "Alice" as Meeting ID textbox in the Join-a-meeting-now popup on the Home-Page
     Then for "Alice" only the room ID of the meeting named "Alice" should be visible in the input field of the Join-a-meeting-now popup on the Home-Page
     When "Alice" join the meeting in the Join-a-meeting-now popup on the Home-Page
     Then "Alice" should be on the Lobby-Page of the meeting named "Alice" created by "Alice"
