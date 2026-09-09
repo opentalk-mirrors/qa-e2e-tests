@@ -170,7 +170,7 @@ async function joinMeeting(
   meeting: OpenTalkEvent,
   options?: { Audio?: string }
 ): Promise<MeetingRoomPage> {
-  await userToJoin.page.goto(await userToJoin.api.getMeetingLink(meeting.room.id));
+  await userToJoin.page.goto(userToJoin.api.getMeetingLink(meeting.room.id));
   const lobbyRoomPage = new LobbyRoomPage({ page: userToJoin.page });
   await lobbyRoomPage.renderLobbyPage();
 
@@ -197,7 +197,7 @@ Given(
     this.setStartedMeeting(moderator, {
       meetingId: meeting.id,
       meetingRoomPage: meetingRoomPage,
-      meetingLink: await user.api.getMeetingLink(meeting.room.id),
+      meetingLink: user.api.getMeetingLink(meeting.room.id),
     });
   }
 );
@@ -313,7 +313,7 @@ Given(
 
     const api = this.getUser(moderator).api;
     const meeting = await api.getMeetingByTitle(meetingTitle);
-    const meetingLink = await api.getMeetingLink(meeting.room.id);
+    const meetingLink = api.getMeetingLink(meeting.room.id);
     await joinMeetingRoomWithNGuests(this, moderator, meetingLink, 'guest', numOfGuests, {
       audio: options.Audio === 'enabled',
     });

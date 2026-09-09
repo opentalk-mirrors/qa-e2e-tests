@@ -419,7 +419,7 @@ export class Api {
     return { meetingLink, roomId, meetingId };
   }
 
-  async getMeetingLink(roomId: string): Promise<string> {
+  getMeetingLink(roomId: string): string {
     return `${config.INSTANCE_URL}/room/${roomId}`;
   }
 
