@@ -46,7 +46,6 @@ Feature: Dashboard Home
       | Add to favorites  |
       | Details           |
       | Copy Meeting-Link |
-      | Copy Meeting-Link |
       | Delete            |
     When "Alice" checks more options for meeting "bob1" on the Home-Page
     Then the following options should be displayed on the Home-Page for "Alice":
