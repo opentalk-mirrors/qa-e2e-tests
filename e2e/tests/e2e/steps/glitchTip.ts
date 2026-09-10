@@ -42,7 +42,6 @@ Then('for {string} no request should have been sent to GlitchTip', async functio
   await assert(
     this.getStartedMeeting(user).crashReportResponse,
     'toBeUndefined',
-    undefined,
     `Didn't expect glitchtip to send crash report`
   );
 });
@@ -60,7 +59,7 @@ Then(
   async function (this: CustomWorld, user: string, text: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     glitchTipPage = new GlitchTipPage({ page: meeting.meetingRoomPage.page });
-    await assert(glitchTipPage.sendingSuccessfulPopup, 'toBeVisible', undefined, `Expected pop-up to be displayed`);
+    await assert(glitchTipPage.sendingSuccessfulPopup, 'toBeVisible', `Expected pop-up to be displayed`);
 
     const actualText = await glitchTipPage.getSendingSuccessfulPopupText();
     const subTexts = text.split(/\\n/);

@@ -587,7 +587,6 @@ Then(
     await assert(
       meeting.meetingRoomPage.getParticipantTileLocatorByName(name),
       'toBeVisible',
-      undefined,
       `${name} participant tile is not visible`
     );
   }

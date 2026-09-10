@@ -27,7 +27,6 @@ Then('for {string} the debriefing option should be displayed', async function (t
   await assert(
     debriefingPage.debriefingOptions.forModeratorOption,
     'toBeVisible',
-    undefined,
     `Expected moderation tool in debriefing page to be visible`
   );
 });

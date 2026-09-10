@@ -43,7 +43,7 @@ Then(
           break;
         }
       }
-      await assert(elementFound, 'toBeTruthy', undefined, `Could not find the expected element "${expectedElement}"`);
+      await assert(elementFound, 'toBeTruthy', `Could not find the expected element "${expectedElement}"`);
     }
   }
 );
@@ -59,7 +59,6 @@ Then(
         await assert(
           moderatorToolsPage.getTextboxByLabel(elementName),
           'toBeVisible',
-          undefined,
           `Expected the "${elementName}" field to be visible in the open moderator tool`
         );
         break;
@@ -69,7 +68,6 @@ Then(
         await assert(
           moderatorToolsPage.getSwitchByName(elementName),
           'toBeVisible',
-          undefined,
           `Expected the "${elementName}" switch to be visible in the open moderator tool`
         );
         break;
@@ -79,7 +77,6 @@ Then(
         await assert(
           moderatorToolsPage.getButtonByName(elementName),
           'toBeVisible',
-          undefined,
           `Expected the "${elementName}" button to be visible in the open moderator tool`
         );
         break;
@@ -99,7 +96,6 @@ Then(
       await assert(
         participantListPage.getParticipantItemByName(participant),
         'toBeVisible',
-        undefined,
         `Expected participant "${participant}" to be visible with a checkbox in the moderator tool`
       );
     }
@@ -142,7 +138,6 @@ Then(
       await assert(
         moderatorToolsPage.getTextboxByLabel(label),
         'toBeVisible',
-        undefined,
         `Expected the "${label}" field to be visible in the open moderator tool`
       );
     }

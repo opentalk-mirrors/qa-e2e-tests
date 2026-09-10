@@ -22,18 +22,16 @@ Then(
     const page = this.getStartedMeeting(moderator).participantMeetingRoomPages[user].page;
     const lobbyRoomPage = new LobbyRoomPage({ page });
     const meetingTitleLocator = await lobbyRoomPage.getMeetingInvitationTitleLocator(meetingName);
-    await assert(meetingTitleLocator, 'toBeVisible', undefined, 'Meeting title locator is not visible');
-    await assert(lobbyRoomPage.waitingRoomText, 'toBeVisible', undefined, 'Waiting room text is not visible');
+    await assert(meetingTitleLocator, 'toBeVisible', 'Meeting title locator is not visible');
+    await assert(lobbyRoomPage.waitingRoomText, 'toBeVisible', 'Waiting room text is not visible');
     await assert(
       lobbyRoomPage.joinMeetingAutomaticallyLabel,
       'toBeVisible',
-      undefined,
       'Join meeting automatically label is not visible'
     );
     await assert(
       lobbyRoomPage.joinMeetingAutomaticallyCheckbox,
       'toBeChecked',
-      undefined,
       'Join meeting automatically checkbox should be checked'
     );
   }

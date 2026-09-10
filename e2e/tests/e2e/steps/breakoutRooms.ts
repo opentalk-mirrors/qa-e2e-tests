@@ -248,14 +248,12 @@ Then(
             await assert(
               isDistributionRandom,
               'toBeTruthy',
-              undefined,
               `Expected Random distribution to be enabled but it was disabled`
             );
           } else if (expectedSettingsTableHashes[i].value === 'disabled') {
             await assert(
               isDistributionRandom,
               'toBeFalsy',
-              undefined,
               `Expected Random distribution to be disabled but it was enabled`
             );
           } else {
@@ -298,7 +296,6 @@ Then(
         await assert(
           breakoutRoomsPage.startRoomsButton,
           'toBeVisible',
-          undefined,
           `Expected to have 'start rooms' visible in Breakout Rooms moderator tool`
         );
         break;
@@ -306,7 +303,6 @@ Then(
         await assert(
           breakoutRoomsPage.closeRoomButton,
           'toBeVisible',
-          undefined,
           `Expected to have 'close room' visible in Breakout Rooms moderator tool`
         );
         break;

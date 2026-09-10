@@ -71,7 +71,6 @@ Then(
     await assert(
       await coffeeBreakDialogPage.isCoffeeBreakDialogClosed(),
       'toBeTruthy',
-      undefined,
       'Expected the Coffee break overlay to be closed for the guest'
     );
     await moderatorMeetingRoomPage.meetingRoomName.isVisible();
@@ -95,7 +94,6 @@ Then(
     await assert(
       isCoffeeBreakPopoverOpen,
       'toBeTruthy',
-      undefined,
       'Expected the Coffee break popover to be visible in the meeting room'
     );
     await assert(
@@ -116,7 +114,6 @@ Then(
     await assert(
       moderatorMeetingRoomPage.coffeeBreakDialog.coffeeBreakIcon,
       'toBeVisible',
-      undefined,
       `Expected coffee break icon to be visible`
     );
   }
@@ -163,7 +160,6 @@ Then(
     await assert(
       await moderatorMeetingRoomPage.isTimerCountingDown(moderatorMeetingRoomPage.coffeeBreakDialog.timerText),
       'toBeTruthy',
-      undefined,
       'Expected the Coffee break countdown timer to be running'
     );
   }
@@ -187,7 +183,6 @@ Then(
     await assert(
       await moderatorMeetingRoomPage.isCoffeeBreakPopoverClosed(),
       'toBeTruthy',
-      undefined,
       'Expected the Coffee break popover to be closed'
     );
   }
@@ -206,7 +201,6 @@ Then(
     await assert(
       await coffeeBreakDialogPage.isCoffeeBreakDialogClosed(),
       'toBeTruthy',
-      undefined,
       'Expected the Coffee break dialog to be closed after returning to the conference'
     );
     await guestMeetingRoomPage.meetingRoomName.isVisible();
@@ -229,7 +223,6 @@ Then(
     await assert(
       moderatorMeetingRoomPage.moderationTools.timerButton,
       'toBeEnabled',
-      undefined,
       'Expected the Timer moderation tool to be enabled after the Coffee break ended'
     );
   }

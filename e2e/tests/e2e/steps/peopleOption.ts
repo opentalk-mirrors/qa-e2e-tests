@@ -296,12 +296,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await assert(
-      peopleOptionPage.getParticipantByName(name),
-      'toBeVisible',
-      undefined,
-      `participant ${name} is not visible`
-    );
+    await assert(peopleOptionPage.getParticipantByName(name), 'toBeVisible', `participant ${name} is not visible`);
   }
 );
 

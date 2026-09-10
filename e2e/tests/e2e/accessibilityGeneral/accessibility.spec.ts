@@ -141,7 +141,7 @@ test.describe('Accessibility_General', () => {
 
     for (const button of topBarButtons) {
       await meetingRoomPage.page.keyboard.press('Tab');
-      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the top bar`);
+      await assert(button, 'toBeFocused', `Expected ${button} to receive focus in the top bar`);
     }
 
     await meetingRoomPage.page.keyboard.press('Tab');
@@ -165,7 +165,7 @@ test.describe('Accessibility_General', () => {
     ];
 
     for (const button of moderationButtons) {
-      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the moderator tools`);
+      await assert(button, 'toBeFocused', `Expected ${button} to receive focus in the moderator tools`);
       await meetingRoomPage.page.keyboard.press('ArrowDown');
     }
 
@@ -182,7 +182,7 @@ test.describe('Accessibility_General', () => {
 
     for (const button of toolBarButtons) {
       await meetingRoomPage.page.keyboard.press('Tab');
-      await assert(button, 'toBeFocused', undefined, `Expected ${button} to receive focus in the toolbar`);
+      await assert(button, 'toBeFocused', `Expected ${button} to receive focus in the toolbar`);
     }
 
     await meetingRoomPage.page.keyboard.press('Tab');
@@ -200,7 +200,7 @@ test.describe('Accessibility_General', () => {
     ];
     for (const chatElement of chatElements) {
       await meetingRoomPage.page.keyboard.press('Tab');
-      await assert(chatElement, 'toBeFocused', undefined, `Expected ${chatElement} to receive focus in the chat`);
+      await assert(chatElement, 'toBeFocused', `Expected ${chatElement} to receive focus in the chat`);
     }
     await meetingRoomPage.page.keyboard.press('Tab');
   });
