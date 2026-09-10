@@ -178,7 +178,7 @@ async function joinMeeting(
   world: CustomWorld,
   userToJoin: User,
   meeting: OpenTalkEvent,
-  options?: { Audio?: string }
+  options?: { value?: string }
 ): Promise<MeetingRoomPage> {
   await userToJoin.page.goto(userToJoin.api.getMeetingLink(meeting.room.id));
   const lobbyRoomPage = new LobbyRoomPage({ page: userToJoin.page });
@@ -189,7 +189,7 @@ async function joinMeeting(
     await closeWebkitPopUp({ page: userToJoin.page });
   }
 
-  if (options?.Audio === 'enabled') {
+  if (options?.value === 'enabled') {
     await lobbyRoomPage.waitForMicrophoneButtonToBeEnabled();
     await lobbyRoomPage.turnOnMicrophone();
   }
@@ -325,7 +325,7 @@ Given(
     const meeting = await api.getMeetingByTitle(meetingTitle);
     const meetingLink = api.getMeetingLink(meeting.room.id);
     await joinMeetingRoomWithNGuests(this, moderator, meetingLink, 'guest', numOfGuests, {
-      audio: options.Audio === 'enabled',
+      audio: options.value === 'enabled',
     });
   }
 );
