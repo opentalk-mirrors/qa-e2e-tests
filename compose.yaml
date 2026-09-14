@@ -87,7 +87,7 @@ services:
       test: rabbitmq-diagnostics -q ping
 
   minio:
-    image: minio/minio:latest
+    image: registry.heinlein.group/opentalk/minio:RELEASE.2025-10-15T17-29-55Z
     ports:
       - 9000:9000
     volumes:

@@ -124,7 +124,7 @@ variables:
       pull_policy: if-not-present
       alias: rabbitmq
 
-    - name: minio/minio:latest
+    - name: registry.heinlein.group/opentalk/minio:RELEASE.2025-10-15T17-29-55Z
       pull_policy: if-not-present
       alias: minio
       variables:
