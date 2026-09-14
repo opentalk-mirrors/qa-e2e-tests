@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 #
 # SPDX-License-Identifier: EUPL-1.2
-@skip
+@skip-on-webkit
 Feature: Mute Participants
   As a moderator
   I want to be able to mute participants
@@ -18,13 +18,13 @@ Feature: Mute Participants
     And "Alice" has joined the meeting with the title "with-alice" as moderator
     And 3 guests have joined the meeting with the title "with-alice" created by "Alice" with:
       | setting | value    |
-      | Audio   | disabled |
+      | Audio   | enabled  |
     And "Alice" has invited "Bob" to meeting "with-alice"
     And "Bob" has logged in
     And "Bob" has accepted the invitation for the meeting with the title "with-alice" created by "Alice"
     And "Bob" has joined the meeting with the title "with-alice" created by "Alice" with:
       | setting | value    |
-      | Audio   | disabled |
+      | Audio   | enabled  |
     When "Alice" opens the Mute Participants moderator tool
     Then the "heading" in the open moderator tool for "Alice" should be "Mute participants"
     And these "buttons" should be displayed in the open moderator tool for "Alice":
