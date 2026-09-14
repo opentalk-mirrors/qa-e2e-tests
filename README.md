@@ -159,6 +159,14 @@ pnpm run test:playwright --ui -x
 
 Any supported Playwright or Cucumber CLI flag can be appended in the same way.
 
+## Contributing
+
+1. Create an MR as soon as you make the first commit, link it to the corresponding GitLab work-items and assign it to self (both work-item and MR). Set the MR to draft status.
+2. Set the work-item to `In progress` status.
+3. When the MR is ready for review, remove draft status from MR title, add all your team colleagues as reviewers and change the status of the work-item to `In Code Review`. Optionally, you can add the QA lead as a reviewer.
+4. Once the MR is approved and merged, the status of the corresponding GitLab work-item has to be set to `To test` and the QA lead is to be assigned to it. The QA lead will later manually change the status of the issue to `Done` after checking that the test case is fully implemented (just having an MR pass CI doesn't mean that the issue is completed).
+> [!NOTE]
+> when linking the work-item in the description of the MR using the terms `fixes` or `closes`, it will automatically link the MR in the `Development` section in the corresponding work-item, however, it will also set the status of the work-item to `closed` after merging the MR, which is not desired, since it should only be closed after being approved by the QA lead.
 
 ## View traces of CI runs
 When a test fail, playwright will create a trace of the first retry (see `trace: 'on-first-retry'` in [playwright.config.ts](https://git.opentalk.dev/opentalk/qa/e2e-tests/blob/main/playwright.config.ts)).  
