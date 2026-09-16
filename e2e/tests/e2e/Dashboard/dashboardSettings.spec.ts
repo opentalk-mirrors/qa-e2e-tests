@@ -7,6 +7,7 @@ import util from 'util';
 import { globalSetup } from '../../authHelpers';
 import { config } from '../../config';
 import { createMeetingAsset } from '../../helper/Api';
+import { assert } from '../../helper/assertion';
 import { deleteUser } from '../../helper/keycloak';
 import { planNewMeetingAndStartAsModerator } from '../../helper/meetingHelpers';
 import { closeWebkitPopUp } from '../../helper/webkit';
@@ -24,6 +25,8 @@ import { SidebarPage } from '../../pages/SidebarPage';
 
 const FIRSTNAME: string = config.USER_FIRSTNAME;
 const FAMILYNAME: string = config.USER_FAMILYNAME;
+
+const profileSettingsSavedNotificationText = 'Your settings have been saved successfully.';
 
 test.describe('Dashboard_Settings', () => {
   let sideBarPage: SidebarPage,
@@ -138,7 +141,13 @@ test.describe('Dashboard_Settings', () => {
 
       await profilePage.saveProfile();
       const notificationPage = new NotificationPage({ page: profilePage.page });
-      expect(await notificationPage.getAlertNotificationText()).toBe('Your settings have been saved successfully.');
+      const notificationText = await notificationPage.getAlertNotificationText();
+      await assert(
+        notificationText,
+        'toBe',
+        profileSettingsSavedNotificationText,
+        `Expected the notification text shown after saving the profile settings to be "${profileSettingsSavedNotificationText}", but received "${notificationText}"`
+      );
       await expect(sideBarPage.profileName).toHaveText(myProfileName);
     });
   });

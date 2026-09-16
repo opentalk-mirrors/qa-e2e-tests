@@ -46,7 +46,7 @@ export class LobbyRoomPage {
     this.videoButton = this.page.getByRole('button', { name: 'Turn On Video (Ctrl + Shift + V)', exact: true });
     this.cameraMoreOptionsMenuButton = this.page.getByRole('button', { name: 'additional options camera' });
     this.blurBackgroundButton = this.page.getByRole('button', { name: 'Turn On Background Blur' });
-    this.joinMeetingButton = this.page.getByRole('button', { name: 'Enter now' });
+    this.joinMeetingButton = this.page.getByRole('button', { name: /^(Enter now|Request to join)$/ });
     this.imprintLink = this.page.getByRole('link', { name: 'Imprint' });
     this.dataProtectionLink = this.page.getByRole('link', { name: 'Data protection' });
     this.waitingRoomText = this.page.getByText('You are currently in the waiting room', { exact: true });

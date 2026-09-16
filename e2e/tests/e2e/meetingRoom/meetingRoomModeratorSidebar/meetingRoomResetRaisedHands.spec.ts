@@ -5,6 +5,7 @@ import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../../../authHelpers';
 import { config } from '../../../config';
+import { assert } from '../../../helper/assertion';
 import { deleteUser } from '../../../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../../../helper/meetingHelpers';
 import { joinMeetingRoomWithNGuests, joinMeetingRoomAsGuest } from '../../../helper/playwrightMeetingHelpers';
@@ -90,17 +91,35 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     await meetingRoomPage.page.bringToFront();
     await resetRaisedHandsPage.resetAllRaisedHands();
     const moderatorNotification = new NotificationPage({ page: page });
-    expect(await moderatorNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    const moderatorNotificationText = await moderatorNotification.getAlertNotificationText();
+    await assert(
+      moderatorNotificationText,
+      'toBe',
+      resetRaisedHandsNotificationText,
+      `Expected the notification text shown after resetting raised hands in the moderator meeting room to be "${resetRaisedHandsNotificationText}", but received "${moderatorNotificationText}"`
+    );
     await expect(meetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(meetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await firstGuestMeetingRoomPage.page.bringToFront();
     const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
-    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    const firstGuestNotificationText = await firstGuestNotification.getAlertNotificationText();
+    await assert(
+      firstGuestNotificationText,
+      'toBe',
+      resetRaisedHandsNotificationText,
+      `Expected the notification text shown after resetting raised hands in the first guest meeting room to be "${resetRaisedHandsNotificationText}", but received "${firstGuestNotificationText}"`
+    );
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await secondGuestMeetingRoomPage.page.bringToFront();
     const secondGuestNotification = new NotificationPage({ page: secondGuestMeetingRoomPage.page });
-    expect(await secondGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    const secondGuestNotificationText = await secondGuestNotification.getAlertNotificationText();
+    await assert(
+      secondGuestNotificationText,
+      'toBe',
+      resetRaisedHandsNotificationText,
+      `Expected the notification text shown after resetting raised hands in the second guest meeting room to be "${resetRaisedHandsNotificationText}", but received "${secondGuestNotificationText}"`
+    );
     await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(secondGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await meetingRoomPage.page.bringToFront();
@@ -125,7 +144,13 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
 
     await resetRaisedHandsPage.resetHandsOfSelectedParticipants();
     await firstGuestMeetingRoomPage.page.bringToFront();
-    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    const firstGuestSelectedNotificationText = await firstGuestNotification.getAlertNotificationText();
+    await assert(
+      firstGuestSelectedNotificationText,
+      'toBe',
+      resetRaisedHandsNotificationText,
+      `Expected the notification text shown after resetting the selected participant's raised hand in the first guest meeting room to be "${firstGuestSelectedNotificationText}", but received "${firstGuestNotificationText}"`
+    );
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await secondGuestMeetingRoomPage.page.bringToFront();
@@ -187,7 +212,13 @@ test.describe('Meeting Room_Reset raised hands search participant', () => {
     const secondGuestMeetingRoomPage = guestMeetingRoomPages['guest2'];
     await firstGuestMeetingRoomPage.page.bringToFront();
     const firstGuestNotification = new NotificationPage({ page: firstGuestMeetingRoomPage.page });
-    expect(await firstGuestNotification.getAlertNotificationText()).toBe(resetRaisedHandsNotificationText);
+    const firstGuestNotificationText = await firstGuestNotification.getAlertNotificationText();
+    await assert(
+      firstGuestNotificationText,
+      'toBe',
+      resetRaisedHandsNotificationText,
+      `Expected the first guest meeting room to display the notification "${resetRaisedHandsNotificationText}" after resetting the selected participant's raised hand, but received "${firstGuestNotificationText}"`
+    );
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeEnabled();
     await expect(firstGuestMeetingRoomPage.toolBar.handRaiseButton).toBeVisible();
     await secondGuestMeetingRoomPage.page.bringToFront();
