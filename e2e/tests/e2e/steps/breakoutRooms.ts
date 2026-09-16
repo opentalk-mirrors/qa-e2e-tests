@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 
+import { config } from '../../config';
 import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
@@ -27,35 +28,61 @@ async function openBreakoutRoomsModeratorTool(world: CustomWorld, user: string) 
 }
 
 When(
-  '{string} creates Breakout Rooms with these settings:',
-  async function (this: CustomWorld, moderator: string, expectedSettingsTable: DataTable) {
+  /^"([^"]*)" (tries to create|creates) Breakout Rooms with these settings:$/,
+  async function (
+    this: CustomWorld,
+    moderator: string,
+    action: string,
+    expectedSettingsTable: DataTable
+  ): Promise<void> {
     const expectedHeaders = ['setting', 'value'];
     validateDataTableHeaders(expectedSettingsTable, expectedHeaders);
-    const expectedSettingsTableHashes = expectedSettingsTable.hashes();
-    let randomDistribution: null | boolean = null;
-    let mode: null | string = null;
-    for (let i = 0; i < expectedSettingsTableHashes.length; i++) {
-      switch (expectedSettingsTableHashes[i].setting) {
+    const expectedSettings = expectedSettingsTable.hashes();
+
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    await meeting.meetingRoomPage.page.bringToFront();
+    const breakoutRoomPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
+
+    let randomDistribution: undefined | boolean;
+    for (let i = 0; i < expectedSettings.length; i++) {
+      switch (expectedSettings[i].setting) {
         case 'By number of':
-          mode = expectedSettingsTableHashes[i].value;
+          await breakoutRoomPage.setSelectionMode(expectedSettings[i].value);
+          break;
+        case 'Min. participants':
+          await breakoutRoomPage.enterFieldValue(expectedSettings[i].setting, expectedSettings[i].value);
+          // get out of the input field, so that the automation to reset the field to correct
+          // values will run
+          await breakoutRoomPage.heading.click();
           break;
         case 'Random distribution':
-          if (expectedSettingsTableHashes[i].value === 'enabled') {
+          if (expectedSettings[i].value === 'enabled') {
             randomDistribution = true;
-          } else if (expectedSettingsTableHashes[i].value === 'disabled') {
+          } else if (expectedSettings[i].value === 'disabled') {
             randomDistribution = false;
           } else {
             throw new Error('Invalid value for "Random distribution" setting');
           }
+          await breakoutRoomPage.setSwitch(expectedSettings[i].setting, randomDistribution);
           break;
         default:
           throw new Error('Invalid Setting name for the Breakout Rooms moderator tool');
       }
     }
 
-    const meeting = this.getStartedMeeting(moderator).meeting;
-    await meeting.meetingRoomPage.page.bringToFront();
-    await meeting.meetingRoomPage.startBreakoutRooms(randomDistribution, mode);
+    let allowToFail = false;
+    if (action === 'tries to create') {
+      allowToFail = true;
+    }
+
+    try {
+      const timeout = allowToFail ? config.SHORT_TIMEOUT : config.MEDIUM_TIMEOUT;
+      await breakoutRoomPage.startRooms(timeout);
+    } catch (e) {
+      if (!allowToFail) {
+        throw e;
+      }
+    }
   }
 );
 
@@ -207,18 +234,18 @@ Then(
   async function (this: CustomWorld, moderator: string, expectedSettingsTable: DataTable) {
     const expectedHeaders = ['setting', 'value'];
     validateDataTableHeaders(expectedSettingsTable, expectedHeaders);
-    const expectedSettingsTableHashes = expectedSettingsTable.hashes();
+    const expectedSettings = expectedSettingsTable.hashes();
     const meeting = this.getStartedMeeting(moderator).meeting;
     const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    for (let i = 0; i < expectedSettingsTableHashes.length; i++) {
-      switch (expectedSettingsTableHashes[i].setting) {
+    for (let i = 0; i < expectedSettings.length; i++) {
+      switch (expectedSettings[i].setting) {
         case 'Duration': {
           const sessionDuration = await breakoutRoomsPage?.getSessionDuration();
           await assert(
             sessionDuration,
             'toBe',
-            expectedSettingsTableHashes[i].value,
-            `Expected to have duration of ${expectedSettingsTableHashes[i].value} but found ${sessionDuration}`
+            expectedSettings[i].value,
+            `Expected to have duration of ${expectedSettings[i].value} but found ${sessionDuration}`
           );
           break;
         }
@@ -227,30 +254,31 @@ Then(
           await assert(
             selectionMode,
             'toBe',
-            expectedSettingsTableHashes[i].value,
-            `Expected ${expectedSettingsTableHashes[i].value} to be selected but found ${selectionMode} to be selected`
+            expectedSettings[i].value,
+            `Expected ${expectedSettings[i].value} to be selected but found ${selectionMode} to be selected`
           );
           break;
         }
-        case 'Number of rooms': {
-          const noOfRoomsSetting = await breakoutRoomsPage?.getNumberOfRoomsSetting();
+        case 'Number of rooms':
+        case 'Min. participants': {
+          const actual = await breakoutRoomsPage?.getFieldInputValue(expectedSettings[i].setting);
           await assert(
-            noOfRoomsSetting,
+            actual,
             'toBe',
-            expectedSettingsTableHashes[i].value,
-            `Expected to have ${expectedSettingsTableHashes[i].value} number of rooms but found ${noOfRoomsSetting}`
+            expectedSettings[i].value,
+            `Expected to have ${expectedSettings[i].value} for ${expectedSettings[i].setting} but found ${actual}`
           );
           break;
         }
         case 'Random distribution': {
           const isDistributionRandom = await breakoutRoomsPage?.isDistributionRandom();
-          if (expectedSettingsTableHashes[i].value === 'enabled') {
+          if (expectedSettings[i].value === 'enabled') {
             await assert(
               isDistributionRandom,
               'toBeTruthy',
               `Expected Random distribution to be enabled but it was disabled`
             );
-          } else if (expectedSettingsTableHashes[i].value === 'disabled') {
+          } else if (expectedSettings[i].value === 'disabled') {
             await assert(
               isDistributionRandom,
               'toBeFalsy',
@@ -265,21 +293,6 @@ Then(
           throw new Error('Invalid Setting name for the Breakout Rooms moderator tool');
       }
     }
-  }
-);
-
-Then(
-  '{int} rooms to be created should be displayed in the Breakout Rooms moderator tool for {string}',
-  async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string) {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
-    const numberOfRoomsToBeCreated = await breakoutRoomsPage?.getNumberOfRoomsToBeCreated();
-    await assert(
-      numberOfRoomsToBeCreated,
-      'toBe',
-      expectedNoOfRooms,
-      `Expected to have ${expectedNoOfRooms} rooms but found ${numberOfRoomsToBeCreated}`
-    );
   }
 );
 
@@ -312,8 +325,8 @@ Then(
   }
 );
 Then(
-  /^(\d+) Breakout Rooms should have been created in the meeting of "([^"]*)"$/,
-  async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string) {
+  /^(\d+) Breakout Rooms should have been created in the meeting room of "([^"]*)"$/,
+  async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string): Promise<void> {
     const breakoutRoomsPage =
       this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
     const createdRooms = await breakoutRoomsPage?.countCreatedRooms();
@@ -331,5 +344,41 @@ When(
   async function (this: CustomWorld, moderator: string) {
     const page = this.getUser(moderator).page;
     await page.waitForTimeout(breakoutRoomAlocationTimeoutInS * 1000);
+  }
+);
+Then(
+  /^(?:these|this) error messages? should be shown to "([^"]*)" in the Breakout Rooms moderator tool$/,
+  async function (this: CustomWorld, moderator: string, expectedErrors: DataTable): Promise<void> {
+    const breakoutRoomsPage =
+      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    if (breakoutRoomsPage === undefined) {
+      throw new Error(`Breakout Rooms moderator tool is not open`);
+    }
+    await breakoutRoomsPage.page.bringToFront();
+    const actualErrorMessages = await breakoutRoomsPage.getErrorMessages();
+    for (const expectedError of expectedErrors.raw().flat()) {
+      await assert(
+        actualErrorMessages,
+        'toContain',
+        expectedError,
+        `could not find the error message "${expectedError}"`
+      );
+    }
+  }
+);
+
+Then(
+  /^these rooms should be listed as to be created in the Breakout Rooms moderator tool of "([^"]*)"$/,
+  async function (this: CustomWorld, moderator: string, expectedRoomsTable: DataTable): Promise<void> {
+    const breakoutRoomsPage =
+      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    if (breakoutRoomsPage === undefined) {
+      throw new Error(`Breakout Rooms moderator tool is not open`);
+    }
+    await breakoutRoomsPage.page.bringToFront();
+    const rooms = await breakoutRoomsPage.getListOfRoomsToBeCreated();
+    for (const expectedRoom of expectedRoomsTable.raw().flat()) {
+      await assert(rooms, 'toContain', expectedRoom, `could not find the room "${expectedRoom}"`);
+    }
   }
 );

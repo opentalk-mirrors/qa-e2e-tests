@@ -13,9 +13,9 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly selectionModeDropdown: Locator;
   private readonly selectionModeDropdownItems: Locator;
   private readonly numberOfRoomsInput: Locator;
-  private readonly roomsToBeCreatedRegex: RegExp;
-  private readonly roomsToBeCreated: Locator;
   private readonly createdRoomsDropdown: Locator;
+  private readonly participantsPerRoomInput: Locator;
+  private readonly errorMessages: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page });
@@ -25,20 +25,17 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
       .getByRole('button', { name: 'Close room' });
     this.participantsAvatar = this.page.getByRole('tabpanel').getByTestId('participantAvatar');
     this.createdRoomsDropdown = this.page.getByRole('tabpanel').getByText(/Room \d+/);
-
-    // this is not a nice locator, but the corresponding label is pointing to nowhere
-    // see https://git.opentalk.dev/opentalk/qa/reports/-/issues/407
-    this.randomDistributionSwitch = this.page.locator('//input[@name="distribution"]');
+    this.randomDistributionSwitch = this.page.getByLabel('Random distribution');
     this.selectionModeDropdown = this.page.getByRole('combobox');
     this.selectionModeDropdownItems = this.page.getByRole('listbox');
-    this.numberOfRoomsInput = this.page.locator('//input[@name="rooms"]');
-    this.roomsToBeCreatedRegex = /Create (\d+) Rooms/;
-    this.roomsToBeCreated = this.page.getByText(this.roomsToBeCreatedRegex);
+    this.numberOfRoomsInput = this.page.getByLabel('Number of rooms');
+    this.participantsPerRoomInput = this.page.getByLabel('Min. participants');
+    this.errorMessages = this.page.getByRole('alert');
   }
 
-  public async startRooms(): Promise<void> {
+  public async startRooms(timeout: number): Promise<void> {
     await this.startRoomsButton.click();
-    await this.startRoomsButton.waitFor({ state: 'detached' });
+    await this.startRoomsButton.waitFor({ state: 'detached', timeout });
   }
 
   public async closeRoom(): Promise<void> {
@@ -70,22 +67,19 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     await this.selectionModeDropdownItems.getByText(mode).click();
   }
 
-  public async getNumberOfRoomsSetting(): Promise<string> {
-    const numberOfRooms = await this.numberOfRoomsInput.inputValue();
-    return numberOfRooms.trim();
-  }
-
   public async isDistributionRandom(): Promise<boolean> {
     return await this.randomDistributionSwitch.isChecked();
   }
 
-  async getNumberOfRoomsToBeCreated(): Promise<number> {
-    const fullText = await this.roomsToBeCreated.innerText();
-    const matchNoRooms = fullText.match(this.roomsToBeCreatedRegex);
-    return matchNoRooms ? parseInt(matchNoRooms[1], 10) : 0;
-  }
-
   public async countCreatedRooms(): Promise<number> {
     return (await this.createdRoomsDropdown.all()).length;
+  }
+
+  public async getErrorMessages(): Promise<string[]> {
+    return (await this.errorMessages.allInnerTexts()).map((message) => message.trim());
+  }
+
+  public async getListOfRoomsToBeCreated(): Promise<string[]> {
+    return (await this.createdRoomsDropdown.allInnerTexts()).map((room) => room.trim());
   }
 }
