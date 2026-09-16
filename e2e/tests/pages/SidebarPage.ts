@@ -5,6 +5,7 @@ import { Page, Locator } from '@playwright/test';
 
 import { config } from '../config';
 import { HomePage } from './HomePage';
+import { KeycloakPage } from './KeycloakPage';
 import { MyMeetingsPage } from './MyMeetingsPage';
 import { SettingsPage } from './Settings/SettingsPage';
 
@@ -62,5 +63,8 @@ export class SidebarPage {
   public async logOut(): Promise<void> {
     await this.page.goto(config.INSTANCE_URL, { waitUntil: 'load' });
     await this.logoutButton.click();
+
+    const kcPage = new KeycloakPage({ page: this.page });
+    await kcPage.logOut();
   }
 }

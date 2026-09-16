@@ -76,7 +76,9 @@ async function getAdminAccessToken(): Promise<TokenResponse> {
   });
   const page = await context.newPage();
   const kcPage = new KeycloakPage({ page });
-  const code = new URL(await kcPage.login(authUrl, config.KC_ADMIN, config.KC_ADMIN_PASSWORD)).searchParams.get('code');
+  const code = new URL(
+    await kcPage.authenticateWithAuthUrl(authUrl, config.KC_ADMIN, config.KC_ADMIN_PASSWORD)
+  ).searchParams.get('code');
   await browser.close();
 
   if (!code) {
