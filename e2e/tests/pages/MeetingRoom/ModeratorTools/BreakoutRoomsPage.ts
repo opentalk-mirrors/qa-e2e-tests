@@ -12,9 +12,7 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
   private readonly participantsAvatar: Locator;
   private readonly selectionModeDropdown: Locator;
   private readonly selectionModeDropdownItems: Locator;
-  private readonly numberOfRoomsInput: Locator;
   private readonly createdRoomsDropdown: Locator;
-  private readonly participantsPerRoomInput: Locator;
   private readonly errorMessages: Locator;
 
   constructor({ page }: { page: Page }) {
@@ -28,8 +26,6 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     this.randomDistributionSwitch = this.page.getByLabel('Random distribution');
     this.selectionModeDropdown = this.page.getByRole('combobox');
     this.selectionModeDropdownItems = this.page.getByRole('listbox');
-    this.numberOfRoomsInput = this.page.getByLabel('Number of rooms');
-    this.participantsPerRoomInput = this.page.getByLabel('Min. participants');
     this.errorMessages = this.page.getByRole('alert');
   }
 
