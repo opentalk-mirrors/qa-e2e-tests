@@ -39,10 +39,10 @@ export class PollPage {
       firstOptionButton: this.page.getByRole('button', { name: 'Add Option 1', exact: true }),
       secondOptionButton: this.page.getByRole('button', { name: 'Add Option 2', exact: true }),
       addOptionButton: this.page.getByRole('button', { name: 'Add Option', exact: true }),
-      optionButtons: this.page.locator('.MuiChip-filledDefault'),
+      optionButtons: this.page.locator('.MuiChip-colorDefault'),
       savePollAsTemplateButton: this.page.getByRole('button', { name: 'Save As Template', exact: true }),
     };
-    this.removeIcon = this.page.locator('.MuiChip-deleteIconFilledColorDefault');
+    this.removeIcon = this.page.locator('.MuiChip-deleteIcon');
     this.documentBody = this.page.locator('body');
     this.pollLists = this.page.getByRole('list').getByRole('button');
   }
