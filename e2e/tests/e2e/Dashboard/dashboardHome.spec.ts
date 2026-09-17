@@ -260,7 +260,11 @@ test.describe('Dashboard_Home', () => {
           `Expected the day button "${day}" to appear exactly twice`
         );
       } else {
-        await assert(planMeetingPage.getWeeklyDayButtons(day), 'toBeVisible', `Day button "${day}" should be visible`);
+        await assert(
+          planMeetingPage.getWeeklyDayButtons(day),
+          'toBeVisible',
+          `Expected the day button "${day}" to be visible`
+        );
       }
     }
 

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 import { When, Then, DataTable } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 
 import { assert } from '../../helper/assertion';
 import { isTimeAscending, isTimeDescending } from '../../helper/checkTimeOrderHelper';
@@ -19,7 +18,11 @@ Then(
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const guestsName = dataTable.raw().map(([guest]) => guest);
     for (const guest of guestsName) {
-      expect(await peopleOptionPage.isGuest(guest)).toBeTruthy();
+      await assert(
+        await peopleOptionPage.isGuest(guest),
+        'toBeTruthy',
+        `Expected participant "${guest}" to be labeled as a guest on the People-Option page, but the guest label was not found`
+      );
     }
   }
 );
@@ -30,9 +33,19 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.participantsList).toBeVisible();
+    await assert(
+      peopleOptionPage.participantsList,
+      'toBeVisible',
+      'Expected the participants list to be visible before checking participant join times on the People-Option page'
+    );
+
     for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
-      expect(await peopleOptionPage.getParticipantDetails(i)).toMatch(/Joined ([01]\d|2[0-3]):[0-5]\d/);
+      await assert(
+        await peopleOptionPage.getParticipantDetails(i),
+        'toMatch',
+        /Joined ([01]\d|2[0-3]):[0-5]\d/,
+        `Expected participant at index ${i} to have a join time in the "Joined HH:MM" format on the People-Option page`
+      );
     }
   }
 );
@@ -43,9 +56,18 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.participantsList).toBeVisible();
+    await assert(
+      peopleOptionPage.participantsList,
+      'toBeVisible',
+      'Expected the participants list to be visible before checking participant audio statuses on the People-Option page'
+    );
+
     for (let i = 0; i < (await peopleOptionPage.getTotalParticipantsNumber()); i++) {
-      await expect(peopleOptionPage.microphonesStatus.nth(i)).toBeVisible();
+      await assert(
+        peopleOptionPage.microphonesStatus.nth(i),
+        'toBeVisible',
+        `Expected the audio status for participant at index ${i} to be displayed on the People-Option page`
+      );
     }
   }
 );
@@ -66,7 +88,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getSearchParticipantPlaceholder()).toBe(placeholder);
+    await assert(
+      await peopleOptionPage.getSearchParticipantPlaceholder(),
+      'toBe',
+      placeholder,
+      `Expected the search participant textbox to have placeholder "${placeholder}" on the People-Option page`
+    );
   }
 );
 
@@ -96,7 +123,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getSearchParticipantTextboxValue()).toBe('');
+    await assert(
+      await peopleOptionPage.getSearchParticipantTextboxValue(),
+      'toBe',
+      '',
+      `Expected the search participant textbox to be empty on the People-Option page`
+    );
   }
 );
 
@@ -106,7 +138,12 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    expect(await peopleOptionPage.getTotalParticipantsNumber()).toBe(0);
+    await assert(
+      await peopleOptionPage.getTotalParticipantsNumber(),
+      'toBe',
+      0,
+      `Expected no participants to match the search on the People-Option page`
+    );
   }
 );
 
@@ -136,7 +173,11 @@ Then(
           break;
         }
       }
-      await assert(elementFound, 'toBe', true, `could not find the element '${expectedElement}'`);
+      await assert(
+        elementFound,
+        'toBeTruthy',
+        `Expected the menu item "${expectedElement}" to be displayed on the People-Option page, but it was not found`
+      );
     }
   }
 );
@@ -161,39 +202,70 @@ Then(
       case 'Ascending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
         const expectedOrder = [...participantsNames].sort((a, b) => a.localeCompare(b));
-        expect(participantsNames).toEqual(expectedOrder);
+        await assert(
+          participantsNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be sorted alphabetically in ascending order on the People-Option page`
+        );
+
         break;
       }
 
       case 'Descending': {
         const participantsNames: string[] = await peopleOptionPage.getAllParticipantsNames();
         const expectedOrder = [...participantsNames].sort((a, b) => b.localeCompare(a));
-        expect(participantsNames).toEqual(expectedOrder);
+        await assert(
+          participantsNames,
+          'toEqual',
+          expectedOrder,
+          `Expected participants to be sorted alphabetically in descending order on the People-Option page`
+        );
+
         break;
       }
 
       case 'First Join Time': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
-        expect(isTimeAscending(times.slice(1))).toBeTruthy();
+        await assert(
+          isTimeAscending(times.slice(1)),
+          'toBeTruthy',
+          `Expected participants to be sorted by earliest join time first on the People-Option page`
+        );
+
         break;
       }
 
       case 'Last Join Time': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Joined');
-        expect(isTimeDescending(times.slice(1))).toBeTruthy();
+        await assert(
+          isTimeDescending(times.slice(1)),
+          'toBeTruthy',
+          `Expected participants to be sorted by latest join time first on the People-Option page`
+        );
+
         break;
       }
 
       case 'Last Active': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Last Active');
-        expect(isTimeDescending(times.slice(1))).toBeTruthy();
+        await assert(
+          isTimeDescending(times.slice(1)),
+          'toBeTruthy',
+          `Expected participants to be sorted by most recent activity first on the People-Option page`
+        );
 
         break;
       }
 
       case 'Raised Hand First': {
         const times = await peopleOptionPage.getAllParticipantsTimes('Hand raised');
-        expect(isTimeAscending(times.slice(1))).toBeTruthy();
+        await assert(
+          isTimeAscending(times.slice(1)),
+          'toBeTruthy',
+          `Expected participants with raised hands to be sorted by the earliest hand raise time on the People-Option page`
+        );
+
         break;
       }
 
@@ -209,7 +281,11 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await expect(peopleOptionPage.sortByDropdown).not.toBeVisible();
+    await assert(
+      peopleOptionPage.sortByDropdown,
+      'not toBeVisible',
+      `Expected the order selection dropdown to be hidden on the People-Option page`
+    );
   }
 );
 
@@ -221,9 +297,20 @@ Then(
     peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const participantsName: string[] = await peopleOptionPage.getAllParticipantsNames();
     const participants = dataTable.raw().map(([participant]) => participant);
-    expect(participantsName.length).toBe(participants.length);
+    await assert(
+      participantsName.length,
+      'toBe',
+      participants.length,
+      `Expected ${participants.length} participant(s) to be displayed on the People-Option page, but found ${participantsName.length}`
+    );
+
     for (let i = 0; i < participants.length; i++) {
-      expect(participantsName[i]).toContain(participants[i]);
+      await assert(
+        participantsName[i],
+        'toContain',
+        participants[i],
+        `Expected participant at position ${i + 1} to be "${participants[i]}" on the People-Option page`
+      );
     }
   }
 );
@@ -286,7 +373,12 @@ Then(
     await meeting.meetingRoomPage.page.bringToFront();
     const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
     const renameErrorText = await peopleOptionPage.getRenameErrorText();
-    await assert(renameErrorText, 'toBe', errorMessage, `Expected ${renameErrorText} to be ${errorMessage}`);
+    await assert(
+      renameErrorText,
+      'toBe',
+      errorMessage,
+      `Expected the rename error message to be "${errorMessage}" on the People-Option page, but found "${renameErrorText}"`
+    );
   }
 );
 
@@ -296,7 +388,11 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
     const peopleOptionPage = new PeopleOptionPage({ page: meeting.meetingRoomPage.page });
-    await assert(peopleOptionPage.getParticipantByName(name), 'toBeVisible', `participant ${name} is not visible`);
+    await assert(
+      peopleOptionPage.getParticipantByName(name),
+      'toBeVisible',
+      `Expected participant "${name}" to be visible in the participants list on the People-Option page`
+    );
   }
 );
 
