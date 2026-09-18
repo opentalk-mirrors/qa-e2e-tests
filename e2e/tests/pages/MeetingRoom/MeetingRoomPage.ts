@@ -20,13 +20,6 @@ import { ParticipantTilePage } from './ParticipantTilePage';
 import { PeopleOptionPage } from './PeopleOptionPage';
 import { ViewOptionsPage } from './ViewOptionsPage';
 
-export interface BreakoutRoomsOptions {
-  randomDistribution?: boolean;
-  mode?: string;
-  participantsPerRoom?: string;
-  allowToFail?: boolean;
-}
-
 export class MeetingRoomPage {
   page: Page;
   context: BrowserContext;

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: OpenTalk GmbH <mail@opentalk.eu>
 //
 // SPDX-License-Identifier: EUPL-1.2
-import { readFileSync, readFile } from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 import { authUserFile } from '../authHelpers';
 import { config } from '../config';
@@ -55,45 +55,7 @@ export async function createMeetingAsset(
   }
 }
 
-export async function changeLanguage(lang: string) {
-  if (!/[a-z]{2}-[A-Z]{2}/.test(lang)) {
-    throw new Error('Not a valid Language');
-  }
-  let currentLangResponse: Response;
-  let currentLangResponseJSON: { language: string };
-  do {
-    const response = await makeRequest(`/v1/users/me`, 'PATCH', { language: lang });
-    if (response.status !== 200) {
-      throw new Error(`Could not change language. Response code ${response.status}`);
-    }
-    currentLangResponse = await makeRequest(`/v1/users/me`, 'GET');
-    if (currentLangResponse.status !== 200) {
-      throw new Error(`Could not read current language. Response code ${currentLangResponse.status}`);
-    }
-    currentLangResponseJSON = await currentLangResponse.json();
-  } while (currentLangResponseJSON.language != lang);
-}
-
-export function validateUserJson(authUserFilePath: string) {
-  try {
-    readFile(authUserFilePath, { encoding: 'utf8', flag: 'r' }, (error, data) => {
-      if (error) {
-        throw new Error(`${error.message}. \nCan not read file at ${authUserFilePath}`);
-      }
-      const dataArray = JSON.parse(data);
-      if (dataArray.origins[0].localStorage[3].value === undefined) {
-        throw new Error(`${authUserFilePath} does not contain "access_token"`);
-      }
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`${authUserFilePath} does not contain valid storage state. \n${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export async function createMeeting(payload: object): Promise<{
+async function createMeeting(payload: object): Promise<{
   meetingLink: string;
   roomId: string;
   meetingId: string;
@@ -181,39 +143,6 @@ export async function planMeetingAsModerator(
   const { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin } = await createMeeting(payload);
 
   return { meetingLink, roomId, telephoneDialInNumber, conferenceId, conferencePin };
-}
-
-async function getUser(searchQuery: string): Promise<User[]> {
-  const response = await makeRequest(`/v1/users/find?q=${searchQuery}`, 'GET');
-  if (response.status !== 200) {
-    throw new Error(`Could not find user. Response code ${response.status}`);
-  }
-  const data: User[] = await response.json();
-  return data;
-}
-
-async function getMeetings(userName: string): Promise<OpenTalkEvent[]> {
-  const users = await getUser(userName);
-  const userId = users[0].id;
-  const query = new URLSearchParams({ created_by: userId }).toString();
-  const response = await makeRequest(`/v1/events?${query}`, 'GET');
-  if (!response.ok) {
-    throw new Error(`Failed to get meetings. Response code:${response.status}`);
-  }
-  const meetings: OpenTalkEvent[] = await response.json();
-  return meetings;
-}
-
-export async function deleteMeetings(userName: string): Promise<void> {
-  const meetings = await getMeetings(userName);
-  for (const meeting of meetings) {
-    if (meeting.can_edit) {
-      const response = await makeRequest(`/v1/events/${meeting.id}`, 'DELETE');
-      if (response.status !== 204) {
-        throw new Error(`Error deleting meeting. Response code: ${response.status}`);
-      }
-    }
-  }
 }
 
 type MeetingTime = {
@@ -355,25 +284,6 @@ export class Api {
     return fetch(`${config.CONTROLLER_HOST}${params}`, requestOptions);
   }
 
-  async changeLanguage(lang: string) {
-    if (!/[a-z]{2}-[A-Z]{2}/.test(lang)) {
-      throw new Error('Not a valid Language');
-    }
-    let currentLangResponse: Response;
-    let currentLangResponseJSON: { language: string };
-    do {
-      const response = await this.makeRequest(`/v1/users/me`, 'PATCH', { language: lang });
-      if (response.status !== 200) {
-        console.error(`Could not change language. Response code ${response.status}`);
-      }
-      currentLangResponse = await this.makeRequest(`/v1/users/me`, 'GET');
-      if (currentLangResponse.status !== 200) {
-        console.error(`Could not read current language. Response code ${currentLangResponse.status}`);
-      }
-      currentLangResponseJSON = await currentLangResponse.json();
-    } while (currentLangResponseJSON.language != lang);
-  }
-
   async createMeeting(payload: object): Promise<{
     meetingLink: string;
     roomId: string;
@@ -505,18 +415,6 @@ export class Api {
     return data;
   }
 
-  async getMeetings(): Promise<OpenTalkEvent[]> {
-    const users = await this.getUser(this.userName);
-    const userId = users[0].id;
-    const query = new URLSearchParams({ created_by: userId }).toString();
-    const response = await this.makeRequest(`/v1/events?${query}`, 'GET');
-    if (!response.ok) {
-      throw new Error(`Failed to get meetings. Response code:${response.status}`);
-    }
-    const meetings: OpenTalkEvent[] = await response.json();
-    return meetings;
-  }
-
   async getMeetingByTitle(searchTitle: string): Promise<OpenTalkEvent> {
     const endpoint = `/v1/events`;
     const response = await this.makeRequest(endpoint, 'GET');
@@ -531,17 +429,5 @@ export class Api {
       return matched;
     }
     throw new Error(`No meeting found with title ${searchTitle}`);
-  }
-
-  async deleteMeetings(): Promise<void> {
-    const meetings = await this.getMeetings();
-    for (const meeting of meetings) {
-      if (meeting.can_edit) {
-        const response = await this.makeRequest(`/v1/events/${meeting.id}`, 'DELETE');
-        if (response.status !== 204) {
-          throw new Error(`Error deleting meeting. Response code: ${response.status}`);
-        }
-      }
-    }
   }
 }

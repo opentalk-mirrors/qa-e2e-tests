@@ -15,9 +15,7 @@ export class ViewOptionsPage {
   private readonly closeFullScreenButton: Locator;
   public activatedCameraFirstSortingOption: Locator;
   public moderatorsFirstSortingOption: Locator;
-  private readonly gridViewContainer: Locator;
   public readonly gridViewParticipantWindow: Locator;
-  private readonly speakerViewContainer: Locator;
   private viewAndSortingPopupMenuItems: Locator;
 
   public readonly selectors = {
@@ -49,9 +47,7 @@ export class ViewOptionsPage {
     this.moderatorsFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
       name: 'Role',
     });
-    this.gridViewContainer = this.page.getByTestId(this.selectors.gridViewContainer);
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
-    this.speakerViewContainer = this.page.getByTestId(this.selectors.speakerViewContainer);
 
     this.videoPreviewName = this.page
       .getByRole('complementary', { name: 'Tools' })
@@ -119,8 +115,8 @@ export class ViewOptionsPage {
 
   //functions (related to how participants are displayed)
   public async pinNthParticipantInSpeakerView(participantName: string): Promise<string> {
-    const participantsThumbs = await this.page.getByTestId(this.selectors.speakerViewParticipantsThumbsHolder);
-    const nthParticipantWindow = await participantsThumbs
+    const participantsThumbs = this.page.getByTestId(this.selectors.speakerViewParticipantsThumbsHolder);
+    const nthParticipantWindow = participantsThumbs
       .getByTestId(this.selectors.participantWindow)
       .filter({ hasText: participantName });
     // after participant gets pinned, it gets to top and order is changed, so storing the participant to be pinned before pinning
@@ -130,14 +126,14 @@ export class ViewOptionsPage {
   }
 
   public async getPinnedParticipantNameInSpeakerView(): Promise<string> {
-    const speakerWindow = await this.page
+    const speakerWindow = this.page
       .getByTestId(this.selectors.speakerWindow)
       .getByTestId(this.selectors.participantWindow);
     return await this.getNameTileText(speakerWindow);
   }
 
   public async getFirstParticipantNameInSpeakerView(): Promise<string> {
-    const participantWindow = await this.page
+    const participantWindow = this.page
       .getByTestId(this.selectors.speakerViewContainer)
       .getByTestId(this.selectors.participantWindow)
       .first();
@@ -145,7 +141,7 @@ export class ViewOptionsPage {
   }
 
   public async getThumbsNthParticipantNameInSpeakerView(nth: number): Promise<string> {
-    const participantWindow = await this.page
+    const participantWindow = this.page
       .getByTestId(this.selectors.speakerViewParticipantsThumbsHolder)
       .getByTestId(this.selectors.participantWindow)
       .nth(nth - 1); // minus 1 because nth(0) is the first element
@@ -153,23 +149,17 @@ export class ViewOptionsPage {
   }
 
   public async getNthParticipantNameInGridView(nth: number): Promise<string> {
-    const participantWindow = await this.page
-      //.getByTestId(this.selectors.gridViewContainer) // current version on CI doesn't have 'grid-container' test ID
-      .getByTestId(this.selectors.participantWindow)
-      .nth(nth - 1); // minus 1 because nth(0) is the first element
+    const participantWindow = this.page.getByTestId(this.selectors.participantWindow).nth(nth - 1); // minus 1 because nth(0) is the first element
     return await this.getNameTileText(participantWindow);
   }
 
   public async getNumberOfParticipantWindowsInGridView(): Promise<number> {
-    const participantWindows = await this.page
-      //.getByTestId(this.selectors.gridViewContainer) // current version on CI doesn't have 'grid-container' test ID
-      .getByTestId(this.selectors.participantWindow)
-      .all();
+    const participantWindows = await this.page.getByTestId(this.selectors.participantWindow).all();
     return participantWindows.length;
   }
 
   public async getNameTileText(participantWindow: Locator): Promise<string> {
-    const nameTile = await participantWindow.getByTestId(this.selectors.participantName);
+    const nameTile = participantWindow.getByTestId(this.selectors.participantName);
     let nameTileText = '';
     if (await nameTile.isVisible()) {
       nameTileText = await nameTile.innerText();
