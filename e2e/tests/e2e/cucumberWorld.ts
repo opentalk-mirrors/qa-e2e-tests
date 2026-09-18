@@ -15,17 +15,11 @@ import path from 'path';
 import { Api } from '../helper/Api';
 import { deleteUser } from '../helper/keycloak';
 import { MeetingRoomPage } from '../pages/MeetingRoom/MeetingRoomPage';
-import { BreakoutRoomsPage } from '../pages/MeetingRoom/ModeratorTools/BreakoutRoomsPage';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 interface Meeting {
   meetingRoomPage: MeetingRoomPage;
-  moderatorTools?: {
-    breakoutRooms?: {
-      breakoutRoomsPage?: BreakoutRoomsPage;
-    };
-  };
 
   meetingLink: string;
   meetingId: string;

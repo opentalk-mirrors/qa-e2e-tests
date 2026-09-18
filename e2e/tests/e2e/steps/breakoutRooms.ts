@@ -6,6 +6,7 @@ import { DataTable, Given, Then, When } from '@cucumber/cucumber';
 import { config } from '../../config';
 import { assert } from '../../helper/assertion';
 import { validateDataTableHeaders } from '../../helper/helper';
+import { BreakoutRoomsPage } from '../../pages/MeetingRoom/ModeratorTools/BreakoutRoomsPage';
 import { ModeratorToolsPage } from '../../pages/MeetingRoom/ModeratorToolsPage';
 import { NotificationPage } from '../../pages/NotificationPage';
 import { CustomWorld } from '../cucumberWorld';
@@ -23,8 +24,7 @@ When('{string} opens the Breakout Rooms moderator tool', async function (this: C
 async function openBreakoutRoomsModeratorTool(world: CustomWorld, user: string) {
   const meeting = world.getStartedMeeting(user).meeting;
   await meeting.meetingRoomPage.page.bringToFront();
-  const breakoutRoomsPage = await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
-  meeting.moderatorTools = { breakoutRooms: { breakoutRoomsPage } };
+  await meeting.meetingRoomPage.startBreakoutRoomsModeratorTool();
 }
 
 When(
@@ -148,7 +148,7 @@ When(
   async function (this: CustomWorld, user: string, selectedOption: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     await breakoutRoomsPage?.setSelectionMode(selectedOption);
   }
 );
@@ -158,7 +158,7 @@ When(
   async function (this: CustomWorld, user: string, action: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     await meeting.meetingRoomPage.page.bringToFront();
-    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     await breakoutRoomsPage?.setRandomDistribution(action === 'enables');
   }
 );
@@ -216,8 +216,8 @@ Then(
 Then(
   'the "By number of" setting in the Breakout Rooms moderator tool for {string} should have these options:',
   async function (this: CustomWorld, moderator: string, expectedOptionsTable: DataTable) {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     const expectedOptions = expectedOptionsTable.raw().map(([value]) => value);
     const selectionModeOptions = await breakoutRoomsPage?.getSelectionModeOptions();
     await assert(
@@ -236,7 +236,7 @@ Then(
     validateDataTableHeaders(expectedSettingsTable, expectedHeaders);
     const expectedSettings = expectedSettingsTable.hashes();
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const breakoutRoomsPage = meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     for (let i = 0; i < expectedSettings.length; i++) {
       switch (expectedSettings[i].setting) {
         case 'Duration': {
@@ -299,8 +299,8 @@ Then(
 Then(
   'a {string} button should be displayed in the Breakout Rooms moderator tool for {string}',
   async function (this: CustomWorld, buttonName: string, moderator: string) {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     if (!breakoutRoomsPage) {
       throw new Error('Breakout rooms moderator tool has not been opened yet');
     }
@@ -327,8 +327,8 @@ Then(
 Then(
   /^(\d+) Breakout Rooms should have been created in the meeting room of "([^"]*)"$/,
   async function (this: CustomWorld, expectedNoOfRooms: number, moderator: string): Promise<void> {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     const createdRooms = await breakoutRoomsPage?.countCreatedRooms();
     await assert(
       createdRooms,
@@ -342,15 +342,16 @@ Then(
 When(
   /^"([^"]*)" waits for the participants to be (?:allocated|moved) to the (?:Main Room|Breakout Rooms)$/,
   async function (this: CustomWorld, moderator: string) {
-    const page = this.getUser(moderator).page;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const page = meeting.meetingRoomPage.page;
     await page.waitForTimeout(breakoutRoomAlocationTimeoutInS * 1000);
   }
 );
 Then(
   /^(?:these|this) error messages? should be shown to "([^"]*)" in the Breakout Rooms moderator tool$/,
   async function (this: CustomWorld, moderator: string, expectedErrors: DataTable): Promise<void> {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     if (breakoutRoomsPage === undefined) {
       throw new Error(`Breakout Rooms moderator tool is not open`);
     }
@@ -370,8 +371,8 @@ Then(
 Then(
   /^these rooms should be listed as to be created in the Breakout Rooms moderator tool of "([^"]*)"$/,
   async function (this: CustomWorld, moderator: string, expectedRoomsTable: DataTable): Promise<void> {
-    const breakoutRoomsPage =
-      this.getStartedMeeting(moderator).meeting.moderatorTools?.breakoutRooms?.breakoutRoomsPage;
+    const meeting = this.getStartedMeeting(moderator).meeting;
+    const breakoutRoomsPage = new BreakoutRoomsPage({ page: meeting.meetingRoomPage.page });
     if (breakoutRoomsPage === undefined) {
       throw new Error(`Breakout Rooms moderator tool is not open`);
     }
