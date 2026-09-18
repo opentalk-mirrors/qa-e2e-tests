@@ -24,7 +24,7 @@ export class GeneralPage {
     this.languageHeading = this.page.getByRole('heading', { name: /^(Sprache|Language)$/ });
     this.languageDropdownMenu = {
       selectedField: this.page.getByRole('combobox', {
-        name: /^(Language Deutsch|Language English|Sprache Deutsch|Sprache English)$/,
+        name: /^(Language|Sprache)$/,
       }),
       optionsDropdown: this.page.getByRole('listbox', { name: /^(Sprache|Language)$/ }),
       options: {
