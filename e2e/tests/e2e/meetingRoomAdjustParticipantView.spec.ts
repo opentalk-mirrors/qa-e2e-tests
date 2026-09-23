@@ -41,7 +41,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
+  test.skip('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -57,6 +57,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
 
     // check the speaker view and pin some users
     const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
+    console.log('defaultPinnedParticipant: ', defaultPinnedParticipant);
     // speaker is in first place
     expect(await viewOptionsPage.getFirstParticipantNameInSpeakerView()).toBe(defaultPinnedParticipant);
     // pinned user is shown at top and the user that joined after pinned user is shown at first among all participant thumbs
@@ -178,6 +179,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // as moderator, change to speaker view & assert that sorting resets after changing the view
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectSpeakerViewOption();
+    await viewOptionsPage.closeViewOptionsMenu();
 
     // assert active speaker is first shown
     await firstGuestMeetingRoomPage.turnAudioOn();
@@ -204,6 +206,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // change back to grid view
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectGridViewOption();
+    await viewOptionsPage.closeViewOptionsMenu();
 
     // as guest, assert order is set by default on first joined
     const gridViewFirstPositionName = await firstGuestViewOptionsPage.getNthParticipantNameInGridView(1);

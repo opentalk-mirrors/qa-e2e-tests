@@ -13,6 +13,7 @@ export class ViewOptionsPage {
   public readonly fullScreenViewOption: Locator;
   public readonly fullScreenView: Locator;
   private readonly closeFullScreenButton: Locator;
+  public activitySortingOption: Locator;
   public joinTimeFirstSortingOption: Locator;
   public activatedCameraFirstSortingOption: Locator;
   public moderatorsFirstSortingOption: Locator;
@@ -47,13 +48,16 @@ export class ViewOptionsPage {
     this.fullScreenViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Fullscreen' });
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
-    this.joinTimeFirstSortingOption = this.viewGridAndSortingPopup.getByRole('option', {
+    this.activitySortingOption = this.page.getByRole('option', {
+      name: 'Activity',
+    });
+    this.joinTimeFirstSortingOption = this.page.getByRole('option', {
       name: 'Join time',
     });
-    this.activatedCameraFirstSortingOption = this.viewGridAndSortingPopup.getByRole('option', {
+    this.activatedCameraFirstSortingOption = this.page.getByRole('option', {
       name: 'Camera status',
     });
-    this.moderatorsFirstSortingOption = this.sortingDropdown.getByRole('option', {
+    this.moderatorsFirstSortingOption = this.page.getByRole('option', {
       name: 'Role',
     });
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
@@ -113,17 +117,26 @@ export class ViewOptionsPage {
     await this.fullScreenView.isVisible();
   }
 
+  public async selectActivitySortingOption(): Promise<void> {
+    await this.sortingDropdown.click();
+    await this.activitySortingOption.waitFor();
+    await this.activitySortingOption.click();
+  }
+
   public async selectActivatedCameraFirstSortingOption(): Promise<void> {
+    await this.sortingDropdown.click();
     await this.activatedCameraFirstSortingOption.waitFor();
     await this.activatedCameraFirstSortingOption.click();
   }
 
   public async selectModeratorsFirstSortingOption(): Promise<void> {
+    await this.sortingDropdown.click();
     await this.moderatorsFirstSortingOption.waitFor();
     await this.moderatorsFirstSortingOption.click();
   }
 
   public async selectJoinTimeFirstSortingOption(): Promise<void> {
+    await this.sortingDropdown.click();
     await this.joinTimeFirstSortingOption.waitFor();
     await this.joinTimeFirstSortingOption.click();
   }
@@ -217,5 +230,9 @@ export class ViewOptionsPage {
         return window.getComputedStyle(el).getPropertyValue('width'); // only evaluating width, same could be done with height
       });
     return Math.floor(+gridViewParticipantWindowSize);
+  }
+
+  public async closeViewOptionsMenu(): Promise<void> {
+    await this.page.keyboard.press('Escape');
   }
 }
