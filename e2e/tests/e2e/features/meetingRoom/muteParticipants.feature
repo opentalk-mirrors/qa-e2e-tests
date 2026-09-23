@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 @skip-on-webkit
+# skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/93
 Feature: Mute Participants
   As a moderator
   I want to be able to mute participants

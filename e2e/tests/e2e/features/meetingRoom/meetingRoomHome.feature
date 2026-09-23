@@ -231,7 +231,8 @@ Feature: Meeting Room Home
       | direct       |
       | private      |
 
-  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  @skip-on-webkit
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/92
   Scenario: Moderator can remove participants and accept them back into the meeting
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
@@ -255,7 +256,8 @@ Feature: Meeting Room Home
       """
     And "guest2" should be on the Meeting-Room-Page of the meeting named "Ad-hoc Meeting" created by "Alice"
 
-  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  @skip-on-webkit
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/92
   Scenario: Moderator can move participants to the waiting room and accept them back into the meeting
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"
@@ -317,7 +319,8 @@ Feature: Meeting Room Home
       """
     And "guest1" should not be allowed to share screen in the meeting room of "Alice"
 
-  @skip-on-webkit # https://git.opentalk.dev/opentalk/qa/reports/-/issues/418#note_438963
+  @skip-on-webkit
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/92
   Scenario: Any user can mark participants as whisper partner in Participants list of People tab in the Meeting Room
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/122
     Given 2 guests have joined the meeting of "Alice"

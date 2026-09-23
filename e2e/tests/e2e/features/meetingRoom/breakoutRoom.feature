@@ -114,7 +114,7 @@ Feature: Meeting Room Breakout Room
     Then the duration field in the open moderator tool for "Alice" should be set to "9 min"
 
   @skip-on-webkit
-  # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
   Scenario Outline: Create Breakout Rooms with random distribution
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/248
     # https://git.opentalk.dev/opentalk/qa/reports/-/work_items/249
@@ -142,7 +142,7 @@ Feature: Meeting Room Breakout Room
       | Participants | 4              | 1            |
 
   @skip-on-webkit
-  # skipped because of https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/frontend/web/web-app/-/issues/3174
   Scenario: Moderator can set participants per room
     # https://git.opentalk.dev/opentalk/qa/todo/-/work_items/563
     Given 7 guests have joined the meeting of "Alice"
