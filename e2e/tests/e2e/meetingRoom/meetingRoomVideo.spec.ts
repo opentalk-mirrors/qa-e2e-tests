@@ -28,6 +28,7 @@ test.describe('Test if video is working', () => {
   });
 
   test('video of other participant is being played', async ({ browserName }) => {
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
     test.skip(browserName === 'webkit');
     await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
@@ -37,6 +38,7 @@ test.describe('Test if video is working', () => {
   });
 
   test('local video is being played', async ({ browserName }) => {
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
     test.skip(browserName === 'webkit');
     await guestMeetingRoomPage.page.bringToFront();
     await guestMeetingRoomPage.turnCameraOn();
@@ -45,6 +47,7 @@ test.describe('Test if video is working', () => {
   });
 
   test('check video content', async ({ browserName }) => {
+    // skipped in webkit and firefox due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/96
     test.skip(browserName === 'webkit');
     test.skip(browserName === 'firefox');
     await meetingRoomPage.page.bringToFront();

@@ -53,6 +53,7 @@ test.describe('Meeting Room_Reset raised hands selected button', () => {
     // TODO: Need to add pre-condition to join meeting as 1 invited participants, once invited user scenario is implemented
   });
 
+  // skipped due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/95
   test.skip('TC_001_Meeting Room_As Moderator_Reset raised hands_All button, Selected button', async ({ page }) => {
     await expect(meetingRoomPage.toolBar.handLowerButton).toBeEnabled();
     expect(await meetingRoomPage.isHandRaised()).toBeTruthy();

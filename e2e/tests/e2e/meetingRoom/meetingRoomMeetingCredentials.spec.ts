@@ -30,7 +30,8 @@ test.describe('Meeting Room_Meeting credentials for all in conference', () => {
     await deleteUser(userId);
   });
   test('TC_001_MeetingRoom_Meeting credentials summary', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit'); // clipboard access is not available in webKit headless mode
+    // Skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
+    test.skip(browserName === 'webkit');
     const { meetingRoomPage, phoneDialIn, telephoneDialInNumber, conferenceId, conferencePin, meetingLink } =
       await planNewMeetingAndStartAsModerator(page, meetingTitle, meetingPassword, browserName);
     await expect(meetingRoomPage.meetingInfoButton).toBeVisible();

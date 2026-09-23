@@ -25,7 +25,8 @@ test.describe('Meeting room URL', async () => {
   });
 
   test('TC_001_URL route in Dashboard + Meeting Room', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit'); // Copying to clipboard does not work in webkit
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
+    test.skip(browserName === 'webkit');
     // Set fixed time in the browser/test environment to 10:00 AM preventing nightly failures
     const today = new Date().toISOString().slice(0, 10);
     await page.clock.setFixedTime(new Date(`${today}T10:00:00`));

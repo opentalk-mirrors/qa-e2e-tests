@@ -69,7 +69,7 @@ test.describe('Accessibility_General', () => {
   });
 
   test('TC_002_Lobby', async ({ page, browserName }) => {
-    // Camera and Microphone permissions are not being granted in Safari in CI
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
     // Thus they cannot be accessed by keyboard "Tab", see https://github.com/microsoft/playwright/issues/20563
     test.skip(browserName === 'webkit');
 
@@ -114,7 +114,7 @@ test.describe('Accessibility_General', () => {
   });
 
   test('TC_003_Meeting_Room', async ({ page, browserName }) => {
-    // Camera and Microphone permissions are not being granted in Safari in CI
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
     // Thus they cannot be accessed by keyboard "Tab", see https://github.com/microsoft/playwright/issues/20563
     test.skip(browserName === 'webkit');
 

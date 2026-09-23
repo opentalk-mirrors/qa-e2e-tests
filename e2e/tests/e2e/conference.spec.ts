@@ -30,6 +30,7 @@ test.describe('Conference', () => {
     });
 
     test('show stable connection message with a good connection', async ({ browserName }) => {
+      // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
       test.skip(browserName === 'webkit');
 
       await lobbyRoomPage.runSpeedTest();
@@ -43,7 +44,7 @@ test.describe('Conference', () => {
     });
 
     test('show slow connection message with a slow connection', async ({ browserName }) => {
-      // throttling just works for chrome, so we need to skip the other browser
+      // skipped in webkit and firefox due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/96
       test.skip(browserName === 'webkit' || browserName === 'firefox');
 
       // throttle network for chrome
