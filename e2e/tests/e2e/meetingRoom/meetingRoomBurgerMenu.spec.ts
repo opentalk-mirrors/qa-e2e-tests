@@ -57,7 +57,8 @@ test.describe('Meeting Room_Burger menu', () => {
   });
 
   test('TC_003_Keyboard Shortcuts', async ({ browserName }) => {
-    test.skip(browserName === 'webkit'); // Camera and Microphone permissions are not being granted in Safari in CI
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
+    test.skip(browserName === 'webkit');
 
     // The test has been temporarily commented out due to:
     // https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/142

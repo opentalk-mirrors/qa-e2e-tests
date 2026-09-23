@@ -14,7 +14,7 @@ const NUMBER_OF_GUESTS = 5;
 const SMALL_NUMBER_OF_GUESTS = 2;
 
 let viewOptionsPage: ViewOptionsPage;
-
+// skipped due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/94
 test.describe.skip('MeetingRoom - adjust participant view', () => {
   let userId = '';
   test.beforeEach(async ({ page, context }, testInfo) => {
@@ -135,8 +135,8 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
   });
 
   test('TC_005_VideoRoom_ParticipantViewSettings_List_Sorting', async ({ page, browser, browserName }) => {
+    // skipped in webkit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/94
     test.skip(browserName === 'webkit');
-    // in webkit one needs to give permission to turn camera on therefore skip webkit until solution for this is found
 
     const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     const firstJoinedParticipantName = await meetingRoomPage.getUserName();
