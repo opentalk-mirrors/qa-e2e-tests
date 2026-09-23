@@ -14,10 +14,20 @@ Start all needed containers:
 ```
 docker compose up -d
 ```
+on Mac:
+```
+DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up -d
+```
 
 > [!NOTE]
 > If you are using `ufw` as firewall add this rule to it:
 > `sudo ufw allow in from 172.0.0.0/8 to 172.0.0.0/8`
+
+> [!NOTE]
+> **Mac Docker Desktop** has host networking disabled by DEFAULT, but it is needed for running the docker compose setup.
+> To enable it, you have to go into the network settings and enable the feature.  
+> ![docker-desktop-host-networking.png](docs/docker-desktop-host-networking.png)
+
 
 You can access the webapp via https://localhost:8443.
 
