@@ -70,3 +70,79 @@ Feature: Meeting Room Talking stick
     Then the order selection dropdown should not be displayed in the Talking Stick moderator tool for "Alice"
     And the order selection field with the "Name (A - Z)" button should be displayed in the Talking Stick moderator tool for "Alice"
     And the participants list should be displayed in "Ascending" order in the Talking Stick moderator tool for "Alice"
+
+  @skip-on-webkit # microphone permissions are not granted in Safari
+  Scenario: Moderator can manage the talking stick session in the meeting room
+    # https://git.opentalk.dev/opentalk/qa/todo/-/work_items/534
+    When "Alice" starts the talking stick in the meeting room of "Alice"
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respective users:
+      | user   | text                                                                |
+      | Alice  | The Talking Stick is started. Participant list equals speaker list. |
+      | guest1 | The Talking Stick is started. Participant list equals speaker list. |
+      | guest2 | The Talking Stick is started. Participant list equals speaker list. |
+      | guest3 | The Talking Stick is started. Participant list equals speaker list. |
+    And "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      It's your turn now. Please turn on the microphone!
+      """
+    And "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      You are next.
+      """
+    And "Alice" should be the active speaker in the meeting room of "Alice"
+    When "Alice" unmutes for her talking stick turn in the meeting room of "Alice"
+    Then "Alice" should be notified with the following text in the meeting room of "Alice":
+      """
+      You are unmuted. When you're done, please pass the talking stick to the next speaker.
+      """
+    And in the meeting of "Alice" this participant should have the following audio status:
+      | participant | status   |
+      | Alice       | enabled  |
+    # audible to others in the meeting test should be done manually
+    When "Alice" passes the talking stick to the next speaker in the meeting room of "Alice"
+    Then in the meeting of "Alice" this participant should have the following audio status:
+      | participant | status   |
+      | Alice       | disabled |
+    And "guest1" should be notified with the following text in the meeting room of "Alice":
+      """
+      It's your turn now. Please turn on the microphone!
+      """
+    And "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      You are next.
+      """
+    And "guest1" should be the active speaker in the meeting room of "Alice"
+    When "guest1" unmutes for his talking stick turn in the meeting room of "Alice"
+    Then in the meeting of "Alice" this participant should have the following audio status:
+      | participant | status  |
+      | guest1      | enabled |
+    # audible to others in the meeting test should be done manually
+    When "Alice" skips the current speaker in the meeting room of "Alice"
+    Then in the meeting of "Alice" this participant should have the following audio status:
+      | participant | status   |
+      | guest1      | disabled |
+    And "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      It's your turn now. Please turn on the microphone!
+      """
+    And "guest3" should be notified with the following text in the meeting room of "Alice":
+      """
+      You are next.
+      """
+    And "guest2" should be the active speaker in the meeting room of "Alice"
+    When "guest2" unmutes for his talking stick turn in the meeting room of "Alice"
+    Then "guest2" should be notified with the following text in the meeting room of "Alice":
+      """
+      You are unmuted. When you're done, please pass the talking stick to the next speaker.
+      """
+    And in the meeting of "Alice" this participant should have the following audio status:
+      | participant | status   |
+      | guest2      | enabled |
+    # audible to others in the meeting test should be done manually
+    When "Alice" stops the talking stick in the meeting room of "Alice"
+    Then in the meeting of "Alice" these alert notifications should be displayed for the respective users:
+      | user   | text                           |
+      | Alice  | The Talking Stick is finished. |
+      | guest1 | The Talking Stick is finished. |
+      | guest2 | The Talking Stick is finished. |
+      | guest3 | The Talking Stick is finished. |

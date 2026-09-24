@@ -165,3 +165,67 @@ Then(
     );
   }
 );
+
+When(
+  '{string} starts the talking stick in the meeting room of {string}',
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = await meeting.participantMeetingRoomPages[user].startTalkingStickModeratorTool();
+    await talkingStickPage.startTalkingStick();
+  }
+);
+
+When(
+  /^"([^"]*)" unmutes for (?:her|his) talking stick turn in the meeting room of "([^"]*)"$/,
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = new TalkingStickPage(meeting.participantMeetingRoomPages[user]);
+    await talkingStickPage.unmute();
+  }
+);
+
+Then(
+  /^"([^"]*)" should be the active speaker in the meeting room of "([^"]*)"$/,
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = new TalkingStickPage(meeting.participantMeetingRoomPages[user]);
+    await assert(
+      await talkingStickPage.isActiveSpeaker(user),
+      'toBeTruthy',
+      `Expected "${user}" to be the active speaker.`
+    );
+  }
+);
+
+When(
+  '{string} passes the talking stick to the next speaker in the meeting room of {string}',
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = new TalkingStickPage(meeting.participantMeetingRoomPages[user]);
+    await talkingStickPage.passToNextSpeaker();
+  }
+);
+
+When(
+  '{string} skips the current speaker in the meeting room of {string}',
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = new TalkingStickPage(meeting.participantMeetingRoomPages[user]);
+    await talkingStickPage.skipSpeaker();
+  }
+);
+
+When(
+  '{string} stops the talking stick in the meeting room of {string}',
+  async function (this: CustomWorld, user: string, moderator: string) {
+    const meeting = this.getStartedMeeting(moderator);
+    await meeting.participantMeetingRoomPages[user].page.bringToFront();
+    const talkingStickPage = new TalkingStickPage(meeting.participantMeetingRoomPages[user]);
+    await talkingStickPage.stopTalkingStick();
+  }
+);

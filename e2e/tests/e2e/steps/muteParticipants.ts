@@ -86,7 +86,7 @@ Then(
 );
 
 Then(
-  'in the meeting of {string} these participants should have the following audio status:',
+  /^in the meeting of "([^"]*)" (?:these|this) participants? should have the following audio status:$/,
   async function (this: CustomWorld, moderator: string, statusesTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
     const expectedHeaders = ['participant', 'status'];
