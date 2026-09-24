@@ -24,7 +24,6 @@ export class ViewOptionsPage {
   private readonly sortingDropdown: Locator;
 
   public readonly selectors = {
-    gridViewContainer: 'grid-container',
     speakerViewContainer: 'SpeakerView-Container',
     speakerViewParticipantsThumbsHolder: 'ThumbsHolder',
     speakerWindow: 'SpeakerWindow1',
@@ -166,9 +165,7 @@ export class ViewOptionsPage {
   }
 
   public async getPinnedParticipantNameInSpeakerView(): Promise<string> {
-    const speakerWindow = this.page
-      .getByTestId(this.selectors.speakerWindow)
-      .getByTestId(this.selectors.participantWindow);
+    const speakerWindow = this.page.getByTestId(this.selectors.participantWindow).first();
     return await this.getNameTileText(speakerWindow);
   }
 
