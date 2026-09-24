@@ -4,7 +4,6 @@
 import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../authHelpers';
-import { config } from '../config';
 import { deleteUser } from '../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../helper/meetingHelpers';
 import { joinMeetingRoomWithNGuests } from '../helper/playwrightMeetingHelpers';
@@ -15,7 +14,7 @@ const SMALL_NUMBER_OF_GUESTS = 2;
 
 let viewOptionsPage: ViewOptionsPage;
 // skipped due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/94
-test.describe.skip('MeetingRoom - adjust participant view', () => {
+test.describe('MeetingRoom - adjust participant view', () => {
   let userId = '';
   test.beforeEach(async ({ page, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
@@ -41,7 +40,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     }
   });
 
-  test.skip('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
+  test('TC_002_VideoRoom_ParticipantViewSettings_List_SpeakerView', async ({ page, browser, browserName }) => {
     const { meetingRoomPage, meetingLink } = await startAdhocMeetingAsModerator(page, browserName);
     viewOptionsPage = new ViewOptionsPage({ page: meetingRoomPage.page });
 
@@ -90,9 +89,9 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // assert that nothing else is shown except for the meeting room options, plus they should fade out after 3 sec
     // click mouse somewhere to trigger toolbar to become visible again (toolbar might already have faded out bc time spent on assertions above)
     await meetingRoomPage.page.mouse.click(100, 100);
-    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT); // wait for a little moment because toolbar fades in
+    await meetingRoomPage.waitForToolBarPanelToBeVisible();
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeVisible();
-    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT);
+    await meetingRoomPage.waitForToolBarPanelToBeHidden();
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden();
 
     // exit full screen mode
