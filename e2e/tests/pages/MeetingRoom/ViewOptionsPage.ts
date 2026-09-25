@@ -22,6 +22,7 @@ export class ViewOptionsPage {
   private readonly viewOptions: Locator;
   private readonly gridSizeOptions: Locator;
   private readonly sortingDropdown: Locator;
+  private readonly closePopupDialogButton: Locator;
 
   public readonly selectors = {
     speakerViewContainer: 'SpeakerView-Container',
@@ -47,6 +48,7 @@ export class ViewOptionsPage {
     this.fullScreenViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Fullscreen' });
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
+    this.closePopupDialogButton = this.viewGridAndSortingPopup.getByRole('button', { name: 'Close dialog' });
     this.activitySortingOption = this.page.getByRole('option', {
       name: 'Activity',
     });
@@ -174,7 +176,6 @@ export class ViewOptionsPage {
       .getByTestId(this.selectors.speakerViewContainer)
       .getByTestId(this.selectors.participantWindow)
       .first();
-    console.log('participantWindowwwwwwwwwwwwwwwwwwwwwwww: ', participantWindow);
     return await this.getNameTileText(participantWindow);
   }
 
@@ -202,7 +203,6 @@ export class ViewOptionsPage {
     if (await nameTile.isVisible()) {
       nameTileText = await nameTile.innerText();
     }
-    console.log('nameTileTexttttttttttttttttttt: ', nameTileText);
     return nameTileText;
   }
 
@@ -232,6 +232,7 @@ export class ViewOptionsPage {
   }
 
   public async closeViewOptionsMenu(): Promise<void> {
-    await this.page.keyboard.press('Escape');
+    await this.closePopupDialogButton.click();
+    await this.closePopupDialogButton.waitFor({ state: 'detached' });
   }
 }

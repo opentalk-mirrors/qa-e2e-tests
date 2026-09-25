@@ -54,10 +54,10 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // choose speaker view
     await viewOptionsPage.selectSpeakerViewOption();
+    await viewOptionsPage.closeViewOptionsMenu();
 
     // check the speaker view and pin some users
     const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
-    console.log('defaultPinnedParticipant: ', defaultPinnedParticipant);
     // speaker is in first place
     expect(await viewOptionsPage.getFirstParticipantNameInSpeakerView()).toBe(defaultPinnedParticipant);
     // pinned user is shown at top and the user that joined after pinned user is shown at first among all participant thumbs
@@ -158,6 +158,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     await meetingRoomPage.page.bringToFront();
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectActivatedCameraFirstSortingOption();
+    await viewOptionsPage.closeViewOptionsMenu();
 
     // assert that guest user with the activated camera is on the first position on the left side
     expect(await viewOptionsPage.isGridViewNthParticipantCameraOn(1)).toBeTruthy();
