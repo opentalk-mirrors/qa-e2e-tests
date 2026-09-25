@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 @skip-on-webkit
+# skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/93
 Feature: Meeting room URL
   As a user
   I want every link to the meeting room to be correct

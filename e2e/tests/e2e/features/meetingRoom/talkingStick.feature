@@ -71,7 +71,8 @@ Feature: Meeting Room Talking stick
     And the order selection field with the "Name (A - Z)" button should be displayed in the Talking Stick moderator tool for "Alice"
     And the participants list should be displayed in "Ascending" order in the Talking Stick moderator tool for "Alice"
 
-  @skip-on-webkit # microphone permissions are not granted in Safari
+  @skip-on-webkit
+  # skipped in WebKit due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/97
   Scenario: Moderator can manage the talking stick session in the meeting room
     # https://git.opentalk.dev/opentalk/qa/todo/-/work_items/534
     When "Alice" starts the talking stick in the meeting room of "Alice"
