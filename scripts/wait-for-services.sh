@@ -57,6 +57,8 @@ do
   sleep 1;
 done
 
+counter=0;
+
 while [ "$(curl "$CONTROLLER_HOST"/v1/auth/login -k | grep 'oidc' -q; echo $?)" -ne 0 ];
 do
   (( counter++ )) || true
