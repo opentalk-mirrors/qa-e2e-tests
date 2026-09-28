@@ -23,6 +23,11 @@ if [ -z "$CONTROLLER_HOST" ]; then
   exit 1
 fi
 
+if [ -z "$LIVEKIT_HOST" ]; then
+  echo "Error: LIVEKIT_HOST variable is not set."
+  exit 1
+fi
+
 WEBAPP_BASE=$INSTANCE_URL
 
 if [ -z "$1" ]; then
@@ -31,39 +36,25 @@ else
   TIMEOUT=$1
 fi
 
-counter=0;
+waitForServices() {
+  local service_url=$1
+  local service_name=$2
+  local pattern=$3
+  local counter=0
 
-while [ "$(curl "$OIDC_ISSUER"/.well-known/openid-configuration -k | grep 'OPENTALK' -q; echo $?)" -ne 0 ];
-do
-  (( counter++ )) || true
-  if [ $counter -gt "$TIMEOUT" ]; then
-    echo "timeout waiting for keycloak to start"
-    exit 1
-  fi;
-  echo "waiting for keycloak to start"
-  sleep 1;
-done
+  while [ "$(curl -k "${service_url}" | grep "${pattern}" -q; echo $?)" -ne 0 ];
+  do
+    (( counter++ )) || true
+    if [ $counter -gt "$TIMEOUT" ]; then
+      echo "timeout waiting for $service_name to start"
+      exit 1
+    fi;
+    echo "waiting for $service_name to start"
+    sleep 1;
+  done
+}
 
-counter=0;
-
-while [ "$(curl "$WEBAPP_BASE"/manifest.json -k | grep '"short_name": "OpenTalk"' -q; echo $?)" -ne 0 ];
-do
-  (( counter++ )) || true
-  if [ $counter -gt "$TIMEOUT" ]; then
-    echo "timeout waiting for webapp to start"
-    exit 1
-  fi;
-  echo "waiting for webapp to start"
-  sleep 1;
-done
-
-while [ "$(curl "$CONTROLLER_HOST"/v1/auth/login -k | grep 'oidc' -q; echo $?)" -ne 0 ];
-do
-  (( counter++ )) || true
-  if [ $counter -gt "$TIMEOUT" ]; then
-    echo "timeout waiting for controller to start"
-    exit 1
-  fi;
-  echo "waiting for controller to start"
-  sleep 1;
-done
+waitForServices "${OIDC_ISSUER}/.well-known/openid-configuration" keycloak OPENTALK
+waitForServices "${WEBAPP_BASE}/manifest.json" webapp '"short_name": "OpenTalk"'
+waitForServices "${CONTROLLER_HOST}/v1/auth/login" controller oidc
+waitForServices "${LIVEKIT_HOST}" livekit OK

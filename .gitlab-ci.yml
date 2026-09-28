@@ -393,6 +393,7 @@ e2e-playwright-tests:
     HEADLESS: true
     OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
     CONTROLLER_HOST: https://controller.opentalk.test
+    LIVEKIT_HOST: https://livekit.opentalk.test
   script:
     - |
       if [ "$RUN_ONLY_SMOKE_TESTS" == "true" ]; then
@@ -430,6 +431,7 @@ e2e-gherkin-tests:
     HEADLESS: true
     OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
     CONTROLLER_HOST: https://controller.opentalk.test
+    LIVEKIT_HOST: https://livekit.opentalk.test
   before_script:
     - *setup-pnpm
     - pnpm install
