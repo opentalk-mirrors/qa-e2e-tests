@@ -29,7 +29,6 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // when opening grid view options besides the meeting room name
     await viewOptionsPage.displayViewOptionsMenu();
     await expect(viewOptionsPage.viewGridAndSortingPopup).toBeVisible();
-    await expect(viewOptionsPage.viewGridAndSortingPopup).toBeVisible();
 
     expect(await viewOptionsPage.getViewOptionsListText()).toEqual(['Grid', 'Speaker', 'Fullscreen']);
     for (const option of await viewOptionsPage.getViewOptionsList()) {
@@ -54,7 +53,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
 
     // choose speaker view
     await viewOptionsPage.selectSpeakerViewOption();
-    await viewOptionsPage.closeViewOptionsMenu();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // check the speaker view and pin some users
     const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
@@ -158,7 +157,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     await meetingRoomPage.page.bringToFront();
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectActivatedCameraFirstSortingOption();
-    await viewOptionsPage.closeViewOptionsMenu();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // assert that guest user with the activated camera is on the first position on the left side
     expect(await viewOptionsPage.isGridViewNthParticipantCameraOn(1)).toBeTruthy();
@@ -180,7 +179,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // as moderator, change to speaker view & assert that sorting resets after changing the view
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectSpeakerViewOption();
-    await viewOptionsPage.closeViewOptionsMenu();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // assert active speaker is first shown
     await firstGuestMeetingRoomPage.turnAudioOn();
@@ -207,7 +206,6 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // change back to grid view
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectGridViewOption();
-    await viewOptionsPage.closeViewOptionsMenu();
 
     // as guest, assert order is set by default on first joined
     const gridViewFirstPositionName = await firstGuestViewOptionsPage.getNthParticipantNameInGridView(1);

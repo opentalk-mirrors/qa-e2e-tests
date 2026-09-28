@@ -13,13 +13,13 @@ export class ViewOptionsPage {
   public readonly fullScreenViewOption: Locator;
   public readonly fullScreenView: Locator;
   private readonly closeFullScreenButton: Locator;
-  public activitySortingOption: Locator;
-  public joinTimeFirstSortingOption: Locator;
   public activatedCameraFirstSortingOption: Locator;
   public moderatorsFirstSortingOption: Locator;
   public readonly gridViewParticipantWindow: Locator;
   private readonly speakerViewContainer: Locator;
-  private readonly viewOptions: Locator;
+  private readonly viewGroup: Locator;
+  private readonly viewGroupOptions: Locator;
+  private readonly gridSizeGroup: Locator;
   private readonly gridSizeOptions: Locator;
   private readonly sortingDropdown: Locator;
   private readonly closePopupDialogButton: Locator;
@@ -40,8 +40,10 @@ export class ViewOptionsPage {
 
     this.viewOptionsButton = this.page.getByRole('button', { name: 'Customize view' });
     this.viewGridAndSortingPopup = this.page.getByRole('dialog', { name: 'Customize view' });
-    this.viewOptions = this.page.getByRole('group', { name: 'View' });
-    this.gridSizeOptions = this.page.getByRole('group', { name: 'Grid size' });
+    this.viewGroup = this.page.getByRole('group', { name: 'View' });
+    this.viewGroupOptions = this.viewGroup.getByRole('button');
+    this.gridSizeGroup = this.page.getByRole('group', { name: 'Grid size' });
+    this.gridSizeOptions = this.gridSizeGroup.getByRole('button');
     this.sortingDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
     this.gridViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Grid' });
     this.speakerViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Speaker' });
@@ -49,12 +51,6 @@ export class ViewOptionsPage {
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
     this.closePopupDialogButton = this.viewGridAndSortingPopup.getByRole('button', { name: 'Close dialog' });
-    this.activitySortingOption = this.page.getByRole('option', {
-      name: 'Activity',
-    });
-    this.joinTimeFirstSortingOption = this.page.getByRole('option', {
-      name: 'Join time',
-    });
     this.activatedCameraFirstSortingOption = this.page.getByRole('option', {
       name: 'Camera status',
     });
@@ -85,7 +81,7 @@ export class ViewOptionsPage {
   }
 
   public async getViewOptionsList(): Promise<Array<Locator>> {
-    return await this.viewOptions.getByRole('button').all();
+    return await this.viewGroupOptions.all();
   }
 
   public async getGridSizeOptionsListText(): Promise<string[]> {
@@ -97,7 +93,7 @@ export class ViewOptionsPage {
   }
 
   public async getGridSizeOptionsList(): Promise<Array<Locator>> {
-    return await this.gridSizeOptions.getByRole('button').all();
+    return await this.gridSizeOptions.all();
   }
 
   public async selectGridViewOption(): Promise<void> {
@@ -118,28 +114,17 @@ export class ViewOptionsPage {
     await this.fullScreenView.isVisible();
   }
 
-  public async selectActivitySortingOption(): Promise<void> {
+  private async selectSortingOption(option: Locator): Promise<void> {
     await this.sortingDropdown.click();
-    await this.activitySortingOption.waitFor();
-    await this.activitySortingOption.click();
+    await option.click();
   }
 
   public async selectActivatedCameraFirstSortingOption(): Promise<void> {
-    await this.sortingDropdown.click();
-    await this.activatedCameraFirstSortingOption.waitFor();
-    await this.activatedCameraFirstSortingOption.click();
+    await this.selectSortingOption(this.activatedCameraFirstSortingOption);
   }
 
   public async selectModeratorsFirstSortingOption(): Promise<void> {
-    await this.sortingDropdown.click();
-    await this.moderatorsFirstSortingOption.waitFor();
-    await this.moderatorsFirstSortingOption.click();
-  }
-
-  public async selectJoinTimeFirstSortingOption(): Promise<void> {
-    await this.sortingDropdown.click();
-    await this.joinTimeFirstSortingOption.waitFor();
-    await this.joinTimeFirstSortingOption.click();
+    await this.selectSortingOption(this.moderatorsFirstSortingOption);
   }
 
   public async isFullScreen(): Promise<boolean> {
@@ -231,7 +216,7 @@ export class ViewOptionsPage {
     return Math.floor(+gridViewParticipantWindowSize);
   }
 
-  public async closeViewOptionsMenu(): Promise<void> {
+  public async closeCustomizedViewDialog(): Promise<void> {
     await this.closePopupDialogButton.click();
     await this.closePopupDialogButton.waitFor({ state: 'detached' });
   }
