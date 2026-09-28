@@ -22,7 +22,7 @@ export class KeycloakPage {
     await this.page.goto(authUrl, { waitUntil: 'load' });
     await this.username.fill(username);
     await this.password.fill(password);
-    await Promise.all([this.loginBtn.click()]);
+    await Promise.all([this.page.waitForURL((url) => url.searchParams.has('code')), this.loginBtn.click()]);
     return this.page.url();
   }
 
