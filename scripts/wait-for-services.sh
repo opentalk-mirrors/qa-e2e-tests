@@ -23,6 +23,11 @@ if [ -z "$CONTROLLER_HOST" ]; then
   exit 1
 fi
 
+if [ -z "$LIVEKIT_HOST" ]; then
+  echo "Error: LIVEKIT_HOST variable is not set."
+  exit 1
+fi
+
 WEBAPP_BASE=$INSTANCE_URL
 
 if [ -z "$1" ]; then
@@ -67,5 +72,18 @@ do
     exit 1
   fi;
   echo "waiting for controller to start"
+  sleep 1;
+done
+
+counter=0;
+
+while [ "$(curl -k "$LIVEKIT_HOST" | grep 'OK' -q; echo $?)" -ne 0 ];
+do
+  (( counter++ )) || true
+  if [ $counter -gt "$TIMEOUT" ]; then
+    echo "timeout waiting for livekit to start"
+    exit 1
+  fi;
+  echo "waiting for livekit to start"
   sleep 1;
 done
