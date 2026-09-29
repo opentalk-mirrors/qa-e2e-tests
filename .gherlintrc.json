@@ -27,7 +27,7 @@
           [
             ["\\n", " "],
             ["%meeting_url_pattern%", ""],
-            ["config/opentalk-realm.json", ""],
+            ["config/OPENTALK-realm.json", ""],
             ["guest", "Guest"]
           ]
         ],

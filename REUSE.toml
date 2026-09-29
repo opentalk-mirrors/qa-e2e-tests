@@ -14,7 +14,7 @@ path = [
     "config/controller-config.toml",
     "config/mailer-config.toml",
     "config/nginx.conf",
-    "config/opentalk-realm.json",
+    "config/OPENTALK-realm.json",
     "config/rabbitmq.conf",
     "config/recorder-config.toml",
     "config/test_env",
