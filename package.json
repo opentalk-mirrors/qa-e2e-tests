@@ -29,7 +29,7 @@
     "@cucumber/pretty-formatter": "^1.0.1",
     "@eslint/js": "^9.32.0",
     "@gherlint/gherlint": "^2.0.0",
-    "@playwright/test": "^1.53.2",
+    "@playwright/test": "1.62.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^24.0.8",
     "@types/pngjs": "^6.0.5",
