@@ -81,7 +81,7 @@ variables:
         FEATURE_SHARED_FOLDER: true
         NDT_SERVER: ndt.mailbox.org
 
-    - name: postgres:16-alpine
+    - name: registry.heinlein.group/opentalk/postgres:v17
       pull_policy: if-not-present
       alias: db
       entrypoint:
@@ -95,7 +95,7 @@ variables:
           cp /builds/$CI_PROJECT_PATH/scripts/init-db.sh /docker-entrypoint-initdb.d/;
           /usr/local/bin/docker-entrypoint.sh postgres;
 
-    - name: livekit/livekit-server:v1.12
+    - name: registry.heinlein.group/opentalk/livekit-server:v1.13
       pull_policy: if-not-present
       alias: livekit
       variables:
@@ -120,7 +120,7 @@ variables:
           cp /builds/$CI_PROJECT_PATH/scripts/livekit-init.sh /usr/local/bin;
           livekit-init.sh;
 
-    - name: rabbitmq:4-management
+    - name: registry.heinlein.group/opentalk/rabbitmq:v4.3
       pull_policy: if-not-present
       alias: rabbitmq
 
@@ -213,7 +213,7 @@ variables:
         SD_API_TOKEN: au0beiR3ki8ain0eihaiHae5ofei4soh
         SD_INVITE_CODE: Ood6aeJoag9ahr8da2cai8on8ooCeeng
 
-    - name: quay.io/keycloak/keycloak:26.1
+    - name: registry.heinlein.group/opentalk/keycloak:v26.7
       pull_policy: if-not-present
       alias: keycloak
       variables:
@@ -236,14 +236,14 @@ variables:
         - /bin/bash
         - -c
         - |
-          until [ -f "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json" ]; do
-            echo waiting for "/builds/$CI_PROJECT_PATH/config/opentalk-realm.json";
+          until [ -f "/builds/$CI_PROJECT_PATH/config/OPENTALK-realm.json" ]; do
+            echo waiting for "/builds/$CI_PROJECT_PATH/config/OPENTALK-realm.json";
             sleep 1;
           done;
           cp -r /builds/$CI_PROJECT_PATH/certs /opt/keycloak/;
           mv /opt/keycloak/certs/cert_key /opt/keycloak/certs/cert.key;
           mkdir -p /opt/keycloak/data/import;
-          cp /builds/$CI_PROJECT_PATH/config/opentalk-realm.json /opt/keycloak/data/import;
+          cp /builds/$CI_PROJECT_PATH/config/OPENTALK-realm.json /opt/keycloak/data/import;
           /opt/keycloak/bin/kc.sh start-dev --import-realm
 
     - name: nginx:1.29

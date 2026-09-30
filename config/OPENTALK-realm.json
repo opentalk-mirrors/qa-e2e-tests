@@ -753,11 +753,42 @@
       "oauth2.device.authorization.grant.enabled" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"
     },
-    "authenticationFlowBindingOverrides" : { },
-    "fullScopeAllowed" : true,
-    "nodeReRegistrationTimeout" : -1,
-    "defaultClientScopes" : [ "web-origins", "acr", "Groups", "profile", "roles", "email" ],
-    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
+    "authenticationFlowBindingOverrides": {},
+    "fullScopeAllowed": true,
+    "nodeReRegistrationTimeout": -1,
+    "protocolMappers": [
+      {
+        "id": "e400ea6d-6d69-4609-8392-e86893064734",
+        "name": "tariff_id",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-usermodel-attribute-mapper",
+        "consentRequired": false,
+        "config": {
+          "introspection.token.claim": "true",
+          "userinfo.token.claim": "true",
+          "user.attribute": "tariff_id",
+          "id.token.claim": "true",
+          "lightweight.claim": "false",
+          "access.token.claim": "true",
+          "claim.name": "tariff_id",
+          "jsonType.label": "String"
+        }
+      },
+      {
+        "name": "controller-audience",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-audience-mapper",
+        "consentRequired": false,
+        "config": {
+          "included.client.audience": "Controller",
+          "access.token.claim": "true",
+          "id.token.claim": "false",
+          "introspection.token.claim": "true"
+        }
+      }
+    ],
+    "defaultClientScopes": ["web-origins", "acr", "Groups", "profile", "roles", "email"],
+    "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"]
   }, {
     "id" : "a8a8d3a2-b44c-4bd4-ab4c-d7aa63658bf7",
     "clientId" : "Recorder",

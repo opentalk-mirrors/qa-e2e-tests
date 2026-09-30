@@ -28,7 +28,7 @@ services:
       retries: 15
 
   db:
-    image: postgres:16-alpine
+    image: registry.heinlein.group/opentalk/postgres:v17
     ports:
       - 127.0.0.1:5432:5432
     volumes:
@@ -52,7 +52,7 @@ services:
       retries: 5
 
   livekit:
-    image: livekit/livekit-server:v1.12
+    image: registry.heinlein.group/opentalk/livekit-server:v1.13
     volumes:
       - ./:/builds/:rw,Z
     environment:
@@ -82,7 +82,7 @@ services:
   rabbitmq:
     ports:
       - 127.0.0.1:5672:5672
-    image: rabbitmq:4-management
+    image: registry.heinlein.group/opentalk/rabbitmq:v4.3
     healthcheck:
       test: rabbitmq-diagnostics -q ping
 
@@ -152,7 +152,7 @@ services:
       retries: 30
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.1
+    image: registry.heinlein.group/opentalk/keycloak:v26.7
     depends_on:
       db:
         condition: service_healthy
@@ -183,9 +183,9 @@ services:
       - /bin/bash
       - -c
       - |
-        until [ -f "/builds/config/opentalk-realm.json" ]; do true; done;
+        until [ -f "/builds/config/OPENTALK-realm.json" ]; do true; done;
         mkdir -p /opt/keycloak/data/import;
-        cp /builds/config/opentalk-realm.json /opt/keycloak/data/import;
+        cp /builds/config/OPENTALK-realm.json /opt/keycloak/data/import;
         /opt/keycloak/bin/kc.sh start-dev --import-realm --health-enabled=true
     healthcheck:
       test:
