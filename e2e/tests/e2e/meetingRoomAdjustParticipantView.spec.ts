@@ -4,6 +4,7 @@
 import { test, expect } from '@playwright/test';
 
 import { globalSetup } from '../authHelpers';
+import { config } from '../config';
 import { deleteUser } from '../helper/keycloak';
 import { startAdhocMeetingAsModerator } from '../helper/meetingHelpers';
 import { joinMeetingRoomWithNGuests } from '../helper/playwrightMeetingHelpers';
@@ -89,10 +90,8 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // assert that nothing else is shown except for the meeting room options, plus they should fade out after 3 sec
     // click mouse somewhere to trigger toolbar to become visible again (toolbar might already have faded out bc time spent on assertions above)
     await meetingRoomPage.page.mouse.click(100, 100);
-    await meetingRoomPage.waitForToolBarPanelToBeVisible();
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeVisible();
-    await meetingRoomPage.waitForToolBarPanelToBeHidden();
-    await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden();
+    await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden({ timeout: config.MEDIUM_TIMEOUT });
 
     // exit full screen mode
     await viewOptionsPage.closeFullScreenMode();
@@ -170,6 +169,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // test on second guest because moderator would be shown by default in first position for the first guest
     await secondGuestViewOptionsPage.displayViewOptionsMenu();
     await secondGuestViewOptionsPage.selectModeratorsFirstSortingOption();
+    await secondGuestViewOptionsPage.closeCustomizedViewDialog();
 
     // assert that the moderator is now on the first position
     const moderatorName = await meetingRoomPage.getUserName();

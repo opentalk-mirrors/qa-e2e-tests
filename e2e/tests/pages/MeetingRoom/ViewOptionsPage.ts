@@ -17,6 +17,7 @@ export class ViewOptionsPage {
   public moderatorsFirstSortingOption: Locator;
   public readonly gridViewParticipantWindow: Locator;
   private readonly speakerViewContainer: Locator;
+  private readonly pinnedParticipantButton: Locator;
   private readonly viewGroup: Locator;
   private readonly viewGroupOptions: Locator;
   private readonly gridSizeGroup: Locator;
@@ -59,6 +60,7 @@ export class ViewOptionsPage {
     });
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
     this.speakerViewContainer = this.page.getByTestId(this.selectors.speakerViewContainer);
+    this.pinnedParticipantButton = this.page.getByRole('button', { name: /is pinned$/ });
 
     this.videoPreviewName = this.page
       .getByRole('complementary', { name: 'Tools' })
@@ -68,16 +70,10 @@ export class ViewOptionsPage {
   public async displayViewOptionsMenu(): Promise<void> {
     await this.viewOptionsButton.waitFor();
     await this.viewOptionsButton.click();
-    await this.viewGridAndSortingPopup.waitFor();
-    await this.viewGridAndSortingPopup.isVisible();
   }
 
   public async getViewOptionsListText(): Promise<string[]> {
-    const optionsText: string[] = [];
-    for (const item of await this.getViewOptionsList()) {
-      optionsText.push(await item.innerText());
-    }
-    return optionsText;
+    return await this.viewGroupOptions.allInnerTexts();
   }
 
   public async getViewOptionsList(): Promise<Array<Locator>> {
@@ -85,11 +81,7 @@ export class ViewOptionsPage {
   }
 
   public async getGridSizeOptionsListText(): Promise<string[]> {
-    const optionsText: string[] = [];
-    for (const item of await this.getGridSizeOptionsList()) {
-      optionsText.push(await item.innerText());
-    }
-    return optionsText;
+    return await this.gridSizeOptions.allInnerTexts();
   }
 
   public async getGridSizeOptionsList(): Promise<Array<Locator>> {
@@ -152,15 +144,20 @@ export class ViewOptionsPage {
   }
 
   public async getPinnedParticipantNameInSpeakerView(): Promise<string> {
-    const speakerWindow = this.page.getByTestId(this.selectors.participantWindow).first();
-    return await this.getNameTileText(speakerWindow);
+    const ariaLabel = await this.pinnedParticipantButton.getAttribute('aria-label');
+    const pinnedParticipantName = ariaLabel?.replace(' is pinned', '');
+
+    if (!pinnedParticipantName) {
+      throw new Error('Pinned participant could not be identified');
+    }
+    const participantWindow = this.page.getByTestId(this.selectors.participantWindow).filter({
+      hasText: pinnedParticipantName,
+    });
+    return await this.getNameTileText(participantWindow);
   }
 
   public async getFirstParticipantNameInSpeakerView(): Promise<string> {
-    const participantWindow = this.page
-      .getByTestId(this.selectors.speakerViewContainer)
-      .getByTestId(this.selectors.participantWindow)
-      .first();
+    const participantWindow = this.speakerViewContainer.getByTestId(this.selectors.participantWindow).first();
     return await this.getNameTileText(participantWindow);
   }
 

@@ -720,12 +720,4 @@ export class MeetingRoomPage {
     await messagesPage.newMessageButton.waitFor({ state: 'visible' });
     return messagesPage;
   }
-
-  public async waitForToolBarPanelToBeVisible(): Promise<void> {
-    await this.toolBar.toolBarPanel.waitFor({ state: 'visible' });
-  }
-
-  public async waitForToolBarPanelToBeHidden(): Promise<void> {
-    await this.toolBar.toolBarPanel.waitFor({ state: 'hidden' });
-  }
 }
