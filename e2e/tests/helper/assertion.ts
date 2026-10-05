@@ -13,6 +13,7 @@ const ASSERTIONS_WITH_EXPECTED = [
   'toHaveProperty',
   'toHaveValue',
   'toHaveCount',
+  'not toEqual',
 ] as const;
 
 type AssertionsWithExpected = (typeof ASSERTIONS_WITH_EXPECTED)[number];
@@ -108,6 +109,9 @@ export async function assert(
         break;
       case 'toEqual':
         expect(actual as string[] | object, assertionMessage).toEqual(expected);
+        break;
+      case 'not toEqual':
+        expect(actual as string[] | object, assertionMessage).not.toEqual(expected);
         break;
       case 'toBeTruthy':
         expect(actual, assertionMessage).toBeTruthy();
