@@ -84,7 +84,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // join with 2 guests (in separate browser instances)
     await joinMeetingRoomWithNGuests(browser, meetingLink, 'guest', SMALL_NUMBER_OF_GUESTS);
     await meetingRoomPage.page.bringToFront();
-    await meetingRoomPage.peopleButton.click();
+    await meetingRoomPage.participantsButton.click();
     expect(await meetingRoomPage.getNumberOfParticipantsInMeeting()).toBe(SMALL_NUMBER_OF_GUESTS + 1);
 
     // open grid view options besides the meeting room name & choose full screen view

@@ -52,14 +52,18 @@ Then(
           if (tab.startsWith('People')) {
             const expectedParticipantsNum = Number(tab.split('(')[1]?.replace(')', ''));
             const actualParticipantsNum = Number(
-              (await meetingRoomPage.getPeopleTabText()).split('(')[1]?.replace(')', '')
+              (await meetingRoomPage.getParticipantsTabText()).split('(')[1]?.replace(')', '')
             );
-            await assert(meetingRoomPage.peopleButton, 'toBeVisible', `Expected the People tab to be visible`);
+            await assert(
+              meetingRoomPage.participantsButton,
+              'toBeVisible',
+              `Expected the Participants tab to be visible`
+            );
             await assert(
               expectedParticipantsNum,
               'toBe',
               actualParticipantsNum,
-              `Expected the People tab to show ${expectedParticipantsNum} participants`
+              `Expected the Participants tab to show ${expectedParticipantsNum} participants`
             );
             break;
           }
@@ -576,7 +580,7 @@ When(
 
 When('{string} views the participants on the Meeting-Room-Page', async function (this: CustomWorld, moderator: string) {
   const meeting = this.getStartedMeeting(moderator).meeting;
-  await meeting.meetingRoomPage.selectPeopleOption();
+  await meeting.meetingRoomPage.selectParticipantsOption();
 });
 
 Then(

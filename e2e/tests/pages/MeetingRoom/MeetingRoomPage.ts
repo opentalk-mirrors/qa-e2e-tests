@@ -84,7 +84,7 @@ export class MeetingRoomPage {
   };
 
   chatButton: Locator;
-  peopleButton: Locator;
+  participantsButton: Locator;
   messagesButton: Locator;
 
   chatOption: Locator;
@@ -198,7 +198,7 @@ export class MeetingRoomPage {
     };
 
     this.chatButton = this.page.getByRole('tab', { name: 'Chat' });
-    this.peopleButton = this.page.getByRole('tab', { name: 'People' });
+    this.participantsButton = this.page.getByRole('tab', { name: 'Participants' });
     this.messagesButton = this.page.getByRole('tab', { name: 'Messages' });
 
     this.chatOption = this.page.getByTestId('chat');
@@ -351,17 +351,17 @@ export class MeetingRoomPage {
     await this.toolBar.endMeetingButton.waitFor({ state: 'detached' });
   }
 
-  async selectPeopleTab(): Promise<void> {
-    await this.peopleButton.waitFor();
-    await this.peopleButton.click();
+  async selectParticipantsTab(): Promise<void> {
+    await this.participantsButton.waitFor();
+    await this.participantsButton.click();
   }
 
-  async getPeopleTabText(): Promise<string> {
-    return await this.peopleButton.innerText();
+  async getParticipantsTabText(): Promise<string> {
+    return await this.participantsButton.innerText();
   }
 
   async getNumberOfParticipantsInMeeting(): Promise<number> {
-    const numberOfParticipants = (await this.peopleButton.locator('span').first().innerText()).trim();
+    const numberOfParticipants = (await this.participantsButton.locator('span').first().innerText()).trim();
     // remove brackets and return as type number
     return +numberOfParticipants.slice(1, numberOfParticipants.length - 1);
   }
@@ -676,10 +676,10 @@ export class MeetingRoomPage {
     });
   }
 
-  public async selectPeopleOption(): Promise<PeopleOptionPage> {
+  public async selectParticipantsOption(): Promise<PeopleOptionPage> {
     await this.page.bringToFront();
-    if (!(await this.isOptionSelected(this.peopleButton))) {
-      await this.peopleButton.click();
+    if (!(await this.isOptionSelected(this.participantsButton))) {
+      await this.participantsButton.click();
     }
     const peopleOptionPage = new PeopleOptionPage({ page: this.page });
     await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });

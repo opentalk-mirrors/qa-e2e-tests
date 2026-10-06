@@ -188,7 +188,7 @@ test.describe('Accessibility_General', () => {
     await meetingRoomPage.page.keyboard.press('Tab');
     await expect(meetingRoomPage.chatButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('ArrowRight');
-    await expect(meetingRoomPage.peopleButton).toBeFocused();
+    await expect(meetingRoomPage.participantsButton).toBeFocused();
     await meetingRoomPage.page.keyboard.press('ArrowRight');
     await expect(meetingRoomPage.messagesButton).toBeFocused();
 
