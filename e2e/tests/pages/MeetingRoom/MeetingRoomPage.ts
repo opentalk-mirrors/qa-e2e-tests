@@ -198,7 +198,7 @@ export class MeetingRoomPage {
     };
 
     this.chatButton = this.page.getByRole('tab', { name: 'Chat' });
-    this.participantsButton = this.page.getByRole('tab', { name: 'Participants' });
+    this.participantsButton = this.page.getByRole('tab', { name: 'Participants', exact: true });
     this.messagesButton = this.page.getByRole('tab', { name: 'Messages' });
 
     this.chatOption = this.page.getByTestId('chat');
@@ -207,9 +207,7 @@ export class MeetingRoomPage {
     this.chatHistoryDescription = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('paragraph');
     this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
     this.chatListItems = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('listitem');
-    this.noMessageMatchText = this.page
-      .getByRole('tabpanel', { name: 'Home' })
-      .getByText('No messages matching the criteria');
+    this.noMessageMatchText = this.page.getByTestId('chat').getByText('No messages matching the criteria');
     this.resetButton = this.page.getByRole('button', { name: 'Reset' });
     this.emojiPicker = this.page.getByRole('button', { name: 'open emoji picker' });
     this.chatTextField = this.page.getByPlaceholder('Type a message');
@@ -361,9 +359,12 @@ export class MeetingRoomPage {
   }
 
   async getNumberOfParticipantsInMeeting(): Promise<number> {
-    const numberOfParticipants = (await this.participantsButton.locator('span').first().innerText()).trim();
-    // remove brackets and return as type number
-    return +numberOfParticipants.slice(1, numberOfParticipants.length - 1);
+    const participantCount = await this.participantsButton
+      .locator('span')
+      .filter({ hasText: /^\(\d+\)$/ })
+      .innerText();
+
+    return Number(participantCount.replace(/[()]/g, ''));
   }
 
   // function related to burger menu
