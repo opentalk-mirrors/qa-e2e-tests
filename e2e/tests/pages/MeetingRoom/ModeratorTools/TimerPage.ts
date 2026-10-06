@@ -39,28 +39,28 @@ export class TimerPage extends ModeratorToolsPage {
     super({ page: page });
     this.titleTextbox = this.page.getByRole('textbox', { name: 'Title' });
     this.participantsReadyCheckbox = this.page
-      .getByRole('tabpanel', {
+      .getByRole('region', {
         name: 'Timer',
       })
       .getByRole('switch');
     this.createTimer = {
       createTimerButton: this.page.getByRole('button', { name: 'Start Timer' }),
       tabPanel: {
-        tabPanelSection: this.page.getByRole('tabpanel', { name: 'Timer' }),
-        heading: this.page.getByRole('tabpanel', { name: 'Timer' }).getByRole('heading', { name: 'Timer' }),
-        elapsedTimeLabel: this.page.getByRole('tabpanel', { name: 'Timer' }).getByText('Elapsed time', { exact: true }),
+        tabPanelSection: this.page.getByRole('region', { name: 'Timer' }),
+        heading: this.page.getByRole('region', { name: 'Timer' }).getByRole('heading', { name: 'Timer' }),
+        elapsedTimeLabel: this.page.getByRole('region', { name: 'Timer' }).getByText('Elapsed time', { exact: true }),
         remainingTimeLabel: this.page
-          .getByRole('tabpanel', { name: 'Timer' })
+          .getByRole('region', { name: 'Timer' })
           .getByText('Remaining time', { exact: true }),
-        time: this.page.getByRole('tabpanel', { name: 'Timer' }).getByText(/\b\d{1,2}\s*:\s*\d{2}\b/),
+        time: this.page.getByRole('region', { name: 'Timer' }).getByText(/\b\d{1,2}\s*:\s*\d{2}\b/),
         participantsHeading: this.page.getByRole('heading', { name: 'Participants' }),
         participantsNotDoneStatus: this.page
-          .getByRole('tabpanel', { name: 'Timer' })
+          .getByRole('region', { name: 'Timer' })
           .getByRole('listitem')
           .filter({ has: this.page.getByRole('img', { name: 'Not done', exact: true }) })
           .locator('p'),
         participantsDoneStatus: this.page
-          .getByRole('tabpanel', { name: 'Timer' })
+          .getByRole('region', { name: 'Timer' })
           .getByRole('listitem')
           .filter({ has: this.page.getByRole('img', { name: 'Done', exact: true }) })
           .locator('p'),

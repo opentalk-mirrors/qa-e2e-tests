@@ -24,7 +24,7 @@ export class ModeratorToolsPage {
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.tabPanel = this.page.getByRole('tabpanel');
+    this.tabPanel = this.page.getByRole('region');
     this.heading = this.tabPanel.getByRole('heading').first();
     this.subHeading = this.tabPanel.getByRole('paragraph').first();
     this.button = this.page.getByRole('button');
