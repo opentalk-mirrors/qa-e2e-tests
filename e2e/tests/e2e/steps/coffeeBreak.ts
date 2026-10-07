@@ -125,9 +125,8 @@ Then(
     const meeting = this.getStartedMeeting(moderatorName).meeting;
     moderatorMeetingRoomPage = meeting.meetingRoomPage;
     await moderatorMeetingRoomPage.page.bringToFront();
-    const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await assert(
-      sessionDurationDialog.durationLabel,
+      moderatorMeetingRoomPage.coffeeBreakDialog.durationLabel,
       'toHaveText',
       durationText,
       `Expected the session duration label to display "${durationText}"`

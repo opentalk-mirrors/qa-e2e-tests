@@ -72,7 +72,7 @@ Then(
     const meeting = this.getStartedMeeting(user).meeting;
     const sessionDurationDialog = new SessionDurationDialog({ page: meeting.meetingRoomPage.page });
     await assert(
-      sessionDurationDialog.title,
+      sessionDurationDialog.sessionDurationTitle,
       'toHaveText',
       title,
       `Expected the session duration dialog title to display "${title}"`

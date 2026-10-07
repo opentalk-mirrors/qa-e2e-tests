@@ -10,9 +10,8 @@ import { Locator, Page } from '@playwright/test';
  */
 export class SessionDurationDialog {
   private readonly page: Page;
-  public readonly durationLabel: Locator;
   public readonly dialogContainer: Locator;
-  public readonly title: Locator;
+  public readonly sessionDurationTitle: Locator;
   public readonly oneMinuteDurationButton: Locator;
   public readonly twoMinuteDurationButton: Locator;
   public readonly fiveMinuteDurationButton: Locator;
@@ -30,7 +29,7 @@ export class SessionDurationDialog {
   constructor({ page }: { page: Page }) {
     this.page = page;
     this.dialogContainer = this.page.getByRole('dialog', { name: 'Session Duration', exact: true });
-    this.title = this.page.locator('//p[@id="duration-field-popover-title"]');
+    this.sessionDurationTitle = this.dialogContainer.locator('#duration-field-popover-title');
     this.oneMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '1 minute', exact: true });
     this.twoMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '2 minutes', exact: true });
     this.fiveMinuteDurationButton = this.dialogContainer.getByRole('button', { name: '5 minutes', exact: true });
@@ -47,8 +46,6 @@ export class SessionDurationDialog {
     this.saveButton = this.dialogContainer.getByRole('button', { name: 'Save' });
     this.closeButton = this.dialogContainer.getByRole('button', { name: 'Close' });
     this.selectedDurationLocator = this.dialogContainer.locator('[role="button"][aria-selected="true"]');
-    this.durationLabel = this.page.locator('#tabpanel-tab-coffee-break p').first();
-    // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
   }
 
   public async selectDuration(duration: string): Promise<void> {

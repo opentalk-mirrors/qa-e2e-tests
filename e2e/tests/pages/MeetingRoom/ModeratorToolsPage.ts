@@ -132,7 +132,7 @@ export class ModeratorToolsPage {
     if (!dialogVisible) {
       await this.durationButton.click();
     }
-    await this.sessionDurationDialog.title.waitFor({ state: 'attached' });
+    await this.sessionDurationDialog.sessionDurationTitle.waitFor({ state: 'attached' });
     return this.sessionDurationDialog;
   }
 

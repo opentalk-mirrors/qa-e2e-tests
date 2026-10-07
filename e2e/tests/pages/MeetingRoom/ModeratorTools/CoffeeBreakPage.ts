@@ -8,12 +8,14 @@ import { ModeratorToolsPage } from '../ModeratorToolsPage';
 
 export class CoffeeBreakPage extends ModeratorToolsPage {
   public readonly startCoffeeBreakButton: Locator;
+  public readonly durationLabel: Locator;
   public readonly timerText: Locator;
   public readonly stopCoffeeBreakButton: Locator;
 
   constructor({ page }: { page: Page }) {
     super({ page });
     this.startCoffeeBreakButton = this.page.getByRole('button', { name: 'Start coffee break' });
+    this.durationLabel = this.page.getByText('Duration', { exact: true });
     this.timerText = this.page.getByTestId('timer-display');
     this.stopCoffeeBreakButton = this.page.getByRole('button', { name: 'Stop coffee break' });
   }

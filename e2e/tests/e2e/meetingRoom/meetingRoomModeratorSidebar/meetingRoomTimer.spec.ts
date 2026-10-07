@@ -53,7 +53,7 @@ test.describe('Meeting Room_Timer', () => {
 
   test('TC_002_Meeting Room_As Moderator_Timer_Duration_Session Duration', async () => {
     let sessionDurationDialog = await timerPage.openSessionDurationDialog();
-    await expect(sessionDurationDialog.title).toHaveText('Session Duration');
+    await expect(sessionDurationDialog.sessionDurationTitle).toHaveText('Session Duration');
     await expect(sessionDurationDialog.unlimitedTimeDurationButton).toBeVisible();
     await expect(sessionDurationDialog.oneMinuteDurationButton).toBeVisible();
     await expect(sessionDurationDialog.twoMinuteDurationButton).toBeVisible();
