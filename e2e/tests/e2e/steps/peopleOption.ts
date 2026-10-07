@@ -320,7 +320,7 @@ When(
   async function (this: CustomWorld, user: string, messageType: 'direct' | 'private', message: string, to: string) {
     const meeting = this.getStartedMeeting(user).meeting;
     if (messageType === 'direct') {
-      const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+      const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
       await peopleOptionPage.hoverParticipantsList(to);
       await peopleOptionPage.selectParticipantMenu(to);
       await peopleOptionPage.navigateToDirectMessage();
@@ -340,7 +340,7 @@ When(
   '{string} removes {string} from the meeting room',
   async function (this: CustomWorld, moderator: string, userToRemove: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.selectParticipantMenu(userToRemove);
     await peopleOptionPage.removeParticipant();
   }
@@ -350,7 +350,7 @@ When(
   '{string} moves {string} to the waiting room from the meeting room',
   async function (this: CustomWorld, moderator: string, userToMove: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.selectParticipantMenu(userToMove);
     await peopleOptionPage.moveParticipant();
   }
@@ -360,7 +360,7 @@ When(
   /"([^"]*)" (?:renames|tries to rename) "([^"]*)" to "([^"]*)" in the meeting room$/,
   async function (this: CustomWorld, moderator: string, userToRename: string, newName: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.selectParticipantMenu(userToRename);
     await peopleOptionPage.renameParticipant(newName);
   }
@@ -400,7 +400,7 @@ When(
   /"([^"]*)" revokes presenter role from "([^"]*)" in the meeting room$/,
   async function (this: CustomWorld, moderator: string, userToRevoke: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.selectParticipantMenu(userToRevoke);
     await peopleOptionPage.revokePresenterRole();
   }
@@ -410,7 +410,7 @@ When(
   /"([^"]*)" grants presenter role to "([^"]*)" in the meeting room$/,
   async function (this: CustomWorld, moderator: string, userToGrant: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.selectParticipantMenu(userToGrant);
     await peopleOptionPage.grantPresenterRole();
   }

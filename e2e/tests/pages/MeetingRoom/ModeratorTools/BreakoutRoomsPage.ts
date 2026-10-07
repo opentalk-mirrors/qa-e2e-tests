@@ -19,10 +19,10 @@ export class BreakoutRoomsPage extends ModeratorToolsPage {
     super({ page });
     this.startRoomsButton = this.page.getByRole('button', { name: 'Start rooms' });
     this.closeRoomButton = this.page
-      .getByRole('tabpanel', { name: 'Create breakout rooms' })
+      .getByRole('region', { name: 'Create breakout rooms' })
       .getByRole('button', { name: 'Close room' });
-    this.participantsAvatar = this.page.getByRole('tabpanel').getByTestId('participantAvatar');
-    this.createdRoomsDropdown = this.page.getByRole('tabpanel').getByText(/Room \d+/);
+    this.participantsAvatar = this.page.getByRole('region').getByTestId('participantAvatar');
+    this.createdRoomsDropdown = this.page.getByRole('region').getByText(/Room \d+/);
     this.randomDistributionSwitch = this.page.getByLabel('Random distribution');
     this.selectionModeDropdown = this.page.getByRole('combobox');
     this.selectionModeDropdownItems = this.page.getByRole('listbox');

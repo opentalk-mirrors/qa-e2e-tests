@@ -84,7 +84,7 @@ export class MeetingRoomPage {
   };
 
   chatButton: Locator;
-  peopleButton: Locator;
+  participantsButton: Locator;
   messagesButton: Locator;
 
   chatOption: Locator;
@@ -198,7 +198,7 @@ export class MeetingRoomPage {
     };
 
     this.chatButton = this.page.getByRole('tab', { name: 'Chat' });
-    this.peopleButton = this.page.getByRole('tab', { name: 'People' });
+    this.participantsButton = this.page.getByRole('tab', { name: 'Participants', exact: true });
     this.messagesButton = this.page.getByRole('tab', { name: 'Messages' });
 
     this.chatOption = this.page.getByTestId('chat');
@@ -207,9 +207,7 @@ export class MeetingRoomPage {
     this.chatHistoryDescription = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('paragraph');
     this.joinedText = this.page.locator('//*[@data-testid="user-event-message"]');
     this.chatListItems = this.page.getByRole('tabpanel', { name: 'Chat' }).getByRole('listitem');
-    this.noMessageMatchText = this.page
-      .getByRole('tabpanel', { name: 'Home' })
-      .getByText('No messages matching the criteria');
+    this.noMessageMatchText = this.page.getByTestId('chat').getByText('No messages matching the criteria');
     this.resetButton = this.page.getByRole('button', { name: 'Reset' });
     this.emojiPicker = this.page.getByRole('button', { name: 'open emoji picker' });
     this.chatTextField = this.page.getByPlaceholder('Type a message');
@@ -238,7 +236,7 @@ export class MeetingRoomPage {
     this.coffeeBreakDialog = {
       coffeeBreakPopover: coffeeBreakPopover,
       coffeeBreakIcon: coffeeBreakPopover.locator('svg').nth(0),
-      durationLabel: coffeeBreakPopover.locator('#tabpanel-tab-coffee-break p').first(),
+      durationLabel: coffeeBreakPopover.getByText('Duration', { exact: true }),
       // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
 
       timerText: coffeeBreakPopover.getByTestId('timer-display'),
@@ -351,19 +349,22 @@ export class MeetingRoomPage {
     await this.toolBar.endMeetingButton.waitFor({ state: 'detached' });
   }
 
-  async selectPeopleTab(): Promise<void> {
-    await this.peopleButton.waitFor();
-    await this.peopleButton.click();
+  async selectParticipantsTab(): Promise<void> {
+    await this.participantsButton.waitFor();
+    await this.participantsButton.click();
   }
 
-  async getPeopleTabText(): Promise<string> {
-    return await this.peopleButton.innerText();
+  async getParticipantsTabText(): Promise<string> {
+    return await this.participantsButton.innerText();
   }
 
   async getNumberOfParticipantsInMeeting(): Promise<number> {
-    const numberOfParticipants = (await this.peopleButton.locator('span').first().innerText()).trim();
-    // remove brackets and return as type number
-    return +numberOfParticipants.slice(1, numberOfParticipants.length - 1);
+    const participantCount = await this.participantsButton
+      .locator('span')
+      .filter({ hasText: /^\(\d+\)$/ })
+      .innerText();
+
+    return Number(participantCount.replace(/[()]/g, ''));
   }
 
   // function related to burger menu
@@ -676,10 +677,10 @@ export class MeetingRoomPage {
     });
   }
 
-  public async selectPeopleOption(): Promise<PeopleOptionPage> {
+  public async selectParticipantsOption(): Promise<PeopleOptionPage> {
     await this.page.bringToFront();
-    if (!(await this.isOptionSelected(this.peopleButton))) {
-      await this.peopleButton.click();
+    if (!(await this.isOptionSelected(this.participantsButton))) {
+      await this.participantsButton.click();
     }
     const peopleOptionPage = new PeopleOptionPage({ page: this.page });
     await peopleOptionPage.searchParticipantTextbox.waitFor({ state: 'visible' });

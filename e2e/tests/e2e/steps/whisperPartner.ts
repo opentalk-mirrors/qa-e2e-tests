@@ -29,7 +29,7 @@ When(
   /"([^"]*)" marks "([^"]*)" as whisper partner in the meeting room$/,
   async function (this: CustomWorld, moderator: string, userToMark: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.markAsWhisperPartner(userToMark);
   }
 );
@@ -39,7 +39,7 @@ Then(
   async function (this: CustomWorld, user: string, moderator: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
     await meeting.participantMeetingRoomPages[user].page.bringToFront();
-    const peopleOptionPage = await meeting.participantMeetingRoomPages[user].selectPeopleOption();
+    const peopleOptionPage = await meeting.participantMeetingRoomPages[user].selectParticipantsOption();
     validateDataTableHeaders(dataTable, ['participant', 'status']);
     for (const { participant, status } of dataTable.hashes()) {
       if (status !== 'confirmed' && status !== 'pending') {
@@ -58,7 +58,7 @@ When(
   /"([^"]*)" leaves the whisper group in the meeting room of "([^"]*)"$/,
   async function (this: CustomWorld, user: string, moderator: string) {
     const meeting = this.getStartedMeeting(moderator).meeting;
-    const peopleOptionPage = await meeting.meetingRoomPage.selectPeopleOption();
+    const peopleOptionPage = await meeting.meetingRoomPage.selectParticipantsOption();
     await peopleOptionPage.leaveWhisperGroup(user);
   }
 );
@@ -68,7 +68,7 @@ Then(
   async function (this: CustomWorld, user: string, moderator: string, dataTable: DataTable) {
     const meeting = this.getStartedMeeting(moderator);
     await meeting.participantMeetingRoomPages[user].page.bringToFront();
-    const peopleOptionPage = await meeting.participantMeetingRoomPages[user].selectPeopleOption();
+    const peopleOptionPage = await meeting.participantMeetingRoomPages[user].selectParticipantsOption();
     const participants = dataTable.raw().map(([participant]) => participant);
     const statuses = ['confirmed', 'pending'];
     for (const participant of participants) {

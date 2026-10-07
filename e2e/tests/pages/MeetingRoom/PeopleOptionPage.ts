@@ -40,8 +40,8 @@ export class PeopleOptionPage extends ModeratorToolsPage {
     this.page = page;
     this.searchParticipantTextbox = this.page.getByRole('textbox', { name: 'Search participant' });
     this.sortByButton = this.page.getByRole('button', { name: 'Sort by' });
-    this.participantsList = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list');
-    this.participantName = this.page.getByRole('tabpanel', { name: 'People' }).getByRole('list').locator('p');
+    this.participantsList = this.page.getByRole('tabpanel', { name: 'Participants' }).getByRole('list');
+    this.participantName = this.page.getByRole('tabpanel', { name: 'Participants' }).getByRole('list').locator('p');
     this.participantTime = this.page.locator('//*[@data-sentry-element="ListItemText"]').locator('span');
     this.participantAvatar = this.listItem.getByTestId('participantAvatar');
     this.guestLabel = this.listItem.getByText('Guest');

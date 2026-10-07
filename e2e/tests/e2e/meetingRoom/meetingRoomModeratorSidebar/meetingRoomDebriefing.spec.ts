@@ -42,7 +42,7 @@ test.describe('Meeting Room_Debriefing', () => {
     await debriefingPage.selectDebriefingOption(debriefingPage.debriefingOptions.forModeratorAndRegisteredUserOption);
     await expect(debriefingPage.debriefingInitAlert).toBeVisible();
     await meetingRoomPage.selectModeratorToolHome();
-    await meetingRoomPage.selectPeopleTab();
+    await meetingRoomPage.selectParticipantsTab();
     expect(await meetingRoomPage.hasModerator()).toBe(true);
     await expect(meetingRoomPage.participantsAvatar.guestAvatar).not.toBeVisible();
     // TODO: Need to assert that the registered invited users are in the meeting room, once invited user scenario is implemented
@@ -59,7 +59,7 @@ test.describe('Meeting Room_Debriefing', () => {
     await debriefingPage.selectDebriefingOption(debriefingPage.debriefingOptions.forModeratorOption);
     await expect(debriefingPage.debriefingInitAlert).toBeVisible();
     await meetingRoomPage.selectModeratorToolHome();
-    await meetingRoomPage.selectPeopleTab();
+    await meetingRoomPage.selectParticipantsTab();
     expect(await meetingRoomPage.hasModerator()).toBe(true);
     await expect(meetingRoomPage.participantsAvatar.guestAvatar).not.toBeVisible();
     // TODO: Need to assert that the registered invited users are not in the meeting room, once invited user scenario is implemented

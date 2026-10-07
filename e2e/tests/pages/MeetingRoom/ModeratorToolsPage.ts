@@ -24,7 +24,7 @@ export class ModeratorToolsPage {
 
   constructor({ page }: { page: Page }) {
     this.page = page;
-    this.tabPanel = this.page.getByRole('tabpanel');
+    this.tabPanel = this.page.getByRole('region');
     this.heading = this.tabPanel.getByRole('heading').first();
     this.subHeading = this.tabPanel.getByRole('paragraph').first();
     this.button = this.page.getByRole('button');
@@ -132,7 +132,7 @@ export class ModeratorToolsPage {
     if (!dialogVisible) {
       await this.durationButton.click();
     }
-    await this.sessionDurationDialog.title.waitFor({ state: 'attached' });
+    await this.sessionDurationDialog.sessionDurationTitle.waitFor({ state: 'attached' });
     return this.sessionDurationDialog;
   }
 
