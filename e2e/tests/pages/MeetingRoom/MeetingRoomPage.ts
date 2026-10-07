@@ -236,7 +236,7 @@ export class MeetingRoomPage {
     this.coffeeBreakDialog = {
       coffeeBreakPopover: coffeeBreakPopover,
       coffeeBreakIcon: coffeeBreakPopover.locator('svg').nth(0),
-      durationLabel: this.page.getByText('Duration', { exact: true }),
+      durationLabel: coffeeBreakPopover.getByText('Duration', { exact: true }),
       // The above locator is currently not reliable and should be updated after the fixes from https://git.opentalk.dev/opentalk/qa/to-do/-/work_items/140.
 
       timerText: coffeeBreakPopover.getByTestId('timer-display'),
