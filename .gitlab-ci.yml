@@ -201,17 +201,12 @@ variables:
 
     - name: git.opentalk.dev:5050/opentalk/backend/containers/etherpad:$ETHERPAD_TAG
       pull_policy: if-not-present
-      alias: pad
+      alias: etherpad
       variables:
-        EP_APIKEY: pooWie1ooD8nie5eZophah6eih6Uo3ch
+        ADMIN_USER: admin
+        ADMIN_PASSWORD: admin
         TRUST_PROXY: true
-
-    - name: git.opentalk.dev:5050/opentalk/backend/containers/spacedeck:$WHITEBOARD_TAG
-      pull_policy: if-not-present
-      alias: whiteboard
-      variables:
-        SD_API_TOKEN: au0beiR3ki8ain0eihaiHae5ofei4soh
-        SD_INVITE_CODE: Ood6aeJoag9ahr8da2cai8on8ooCeeng
+        EP_APIKEY: secret
 
     - name: registry.heinlein.group/opentalk/keycloak:v26.7
       pull_policy: if-not-present
@@ -248,7 +243,7 @@ variables:
 
     - name: nginx:1.29
       pull_policy: if-not-present
-      alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test,roomserver.opentalk.test
+      alias: www.opentalk.test,controller.opentalk.test,livekit.opentalk.test,accounts.opentalk.test,roomserver.opentalk.test,etherpad.opentalk.test
       entrypoint:
         - /bin/bash
         - -c
