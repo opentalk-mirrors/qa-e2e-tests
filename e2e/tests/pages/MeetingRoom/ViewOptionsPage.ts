@@ -7,7 +7,7 @@ export class ViewOptionsPage {
   private readonly page: Page;
 
   public readonly viewOptionsButton: Locator;
-  public readonly viewAndSortingPopupMenu: Locator;
+  public readonly viewGridAndSortingPopup: Locator;
   public readonly gridViewOption: Locator;
   public readonly speakerViewOption: Locator;
   public readonly fullScreenViewOption: Locator;
@@ -16,10 +16,16 @@ export class ViewOptionsPage {
   public activatedCameraFirstSortingOption: Locator;
   public moderatorsFirstSortingOption: Locator;
   public readonly gridViewParticipantWindow: Locator;
-  private viewAndSortingPopupMenuItems: Locator;
+  private readonly speakerViewContainer: Locator;
+  private readonly pinnedParticipantButton: Locator;
+  private readonly viewGroup: Locator;
+  private readonly viewGroupOptions: Locator;
+  private readonly gridSizeGroup: Locator;
+  private readonly gridSizeOptions: Locator;
+  private readonly sortingDropdown: Locator;
+  private readonly closePopupDialogButton: Locator;
 
   public readonly selectors = {
-    gridViewContainer: 'grid-container',
     speakerViewContainer: 'SpeakerView-Container',
     speakerViewParticipantsThumbsHolder: 'ThumbsHolder',
     speakerWindow: 'SpeakerWindow1',
@@ -33,21 +39,28 @@ export class ViewOptionsPage {
   constructor({ page }: { page: Page }) {
     this.page = page;
 
-    this.viewOptionsButton = this.page.getByRole('button', { name: 'Select view' });
-    this.viewAndSortingPopupMenu = this.page.getByRole('menu', { name: 'Select view' });
-    this.viewAndSortingPopupMenuItems = this.viewAndSortingPopupMenu.getByRole('menuitemradio');
-    this.gridViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Grid-View' });
-    this.speakerViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Speaker-View' });
-    this.fullScreenViewOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', { name: 'Fullscreen' });
+    this.viewOptionsButton = this.page.getByRole('button', { name: 'Customize view' });
+    this.viewGridAndSortingPopup = this.page.getByRole('dialog', { name: 'Customize view' });
+    this.viewGroup = this.page.getByRole('group', { name: 'View' });
+    this.viewGroupOptions = this.viewGroup.getByRole('button');
+    this.gridSizeGroup = this.page.getByRole('group', { name: 'Grid size' });
+    this.gridSizeOptions = this.gridSizeGroup.getByRole('button');
+    this.sortingDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
+    this.gridViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Grid' });
+    this.speakerViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Speaker' });
+    this.fullScreenViewOption = this.viewGridAndSortingPopup.getByRole('button', { name: 'Fullscreen' });
     this.fullScreenView = this.page.getByTestId(this.selectors.fullScreen);
     this.closeFullScreenButton = this.page.getByTestId(this.selectors.fullScreen).getByLabel('close fullscreen');
-    this.activatedCameraFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
+    this.closePopupDialogButton = this.viewGridAndSortingPopup.getByRole('button', { name: 'Close dialog' });
+    this.activatedCameraFirstSortingOption = this.page.getByRole('option', {
       name: 'Camera status',
     });
-    this.moderatorsFirstSortingOption = this.viewAndSortingPopupMenu.getByRole('menuitemradio', {
+    this.moderatorsFirstSortingOption = this.page.getByRole('option', {
       name: 'Role',
     });
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
+    this.speakerViewContainer = this.page.getByTestId(this.selectors.speakerViewContainer);
+    this.pinnedParticipantButton = this.page.getByRole('button', { name: /is pinned$/, pressed: true });
 
     this.videoPreviewName = this.page
       .getByRole('complementary', { name: 'Tools' })
@@ -57,20 +70,22 @@ export class ViewOptionsPage {
   public async displayViewOptionsMenu(): Promise<void> {
     await this.viewOptionsButton.waitFor();
     await this.viewOptionsButton.click();
-    await this.viewAndSortingPopupMenu.waitFor();
-    await this.viewAndSortingPopupMenu.isVisible();
   }
 
-  public async getOptionsListText(): Promise<string[]> {
-    const optionsText: string[] = [];
-    for (const item of await this.getOptionsList()) {
-      optionsText.push(await item.innerText());
-    }
-    return optionsText;
+  public async getViewOptionsListText(): Promise<string[]> {
+    return await this.viewGroupOptions.allInnerTexts();
   }
 
-  public async getOptionsList(): Promise<Array<Locator>> {
-    return await this.viewAndSortingPopupMenuItems.all();
+  public async getViewOptionsList(): Promise<Array<Locator>> {
+    return await this.viewGroupOptions.all();
+  }
+
+  public async getGridSizeOptionsListText(): Promise<string[]> {
+    return await this.gridSizeOptions.allInnerTexts();
+  }
+
+  public async getGridSizeOptionsList(): Promise<Array<Locator>> {
+    return await this.gridSizeOptions.all();
   }
 
   public async selectGridViewOption(): Promise<void> {
@@ -91,14 +106,17 @@ export class ViewOptionsPage {
     await this.fullScreenView.isVisible();
   }
 
+  private async selectSortingOption(option: Locator): Promise<void> {
+    await this.sortingDropdown.click();
+    await option.click();
+  }
+
   public async selectActivatedCameraFirstSortingOption(): Promise<void> {
-    await this.activatedCameraFirstSortingOption.waitFor();
-    await this.activatedCameraFirstSortingOption.click();
+    await this.selectSortingOption(this.activatedCameraFirstSortingOption);
   }
 
   public async selectModeratorsFirstSortingOption(): Promise<void> {
-    await this.moderatorsFirstSortingOption.waitFor();
-    await this.moderatorsFirstSortingOption.click();
+    await this.selectSortingOption(this.moderatorsFirstSortingOption);
   }
 
   public async isFullScreen(): Promise<boolean> {
@@ -126,17 +144,20 @@ export class ViewOptionsPage {
   }
 
   public async getPinnedParticipantNameInSpeakerView(): Promise<string> {
-    const speakerWindow = this.page
-      .getByTestId(this.selectors.speakerWindow)
-      .getByTestId(this.selectors.participantWindow);
-    return await this.getNameTileText(speakerWindow);
+    const ariaLabel = await this.pinnedParticipantButton.getAttribute('aria-label');
+    const pinnedParticipantName = ariaLabel?.replace(' is pinned', '');
+
+    if (!pinnedParticipantName) {
+      throw new Error('Pinned participant could not be identified');
+    }
+    const participantWindow = this.page.getByTestId(this.selectors.participantWindow).filter({
+      hasText: pinnedParticipantName,
+    });
+    return await this.getNameTileText(participantWindow);
   }
 
   public async getFirstParticipantNameInSpeakerView(): Promise<string> {
-    const participantWindow = this.page
-      .getByTestId(this.selectors.speakerViewContainer)
-      .getByTestId(this.selectors.participantWindow)
-      .first();
+    const participantWindow = this.speakerViewContainer.getByTestId(this.selectors.participantWindow).first();
     return await this.getNameTileText(participantWindow);
   }
 
@@ -190,5 +211,10 @@ export class ViewOptionsPage {
         return window.getComputedStyle(el).getPropertyValue('width'); // only evaluating width, same could be done with height
       });
     return Math.floor(+gridViewParticipantWindowSize);
+  }
+
+  public async closeCustomizedViewDialog(): Promise<void> {
+    await this.closePopupDialogButton.click();
+    await this.closePopupDialogButton.waitFor({ state: 'detached' });
   }
 }

@@ -175,7 +175,7 @@ export class MeetingRoomPage {
     this.videoFullScreenExitButton = this.page.getByRole('button', { name: 'close fullscreen' });
 
     this.toolBar = {
-      toolBarPanel: this.page.getByTestId('fullscreen').getByLabel('Personal control panel'),
+      toolBarPanel: this.page.getByTestId('fullscreen').getByRole('complementary', { name: 'Personal control panel' }),
       handRaiseButton: this.page.getByRole('button', { name: 'Raise Your Hand' }),
       handLowerButton: this.page.getByRole('button', { name: 'Lower Your Hand' }),
       turnOnScreenShareButton: this.page.getByRole('button', { name: 'Turn On Screen Share' }),

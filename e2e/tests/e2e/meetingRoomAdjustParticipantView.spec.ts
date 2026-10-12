@@ -15,7 +15,7 @@ const SMALL_NUMBER_OF_GUESTS = 2;
 
 let viewOptionsPage: ViewOptionsPage;
 // skipped due to: https://git.opentalk.dev/opentalk/qa/e2e-tests/-/work_items/94
-test.describe.skip('MeetingRoom - adjust participant view', () => {
+test.describe('MeetingRoom - adjust participant view', () => {
   let userId = '';
   test.beforeEach(async ({ page, context }, testInfo) => {
     userId = await globalSetup(page, context, testInfo);
@@ -29,21 +29,14 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
 
     // when opening grid view options besides the meeting room name
     await viewOptionsPage.displayViewOptionsMenu();
-    await expect(viewOptionsPage.viewAndSortingPopupMenu).toBeVisible();
+    await expect(viewOptionsPage.viewGridAndSortingPopup).toBeVisible();
 
-    expect(await viewOptionsPage.getOptionsListText()).toEqual([
-      'Grid-View',
-      'Speaker-View',
-      'Fullscreen',
-      'Join time',
-      'Camera status',
-      'Role',
-      '6 tiles',
-      '9 tiles',
-      '16 tiles',
-      '24 tiles',
-    ]);
-    for (const option of await viewOptionsPage.getOptionsList()) {
+    expect(await viewOptionsPage.getViewOptionsListText()).toEqual(['Grid', 'Speaker', 'Fullscreen']);
+    for (const option of await viewOptionsPage.getViewOptionsList()) {
+      await expect(option).toBeVisible();
+    }
+    expect(await viewOptionsPage.getGridSizeOptionsListText()).toEqual(['6', '9', '16', '24']);
+    for (const option of await viewOptionsPage.getGridSizeOptionsList()) {
       await expect(option).toBeVisible();
     }
   });
@@ -61,11 +54,10 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
 
     // choose speaker view
     await viewOptionsPage.selectSpeakerViewOption();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // check the speaker view and pin some users
-    const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
-    // speaker is in first place
-    expect(await viewOptionsPage.getFirstParticipantNameInSpeakerView()).toBe(defaultPinnedParticipant);
+    const defaultPinnedParticipant = await viewOptionsPage.getFirstParticipantNameInSpeakerView();
     // pinned user is shown at top and the user that joined after pinned user is shown at first among all participant thumbs
     expect(await viewOptionsPage.getThumbsNthParticipantNameInSpeakerView(1)).toBe('guest2');
     // pin some user (3rd participant)
@@ -96,10 +88,8 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // assert that nothing else is shown except for the meeting room options, plus they should fade out after 3 sec
     // click mouse somewhere to trigger toolbar to become visible again (toolbar might already have faded out bc time spent on assertions above)
     await meetingRoomPage.page.mouse.click(100, 100);
-    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT); // wait for a little moment because toolbar fades in
     await expect(meetingRoomPage.toolBar.toolBarPanel).toBeVisible();
-    await meetingRoomPage.page.waitForTimeout(config.SHORT_TIMEOUT);
-    await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden();
+    await expect(meetingRoomPage.toolBar.toolBarPanel).toBeHidden({ timeout: config.MEDIUM_TIMEOUT });
 
     // exit full screen mode
     await viewOptionsPage.closeFullScreenMode();
@@ -164,6 +154,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     await meetingRoomPage.page.bringToFront();
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectActivatedCameraFirstSortingOption();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // assert that guest user with the activated camera is on the first position on the left side
     expect(await viewOptionsPage.isGridViewNthParticipantCameraOn(1)).toBeTruthy();
@@ -176,6 +167,7 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // test on second guest because moderator would be shown by default in first position for the first guest
     await secondGuestViewOptionsPage.displayViewOptionsMenu();
     await secondGuestViewOptionsPage.selectModeratorsFirstSortingOption();
+    await secondGuestViewOptionsPage.closeCustomizedViewDialog();
 
     // assert that the moderator is now on the first position
     const moderatorName = await meetingRoomPage.getUserName();
@@ -185,11 +177,12 @@ test.describe.skip('MeetingRoom - adjust participant view', () => {
     // as moderator, change to speaker view & assert that sorting resets after changing the view
     await viewOptionsPage.displayViewOptionsMenu();
     await viewOptionsPage.selectSpeakerViewOption();
+    await viewOptionsPage.closeCustomizedViewDialog();
 
     // assert active speaker is first shown
     await firstGuestMeetingRoomPage.turnAudioOn();
     const activeParticipantName = await firstGuestMeetingRoomPage.getUserName();
-    const speakerViewFirstPositionName = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
+    const speakerViewFirstPositionName = await viewOptionsPage.getFirstParticipantNameInSpeakerView();
     await expect(speakerViewFirstPositionName).toBe(activeParticipantName);
 
     /*
