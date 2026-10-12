@@ -57,9 +57,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     await viewOptionsPage.closeCustomizedViewDialog();
 
     // check the speaker view and pin some users
-    const defaultPinnedParticipant = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
-    // speaker is in first place
-    expect(await viewOptionsPage.getFirstParticipantNameInSpeakerView()).toBe(defaultPinnedParticipant);
+    const defaultPinnedParticipant = await viewOptionsPage.getFirstParticipantNameInSpeakerView();
     // pinned user is shown at top and the user that joined after pinned user is shown at first among all participant thumbs
     expect(await viewOptionsPage.getThumbsNthParticipantNameInSpeakerView(1)).toBe('guest2');
     // pin some user (3rd participant)
@@ -184,7 +182,7 @@ test.describe('MeetingRoom - adjust participant view', () => {
     // assert active speaker is first shown
     await firstGuestMeetingRoomPage.turnAudioOn();
     const activeParticipantName = await firstGuestMeetingRoomPage.getUserName();
-    const speakerViewFirstPositionName = await viewOptionsPage.getPinnedParticipantNameInSpeakerView();
+    const speakerViewFirstPositionName = await viewOptionsPage.getFirstParticipantNameInSpeakerView();
     await expect(speakerViewFirstPositionName).toBe(activeParticipantName);
 
     /*

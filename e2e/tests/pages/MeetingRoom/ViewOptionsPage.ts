@@ -60,7 +60,7 @@ export class ViewOptionsPage {
     });
     this.gridViewParticipantWindow = this.page.getByTestId(this.selectors.participantWindow);
     this.speakerViewContainer = this.page.getByTestId(this.selectors.speakerViewContainer);
-    this.pinnedParticipantButton = this.page.getByRole('button', { name: /is pinned$/ });
+    this.pinnedParticipantButton = this.page.getByRole('button', { name: /is pinned$/, pressed: true });
 
     this.videoPreviewName = this.page
       .getByRole('complementary', { name: 'Tools' })
