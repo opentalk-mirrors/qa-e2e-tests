@@ -137,7 +137,7 @@ variables:
           mkdir -p /data/controller &&
           /usr/bin/docker-entrypoint.sh server /data --address ":9000"
 
-    - name: git.opentalk.dev:5050/opentalk/backend/services/roomserver:$ROOMSERVER_TAG
+    - name: git.opentalk.dev:5050/opentalk/opentalk/roomserver:$ROOMSERVER_TAG
       pull_policy: if-not-present
       alias: roomserver
       variables:
@@ -162,7 +162,7 @@ variables:
           echo "Starting roomserver...";
           /opentalk-roomserver/opentalk-roomserver -c /builds/$CI_PROJECT_PATH/config/roomserver.toml
 
-    - name: git.opentalk.dev:5050/opentalk/backend/services/controller:$CONTROLLER_TAG
+    - name: git.opentalk.dev:5050/opentalk/opentalk/controller:$CONTROLLER_TAG
       alias: controller
       variables:
         SSL_CERT_FILE: /tmp/certs/cert.crt

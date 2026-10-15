@@ -120,7 +120,7 @@ services:
         condition: service_healthy
       certs:
         condition: service_completed_successfully
-    image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/backend/services/controller}:${CONTROLLER_TAG:-dev}
+    image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/opentalk/controller}:${CONTROLLER_TAG:-dev}
     volumes:
       - ./:/builds/:rw,Z
       - certs-volume:/etc/ssl/certs:ro
@@ -267,7 +267,7 @@ services:
         chmod 644 /certs/*.pem
 
   roomserver:
-    image: git.opentalk.dev:5050/opentalk/backend/services/roomserver:dev
+    image: git.opentalk.dev:5050/opentalk/opentalk/roomserver:dev
     network_mode: host
     volumes:
       - ./:/builds/:rw,Z
