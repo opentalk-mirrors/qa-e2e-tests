@@ -452,7 +452,7 @@ e2e-gherkin-tests:
 
 sync-gherkin-to-testrail:
   stage: testrail
-  image: python:latest
+  image: python:3.13-slim
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
       changes:
@@ -460,14 +460,14 @@ sync-gherkin-to-testrail:
   before_script:
     - apt-get update
     - apt-get install -y jq curl
-    - pip install trcli
+    - pip install --no-cache-dir trcli==1.15.3
   script:
     - chmod +x ./scripts/sync-gherkin-to-testrail.sh
     - ./scripts/sync-gherkin-to-testrail.sh
 
 merge-and-upload-test-results:
   stage: testrail
-  image: python:latest
+  image: python:3.13-slim
   when: always
   needs:
     - job: e2e-playwright-tests
@@ -477,7 +477,7 @@ merge-and-upload-test-results:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
   before_script:
-    - pip install trcli
+    - pip install --no-cache-dir trcli==1.15.3
   script: |
 
     # Upload Playwright JUnit report to Playwright TestRail project
