@@ -120,6 +120,8 @@ services:
         condition: service_healthy
       certs:
         condition: service_completed_successfully
+      etherpad:
+        condition: service_healthy
     image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/opentalk/controller}:${CONTROLLER_TAG:-dev}
     volumes:
       - ./:/builds/:rw,Z
@@ -306,6 +308,11 @@ services:
       - ADMIN_USER=admin
       - ADMIN_PASSWORD=admin
       - EP_APIKEY=secret
+    healthcheck:
+      test: curl -f http://localhost:9001/locales.json
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   certs-volume:

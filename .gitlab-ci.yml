@@ -389,6 +389,7 @@ e2e-playwright-tests:
     OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
     CONTROLLER_HOST: https://controller.opentalk.test
     LIVEKIT_HOST: https://livekit.opentalk.test
+    ETHERPAD_HOST: https://etherpad.opentalk.test
   script:
     - |
       if [ "$RUN_ONLY_SMOKE_TESTS" == "true" ]; then
@@ -427,6 +428,7 @@ e2e-gherkin-tests:
     OIDC_ISSUER: https://accounts.opentalk.test/auth/realms/OPENTALK
     CONTROLLER_HOST: https://controller.opentalk.test
     LIVEKIT_HOST: https://livekit.opentalk.test
+    ETHERPAD_HOST: https://etherpad.opentalk.test
   before_script:
     - *setup-pnpm
     - pnpm install
