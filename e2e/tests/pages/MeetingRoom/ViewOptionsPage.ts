@@ -27,7 +27,7 @@ export class ViewOptionsPage {
 
   public readonly selectors = {
     speakerViewContainer: 'SpeakerView-Container',
-    speakerViewParticipantsThumbsHolder: 'ThumbsHolder',
+    speakerViewFilmstrip: 'filmstrip',
     speakerWindow: 'SpeakerWindow1',
     participantWindow: 'ParticipantWindow',
     participantName: 'nameTile',
@@ -133,7 +133,7 @@ export class ViewOptionsPage {
 
   //functions (related to how participants are displayed)
   public async pinNthParticipantInSpeakerView(participantName: string): Promise<string> {
-    const participantsThumbs = this.page.getByTestId(this.selectors.speakerViewParticipantsThumbsHolder);
+    const participantsThumbs = this.page.getByTestId(this.selectors.speakerViewFilmstrip);
     const nthParticipantWindow = participantsThumbs
       .getByTestId(this.selectors.participantWindow)
       .filter({ hasText: participantName });
@@ -163,7 +163,7 @@ export class ViewOptionsPage {
 
   public async getThumbsNthParticipantNameInSpeakerView(nth: number): Promise<string> {
     const participantWindow = this.page
-      .getByTestId(this.selectors.speakerViewParticipantsThumbsHolder)
+      .getByTestId(this.selectors.speakerViewFilmstrip)
       .getByTestId(this.selectors.participantWindow)
       .nth(nth - 1); // minus 1 because nth(0) is the first element
     return (await this.getNameTileText(participantWindow)).trim();
