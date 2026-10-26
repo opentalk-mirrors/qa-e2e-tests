@@ -58,3 +58,4 @@ waitForServices "${OIDC_ISSUER}/.well-known/openid-configuration" keycloak OPENT
 waitForServices "${WEBAPP_BASE}/manifest.json" webapp '"short_name": "OpenTalk"'
 waitForServices "${CONTROLLER_HOST}/v1/auth/login" controller oidc
 waitForServices "${LIVEKIT_HOST}" livekit OK
+waitForServices "${ETHERPAD_HOST}" etherpad en

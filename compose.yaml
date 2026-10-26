@@ -120,6 +120,8 @@ services:
         condition: service_healthy
       certs:
         condition: service_completed_successfully
+      etherpad:
+        condition: service_healthy
     image: ${CONTROLLER_IMAGE:-git.opentalk.dev:5050/opentalk/opentalk/controller}:${CONTROLLER_TAG:-dev}
     volumes:
       - ./:/builds/:rw,Z
@@ -139,6 +141,7 @@ services:
           sed -i 's|https://accounts\.opentalk\.test/|https://localhost:7443/|g' /tmp/controller-config.toml
           sed -i 's|https://livekit\.opentalk\.test|https://localhost:7880|g' /tmp/controller-config.toml
           sed -i 's|https://roomserver\.opentalk\.test|https://localhost:21333|g' /tmp/controller-config.toml
+          sed -i 's|https://etherpad\.opentalk\.test|https://localhost:9001|g' /tmp/controller-config.toml
           sed -i 's/@rabbitmq\//@localhost\//g' /tmp/controller-config.toml
           sed -i 's/@db\:/@localhost\:/g' /tmp/controller-config.toml
           sed -i 's/\/minio\:/\/localhost\:/g' /tmp/controller-config.toml
@@ -236,6 +239,7 @@ services:
       - 7880:7880
       - 21311:11311
       - 21333:11333
+      - 9001:9001
     extra_hosts:
       - host.docker.internal:host-gateway
     depends_on:
@@ -296,6 +300,19 @@ services:
           echo "Try to start roomserver";
           /opentalk-roomserver/opentalk-roomserver -c /tmp/roomserver.toml;
         done;
+
+  etherpad:
+    image: git.opentalk.dev:5050/opentalk/backend/containers/etherpad:latest
+    environment:
+      - TRUST_PROXY=true
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=admin
+      - EP_APIKEY=secret
+    healthcheck:
+      test: curl -f http://localhost:9001/locales.json
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   certs-volume:
